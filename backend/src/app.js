@@ -18,6 +18,7 @@ import trainingResourceRoutes from './routes/trainingResourceRoutes.js';
 import shortCategoryRoutes from './routes/shortCategoryRoutes.js';
 import viralShortRoutes from './routes/viralShortRoutes.js';
 import spacexRoutes from './routes/spacexRoutes.js';
+import gmailRoutes from './routes/gmailRoutes.js';
 
 
 
