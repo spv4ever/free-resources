@@ -1,0 +1,330 @@
+
+
+h1{
+    text-align: center;
+    color: #ffffff; /* Blanco principal, puedes cambiarlo si necesitas otro tono */
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  /* src/styles/ResourcesPage.css */
+.resources {
+    text-align: center;
+    margin-top: 2rem;
+    color: #fff;
+  }
+  .category-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    object-position: top; /* 👈 Empieza el recorte desde arriba */
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+
+
+  .categories-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .category-card {
+    background-color: #2d2d2d;
+    color: white;
+    padding: 20px;
+    width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 12px #00acee;
+    border: 2px solid #00acee;
+  }
+  
+  .category-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .category-card p {
+    font-size: 1rem;
+    color: #ccc;
+  }
+  
+  .resource-table {
+    width: 80%;
+    border-collapse: separate;
+    margin: 1rem auto; /* ← esto centra horizontalmente */
+    border-spacing: 0;
+    margin-top: 1rem;
+    background-color: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
+  
+  .resource-table th,
+  .resource-table td {
+    padding: 1rem;
+    text-align: left;
+  }
+  
+  .resource-table thead {
+    background-color: #f5f7fa;
+  }
+  
+  .resource-table th {
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #ddd;
+  }
+  
+  .resource-table tr:hover {
+    background-color: #f0f4ff;
+  }
+  
+  .resource-table td {
+    vertical-align: top;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .resource-table img {
+    width: 80px;
+    border-radius: 8px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.1);
+  }
+  
+  .resource-table a {
+    color: #0077cc;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .resource-table a:hover {
+    text-decoration: underline;
+  }
+
+  .category-title {
+    text-align: center;
+    color: #f9f9f9;
+    font-size: 2rem;
+    margin-top: 0rem;
+    margin-bottom: 1rem;
+  }
+  td a.btn-download,
+td button {
+  margin-right: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-download {
+  background-color: #0077cc;
+  color: white;
+  text-decoration: none;
+}
+
+.btn-edit {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+.btn-add {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-add:hover {
+  background-color: #218838;
+}
+
+.btn-edit {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.icon-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0.3rem 0.5rem;
+  color: #333;
+  transition: color 0.2s ease;
+}
+
+.icon-button:hover {
+  color: #0077cc;
+}
+
+.icon-button.edit:hover {
+  color: #ffc107;
+}
+
+.icon-button.delete:hover {
+  color: #dc3545;
+}
+
+.icon-button.add {
+  font-size: 1.4rem;
+  color: white;
+  background-color: #28a745;
+  border-radius: 50%;
+  padding: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.icon-button.add:hover {
+  background-color: #218838;
+}
+
+.icon-button.delete:hover {
+  color: #b71c1c;
+}
+
+.resource-table th.fecha,
+.resource-table td.fecha {
+  text-align: center;
+  white-space: nowrap;
+}
+.resource-table input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.resource-table img {
+  width: 80px;
+  border-radius: 8px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: zoom-in;
+  position: relative;
+}
+
+.resource-table img:hover {
+  transform: scale(2);
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.resource-table td {
+  position: relative;
+  overflow: visible;
+}
+
+@media (max-width: 768px) {
+  .resource-table img:hover {
+    transform: none;
+    box-shadow: none;
+    background-color: transparent;
+  }
+}
+
+.ai-horizontal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  align-items: center;
+}
+
+.ai-horizontal-card {
+  display: flex;
+  background-color: #2d2d2d;
+  color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 900px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ai-card-image {
+  flex: 0 0 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #444;
+}
+
+.ai-card-image img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  max-height: 160px;
+}
+
+.ai-card-content {
+  padding: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ai-card-meta {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.ai-card-links {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.ai-card-links a {
+  color: #00bfff;
+  font-size: 1.2rem;
+}
+.icon-button {
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.icon-button:hover {
+  background-color: #005fa3;
+}
+
+.icon-button svg {
+  vertical-align: middle;
+  color: #fff;
+}

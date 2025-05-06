@@ -1,0 +1,98 @@
+.admin-page {
+    padding: 2rem;
+    color: #fff;
+  }
+  
+  .admin-page h2 {
+    margin-bottom: 1rem;
+  }
+  
+  .add-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
+  
+  .add-button:hover {
+    background-color: #218838;
+  }
+  
+  .admin-form,
+  .admin-row {
+    background-color: #2c2c2c;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+  }
+  
+  .admin-form label,
+  .admin-row label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #ccc;
+  }
+  
+  .admin-form input[type="text"],
+  .admin-row input[type="text"] {
+    width: 100%;
+    padding: 0.4rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #1a1a1a;
+    color: #fff;
+  }
+  
+  .admin-form input[type="checkbox"],
+  .admin-row input[type="checkbox"] {
+    margin-left: 0.5rem;
+  }
+  
+  .admin-form .form-buttons,
+  .admin-row .form-buttons,
+  .row-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .admin-form button,
+  .admin-row button {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  .admin-form button:hover,
+  .admin-row button:hover {
+    background-color: #0056b3;
+  }
+  
+  .admin-row strong {
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 0.3rem;
+    color: #fff;
+  }
+  
+  .meta {
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-bottom: 0.2rem;
+  }
+  
+  .descripcion {
+    color: #ccc;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+  

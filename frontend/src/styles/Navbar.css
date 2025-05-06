@@ -1,0 +1,234 @@
+/* Estilos generales para la barra de navegación */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1a1a1a;
+    padding: 1rem 2rem;
+    color: white;
+  }
+  
+  .navbar-logo a {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+  }
+  
+  .navbar a {
+    color: white;
+    text-decoration: none;
+    margin-left: 1rem;
+    font-weight: bold;
+  }
+  
+  /* Estilo para el usuario logueado */
+  .navbar-user {
+    color: #ffcc00; /* Amarillo brillante para destacar el texto */
+    font-size: 1rem;
+    font-weight: bold;
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+  
+  /* Botón de logout */
+  .logout-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .logout-btn:hover {
+    background-color: #e60000;
+  }
+  
+  /* Contenedor de enlaces */
+  .navbar-links {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Botón Admin para abrir el sidebar */
+  .admin-btn {
+    background-color: #ffcc00;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .admin-btn:hover {
+    background-color: #e6b800;
+  }
+  
+  /* Estilos del Sidebar */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 250px;
+    height: 100%;
+    background-color: rgba(51, 51, 51, 0.9); /* Fondo translúcido */
+    color: white;
+    padding: 20px;
+    z-index: 1000;
+    box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.3);
+    transition: transform 1s ease;
+    transform: translateX(100%); /* Oculta la sidebar hacia la izquierda */
+  }
+  .sidebar.open {
+    transform: translateX(0); /* La trae hacia su sitio */
+  }
+  
+  /* Lista dentro del sidebar */
+  .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    margin-bottom: 20px;
+  }
+  
+  .sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .sidebar ul li a:hover {
+    color: #ffcc00;
+  }
+  
+  /* Botón para cerrar el sidebar */
+  .close-sidebar {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .close-sidebar:hover {
+    background-color: #e60000;
+  }
+  
+  /* Estilos para cerrar la sidebar cuando se haga clic fuera */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: block;
+  }
+  /* Botones en la navbar (Desconectar, Admin) */
+.navbar-links button {
+    background-color: #333; /* Fondo oscuro para el botón */
+    color: white; /* Texto blanco */
+    border: 2px solid #333; /* Borde del mismo color que el fondo */
+    border-radius: 25px; /* Bordes redondeados */
+    padding: 10px 20px; /* Espaciado interno */
+    font-size: 1rem; /* Tamaño de fuente adecuado */
+    font-weight: bold; /* Negrita para resaltar el texto */
+    cursor: pointer; /* Cambiar cursor al pasar sobre el botón */
+    transition: all 0.3s ease; /* Suavizado en las transiciones */
+    margin-left: 10px; /* Espacio entre los botones */
+    display: inline-block; /* Aseguramos que el botón se alinee correctamente */
+  }
+  
+  /* Estilo cuando se pasa el cursor por encima (hover) */
+  .navbar-links button:hover {
+    background-color: #ffcc00; /* Fondo amarillo cuando se hace hover */
+    border-color: #ffcc00; /* Borde amarillo para consistencia */
+    color: #333; /* Texto oscuro cuando se hace hover */
+  }
+  
+  /* Botón "Desconectar" */
+  .logout-btn {
+    background-color: #ff4d4d; /* Fondo rojo para "Desconectar" */
+    border: 2px solid #ff4d4d; /* Borde rojo */
+  }
+  
+  .logout-btn:hover {
+    background-color: #e60000; /* Fondo más oscuro en hover */
+    border-color: #e60000; /* Borde más oscuro en hover */
+  }
+  
+  /* Botón "Admin" */
+  .admin-btn {
+    background-color: #ffcc00; /* Fondo amarillo para "Admin" */
+    border: 2px solid #ffcc00; /* Borde amarillo */
+    color: #333; /* Texto oscuro para contraste */
+  }
+  
+  .admin-btn:hover {
+    background-color: #e6b800; /* Fondo más oscuro de amarillo al pasar por encima */
+    border-color: #e6b800; /* Borde más oscuro al pasar el cursor */
+  }
+  
+  /* Estilo cuando el usuario no está logueado */
+  .navbar-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 1rem;
+    padding: 10px;
+  }
+  
+  .navbar-links a:hover {
+    color: #ffcc00;
+    text-decoration: underline;
+  }
+  /* Estilo del botón "Cerrar" en la Sidebar */
+/* Estilo del botón "Cerrar" en la Sidebar */
+.sidebar-close-btn {
+    background-color: #333; /* Fondo oscuro para el botón */
+    color: white; /* Texto blanco */
+    border: 2px solid #333; /* Borde del mismo color que el fondo */
+    border-radius: 25px; /* Bordes redondeados */
+    padding: 10px 20px; /* Espaciado interno */
+    font-size: 1rem; /* Tamaño de fuente adecuado */
+    font-weight: bold; /* Negrita para resaltar el texto */
+    cursor: pointer; /* Cambiar el cursor al pasar sobre el botón */
+    transition: all 0.3s ease; /* Suavizado en las transiciones */
+    margin-left: 10px; /* Espacio entre los botones */
+    display: inline-block; /* Aseguramos que el botón se alinee correctamente */
+    position: absolute; /* Posicionamiento absoluto dentro de la sidebar */
+    bottom: 50px; /* Colocamos el botón en la parte inferior */
+    right: 20px; /* Colocamos el botón hacia la derecha */
+  }
+  
+  /* Estilo cuando se pasa el cursor por encima (hover) */
+  .sidebar-close-btn:hover {
+    background-color: #ffcc00; /* Fondo amarillo cuando se hace hover */
+    border-color: #ffcc00; /* Borde amarillo para consistencia */
+    color: #333; /* Texto oscuro cuando se hace hover */
+  }
+  .admin-link-button {
+    background: none;
+    border: none;
+    color: #fff;
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    text-align: left;
+    font-size: 1rem;
+    width: 100%;
+  }
+  
+  .admin-link-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }

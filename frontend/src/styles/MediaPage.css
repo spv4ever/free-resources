@@ -1,0 +1,38 @@
+.media-page {
+    padding: 0rem;
+    text-align: center;
+  }
+  
+  .media-title {
+    color: #fff;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .media-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+  }
+  
+  .media-card {
+    display: block;
+    width: 260px;
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #fff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .media-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  }
+  
+  .media-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  

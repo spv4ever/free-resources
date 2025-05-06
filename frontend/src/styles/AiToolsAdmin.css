@@ -1,0 +1,88 @@
+.ai-admin-container {
+    padding: 2rem;
+    color: #fff;
+  }
+  
+  .ai-admin-title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .ai-admin-add {
+    background-color: #28a745;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .ai-admin-add:hover {
+    background-color: #218838;
+  }
+  
+  .ai-admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .ai-admin-table th,
+  .ai-admin-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #444;
+    text-align: left;
+    color: #eee;
+  }
+  
+  .ai-admin-table th {
+    background-color: #2a2a2a;
+    color: #ccc;
+  }
+  
+  .ai-admin-table td a {
+    color: #4fc3f7;
+    text-decoration: none;
+  }
+  
+  .ai-admin-table input[type="text"],
+  .ai-admin-table input[type="number"] {
+    width: 100%;
+    padding: 0.4rem;
+    background-color: #333;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: white;
+  }
+  
+  .ai-admin-table input[type="checkbox"] {
+    transform: scale(1.2);
+  }
+  
+  .ai-admin-table button {
+    margin-right: 0.5rem;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #ccc;
+  }
+  
+  .ai-admin-table button:hover {
+    color: #fff;
+  }
+  .ai-admin-table select {
+    width: 100%;
+    padding: 0.4rem;
+    background-color: #333;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: white;
+    font-size: 0.95rem;
+  }
