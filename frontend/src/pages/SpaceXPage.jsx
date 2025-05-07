@@ -3,6 +3,8 @@ import React from 'react';
 import SpacexLaunches from '../components/SpacexLaunches';
 import SpacexHistory from '../components/SpacexHistory';
 import '../styles/SpaceXPage.css';
+import SpacexStats from '../components/SpacexStats';
+import '../styles/SpacexStats.css';
 
 const SpaceXPage = () => {
   return (
@@ -10,12 +12,11 @@ const SpaceXPage = () => {
       <h1 className="spacex-page-title">🚀 Sección SpaceX</h1>
       
       <div className="spacex-stats-card">
-        <h2>📊 Estadísticas Generales</h2>
-        <p>(Próximamente: lanzamientos exitosos y fallidos por año y tipo de cohete)</p>
+        <SpacexStats /> 
       </div>
 
       <div className="spacex-section">
-        <h2>🚀 Próximos Lanzamientos</h2>
+        
         <SpacexLaunches />
       </div>
 

@@ -1,0 +1,27 @@
+.spacex-stats {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border: 1px solid #333;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+
+.stats-header,
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 1fr;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #333;
+}
+
+.stats-header {
+  font-weight: bold;
+  border-bottom: 2px solid #555;
+  color: #ffffff;
+}
+
+.stats-row span {
+  padding: 0 0.5rem;
+}

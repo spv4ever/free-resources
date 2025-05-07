@@ -136,6 +136,10 @@ function Navbar() {
             <li><Link to="/admin/training" onClick={toggleSidebar}>Recursos de Formación</Link></li>
             <li><Link to="/admin/short-categories">Categorías de Shorts</Link></li>
             <li><Link to="/admin/sync-shorts">Sincronizar Shorts Virales</Link></li>
+            <li>
+              <Link to="/admin/email-contexts">📩 Email Contexts</Link>
+            </li>
+
             {/* <li><Link to="/admin/users" onClick={toggleSidebar}>Gestionar Usuarios</Link></li>
             <li><Link to="/admin/orders" onClick={toggleSidebar}>Gestionar Pedidos</Link></li> */}
             <button className="sidebar-close-btn" onClick={toggleSidebar}>Cerrar</button>

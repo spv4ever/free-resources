@@ -23,6 +23,8 @@ import SyncShortsPage from './pages/admin/SyncShortsPage'; // si lo vas a separa
 import ViralShortsPage from './pages/ViralShortsPage';
 import CorelDrawCursoPage from './pages/CorelDrawCursoPage';
 import SpaceXPage from './pages/SpaceXPage';
+import EmailContextAdmin from './components/EmailContextAdmin';
+
 
 
 
@@ -45,8 +47,9 @@ function App() {
             <Route path="admin/ai-tools" element={<AdminRoute><AiToolsAdminPage /></AdminRoute>}/>
             <Route path="/admin/nasa-fechas" element={<AdminRoute><NasaFetchMonthPage /></AdminRoute>} />
             <Route path="/admin/training" element={<AdminRoute><TrainingAdminPage /></AdminRoute>} />
-            <Route path="/admin/short-categories" element={<ShortCategoriesPage />} />
-            <Route path="/admin/sync-shorts" element={<SyncShortsPage />} />
+            <Route path="/admin/short-categories" element={<AdminRoute><ShortCategoriesPage /></AdminRoute>} />
+            <Route path="/admin/sync-shorts" element={<AdminRoute><SyncShortsPage /></AdminRoute>} />
+            <Route path="/admin/email-contexts" element={<AdminRoute><EmailContextAdmin /></AdminRoute>} />
             <Route path="category/:categoryName" element={<CategoryResourcesPage />} />
             <Route path="/media" element={<MediaPage />} />
             <Route path="/media/fotos-universo" element={<FotosUniversoPage />} />
@@ -57,6 +60,7 @@ function App() {
             <Route path="training" element={<TrainingPage />} />
             <Route path="/curso/corel-draw" element={<CorelDrawCursoPage />} />
             <Route path="/spacex" element={<SpaceXPage />} />
+            
           </Route>
           
 

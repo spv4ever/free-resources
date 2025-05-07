@@ -1,0 +1,56 @@
+.email-context-admin {
+    padding: 1.5rem;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+  }
+  
+  .email-title {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .email-loading {
+    padding: 1rem;
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  
+  .email-table-wrapper {
+    overflow-x: auto;
+  }
+  
+  .email-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border: 1px solid #ccc;
+  }
+  
+  .email-table th,
+  .email-table td {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .email-table th {
+    background-color: #f0f0f0;
+    font-weight: 600;
+  }
+  
+  .import-btn {
+    padding: 6px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .import-btn:hover {
+    background-color: #0056b3;
+  }
+  
