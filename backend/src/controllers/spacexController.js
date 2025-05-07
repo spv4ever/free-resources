@@ -15,22 +15,35 @@ export async function updateSpacexLaunches() {
   const newLaunches = await fetchNextLaunchesFromAPI();
   const newIds = newLaunches.map(l => l.id);
 
-  // A. Marcar como históricos los que ya fueron lanzados o cancelados
+  // A. Obtener todos los que actualmente están marcados como próximos en la base de datos
   const currentUpcoming = await SpacexLaunch.find({ upcoming: true });
 
   for (const launch of currentUpcoming) {
     const apiLaunch = newLaunches.find(l => l.id === launch.id);
-    if (apiLaunch && [3, 4, 5, 6, 7].includes(apiLaunch.status?.id)) {
-      // Si se ha lanzado o cancelado, lo marcamos como histórico
-      await SpacexLaunch.findByIdAndUpdate(launch._id, { upcoming: false, status: apiLaunch.status });
+
+    if (apiLaunch) {
+      // Si sigue en la API y su estado indica que ya ocurrió, lo pasamos a histórico
+      if ([3, 4, 5, 6, 7].includes(apiLaunch.status?.id)) {
+        await SpacexLaunch.findByIdAndUpdate(launch._id, { upcoming: false, status: apiLaunch.status });
+        console.log(`[CRON] Marcado como histórico (por status): ${launch.name}`);
+      }
+    } else {
+      // Si ya no está en la API y la fecha ya pasó, lo marcamos como histórico
+      if (new Date(launch.net) < new Date()) {
+        await SpacexLaunch.findByIdAndUpdate(launch._id, { upcoming: false });
+        console.log(`[CRON] Marcado como histórico (por fecha): ${launch.name}`);
+      } else {
+        // Si no está en la API y aún es futuro, lo eliminamos
+        await SpacexLaunch.findByIdAndDelete(launch._id);
+        console.log(`[CRON] Eliminado (ya no aparece en API y es futuro): ${launch.name}`);
+      }
     }
   }
 
-  // B. Eliminar los próximos que ya no están entre los siguientes 3
-  await SpacexLaunch.deleteMany({ upcoming: true, id: { $nin: newIds } });
-  // await SpacexLaunch.deleteMany({ upcoming: false, id: { $nin: newIds } });
-  // C. Insertar o actualizar los nuevos próximos
+  // B. Insertar o actualizar los nuevos próximos
   for (const l of newLaunches) {
+    const isUpcoming = ![3, 4, 5, 6, 7].includes(l.status?.id);
+
     await SpacexLaunch.findOneAndUpdate(
       { id: l.id },
       {
@@ -41,13 +54,17 @@ export async function updateSpacexLaunches() {
         webcast: l.webcast,
         pad: l.pad,
         last_updated: new Date(),
-        upcoming: true,
+        upcoming: isUpcoming,
         id: l.id,
         rocketName: l.rocket?.configuration?.name || 'Desconocido'
       },
       { upsert: true }
     );
+
+    console.log(`[CRON] ${isUpcoming ? 'Guardado como próximo' : 'Actualizado como histórico'}: ${l.name}`);
   }
+
+  console.log('[CRON] Actualización de lanzamientos SpaceX completada.');
 }
 
 // 3. Obtener lanzamientos próximos

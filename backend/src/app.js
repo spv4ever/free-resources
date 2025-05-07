@@ -19,6 +19,9 @@ import shortCategoryRoutes from './routes/shortCategoryRoutes.js';
 import viralShortRoutes from './routes/viralShortRoutes.js';
 import spacexRoutes from './routes/spacexRoutes.js';
 import gmailRoutes from './routes/gmailRoutes.js';
+import { runScheduledImports } from './services/emailScheduler.js';
+import emailContextsRoutes from './routes/emailContexts.js';
+
 
 
 
@@ -58,8 +61,24 @@ app.use('/api/viral-shorts', viralShortRoutes);
 app.use('/api/spacex', spacexRoutes);
 app.use('/api/spacex', spacexRoutes);
 app.use('/api/gmail', gmailRoutes);
+app.use('/api/admin/email-contexts', emailContextsRoutes);
 
 import './jobs/spaceXJob.js';
+
+// Intervalo de ejecución: cada 6h (puedes cambiarlo)
+const IMPORT_INTERVAL = 1000 * 60 * 60 * 6;
+
+// Primera ejecución 10s después de iniciar el backend
+setTimeout(() => {
+  console.log('▶️ Importación automática inicial');
+  runScheduledImports();
+}, 10000);
+
+// Repetición automática cada IMPORT_INTERVAL
+setInterval(() => {
+  console.log('🕒 Ejecutando importación programada...');
+  runScheduledImports();
+}, IMPORT_INTERVAL);
 
 
 // // Ruta de prueba
