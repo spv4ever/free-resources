@@ -24,6 +24,11 @@ import ViralShortsPage from './pages/ViralShortsPage';
 import CorelDrawCursoPage from './pages/CorelDrawCursoPage';
 import SpaceXPage from './pages/SpaceXPage';
 import EmailContextAdmin from './components/EmailContextAdmin';
+import ScamPostsPage from './pages/ScamPostsPage';
+import ScamPostDetailPage from './pages/ScamPostDetailPage';
+
+
+
 
 
 
@@ -60,6 +65,8 @@ function App() {
             <Route path="training" element={<TrainingPage />} />
             <Route path="/curso/corel-draw" element={<CorelDrawCursoPage />} />
             <Route path="/spacex" element={<SpaceXPage />} />
+            <Route path="/scam-posts" element={<ScamPostsPage />} />
+            <Route path="/scam-posts/:id" element={<ScamPostDetailPage />} />
             
           </Route>
           

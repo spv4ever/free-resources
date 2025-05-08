@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { FaBook, FaRobot, FaYoutube, FaFileAlt, FaImage, FaGraduationCap, FaRocket } from 'react-icons/fa';
+import { FaBook, FaRobot, FaYoutube, FaFileAlt, FaImage, FaGraduationCap, FaRocket, FaShieldVirus } from 'react-icons/fa';
 import '../styles/HomePage.css';
 //import '../styles/Layout.css'; // nuevo archivo opcional para estilos de layout
 
@@ -18,6 +18,12 @@ const sections = [
     description: 'Todo lo relacionado con los lanzamientos de SpaceX. Rumbo a Marte',
     path: '/spacex',
     icon: <FaRocket />
+  },
+  {
+    title: 'CiberEstafas',
+    description: 'Todo lo relacionado Noticias sobre ciberestafas.',
+    path: '/scam-posts',
+    icon: <FaShieldVirus />
   },
   
 ];

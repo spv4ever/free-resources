@@ -15,11 +15,52 @@
     text-align: center;
   }
   
+  .card-home {
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;          /* ✅ clave para que el grid funcione bien */
+    width: 100%;           /* ✅ ocupará el espacio de la celda del grid */
+    box-sizing: border-box;
+  }
+  
+  .card-home:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  }
+  
+  .card-home h2 {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+    color: #00bfff;
+  }
+  
+  .card-home ul {
+    padding-left: 1rem;
+    list-style: disc;
+    margin: 0;
+  }
+  
+  .card-home li {
+    font-size: 0.80rem;       /* más pequeño */
+    line-height: 1.3;         /* más compacto */
+    white-space: nowrap;      /* evita saltos de línea */
+    overflow: hidden;
+    text-overflow: ellipsis;  /* añade '...' si se desborda */
+  }
+
   .cards-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* exactamente 4 columnas */
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
-    flex-grow: 1;
+    padding: 1rem;
   }
   
   @media (max-width: 1200px) {

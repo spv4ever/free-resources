@@ -1,0 +1,46 @@
+.scam-post-detail {
+    max-width: 800px;
+    margin: 2rem auto;
+    background-color: #1e1e1e;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    color: #f1f1f1;
+  }
+  
+  .scam-post-detail h1 {
+    color: #00bfff;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+  
+  .scam-post-detail .meta {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-bottom: 1.5rem;
+  }
+  
+  .post-body p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    text-align: justify;
+  }
+  
+
+  
+  .fecha {
+    font-size: 0.9rem;
+    color: #999;
+    margin-bottom: 1rem;
+  }
+  
+  .clasificacion {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .contenido {
+    line-height: 1.7;
+    font-size: 1.05rem;
+  }
+  
