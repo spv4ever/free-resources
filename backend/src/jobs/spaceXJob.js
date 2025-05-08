@@ -2,7 +2,7 @@
 import cron from 'node-cron';
 import { updateSpacexLaunches } from '../controllers/spacexController.js';
 
-cron.schedule('0 1 * * *', async () => {
+cron.schedule('0 */4 * * *', async () => {
   console.log('[CRON] Actualizando lanzamientos de SpaceX...');
   try {
     await updateSpacexLaunches();
