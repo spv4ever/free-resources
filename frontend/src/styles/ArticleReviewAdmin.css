@@ -1,0 +1,91 @@
+.email-review-admin {
+    padding: 2rem;
+    color: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  .email-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .email-empty {
+    text-align: center;
+    font-style: italic;
+    color: #bbb;
+  }
+  
+  .email-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .email-item {
+    background-color: #222;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .email-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .email-snippet {
+    font-size: 0.95rem;
+    color: #ccc;
+    margin-bottom: 0.6rem;
+  }
+  
+  .email-item a {
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    color: #4fc3f7;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .email-item a:hover {
+    text-decoration: underline;
+  }
+  
+  .email-actions {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .approve-btn,
+  .reject-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+  }
+  
+  .approve-btn {
+    background-color: #2e7d32;
+    color: white;
+  }
+  
+  .reject-btn {
+    background-color: #c62828;
+    color: white;
+  }
+  
+  .approve-btn:hover {
+    background-color: #388e3c;
+  }
+  
+  .reject-btn:hover {
+    background-color: #d32f2f;
+  }
+  
+  

@@ -1,0 +1,116 @@
+.article-review-page {
+    padding: 2rem;
+    color: #fff;
+    background-color: #121212;
+  }
+  
+  .article-review-page h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .generate-posts-btn {
+    display: block;
+    margin: 0 auto 2rem auto;
+    padding: 0.6rem 1.2rem;
+    background-color: #0077cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .generate-posts-btn:hover {
+    background-color: #005fa3;
+  }
+  
+  .email-empty {
+    text-align: center;
+    font-style: italic;
+    color: #bbb;
+    margin-top: 3rem;
+  }
+  
+  .articles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  
+  .article-item {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    padding: 1.5rem;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 800px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+  }
+  
+  .article-item:hover {
+    transform: translateY(-3px);
+  }
+  
+  .article-item h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+    color: #00bfff;
+  }
+  
+  .article-item p {
+    margin-bottom: 0.8rem;
+    color: #ccc;
+  }
+  
+  .article-item a {
+    color: #00acee;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .article-item a:hover {
+    text-decoration: underline;
+  }
+  
+  .actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .approve-btn,
+  .reject-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95rem;
+  }
+  
+  .approve-btn {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .reject-btn {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .approve-btn:hover {
+    background-color: #218838;
+  }
+  
+  .reject-btn:hover {
+    background-color: #c82333;
+  }
+  
+  .articles-list {
+    list-style: none; /* 🔧 Elimina los puntos */
+    padding: 0;
+  }

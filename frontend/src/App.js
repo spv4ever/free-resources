@@ -26,6 +26,9 @@ import SpaceXPage from './pages/SpaceXPage';
 import EmailContextAdmin from './components/EmailContextAdmin';
 import ScamPostsPage from './pages/ScamPostsPage';
 import ScamPostDetailPage from './pages/ScamPostDetailPage';
+import EmailReviewPage from './pages/admin/EmailReviewPage';
+import ArticleReviewPage from './pages/ArticleReviewPage.jsx';
+
 
 
 
@@ -55,6 +58,8 @@ function App() {
             <Route path="/admin/short-categories" element={<AdminRoute><ShortCategoriesPage /></AdminRoute>} />
             <Route path="/admin/sync-shorts" element={<AdminRoute><SyncShortsPage /></AdminRoute>} />
             <Route path="/admin/email-contexts" element={<AdminRoute><EmailContextAdmin /></AdminRoute>} />
+            <Route path="/admin/email-review" element={<AdminRoute><EmailReviewPage /></AdminRoute>} />
+            <Route path="/admin/email-articles" element={<AdminRoute><ArticleReviewPage /></AdminRoute>} />
             <Route path="category/:categoryName" element={<CategoryResourcesPage />} />
             <Route path="/media" element={<MediaPage />} />
             <Route path="/media/fotos-universo" element={<FotosUniversoPage />} />
