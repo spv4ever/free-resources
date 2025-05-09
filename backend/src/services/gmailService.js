@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
 import EmailEntry from '../models/EmailEntry.js';
+import { saveArticlesFromEmail } from './extractArticlesFromEmail.js'; // 👈 Asegúrate de importar esto arriba
 
 const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
 
@@ -16,8 +17,8 @@ export async function authorizeGmail() {
   console.log('🔎 GMAIL_CREDENTIALS_BASE64:', typeof process.env.GMAIL_CREDENTIALS_BASE64);
   console.log('🔎 GMAIL_TOKEN_BASE64:', typeof process.env.GMAIL_TOKEN_BASE64);
   if (!process.env.GMAIL_CREDENTIALS_BASE64 || !process.env.GMAIL_TOKEN_BASE64) {
-    throw new Error('❌ Falta alguna variable de entorno Gmail (credenciales o token)');
-  }
+  throw new Error('❌ Falta alguna variable de entorno Gmail (credenciales o token)');
+}
   const credentialsPath = await writeTempFile('credentials.json', process.env.GMAIL_CREDENTIALS_BASE64);
   const tokenPath = await writeTempFile('gmail-token.json', process.env.GMAIL_TOKEN_BASE64);
 
@@ -81,7 +82,8 @@ export async function importEmails({ searchTerm, context }) {
   for (const email of emails) {
     const exists = await EmailEntry.findOne({ messageId: email.messageId });
     if (!exists) {
-      await EmailEntry.create({ ...email, context });
+      const nuevoEmail = await EmailEntry.create({ ...email, context });
+      await saveArticlesFromEmail(nuevoEmail); // 👈 Aquí se extraen y guardan las noticias individuales
       saved++;
     }
   }

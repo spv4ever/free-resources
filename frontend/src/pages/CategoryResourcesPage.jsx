@@ -240,7 +240,19 @@ function CategoryResourcesPage() {
         </div>
       </div>
       
-
+      {isAdmin && !newResource && (
+      <button onClick={() =>
+        setNewResource({
+          title: '',
+          description: '',
+          imageUrl: '',
+          downloadUrl: '',
+          category: categoryName
+        })
+      } className="add-resource-button">
+        ➕ Añadir recurso
+      </button>
+    )}
     <div className="resource-grid">
       {newResource && (
         <div className="resource-card new">

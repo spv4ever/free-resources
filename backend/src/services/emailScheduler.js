@@ -15,6 +15,13 @@ function shouldRunNow(frequency, lastRun) {
 export async function runScheduledImports() {
   const contexts = await EmailImportContext.find({ active: true });
 
+  console.log('📋 Contextos activos encontrados:', contexts.map(c => ({
+    context: c.context,
+    searchTerm: c.searchTerm,
+    frequency: c.frequency,
+    lastImportedAt: c.lastImportedAt
+  })));
+
   for (const cfg of contexts) {
     if (shouldRunNow(cfg.frequency, cfg.lastImportedAt)) {
       try {

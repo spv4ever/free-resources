@@ -138,7 +138,11 @@ function Navbar() {
             <li><Link to="/admin/sync-shorts">Sincronizar Shorts Virales</Link></li>
             <li>
               <Link to="/admin/email-contexts">📩 Email Contexts</Link>
+              
             </li>
+            <li>
+            <Link to="/admin/email-review" className="sidebar-link">📥 Revisar Emails</Link></li>
+            <li><Link to="/admin/email-articles">Revisar Artículos</Link></li>
 
             {/* <li><Link to="/admin/users" onClick={toggleSidebar}>Gestionar Usuarios</Link></li>
             <li><Link to="/admin/orders" onClick={toggleSidebar}>Gestionar Pedidos</Link></li> */}
