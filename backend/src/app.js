@@ -22,6 +22,10 @@ import gmailRoutes from './routes/gmailRoutes.js';
 import { runScheduledImports } from './services/emailScheduler.js';
 import emailContextsRoutes from './routes/emailContexts.js';
 import scamPostRoutes from './routes/scamPostRoutes.js';
+import adminEmailEntryRoutes from './routes/adminEmailEntryRoutes.js';
+import adminEmailArticleRoutes from './routes/adminEmailArticleRoutes.js';
+
+
 
 
 
@@ -66,6 +70,8 @@ app.use('/api/spacex', spacexRoutes);
 app.use('/api/gmail', gmailRoutes);
 app.use('/api/admin/email-contexts', emailContextsRoutes);
 app.use('/api/scam-posts', scamPostRoutes);
+app.use('/api/admin/email-entries', adminEmailEntryRoutes);
+app.use('/api/admin/email-articles', adminEmailArticleRoutes);
 
 import './jobs/spaceXJob.js';
 

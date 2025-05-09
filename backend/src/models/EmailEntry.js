@@ -7,6 +7,9 @@ const EmailEntrySchema = new mongoose.Schema({
   snippet: String,
   html: String,
   context: String,
+  reviewed: { type: Boolean, default: false },
+  approvedForPost: { type: Boolean, default: false },
+  postCreated: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
 });
 

@@ -136,7 +136,11 @@ SOCIAL: ...
 
 export async function processLatestPendingEmail() {
   console.log('🔁 Buscando el último email pendiente del contexto "ciberestafas"...');
-  const latest = await EmailEntry.findOne({ context: 'ciberestafas' }).sort({ date: -1 });
+  const latest = await EmailEntry.findOne({
+    context: 'ciberestafas',
+    approvedForPost: true,
+    postCreated: false
+  }).sort({ date: -1 });
 
   if (!latest) {
     console.log('⚠️ No se encontró ningún email con contexto "ciberestafas".');
@@ -149,5 +153,10 @@ export async function processLatestPendingEmail() {
     return null;
   }
 
-  return await processEmailToPost(latest);
+  const result = await processEmailToPost(latest);
+
+  latest.postCreated = true;
+  await latest.save();
+
+  return result;
 }
