@@ -1,5 +1,5 @@
 import express from 'express';
-import { getResources, createResource, deleteResource, updateResource } from '../controllers/resourceLibraryController.js';
+import { getResources, createResource, deleteResource, updateResource, getResourceStatsPerCategory  } from '../controllers/resourceLibraryController.js';
 import { protect, admin } from '../middlewares/authMiddleware.js'; // Importamos los middlewares
 
 const router = express.Router();
@@ -14,6 +14,9 @@ router.post('/', protect, admin, createResource);
 router.delete('/:id', protect, admin, deleteResource);
 
 router.put('/:id', protect, admin, updateResource);
+
+// 👇 nueva ruta para estadísticas
+router.get('/stats/per-category', getResourceStatsPerCategory);
 
 
 export default router;

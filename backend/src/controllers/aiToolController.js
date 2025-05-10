@@ -91,3 +91,31 @@ export const deleteAiTool = async (req, res) => {
     res.status(500).json({ message: 'Error al eliminar la herramienta' });
   }
 };
+
+
+// @desc    Obtener número de herramientas IA por categoría
+// @route   GET /api/ai-tools/stats/per-category
+// @access  Público
+export const getAiToolStatsPerCategory = async (req, res) => {
+  try {
+    const stats = await AiTool.aggregate([
+      {
+        $group: {
+          _id: '$tipo', // ✅ agrupamos por el campo correcto
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      }
+    ]);
+    
+    res.json(stats.map(item => ({
+      tipo: item._id,
+      count: item.count
+    })));
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener estadísticas de herramientas IA' });
+  }
+};
+

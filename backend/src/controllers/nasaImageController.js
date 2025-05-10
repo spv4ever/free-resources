@@ -9,6 +9,19 @@ export const getNasaImages = async (req, res) => {
   }
 };
 
+export const getLatestNasaImage = async (req, res) => {
+  try {
+    const image = await NasaImage.findOne({ media_type: 'image' }).sort({ fecha: -1 });
+
+    if (!image) return res.status(404).json({ message: 'No hay imágenes disponibles' });
+
+    res.json(image);
+  } catch (err) {
+    console.error('Error al obtener la última imagen:', err);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
 export const createNasaImage = async (req, res) => {
   try {
     const nueva = new NasaImage(req.body);

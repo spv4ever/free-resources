@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import { updateSpacexLaunches } from './controllers/spacexController.js';
+import { updateSpacexLaunches } from './src/controllers/spacexController.js';
 
 dotenv.config(); // Carga tu .env
 

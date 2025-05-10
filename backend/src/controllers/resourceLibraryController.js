@@ -85,3 +85,28 @@ export const updateResource = async (req, res) => {
     res.status(500).json({ message: 'Error al actualizar recurso' });
   }
 };
+
+// @desc    Obtener número de recursos por categoría
+// @route   GET /api/resources/stats/per-category
+// @access  Público
+export const getResourceStatsPerCategory = async (req, res) => {
+  try {
+    const stats = await ResourceLibrary.aggregate([
+      {
+        $group: {
+          _id: '$category',
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      }
+    ]);
+    res.json(stats.map(item => ({
+      category: item._id,
+      count: item.count
+    })));
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener estadísticas de recursos por categoría' });
+  }
+};

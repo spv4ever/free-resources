@@ -5,6 +5,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import NasaCard from '../components/NasaCard';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -15,6 +16,15 @@ function HomePage() {
   const [posts, setPosts] = useState([]);
   const [launches, setLaunches] = useState([]);
   const navigate = useNavigate();
+  const [aiStats, setAiStats] = useState([]);
+
+  const [categoryStats, setCategoryStats] = useState([]);
+
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_API_URL}/api/resources/stats/per-category`)
+      .then(res => setCategoryStats(res.data))
+      .catch(() => setCategoryStats([]));
+  }, []);
 
   useEffect(() => {
     window.atOptions = {
@@ -53,6 +63,15 @@ function HomePage() {
       .catch(() => setLaunches([]));
   }, []);
 
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_API_URL}/api/aitools/stats/per-category`)
+      .then(res => {
+        console.log("🔍 aiStats response:", res.data);
+        setAiStats(res.data);
+      })
+      .catch(() => setAiStats([]));
+  }, []);
+
   return (
     <div className="homepage-content">
       <h1 className="homepage-title">Bienvenido a KeikoDev Recursos Gratis</h1>
@@ -80,7 +99,32 @@ function HomePage() {
             ))}
           </ul>
         </div>
+        <div className="card-home" onClick={() => navigate('/resources')}>
+          <h2>📚 Recursos por Categoría</h2>
+          <ul>
+            {categoryStats.map(stat => (
+              <li key={stat.category}>
+                {stat.category}: {stat.count} recursos
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="card-home" onClick={() => navigate('/ai-links')}>
+          <h2>🧠 Herramientas de IA por Categoría</h2>
+          <ul>
+          {aiStats.map(stat => (
+            <li key={stat.tipo}>
+              {stat.tipo
+                ? stat.tipo.charAt(0).toUpperCase() + stat.tipo.slice(1)
+                : 'Tipo desconocido'}: {stat.count} herramientas
+            </li>
+          ))}
+          </ul>
+        </div>
+        <NasaCard />
       </div>
+      
+      
 
       <div ref={adRef1} style={{ textAlign: 'center', margin: '2rem auto' }} />
       <div ref={adRef2} style={{ textAlign: 'center', margin: '2rem auto' }} />

@@ -28,6 +28,7 @@ import ScamPostsPage from './pages/ScamPostsPage';
 import ScamPostDetailPage from './pages/ScamPostDetailPage';
 import EmailReviewPage from './pages/admin/EmailReviewPage';
 import ArticleReviewPage from './pages/ArticleReviewPage.jsx';
+import HerramientasIA from './pages/HerramientasIA';
 
 
 
@@ -72,6 +73,7 @@ function App() {
             <Route path="/spacex" element={<SpaceXPage />} />
             <Route path="/scam-posts" element={<ScamPostsPage />} />
             <Route path="/scam-posts/:id" element={<ScamPostDetailPage />} />
+            <Route path="/herramientas-ia" element={<HerramientasIA />} />
             
           </Route>
           

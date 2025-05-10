@@ -24,6 +24,9 @@ import emailContextsRoutes from './routes/emailContexts.js';
 import scamPostRoutes from './routes/scamPostRoutes.js';
 import adminEmailEntryRoutes from './routes/adminEmailEntryRoutes.js';
 import adminEmailArticleRoutes from './routes/adminEmailArticleRoutes.js';
+import aiDetectorRoutes from './routes/aiDetectorRoutes.js';
+
+
 
 
 
@@ -72,6 +75,8 @@ app.use('/api/admin/email-contexts', emailContextsRoutes);
 app.use('/api/scam-posts', scamPostRoutes);
 app.use('/api/admin/email-entries', adminEmailEntryRoutes);
 app.use('/api/admin/email-articles', adminEmailArticleRoutes);
+app.use('/api/ai', aiDetectorRoutes);
+
 
 import './jobs/spaceXJob.js';
 

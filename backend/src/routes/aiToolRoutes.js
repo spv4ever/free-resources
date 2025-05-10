@@ -3,7 +3,8 @@ import {
   getAiTools,
   createAiTool,
   updateAiTool,
-  deleteAiTool
+  deleteAiTool,
+  getAiToolStatsPerCategory 
 } from '../controllers/aiToolController.js';
 import { protect, admin } from '../middlewares/authMiddleware.js';
 
@@ -20,5 +21,7 @@ router.put('/:id', protect, admin, updateAiTool);
 
 // Eliminar una herramienta (solo admin)
 router.delete('/:id', protect, admin, deleteAiTool);
+
+router.get('/stats/per-category', getAiToolStatsPerCategory);
 
 export default router;

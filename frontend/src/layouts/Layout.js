@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { FaBook, FaRobot, FaYoutube, FaFileAlt, FaImage, FaGraduationCap, FaRocket, FaShieldVirus } from 'react-icons/fa';
 import '../styles/HomePage.css';
+
 //import '../styles/Layout.css'; // nuevo archivo opcional para estilos de layout
 
 const sections = [
@@ -19,6 +20,12 @@ const sections = [
     path: '/spacex',
     icon: <FaRocket />
   },
+  // {
+  //   title: 'Detector IA',
+  //   description: 'Analiza si un texto ha sido generado por inteligencia artificial.',
+  //   path: '/herramientas-ia',
+  //   icon: <FaRobot />
+  // },  // ✅ coma aquí
   {
     title: 'CiberEstafas',
     description: 'Todo lo relacionado Noticias sobre ciberestafas.',
