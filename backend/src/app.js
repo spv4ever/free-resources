@@ -73,7 +73,6 @@ app.use('/api/training-resources', trainingResourceRoutes);
 app.use('/api/short-categories', shortCategoryRoutes);
 app.use('/api/viral-shorts', viralShortRoutes);
 app.use('/api/spacex', spacexRoutes);
-app.use('/api/spacex', spacexRoutes);
 app.use('/api/gmail', gmailRoutes);
 app.use('/api/admin/email-contexts', emailContextsRoutes);
 app.use('/api/scam-posts', scamPostRoutes);
@@ -81,6 +80,16 @@ app.use('/api/admin/email-entries', adminEmailEntryRoutes);
 app.use('/api/admin/email-articles', adminEmailArticleRoutes);
 app.use('/api/ai', aiDetectorRoutes);
 app.use('/api/upload', uploadRoutes);
+
+app.use((req, res, next) => {
+  try {
+    decodeURIComponent(req.path); // si viene ruta malformada la pilla aquí
+    next();
+  } catch (err) {
+    console.error('❌ Ruta malformada detectada:', req.path);
+    res.status(400).send('Ruta no válida');
+  }
+});
 
 
 import './jobs/spaceXJob.js';
@@ -109,14 +118,14 @@ app.get('/', (req, res) => {
     res.send('🚀 API de KeikoDev activa');
   });
 
-// Si estamos en producción, servir frontend
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
+// // Si estamos en producción, servir frontend
+// if (process.env.NODE_ENV === 'production') {
+//   app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'));
-  });
-}
+//   app.get('*', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'));
+//   });
+// }
 // Middleware de ruta no encontrada
 app.use(notFound);
 
