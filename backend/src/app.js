@@ -32,17 +32,17 @@ import aiDetectorRoutes from './routes/aiDetectorRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 
 
-
-
-
-
-
-
-
-
  // 👈 Importa las rutas de autenticación
 
 dotenv.config();
+
+// 🔍 Diagnóstico de variables peligrosas en entorno Render
+console.log('🔍 Verificando variables de entorno cargadas:');
+Object.entries(process.env).forEach(([key, value]) => {
+  if (typeof value === 'string' && value.match(/^\/?:|\/api\/:|\/:\//)) {
+    console.error(`❌ Variable de entorno sospechosa: ${key} = ${value}`);
+  }
+});
 
 const app = express();
 
@@ -51,7 +51,12 @@ app.use(cors({
     credentials: true
   }));
   
-
+  app.use((req, res, next) => {
+    if (req.originalUrl.startsWith('/socket.io')) {
+      return res.status(204).end();
+    }
+    next();
+  });
 // Middlewares
 app.use(cors());
 app.use(helmet());
@@ -81,15 +86,15 @@ app.use('/api/admin/email-articles', adminEmailArticleRoutes);
 app.use('/api/ai', aiDetectorRoutes);
 app.use('/api/upload', uploadRoutes);
 
-app.use((req, res, next) => {
-  try {
-    decodeURIComponent(req.path); // si viene ruta malformada la pilla aquí
-    next();
-  } catch (err) {
-    console.error('❌ Ruta malformada detectada:', req.path);
-    res.status(400).send('Ruta no válida');
-  }
-});
+// app.use((req, res, next) => {
+//   try {
+//     decodeURIComponent(req.path); // si viene ruta malformada la pilla aquí
+//     next();
+//   } catch (err) {
+//     console.error('❌ Ruta malformada detectada:', req.path);
+//     res.status(400).send('Ruta no válida');
+//   }
+// });
 
 
 import './jobs/spaceXJob.js';

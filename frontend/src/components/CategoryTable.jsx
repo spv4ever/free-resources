@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/CategoryTable.css'; // Asegúrate de tener el CSS correcto para la tabla
+import ImageUploadModal from './ImageUploadModal';
 
 const CategoryTable = () => {
   const [categories, setCategories] = useState([]);
@@ -7,6 +8,8 @@ const CategoryTable = () => {
   const [updatedCategory, setUpdatedCategory] = useState({ name: '', description: '', imageUrl: '' });
   const [newCategory, setNewCategory] = useState({ name: '', description: '', imageUrl: '' }); // Estado para agregar una nueva categoría
   const [showAddForm, setShowAddForm] = useState(false); // Estado para mostrar/ocultar el formulario de agregar
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [imageContext, setImageContext] = useState(null);
 
   useEffect(() => {
     fetchCategories();
@@ -133,13 +136,24 @@ const CategoryTable = () => {
             onChange={handleAddChange}
             placeholder="Descripción"
           />
-          <input
-            type="text"
-            name="imageUrl"
-            value={newCategory.imageUrl}
-            onChange={handleAddChange}
-            placeholder="URL de la imagen"
-          />
+          {newCategory.imageUrl && (
+              <img
+                src={newCategory.imageUrl}
+                alt="Vista previa"
+                style={{ width: '100px', height: 'auto', borderRadius: '6px', marginBottom: '0.5rem' }}
+              />
+            )}
+
+            <button
+              type="button"
+              onClick={() => {
+                setShowImageModal(true);
+                setImageContext('new');
+              }}
+              className="btn-upload"
+            >
+              📷 Subir imagen
+            </button>
           <button onClick={handleAddCategory} className="btn-add">
             Agregar
           </button>
@@ -195,14 +209,37 @@ const CategoryTable = () => {
               </td>
               <td>
                 {editingCategory === category._id ? (
-                  <input 
-                    type="text" 
-                    name="imageUrl" 
-                    value={updatedCategory.imageUrl} 
-                    onChange={handleChange} 
-                  />
+                  <>
+                    {category.imageUrl && (
+                      <img
+                        src={updatedCategory.imageUrl}
+                        alt="Preview"
+                        style={{
+                          width: '60px',
+                          height: '60px',
+                          objectFit: 'cover',
+                          borderRadius: '6px',
+                          marginBottom: '0.5rem'
+                        }}
+                      />
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowImageModal(true);
+                        setImageContext(category._id);
+                      }}
+                      className="btn-upload"
+                    >
+                      📷 Cambiar imagen
+                    </button>
+                  </>
                 ) : (
-                  category.imageUrl
+                  <img
+                    src={category.imageUrl || '/images/default.jpg'}
+                    alt={category.name}
+                    className="category-image"
+                  />
                 )}
               </td>
               
@@ -224,6 +261,18 @@ const CategoryTable = () => {
           ))}
         </tbody>
       </table>
+      {showImageModal && (
+        <ImageUploadModal
+          onClose={() => setShowImageModal(false)}
+          onUpload={(url) => {
+            if (imageContext === 'new') {
+              setNewCategory((prev) => ({ ...prev, imageUrl: url }));
+            } else {
+              setUpdatedCategory((prev) => ({ ...prev, imageUrl: url }));
+            }
+          }}
+        />
+      )}
     </div>
   );
 };

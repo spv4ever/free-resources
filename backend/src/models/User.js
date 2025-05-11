@@ -25,7 +25,10 @@ const userSchema = new mongoose.Schema({
   verificationToken: String,
   resetToken: String,
   resetTokenExpires: Date
+}, {
+  timestamps: true // ✅ Esto añade automáticamente createdAt y updatedAt
 });
+
 
 // Encriptar la contraseña antes de guardarla
 userSchema.pre('save', async function(next) {

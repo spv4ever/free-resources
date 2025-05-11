@@ -1,6 +1,7 @@
 const notFound = (req, res, next) => {
   if (req.originalUrl.startsWith('/socket.io')) {
-    return res.status(204).end(); // Devuelve sin error ni contenido
+    // Silenciar siempre las peticiones a /socket.io
+    return res.status(204).end(); // 204 = No Content
   }
 
   const error = new Error(`Ruta no encontrada: ${req.originalUrl}`);

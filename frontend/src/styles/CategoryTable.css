@@ -228,3 +228,113 @@
 }
 
 
+.table-container {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  color: #fff;
+}
+
+.category-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.category-table thead {
+  background-color: #2c2c2c;
+}
+
+.category-table th,
+.category-table td {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #444;
+  vertical-align: middle;
+}
+
+.category-table th {
+  color: #ccc;
+  font-weight: 600;
+}
+
+.category-table td {
+  color: #eee;
+}
+
+.category-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.add-button {
+  margin-bottom: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.add-button:hover {
+  background-color: #0056b3;
+}
+
+.add-form {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.add-form input {
+  flex: 1 1 200px;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #888;
+  background-color: #1a1a1a;
+  color: #fff;
+}
+
+.btn-save,
+.btn-edit,
+.btn-delete,
+.btn-add,
+.btn-cancel {
+  background-color: #007bff;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.9rem;
+  margin-right: 0.3rem;
+  cursor: pointer;
+}
+
+.btn-save:hover,
+.btn-edit:hover,
+.btn-add:hover {
+  background-color: #0056b3;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+}
+
+.btn-delete:hover {
+  background-color: #b52a37;
+}
+
+.btn-cancel {
+  background-color: #6c757d;
+}
+
+.btn-cancel:hover {
+  background-color: #5a6268;
+}

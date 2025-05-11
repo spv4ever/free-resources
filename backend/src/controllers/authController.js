@@ -163,3 +163,32 @@ export const forgotPassword = async (req, res) => {
     }
   };
   
+  export const getAllUsers = async (req, res) => {
+    try {
+      const users = await User.find().sort({ createdAt: -1 }).select('-password');
+      res.json(users);
+    } catch (err) {
+      console.error('Error al obtener usuarios:', err);
+      res.status(500).json({ message: 'Error al obtener los usuarios' });
+    }
+  };
+
+  export const updateUserByAdmin = async (req, res) => {
+    const { id } = req.params;
+    const { role, isVerified } = req.body;
+  
+    try {
+      const user = await User.findById(id);
+      if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+  
+      if (role) user.role = role;
+      if (typeof isVerified === 'boolean') user.isVerified = isVerified;
+  
+      await user.save();
+  
+      res.json({ message: 'Usuario actualizado correctamente' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error al actualizar usuario' });
+    }
+  };

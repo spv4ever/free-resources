@@ -15,11 +15,15 @@ export const uploadImage = async (req, res) => {
     const filePath = req.file.path;
 
     const result = await cloudinary.v2.uploader.upload(filePath, {
-      folder: 'recursos_free_resources'
+      folder: 'recursos_free_resources',
+      width: 800,
+      crop: 'limit',     // 🔒 mantiene aspecto ratio, no recorta
+      quality: 'auto',   // 🧠 compresión inteligente
+      overwrite: true,
+      resource_type: 'image'
     });
 
-    // Borra el archivo temporal
-    fs.unlinkSync(filePath);
+    fs.unlinkSync(filePath); // elimina temporal local
 
     res.json({ url: result.secure_url });
   } catch (error) {

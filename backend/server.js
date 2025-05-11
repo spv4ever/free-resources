@@ -20,7 +20,25 @@ const startServer = async () => {
 
     app.listen(PORT, () => {
       console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-      
+    
+      // Verificar rutas registradas
+      setTimeout(() => {
+        try {
+          if (app._router?.stack) {
+            console.log('📡 Rutas registradas en Express:');
+            app._router.stack
+              .filter(r => r.route)
+              .forEach(r => {
+                const methods = Object.keys(r.route.methods).join(', ').toUpperCase();
+                console.log(`→ [${methods}] ${r.route.path}`);
+              });
+          } else {
+            console.warn('⚠️ No se pudo acceder al router para listar las rutas');
+          }
+        } catch (err) {
+          console.error('❌ Error mostrando rutas registradas:', err.message);
+        }
+      }, 100); // esperamos a que Express termine de registrar todo
     });
   } catch (error) {
     console.error('❌ Error de conexión a MongoDB', error);

@@ -133,6 +133,11 @@ function Navbar() {
                 Buscar imágenes faltantes
               </Link>
             </li>
+            {user?.role === 'admin' && (
+              <li>
+                <Link to="/admin/users">👥 Gestionar usuarios</Link>
+              </li>
+            )}
             <li><Link to="/admin/training" onClick={toggleSidebar}>Recursos de Formación</Link></li>
             <li><Link to="/admin/short-categories">Categorías de Shorts</Link></li>
             <li><Link to="/admin/sync-shorts">Sincronizar Shorts Virales</Link></li>

@@ -1,6 +1,8 @@
 import express from 'express';
 import { fetchTodayImage } from '../jobs/fetchNasaImage.js';
 import { protect, admin } from '../middlewares/authMiddleware.js';
+import { getAllUsers } from '../controllers/authController.js'; // o donde tengas getAllUsers
+import { updateUserByAdmin } from '../controllers/authController.js';
 
 const router = express.Router();
 
@@ -32,5 +34,8 @@ router.post('/fetch-nasa-month', protect, admin, async (req, res) => {
     res.status(500).json({ message: 'Error al buscar imágenes del mes' });
   }
 });
+
+router.get('/users', protect, admin, getAllUsers);
+router.put('/users/:id', protect, admin, updateUserByAdmin);
 
 export default router;

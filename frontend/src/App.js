@@ -34,6 +34,8 @@ import VerifySuccessPage from './pages/VerifySuccessPage';
 import RegisterPage from './pages/RegisterPage';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import AdminUsersPage from './pages/AdminUsersPage';
+
 
 
 function App() {
@@ -59,6 +61,7 @@ function App() {
             <Route path="/admin/email-contexts" element={<AdminRoute><EmailContextAdmin /></AdminRoute>} />
             <Route path="/admin/email-review" element={<AdminRoute><EmailReviewPage /></AdminRoute>} />
             <Route path="/admin/email-articles" element={<AdminRoute><ArticleReviewPage /></AdminRoute>} />
+            <Route path="/admin/users" element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
             <Route path="category/:categoryName" element={<CategoryResourcesPage />} />
             <Route path="/media" element={<MediaPage />} />
             <Route path="/media/fotos-universo" element={<FotosUniversoPage />} />
