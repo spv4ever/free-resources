@@ -34,15 +34,38 @@ const ScamPostDetailPage = () => {
             }
 
             // Párrafo normal
-            return <p key={block.slice(0, 10)}>{block.trim()}</p>;
+            return (
+              <p key={block.slice(0, 10)}>
+                {block.trim().split(/(https?:\/\/[^\s]+)/g).map((part, index) =>
+                  part.match(/^https?:\/\/[^\s]+$/) ? (
+                    <a
+                      key={`link-${index}`}
+                      href={part}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: '#00bfff' }}
+                    >
+                      📎 Enlace
+                    </a>
+                  ) : (
+                    part
+                  )
+                )}
+              </p>
+            );
         })}
         </div>
         <hr style={{ margin: '2rem 0', borderColor: '#333' }} />
         <p style={{ fontSize: '0.9rem', color: '#aaa', textAlign: 'center' }}>
         📝 Publicado por <strong>@keikodev.es</strong><br />
-        Fuente original: <a href={post.fuente} target="_blank" rel="noopener noreferrer" style={{ color: '#00bfff' }}>
-            {post.fuente}
-        </a>
+        Fuente original: <a
+            href={post.fuente}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#00bfff' }}
+          >
+            📎 Fuente original
+          </a>
         </p>
     </div>
   );

@@ -29,13 +29,11 @@ import ScamPostDetailPage from './pages/ScamPostDetailPage';
 import EmailReviewPage from './pages/admin/EmailReviewPage';
 import ArticleReviewPage from './pages/ArticleReviewPage.jsx';
 import HerramientasIA from './pages/HerramientasIA';
-
-
-
-
-
-
-
+import EmailVerificationHandler from './pages/EmailVerificationHandler';
+import VerifySuccessPage from './pages/VerifySuccessPage';
+import RegisterPage from './pages/RegisterPage';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 
 function App() {
@@ -74,12 +72,18 @@ function App() {
             <Route path="/scam-posts" element={<ScamPostsPage />} />
             <Route path="/scam-posts/:id" element={<ScamPostDetailPage />} />
             <Route path="/herramientas-ia" element={<HerramientasIA />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/verify-email" element={<EmailVerificationHandler />} />
+            <Route path="/verify-success" element={<VerifySuccessPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             
           </Route>
+          <Route path="/login" element={<LoginPage />} />
           
 
           {/* Ruta fuera del layout */}
-          <Route path="/login" element={<LoginPage />} />
+         
         </Routes>
         
       </Router>

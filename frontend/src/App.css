@@ -5,7 +5,10 @@
 body {
   font-family: 'Inter', sans-serif;
 }
-
+a {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -31,6 +34,7 @@ body {
 .App-link {
   color: #61dafb;
 }
+
 
 @keyframes App-logo-spin {
   from {

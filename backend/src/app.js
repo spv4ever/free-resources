@@ -3,6 +3,10 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import resourceLibraryRoutes from './routes/resourceLibraryRoutes.js';
 import errorHandler from './middlewares/errorMiddleware.js';
 import notFound from './middlewares/notFoundMiddleware.js';
@@ -104,6 +108,15 @@ setInterval(() => {
 app.get('/', (req, res) => {
     res.send('🚀 API de KeikoDev activa');
   });
+
+// Si estamos en producción, servir frontend
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'));
+  });
+}
 // Middleware de ruta no encontrada
 app.use(notFound);
 

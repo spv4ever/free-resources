@@ -1,0 +1,37 @@
+.verify-container {
+    max-width: 500px;
+    margin: 4rem auto;
+    background-color: #1f1f1f;
+    color: #f0f0f0;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  }
+  
+  .verify-container h2 {
+    color: #4caf50;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+  
+  .verify-container p {
+    margin-bottom: 2rem;
+    font-size: 1rem;
+  }
+  
+  .verify-container button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    background-color: #4caf50;
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  .verify-container button:hover {
+    background-color: #43a047;
+  }
+  

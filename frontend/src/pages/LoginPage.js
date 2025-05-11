@@ -101,6 +101,14 @@ function LoginPage() {
           </div>
           {errorMessage && <p className="error-message">{errorMessage}</p>}
           <button type="submit" className="login-btn">Entrar</button>
+          <div className="login-links">
+            <p>
+              <a href="/forgot-password">¿Olvidaste tu contraseña?</a>
+            </p>
+            <p>
+              ¿No tienes cuenta? <a href="/register">Registrarse como nuevo usuario</a>
+            </p>
+          </div>
         </form>
       </div>
     </div>

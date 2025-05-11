@@ -84,22 +84,19 @@ function CategoryResourcesPage() {
   // };
   
   const handleSaveNew = async () => {
-    const slugifiedTitle = newResource.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-    
-    const generatedImageUrl = `/images/categories/${categoryName.toLowerCase()}/${slugifiedTitle}.jpg`;
-  
-    const resourceToSave = {
-      ...newResource,
-      imageUrl: generatedImageUrl
-    };
-  
     try {
+      const resourceToSave = {
+        ...newResource,
+        category: categoryName,
+      };
+  
       const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/resources`, resourceToSave, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       });
+  
       setResources([res.data, ...resources]);
       setNewResource(null);
     } catch (error) {
@@ -118,16 +115,10 @@ function CategoryResourcesPage() {
     setEditFormData({ ...resource });
   };
   const handleEditSave = async () => {
-    const slugifiedTitle = editFormData.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-    const generatedImageUrl = `/images/categories/${categoryName.toLowerCase()}/${slugifiedTitle}.jpg`;
-  
     try {
       const res = await axios.put(
         `${process.env.REACT_APP_API_URL}/api/resources/${editResourceId}`,
-        {
-          ...editFormData,
-          imageUrl: generatedImageUrl, // fuerza la generación correcta
-        },
+        editFormData,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -145,6 +136,7 @@ function CategoryResourcesPage() {
       alert('No se pudo guardar el recurso.');
     }
   };
+  
   
   const handleEditCancel = () => {
     setEditResourceId(null);

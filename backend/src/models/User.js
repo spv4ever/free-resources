@@ -17,7 +17,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['free', 'pro', 'admin'],
     default: 'free'
-  }
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  verificationToken: String,
+  resetToken: String,
+  resetTokenExpires: Date
 });
 
 // Encriptar la contraseña antes de guardarla

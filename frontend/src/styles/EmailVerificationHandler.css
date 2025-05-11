@@ -1,0 +1,41 @@
+.email-verify-handler {
+    max-width: 500px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background-color: #1f1f1f;
+    color: #f0f0f0;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.2rem;
+  }
+  
+  .success {
+    color: #4caf50;
+    font-weight: bold;
+  }
+  
+  .error {
+    color: #e53935;
+    font-weight: bold;
+  }
+  
+
+  .spinner {
+    border: 6px solid #444;
+    border-top: 6px solid #4caf50;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem auto;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .email-verify-handler p {
+    font-size: 1.1rem;
+  }
+  
