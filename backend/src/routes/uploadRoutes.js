@@ -1,0 +1,13 @@
+import express from 'express';
+import multer from 'multer';
+import { uploadImage } from '../controllers/uploadController.js';
+
+const router = express.Router();
+
+// Multer para recibir archivos del frontend
+const storage = multer.diskStorage({});
+const upload = multer({ storage });
+
+router.post('/image', upload.single('image'), uploadImage);
+
+export default router;

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useUser } from '../context/UserContext';
 import { FaDownload, FaEdit, FaTrash, FaSave, FaTimes   } from 'react-icons/fa';
 import AdBanner from '../components/AdBanner';
+import ImageUploadModal from '../components/ImageUploadModal'; // ajusta la ruta si es necesario
 
 
 function CategoryResourcesPage() {
@@ -20,6 +21,8 @@ function CategoryResourcesPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 12; // Puedes cambiar a 10 si prefieres
     const [zoomImage, setZoomImage] = useState(null);
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [imageContext, setImageContext] = useState(null); // 'new' o editResourceId
 
 
 //   console.log('user:', user);
@@ -241,6 +244,8 @@ function CategoryResourcesPage() {
       </div>
       
       {isAdmin && !newResource && (
+
+        
       <button onClick={() =>
         setNewResource({
           title: '',
@@ -252,6 +257,8 @@ function CategoryResourcesPage() {
       } className="add-resource-button">
         ➕ Añadir recurso
       </button>
+
+
     )}
     <div className="resource-grid">
       {newResource && (
@@ -259,7 +266,25 @@ function CategoryResourcesPage() {
           <input type="text" placeholder="Título" value={newResource.title} onChange={(e) => setNewResource({ ...newResource, title: e.target.value })} />
           <input type="text" placeholder="Descripción" value={newResource.description} onChange={(e) => setNewResource({ ...newResource, description: e.target.value })} />
           {/* <input type="text" placeholder="URL imagen" value={newResource.imageUrl} onChange={(e) => setNewResource({ ...newResource, imageUrl: e.target.value })} /> */}
-          <input type="text" placeholder="URL descarga" value={newResource.downloadUrl} onChange={(e) => setNewResource({ ...newResource, downloadUrl: e.target.value })} />
+          {/* Botón para subir imagen y previsualización */}
+          <input
+            type="text"
+            placeholder="URL descarga"
+            value={newResource.downloadUrl}
+            onChange={(e) => setNewResource({ ...newResource, downloadUrl: e.target.value })}
+          />
+          <button onClick={() => { setShowImageModal(true); setImageContext('new'); }}>
+            📷 Elegir imagen
+          </button>
+          {newResource?.imageUrl && (
+            <img
+              src={newResource.imageUrl}
+              alt="Preview"
+              style={{ width: '100px', marginTop: '10px', borderRadius: '4px' }}
+            />
+          )}
+
+          
           <div className="resource-actions">
             <button onClick={handleSaveNew}><FaSave /></button>
             <button onClick={handleCancelNew}><FaTimes /></button>
@@ -273,15 +298,37 @@ function CategoryResourcesPage() {
             <input type="text" name="title" value={editFormData.title} onChange={handleEditChange} />
             <input type="text" name="description" value={editFormData.description} onChange={handleEditChange} />
             <input
-              type="text"
-              name="imageUrl"
-              value={editFormData.imageUrl}
-              // disabled
-              // readOnly
-              title="La URL de la imagen se genera automáticamente y no se puede editar"
-              onChange={handleEditChange}
-            />
-            <input type="text" name="downloadUrl" value={editFormData.downloadUrl} onChange={handleEditChange} />
+                type="text"
+                name="downloadUrl"
+                value={editFormData.downloadUrl}
+                onChange={handleEditChange}
+              />
+            {editFormData?.imageUrl && (
+              <img
+                src={editFormData.imageUrl}
+                alt="Preview"
+                style={{
+                  width: '100%',
+                  maxHeight: '140px',
+                  objectFit: 'cover',
+                  borderRadius: '6px',
+                  marginBottom: '0.6rem'
+                }}
+              />
+            )}
+
+            <button
+              onClick={() => {
+                setShowImageModal(true);
+                setImageContext(r._id);
+              }}
+            >
+              📷 Cambiar imagen
+            </button>
+
+
+              
+
             <div className="resource-actions">
               <button onClick={handleEditSave}><FaSave /></button>
               <button onClick={handleEditCancel}><FaTimes /></button>
@@ -340,13 +387,26 @@ function CategoryResourcesPage() {
     ))}
 
     <button onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}>
-      Siguiente →
-    </button>
-    <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
-      Última »
-    </button>
-  </div>
-)}
+            Siguiente →
+          </button>
+          <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>
+            Última »
+          </button>
+        </div>
+      )}
+      {showImageModal && (
+        <ImageUploadModal
+          onClose={() => setShowImageModal(false)}
+          onUpload={(url) => {
+            if (imageContext === 'new') {
+              setNewResource((prev) => ({ ...prev, imageUrl: url }));
+            } else {
+              setEditFormData((prev) => ({ ...prev, imageUrl: url }));
+            }
+          }}
+        />
+      )}
+
 
     </div>
   

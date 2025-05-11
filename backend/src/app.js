@@ -25,7 +25,7 @@ import scamPostRoutes from './routes/scamPostRoutes.js';
 import adminEmailEntryRoutes from './routes/adminEmailEntryRoutes.js';
 import adminEmailArticleRoutes from './routes/adminEmailArticleRoutes.js';
 import aiDetectorRoutes from './routes/aiDetectorRoutes.js';
-
+import uploadRoutes from './routes/uploadRoutes.js';
 
 
 
@@ -76,6 +76,7 @@ app.use('/api/scam-posts', scamPostRoutes);
 app.use('/api/admin/email-entries', adminEmailEntryRoutes);
 app.use('/api/admin/email-articles', adminEmailArticleRoutes);
 app.use('/api/ai', aiDetectorRoutes);
+app.use('/api/upload', uploadRoutes);
 
 
 import './jobs/spaceXJob.js';

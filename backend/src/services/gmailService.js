@@ -1,34 +1,19 @@
 import { google } from 'googleapis';
-import fs from 'fs/promises';
-import os from 'os';
-import path from 'path';
 import EmailEntry from '../models/EmailEntry.js';
-import { saveArticlesFromEmail } from './extractArticlesFromEmail.js'; // 👈 Asegúrate de importar esto arriba
-
-const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
-
-async function writeTempFile(name, base64Content) {
-  const filePath = path.join(os.tmpdir(), name);
-  await fs.writeFile(filePath, Buffer.from(base64Content, 'base64'));
-  return filePath;
-}
+import { saveArticlesFromEmail } from './extractArticlesFromEmail.js';
 
 export async function authorizeGmail() {
-  console.log('🔎 GMAIL_CREDENTIALS_BASE64:', typeof process.env.GMAIL_CREDENTIALS_BASE64);
-  console.log('🔎 GMAIL_TOKEN_BASE64:', typeof process.env.GMAIL_TOKEN_BASE64);
-  if (!process.env.GMAIL_CREDENTIALS_BASE64 || !process.env.GMAIL_TOKEN_BASE64) {
-  throw new Error('❌ Falta alguna variable de entorno Gmail (credenciales o token)');
-}
-  const credentialsPath = await writeTempFile('credentials.json', process.env.GMAIL_CREDENTIALS_BASE64);
-  const tokenPath = await writeTempFile('gmail-token.json', process.env.GMAIL_TOKEN_BASE64);
+  const refresh_token = process.env.GMAIL_REFRESH_TOKEN;
+  const client_id = process.env.GMAIL_CLIENT_ID;
+  const client_secret = process.env.GMAIL_CLIENT_SECRET;
+  const redirect_uri = process.env.GMAIL_REDIRECT_URI;
 
-  const content = await fs.readFile(credentialsPath);
-  const credentials = JSON.parse(content);
-  const { client_secret, client_id, redirect_uris } = credentials.installed;
-  const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+  if (!refresh_token || !client_id || !client_secret || !redirect_uri) {
+    throw new Error('❌ Faltan variables de entorno necesarias para Gmail OAuth');
+  }
 
-  const token = await fs.readFile(tokenPath);
-  oAuth2Client.setCredentials(JSON.parse(token));
+  const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uri);
+  oAuth2Client.setCredentials({ refresh_token });
 
   return oAuth2Client;
 }
@@ -83,7 +68,7 @@ export async function importEmails({ searchTerm, context }) {
     const exists = await EmailEntry.findOne({ messageId: email.messageId });
     if (!exists) {
       const nuevoEmail = await EmailEntry.create({ ...email, context });
-      await saveArticlesFromEmail(nuevoEmail); // 👈 Aquí se extraen y guardan las noticias individuales
+      await saveArticlesFromEmail(nuevoEmail);
       saved++;
     }
   }
