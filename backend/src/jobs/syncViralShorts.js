@@ -7,7 +7,7 @@ dotenv.config();
 
 const YT_SEARCH_API = 'https://www.googleapis.com/youtube/v3/search';
 const YT_VIDEOS_API = 'https://www.googleapis.com/youtube/v3/videos';
-const MAX_RESULTS = 10;
+const MAX_RESULTS = 30;
 
 const getYesterdayISO = () => {
   const now = new Date();

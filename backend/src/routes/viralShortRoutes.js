@@ -8,6 +8,10 @@ import {
 } from '../controllers/viralShortController.js';
 import { syncViralShorts, syncSingleCategory, } from '../jobs/syncViralShorts.js';
 
+import { getShortsByCategory } from '../controllers/viralShortController.js';
+
+
+
 const router = express.Router();
 
 router.get('/', getAllViralShorts);
@@ -30,5 +34,7 @@ router.post('/admin/sync-viral-shorts', protect, admin, async (req, res) => {
   });
 
 router.get('/subcategoria/:subcat', getShortsBySubcategoria);
+
+router.get('/category/:categoryId', getShortsByCategory);
 
 export default router;

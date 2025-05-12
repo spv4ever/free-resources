@@ -20,7 +20,7 @@ import TrainingAdminPage from './pages/admin/TrainingAdminPage';
 import TrainingPage from './pages/TrainingPage';
 import ShortCategoriesPage from './pages/admin/ShortCategoriesPage';
 import SyncShortsPage from './pages/admin/SyncShortsPage'; // si lo vas a separar
-import ViralShortsPage from './pages/ViralShortsPage';
+import ViralShorts from './pages/ViralShorts';
 import CorelDrawCursoPage from './pages/CorelDrawCursoPage';
 import SpaceXPage from './pages/SpaceXPage';
 import EmailContextAdmin from './components/EmailContextAdmin';
@@ -36,6 +36,8 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import AdminUsersPage from './pages/AdminUsersPage';
 import SocialPostAdmin from './components/SocialPostAdmin';
+import ViralShortsCategory from './pages/ViralShortsCategory'; // ajusta la ruta si está en otro lugar
+
 
 
 
@@ -74,7 +76,9 @@ function App() {
             <Route path="/media/videos-universo" element={<VideosUniversoPage />} />
             <Route path="/youtube-channels" element={<YouTubeChannelsPage />} />
             <Route path="/youtube-channels/:id" element={<ChannelVideosPage />} />
-            <Route path="viral-shorts" element={<ViralShortsPage />} /> {/* 👈 Nueva ruta */}
+            <Route path="viral-shorts" element={<ViralShorts />} /> {/* 👈 Nueva ruta */}
+            <Route path="/viral-shorts/:categoryId" element={<ViralShortsCategory />} />
+
             <Route path="training" element={<TrainingPage />} />
             <Route path="/curso/corel-draw" element={<CorelDrawCursoPage />} />
             <Route path="/spacex" element={<SpaceXPage />} />

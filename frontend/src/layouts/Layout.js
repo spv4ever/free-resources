@@ -11,7 +11,8 @@ const sections = [
   { title: 'Recursos', description: 'Accede a nuestra biblioteca de imágenes y recursos.', path: '/resources', icon: <FaBook /> },
   { title: 'AI Links', description: 'Lista de herramientas de inteligencia artificial.', path: '/ai-links', icon: <FaRobot /> },
   { title: 'YouTube Channels', description: 'Nuestros canales recomendados de YouTube.', path: '/youtube-channels', icon: <FaYoutube /> },
-  { title: 'Humor', description: 'Videos de humor y memes', path: '/viral-shorts', icon: <FaFileAlt /> },
+  { title: 'Videos Virales', description: 'Los mejores Shorts organizados por categoría', path: '/viral-shorts', icon: <FaFileAlt /> },
+
   { title: 'Formación', description: 'Recursos gratuitos para aprender.', path: '/training', icon: <FaGraduationCap /> },
   { title: 'MultiMedia', description: 'Imágenes del universo, los mejores vídeos, todo Multimedia', path: '/media', icon: <FaImage /> },
   {

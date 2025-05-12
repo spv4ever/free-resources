@@ -1,0 +1,55 @@
+.ai-admin-container {
+    padding: 2rem;
+    color: #fff;
+  }
+  
+  .ai-admin-title {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+  }
+  
+  .ai-admin-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .ai-admin-card {
+    background-color: #1e1e2f;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .ai-admin-card:hover {
+    transform: scale(1.03);
+  }
+  
+  .ai-admin-card h3, .ai-admin-card h4 {
+    margin: 0.5rem 0;
+  }
+  
+  .ai-admin-card p {
+    font-size: 0.9rem;
+    color: #ccc;
+  }
+  
+  .ai-admin-tag {
+    display: inline-block;
+    margin-top: 0.5rem;
+    background: #3e3e50;
+    color: #aaa;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+  }
+  
+  .ai-admin-thumbnail {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+  

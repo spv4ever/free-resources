@@ -85,3 +85,17 @@ export const getShortsBySubcategoria = async (req, res) => {
   }
 };
 
+export const getShortsByCategory = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+
+    const shorts = await ViralShort.find({ category: categoryId })
+      .populate('category', 'nombre')
+      .sort({ views: -1 });
+
+    res.json(shorts); // <-- devuelve directamente un array
+  } catch (err) {
+    console.error('❌ Error en getShortsByCategory:', err);
+    res.status(500).json({ message: 'Error al obtener shorts por categoría' });
+  }
+};
