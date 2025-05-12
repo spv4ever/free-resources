@@ -17,7 +17,7 @@ const getYesterdayISO = () => {
 
 const getLastMonthISO = () => {
     const now = new Date();
-    now.setDate(now.getDate() - 90); // 30 días atrás
+    now.setDate(now.getDate() -   5); // 30 días atrás
     return now.toISOString();
   };
 

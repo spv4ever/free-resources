@@ -35,6 +35,7 @@ import RegisterPage from './pages/RegisterPage';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import AdminUsersPage from './pages/AdminUsersPage';
+import SocialPostAdmin from './components/SocialPostAdmin';
 
 
 
@@ -62,6 +63,11 @@ function App() {
             <Route path="/admin/email-review" element={<AdminRoute><EmailReviewPage /></AdminRoute>} />
             <Route path="/admin/email-articles" element={<AdminRoute><ArticleReviewPage /></AdminRoute>} />
             <Route path="/admin/users" element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
+            {/* <Route path="/admin/social-posts" element={<AdminRoute><div>Hola soy admin</div></AdminRoute>} /> */}
+            <Route path="/admin/social-posts" element={<AdminRoute><SocialPostAdmin /></AdminRoute>} />
+            {/* <Route path="/admin/social-posts" element={<SocialPostAdmin />} /> */}
+
+            <Route path="/admin/scam-posts" element={<AdminRoute><ScamPostsPage /></AdminRoute>} />
             <Route path="category/:categoryName" element={<CategoryResourcesPage />} />
             <Route path="/media" element={<MediaPage />} />
             <Route path="/media/fotos-universo" element={<FotosUniversoPage />} />

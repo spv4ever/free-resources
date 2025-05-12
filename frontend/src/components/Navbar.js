@@ -141,6 +141,7 @@ function Navbar() {
             <li><Link to="/admin/training" onClick={toggleSidebar}>Recursos de Formación</Link></li>
             <li><Link to="/admin/short-categories">Categorías de Shorts</Link></li>
             <li><Link to="/admin/sync-shorts">Sincronizar Shorts Virales</Link></li>
+            <li><Link to="/admin/social-posts">📢 Social Posts</Link></li>
             <li>
               <Link to="/admin/email-contexts">📩 Email Contexts</Link>
               

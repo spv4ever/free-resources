@@ -10,7 +10,7 @@ export async function getAccessTokenFromRefreshToken(refreshToken) {
         grant_type: 'refresh_token',
       },
     });
-
+    console.log('🔐 Access token obtenido:', response.data.access_token);
     return response.data.access_token;
   } catch (error) {
     console.error('Error al obtener access_token:', error.response?.data || error.message);

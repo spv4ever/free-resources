@@ -30,6 +30,7 @@ import adminEmailEntryRoutes from './routes/adminEmailEntryRoutes.js';
 import adminEmailArticleRoutes from './routes/adminEmailArticleRoutes.js';
 import aiDetectorRoutes from './routes/aiDetectorRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import socialPostRoutes from './routes/socialPostRoutes.js';
 
 
  // 👈 Importa las rutas de autenticación
@@ -73,6 +74,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/aitools', aiToolRoutes);
 app.use('/api/nasa-images', nasaImageRoutes);
 app.use('/api/admin', adminToolsRoutes);
+app.use('/api/social-posts', socialPostRoutes);
 app.use('/api/youtube-channels', youtubeChannelRoutes);
 app.use('/api/training-resources', trainingResourceRoutes);
 app.use('/api/short-categories', shortCategoryRoutes);
