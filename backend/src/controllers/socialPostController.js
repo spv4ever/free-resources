@@ -77,14 +77,14 @@ function generarTextoBase(data, tipo, variante) {
       case 'aiTool':
         return `🧠 ¡Nueva herramienta IA añadida!\n` +
                `✨ ${data.herramientaAI}: ${data.descripcion}\n` +
-               `🔗 https://free.keikodev.es/ai-links\n` +
+               `🔗 https://keikodev.es/ai-links\n` +
                `#IA #HerramientasGratis #Tecnología`;
   
       case 'cyberScamPost':
         return `🚨 ¡Nueva alerta de ciberestafa!\n` +
                `🕵️‍♂️ ${data.titulo}\n` +
                `📅 Detectada el ${new Date(data.createdAt).toLocaleDateString('es-ES')}\n` +
-               `🔗 https://free.keikodev.es/scam-posts/${data._id}\n` +
+               `🔗 https://keikodev.es/scam-posts/${data._id}\n` +
                `#Ciberseguridad #Estafas #Phishing`;
   
       default:

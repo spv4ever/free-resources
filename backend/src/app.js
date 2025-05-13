@@ -48,7 +48,7 @@ Object.entries(process.env).forEach(([key, value]) => {
 const app = express();
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://free.keikodev.es'],
+    origin: ['http://localhost:3000', 'https://free.keikodev.es','https://keikodev.es'],
     credentials: true
   }));
   
