@@ -4,7 +4,8 @@ import {
   createNasaImage,
   updateNasaImage,
   deleteNasaImage,
-  getLatestNasaImage
+  getLatestNasaImage,
+  getLatestNasaVideo
 } from '../controllers/nasaImageController.js';
 import { protect, admin } from '../middlewares/authMiddleware.js';
 
@@ -15,5 +16,6 @@ router.post('/', protect, admin, createNasaImage);
 router.put('/:id', protect, admin, updateNasaImage);
 router.delete('/:id', protect, admin, deleteNasaImage);
 router.get('/latest', getLatestNasaImage);
+router.get('/latestvideo', getLatestNasaVideo);
 
 export default router;

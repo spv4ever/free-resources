@@ -13,18 +13,21 @@ const ViralShorts = () => {
   }, []);
 
   return (
-    <div className="ai-admin-container">
-      <h1 className="ai-admin-title">Categorías de Videos Virales</h1>
-      <div className="ai-admin-cards">
+    <div className="viral-list-container">
+      <h1 className="viral-list-title">Categorías de Videos Virales</h1>
+      <div className="viral-list-cards">
         {categorias.map(cat => (
           <div
             key={cat._id}
-            className="ai-admin-card"
+            className="viral-list-card"
             onClick={() => navigate(`/viral-shorts/${cat._id}`)}
           >
+            {cat.imageUrl && (
+              <img src={cat.imageUrl} alt={cat.nombre} className="viral-list-image" />
+            )}
             <h3>{cat.nombre}</h3>
             <p>{cat.descripcion}</p>
-            <span className="ai-admin-tag">{cat.subcategoria}</span>
+            <span className="viral-list-tag">{cat.subcategoria}</span>
           </div>
         ))}
       </div>

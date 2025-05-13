@@ -21,6 +21,10 @@ const shortCategorySchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  imageUrl: {
+    type: String,
+    default: ''
+  },
   subcategoria: {
     type: String,
     enum: ['Humor', 'Tutorial', 'Review', 'Otro'],

@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import NasaCard from '../components/NasaCard';
+import NasaCardVideo from '../components/NasaCardVideo';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -94,8 +95,20 @@ function HomePage() {
         <div className="card-home" onClick={() => navigate('/scam-posts')}>
           <h2>🛑 Últimas Noticias de Estafas</h2>
           <ul>
-            {posts.slice(0, 3).map((post) => (
-              <li key={post._id}>{post.resumen.slice(0, 80)}...</li>
+            {posts.slice(0, 6).map((post) => (
+              <li key={post._id}>
+                <strong>{new Date(post.createdAt).toLocaleDateString('es-ES')}</strong>:&nbsp;
+                <span style={{ display: 'inline-flex', gap: '0.5rem', alignItems: 'center' }}>
+                  {post.resumen.slice(0, 35)}...
+                  <a
+                    href={`/scam-posts/${post._id}`}
+                    onClick={(e) => e.stopPropagation()} // 👈 evita que se dispare el onClick del padre
+                    style={{ color: '#3498db', whiteSpace: 'nowrap' }}
+                  >
+                    Ver más →
+                  </a>
+                </span>
+              </li>
             ))}
           </ul>
         </div>
@@ -122,6 +135,7 @@ function HomePage() {
           </ul>
         </div>
         <NasaCard />
+        <NasaCardVideo />
       </div>
       
       

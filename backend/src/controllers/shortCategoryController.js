@@ -12,11 +12,18 @@ export const getAllCategories = async (req, res) => {
 
 export const createCategory = async (req, res) => {
   try {
-    const { nombre, descripcion, activa, keywords } = req.body;
+    const { nombre, descripcion, activa, keywords, imageUrl, subcategoria } = req.body;
     const exists = await ShortCategory.findOne({ nombre });
     if (exists) return res.status(400).json({ message: 'Ya existe esa categoría' });
 
-    const newCat = new ShortCategory({ nombre, descripcion, activa, keywords });
+    const newCat = new ShortCategory({
+      nombre,
+      descripcion,
+      activa,
+      keywords,
+      subcategoria,
+      imageUrl
+    });
     const saved = await newCat.save();
     res.status(201).json(saved);
   } catch {
@@ -27,6 +34,8 @@ export const createCategory = async (req, res) => {
 export const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
+    const updateData = req.body;
+    console.log('✏️ Actualizando con:', updateData); // <-- TEMPORAL
     const updated = await ShortCategory.findByIdAndUpdate(id, req.body, { new: true });
     res.json(updated);
   } catch {

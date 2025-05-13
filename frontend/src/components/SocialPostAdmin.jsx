@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/SocialPostAdmin.css';
-import { useUser } from '../context/UserContext';
+// import { useUser } from '../context/UserContext';
 
 function SocialPostAdmin() {
-  const { user } = useUser();
+//   const { user } = useUser();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

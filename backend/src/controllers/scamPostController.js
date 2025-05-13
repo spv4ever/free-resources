@@ -25,7 +25,7 @@ export async function getLatestScamPosts(req, res) {
   try {
     const latestPosts = await CyberScamPost.find()
       .sort({ createdAt: -1 })
-      .limit(3)
+      .limit(10)
       .select('resumen _id createdAt');
 
     res.json(latestPosts);

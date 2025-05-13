@@ -13,7 +13,7 @@ const ViralShortsCategory = () => {
           fetch(`${process.env.REACT_APP_API_URL}/api/viral-shorts/category/${categoryId}`)
             .then(res => res.json())
             .then(setVideos);
-      
+
           // Obtener el nombre de la categoría
           fetch(`${process.env.REACT_APP_API_URL}/api/short-categories/${categoryId}`)
             .then(res => res.json())
@@ -24,16 +24,15 @@ const ViralShortsCategory = () => {
             });
         }
       }, [categoryId]);
-      
 
   return (
-    <div className="ai-admin-container">
-      <h2 className="ai-admin-title">Videos en: {categoryName}</h2>
-      <div className="ai-admin-cards">
+    <div className="viral-category-container">
+      <h2 className="viral-category-title">Videos en: {categoryName}</h2>
+      <div className="viral-category-grid">
       {Array.isArray(videos) && videos.length > 0 ? (
         videos.map(video => (
-            <div key={video._id} className="ai-admin-card">
-            <div className="video-embed-container">
+            <div key={video._id} className="viral-category-card">
+            <div className="viral-video-embed">
                 <iframe
                 src={`https://www.youtube.com/embed/${video.videoId}`}
                 title={video.title}
@@ -46,17 +45,17 @@ const ViralShortsCategory = () => {
             <p><strong>Canal:</strong> {video.channelTitle}</p>
             <p><strong>Visualizaciones:</strong> {video.views.toLocaleString('es-ES')}</p>
 
-            <div className="video-buttons">
+            <div className="viral-video-buttons">
                 <a
                 href={`https://www.youtube.com/watch?v=${video.videoId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="video-btn"
+                className="viral-video-btn"
                 >
                 🔗 Ver en YouTube
                 </a>
-                <button className="video-btn">👍 Me gusta</button>
-                <button className="video-btn dislike">👎 No me gusta</button>
+                <button className="viral-video-btn">👍 Me gusta</button>
+                <button className="viral-video-btn dislike">👎 No me gusta</button>
             </div>
             </div>
         ))
