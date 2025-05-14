@@ -1,32 +1,35 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import '../styles/RegisterPage.css'; // opcional para estilos
-
-
+import { useNavigate, Link } from 'react-router-dom';
+import '../styles/RegisterPage.css';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false); // ✅ Nuevo estado
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
 
   const validatePassword = (pwd) => {
-    const validations = {
+    return {
       minLength: pwd.length >= 8,
       hasNumber: /\d/.test(pwd),
       hasSymbol: /[^A-Za-z0-9]/.test(pwd),
       hasUppercase: /[A-Z]/.test(pwd)
     };
-    return validations;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors([]);
     setMessage('');
+
+    if (!acceptedPrivacy) {
+      setErrors(['Debes aceptar la Política de Privacidad.']);
+      return;
+    }
 
     if (password !== repeatPassword) {
       setErrors(['Las contraseñas no coinciden.']);
@@ -61,10 +64,11 @@ const RegisterPage = () => {
       setEmail('');
       setPassword('');
       setRepeatPassword('');
-      // Redirige después de 3 segundos
-    setTimeout(() => {
+      setAcceptedPrivacy(false);
+
+      setTimeout(() => {
         navigate('/login');
-    }, 3000);
+      }, 3000);
     } catch (err) {
       setErrors([err.response?.data?.message || 'Error al registrar']);
     }
@@ -92,7 +96,22 @@ const RegisterPage = () => {
         <label>Repite la contraseña:</label>
         <input type="password" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} required />
 
-        <button type="submit">Registrarse</button>
+        {/* ✅ Checkbox de privacidad */}
+        <label className="privacy-checkbox" style={{ fontSize: '0.85rem', marginTop: '1rem' }}>
+          <input
+            type="checkbox"
+            checked={acceptedPrivacy}
+            onChange={(e) => setAcceptedPrivacy(e.target.checked)}
+          />{' '}
+          He leído y acepto la{' '}
+          <Link to="/privacidad" style={{ color: '#00bfff', textDecoration: 'underline' }}>
+            Política de Privacidad
+          </Link>
+        </label>
+
+        <button type="submit" disabled={!acceptedPrivacy} style={{ marginTop: '1rem' }}>
+          Registrarse
+        </button>
       </form>
 
       {errors.length > 0 && (

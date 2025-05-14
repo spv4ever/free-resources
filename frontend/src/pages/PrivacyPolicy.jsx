@@ -36,12 +36,13 @@ const PrivacyPolicy = () => {
       </p>
 
       <h2 style={titleStyle}>2. Finalidad del tratamiento</h2>
-      <p>Los datos personales recogidos se utilizan con los siguientes fines:</p>
+      <p>Los datos personales se recogen con los siguientes fines:</p>
       <ul>
-        <li>Responder a consultas recibidas a través del correo electrónico.</li>
-        <li>Ofrecer contenidos y enlaces relacionados con tecnología y recursos educativos.</li>
-        <li>Analizar la navegación del usuario a través de herramientas como Google Analytics.</li>
-        <li>Mostrar publicidad mediante servicios de terceros como Adsterra.</li>
+        <li>Gestionar las consultas recibidas a través del correo electrónico.</li>
+        <li>Ofrecer contenidos y recursos informativos relacionados con tecnología y educación.</li>
+        <li>Analizar el comportamiento de navegación mediante herramientas como Google Analytics.</li>
+        <li>Mostrar publicidad personalizada a través de plataformas como Adsterra.</li>
+        <li>Gestionar el acceso a cuentas de usuario registradas (email y contraseña).</li>
       </ul>
 
       <h2 style={titleStyle}>3. Datos que recopilamos</h2>
@@ -94,6 +95,17 @@ const PrivacyPolicy = () => {
       <p>
         Esta política puede actualizarse en el futuro. Se recomienda revisar periódicamente esta sección.
       </p>
+
+      <h2 style={titleStyle}>10. Registro de usuarios</h2>
+        <p>
+          Cuando un usuario se registra en la plataforma, se solicitan únicamente dos datos: su dirección de correo electrónico y una contraseña.
+        </p>
+        <p>
+          La contraseña es tratada de forma segura mediante cifrado con tecnología <strong>bcrypt</strong>, y no es visible ni accesible directamente por el responsable del tratamiento.
+        </p>
+        <p>
+          Los datos se utilizan exclusivamente para permitir el acceso a la cuenta personal, y no serán cedidos a terceros ni usados para otros fines sin el consentimiento del usuario.
+        </p>
     </div>
   );
 };
