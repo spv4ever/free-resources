@@ -37,6 +37,9 @@ import ResetPassword from './pages/ResetPassword';
 import AdminUsersPage from './pages/AdminUsersPage';
 import SocialPostAdmin from './components/SocialPostAdmin';
 import ViralShortsCategory from './pages/ViralShortsCategory'; // ajusta la ruta si está en otro lugar
+import LegalNotice from './pages/LegalNotice'; // ajusta la ruta si es necesario
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import CookiesPolicy from './pages/CookiesPolicy';
 
 
 
@@ -55,6 +58,9 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="resources" element={<ResourcesPage />} />
             <Route path="ai-links" element={<AiLinksPage />} />
+            <Route path="/aviso-legal" element={<LegalNotice />} />
+            <Route path="/privacidad" element={<PrivacyPolicy />} />
+            <Route path="/cookies" element={<CookiesPolicy />} />
             <Route path="admin/categories" element={<AdminRoute><CategoriesPage /></AdminRoute>} />
             <Route path="admin/ai-tools" element={<AdminRoute><AiToolsAdminPage /></AdminRoute>}/>
             <Route path="/admin/nasa-fechas" element={<AdminRoute><NasaFetchMonthPage /></AdminRoute>} />

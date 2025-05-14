@@ -149,6 +149,12 @@
     margin-left: 10px; /* Espacio entre los botones */
     display: inline-block; /* Aseguramos que el botón se alinee correctamente */
   }
+
+  .logo-img {
+    height: 60px;     /* 👈 Altura ideal para navbar */
+    width: auto;      /* 👈 Mantiene el aspecto ratio del logo */
+    object-fit: contain;
+  }
   
   /* Estilo cuando se pasa el cursor por encima (hover) */
   .navbar-links button:hover {
@@ -231,4 +237,11 @@
   
   .admin-link-button:hover {
     background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .navbar-brand {
+    display: flex;
+    align-items: center;  /* ✅ CENTRA verticalmente logo + texto */
+    gap: 0.8rem;           /* 🧊 Espacio entre logo y texto */
+    text-decoration: none;
   }

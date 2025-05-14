@@ -24,12 +24,12 @@ const AiDetector = () => {
   };
   
 
-  const getLabelMessage = () => {
-    if (!result) return '';
-    if (result.label === 'LABEL_0') return 'Texto Humano';
-    if (result.label === 'LABEL_1') return 'Texto generado por IA';
-    return 'Resultado desconocido';
-  };
+  // const getLabelMessage = () => {
+  //   if (!result) return '';
+  //   if (result.label === 'LABEL_0') return 'Texto Humano';
+  //   if (result.label === 'LABEL_1') return 'Texto generado por IA';
+  //   return 'Resultado desconocido';
+  // };
 
   return (
     <div className="ai-detector-container">

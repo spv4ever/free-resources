@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Navbar.css'; // Mantenemos el CSS que ya tienes
+import logo from '../assets/logo_wbg.png'; // Asegúrate de que la ruta sea correcta
 
 function Navbar() {
   const [user, setUser] = useState(null);
@@ -94,8 +95,13 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-logo">
-        <Link to="/">KEIKODEV</Link>
+        <Link to="/" className="navbar-brand">
+          <img src={logo} alt="Logo KeikoDev" className="logo-img" />
+          <span className="logo-text">KEIKODEV</span>
+        </Link>
       </div>
+
+
       <div className="navbar-links">
         <Link to="/">Home</Link>
         {user ? (

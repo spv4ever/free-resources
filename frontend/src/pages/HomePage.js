@@ -7,13 +7,12 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import NasaCard from '../components/NasaCard';
 import NasaCardVideo from '../components/NasaCardVideo';
+import AdBanner from '../components/AdBanner';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 function HomePage() {
-  const adRef1 = useRef(null);
-  const adRef2 = useRef(null);
   const [posts, setPosts] = useState([]);
   const [launches, setLaunches] = useState([]);
   const navigate = useNavigate();
@@ -27,33 +26,7 @@ function HomePage() {
       .catch(() => setCategoryStats([]));
   }, []);
 
-  useEffect(() => {
-    window.atOptions = {
-      key: '7b41f8ab4abf2107bbab81fb2739b873',
-      format: 'iframe',
-      height: 90,
-      width: 728,
-      params: {}
-    };
-    const script1 = document.createElement('script');
-    script1.src = '//sunkendifferextreme.com/7b41f8ab4abf2107bbab81fb2739b873/invoke.js';
-    script1.type = 'text/javascript';
-    script1.async = true;
-    if (adRef1.current) {
-      adRef1.current.innerHTML = '';
-      adRef1.current.appendChild(script1);
-    }
-
-    const script2 = document.createElement('script');
-    script2.src = '//pl26532855.profitableratecpm.com/3119807f99626201d0d4d511e11bba8b/invoke.js';
-    script2.type = 'text/javascript';
-    script2.async = true;
-    if (adRef2.current) {
-      adRef2.current.innerHTML = '<div id="container-3119807f99626201d0d4d511e11bba8b"></div>';
-      adRef2.current.appendChild(script2);
-    }
-  }, []);
-
+  
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/api/scam-posts/latest`)
       .then(res => setPosts(res.data))
@@ -99,7 +72,7 @@ function HomePage() {
               <li key={post._id}>
                 <strong>{new Date(post.createdAt).toLocaleDateString('es-ES')}</strong>:&nbsp;
                 <span style={{ display: 'inline-flex', gap: '0.5rem', alignItems: 'center' }}>
-                  {post.resumen.slice(0, 35)}...
+                  {post.resumen.slice(0, 30)}...
                   <a
                     href={`/scam-posts/${post._id}`}
                     onClick={(e) => e.stopPropagation()} // 👈 evita que se dispare el onClick del padre
@@ -139,10 +112,8 @@ function HomePage() {
       </div>
       
       
-
-      <div ref={adRef1} style={{ textAlign: 'center', margin: '2rem auto' }} />
-      <div ref={adRef2} style={{ textAlign: 'center', margin: '2rem auto' }} />
-    </div>
+<AdBanner />
+      </div>
   );
 }
 

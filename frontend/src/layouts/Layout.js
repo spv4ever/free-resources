@@ -4,6 +4,8 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { FaBook, FaRobot, FaYoutube, FaFileAlt, FaImage, FaGraduationCap, FaRocket, FaShieldVirus } from 'react-icons/fa';
 import '../styles/HomePage.css';
+import CookieConsentBanner from '../components/CookieConsentBanner';
+import AnalyticsLoader from '../components/AnalyticsLoader';
 
 //import '../styles/Layout.css'; // nuevo archivo opcional para estilos de layout
 
@@ -60,6 +62,8 @@ function Layout() {
       </main>
 
       <Footer />
+      <CookieConsentBanner />
+      <AnalyticsLoader /> {/* 👈 Aquí se carga GA si el usuario lo aceptó */}
     </div>
   );
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/ScamPostDetailPage.css';
+import AdBanner from '../components/AdBanner';
 
 const ScamPostDetailPage = () => {
   const { id } = useParams();
@@ -19,6 +20,7 @@ const ScamPostDetailPage = () => {
 
   return (
     <div className="scam-post-detail">
+      <AdBanner />
       <h1>{post.titulo}</h1>
       <p className="fecha">{new Date(post.createdAt).toLocaleDateString('es-ES')}</p>
       <p className="clasificacion">Clasificación: <strong>{post.clasificacion}</strong></p>
