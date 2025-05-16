@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/HomePage.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -54,7 +54,7 @@ function HomePage() {
         <div className="card-home" onClick={() => navigate('/spacex')}>
           <h2>🚀 Próximos Lanzamientos</h2>
           <ul>
-            {launches.slice(0, 3).map((launch) => {
+            {launches.slice(0, 7).map((launch) => {
               const fechaFormateada = dayjs.utc(launch.net).tz('Europe/Madrid').format('DD/MM/YYYY HH:mm');
               return (
                 <li key={launch.id}>

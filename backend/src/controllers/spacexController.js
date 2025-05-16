@@ -2,7 +2,8 @@
 import axios from 'axios';
 import SpacexLaunch from '../models/SpacexLaunch.js';
 
-const API_URL = 'https://ll.thespacedevs.com/2.2.0/launch/upcoming/?search=spacex&limit=3';
+const API_URL = 'https://ll.thespacedevs.com/2.2.0/launch/upcoming/?lsp__name=SpaceX&limit=10';
+
 
 // 1. Obtener los 3 próximos lanzamientos desde la API
 export async function fetchNextLaunchesFromAPI() {
