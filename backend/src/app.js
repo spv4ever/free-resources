@@ -34,6 +34,10 @@ import socialPostRoutes from './routes/socialPostRoutes.js';
 import animeCharacterRoutes from './routes/animeCharacterRoutes.js';
 import animePromptDataRoutes from './routes/animePromptDataRoutes.js';
 import animePromptRoutes from './routes/animePromptRoutes.js';
+import affiliateLinkRoutes from './routes/affiliateLinkRoutes.js';
+
+
+
 
 // Otras rutas...
 
@@ -96,6 +100,7 @@ app.use('/api/ai', aiDetectorRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/anime-prompt-data', animePromptDataRoutes);
 app.use('/api/anime-prompts', animePromptRoutes);
+app.use('/api/affiliate-links', affiliateLinkRoutes);
 
 // app.use((req, res, next) => {
 //   try {

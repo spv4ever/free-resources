@@ -6,11 +6,14 @@ import { FaBook, FaRobot, FaYoutube, FaFileAlt, FaImage, FaGraduationCap, FaRock
 import '../styles/HomePage.css';
 import CookieConsentBanner from '../components/CookieConsentBanner';
 import AnalyticsLoader from '../components/AnalyticsLoader';
-import { useUser } from '../context/UserContext';
+import { useLocation } from 'react-router-dom';
+import AffiliatePopup from '../components/AffiliatePopup';
+import AffiliateBannerAndSidebar from '../components/AffiliateBannerAndSidebar';
+// import { useUser } from '../context/UserContext';
 
 function Layout() {
-  const { user } = useUser();
-
+  // const { user } = useUser();
+  const location = useLocation();
   const sections = [
     { title: 'Recursos', description: 'Accede a nuestra biblioteca de imágenes y recursos.', path: '/resources', icon: <FaBook /> },
     { title: 'AI Links', description: 'Lista de herramientas de inteligencia artificial.', path: '/ai-links', icon: <FaRobot /> },
@@ -33,17 +36,19 @@ function Layout() {
   ];
 
   // 🔐 Añadir solo si es usuario PRO
-  if (user?.role === 'pro' || user?.role === 'admin') {
+  
     sections.push({
       title: 'Anime Prompts',
       description: 'Generador de prompts IA con personajes anime',
       path: '/generador-anime-prompts',
       icon: <FaMagic />
     });
-  }
+  
 
   return (
     <div className="layout-container">
+      <AffiliatePopup currentPath={location.pathname} />
+      
       <Navbar />
 
       <div className="menu-bar">
@@ -62,6 +67,7 @@ function Layout() {
 
       <main className="layout-content">
         <Outlet />
+        <AffiliateBannerAndSidebar />
       </main>
 
       <Footer />

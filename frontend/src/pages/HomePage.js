@@ -8,18 +8,23 @@ import timezone from 'dayjs/plugin/timezone';
 import NasaCard from '../components/NasaCard';
 import NasaCardVideo from '../components/NasaCardVideo';
 import AdBanner from '../components/AdBanner';
+import { useLocation } from 'react-router-dom';
+import AffiliatePopup from '../components/AffiliatePopup';
+
+
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 function HomePage() {
+  const location = useLocation();
   const [posts, setPosts] = useState([]);
   const [launches, setLaunches] = useState([]);
   const navigate = useNavigate();
   const [aiStats, setAiStats] = useState([]);
 
   const [categoryStats, setCategoryStats] = useState([]);
-
+  
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/api/resources/stats/per-category`)
       .then(res => setCategoryStats(res.data))
@@ -107,6 +112,8 @@ function HomePage() {
           ))}
           </ul>
         </div>
+        <AffiliatePopup currentPath={location.pathname} />
+        
         <NasaCard />
         <NasaCardVideo />
       </div>

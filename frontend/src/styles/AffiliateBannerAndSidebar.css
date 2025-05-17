@@ -1,0 +1,151 @@
+.affiliate-banner {
+  width: 100%;
+  max-height: 120px;
+  overflow: hidden;
+  background-color: #1e1e1e;
+  text-align: center;
+  padding: 0.5rem 0;
+  margin-bottom: 1rem;
+}
+
+.affiliate-banner-img {
+  max-height: 100px;
+  width: auto;
+  max-width: 90%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.affiliate-banner-img:hover {
+  transform: scale(1.03);
+}
+
+/* SIDEBAR */
+
+.affiliate-sidebar {
+  position: fixed;
+  right: 1rem;
+  bottom: 6rem;
+  width: 260px;
+  background-color: #1c1c1c;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.affiliate-sidebar-img {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.affiliate-sidebar-content h4 {
+  margin: 0.3rem 0;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+
+.close-btn {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #aaa;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+.close-btn:hover {
+  color: #fff;
+}
+
+.affiliate-card-horizontal {
+  display: flex;
+  background-color: #1c1c1c;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 1.5rem auto;
+  box-shadow: 0 0 20px rgba(255, 165, 0, 0.25);
+  max-width: 900px;
+  min-height: 160px;
+  border: 1px solid #2a2a2a;
+}
+
+.affiliate-card-img {
+  width: 10%;
+  height: auto;
+  object-fit: contain;
+  background-color: #121212; /* más oscuro y uniforme */
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.affiliate-card-content {
+  padding: 1.5rem;
+  color: #e0e0e0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+@keyframes pulseGlow {
+  0% {
+    text-shadow: 0 0 4px rgba(255, 165, 0, 0.2);
+  }
+  50% {
+    text-shadow: 0 0 10px rgba(255, 165, 0, 0.8);
+  }
+  100% {
+    text-shadow: 0 0 4px rgba(255, 165, 0, 0.2);
+  }
+}
+
+.affiliate-card-content h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ffffff;
+  animation: pulseGlow 2s infinite ease-in-out;
+}
+
+.affiliate-card-content p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #c0c0c0;
+}
+
+
+.cta-button {
+  display: inline-block;
+  background-color: #ff9900;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  color: #111;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  width: fit-content;
+}
+
+.cta-button:hover {
+  background-color: #f3a847;
+  transform: translateY(-1px);
+}
+
+/* Responsive: ocultar sidebar en pantallas pequeñas */
+@media (max-width: 768px) {
+  .affiliate-sidebar {
+    display: none;
+  }
+}

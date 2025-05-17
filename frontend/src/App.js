@@ -42,6 +42,8 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import CookiesPolicy from './pages/CookiesPolicy';
 import AnimePromptGenerator from './components/AnimePromptGenerator';
 import AnimePromptOptionsPage from './pages/AnimePromptOptionsPage';
+import AffiliateLinksAdmin from './components/AffiliateLinksAdmin';
+
 
 
 
@@ -75,8 +77,8 @@ function App() {
             <Route path="/admin/email-articles" element={<AdminRoute><ArticleReviewPage /></AdminRoute>} />
             <Route path="/admin/users" element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
             <Route path="/admin/anime-options" element={<AnimePromptOptionsPage />} />
-            
-            <Route path="/generador-anime-prompts" element={<AnimePromptGenerator />} />
+            <Route path="/admin/affiliate-links" element={<AffiliateLinksAdmin />} />
+            <Route path="/generador-anime-prompts" element={<AdminRoute><AnimePromptGenerator /></AdminRoute>} />
             {/* <Route path="/admin/social-posts" element={<AdminRoute><div>Hola soy admin</div></AdminRoute>} /> */}
             <Route path="/admin/social-posts" element={<AdminRoute><SocialPostAdmin /></AdminRoute>} />
             {/* <Route path="/admin/social-posts" element={<SocialPostAdmin />} /> */}

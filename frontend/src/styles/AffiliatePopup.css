@@ -1,0 +1,95 @@
+.affiliate-popup {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 300px;
+  background-color: #1c1c1c;
+  color: #e0e0e0;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  animation: slideInUp 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.popup-image {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.affiliate-popup h4 {
+  margin: 0.5rem 0 0.25rem;
+  text-align: center;
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.popup-cta {
+  background-color: #ff6f61;
+  color: white;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.popup-cta:hover {
+  background-color: #e55a4f;
+}
+
+.close-btn {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: #fff;
+}
+
+.amazon-btn {
+  background-color: #232f3e; /* Amazon dark blue */
+  color: #ffffff;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 0 #131921;
+  transition: background-color 0.2s ease;
+}
+
+.amazon-btn:hover {
+  background-color: #37475a;
+}
+
+.amazon-logo {
+  height: 20px;
+  filter: invert(1); /* hace que el logo negro se vea blanco */
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

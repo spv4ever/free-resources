@@ -252,15 +252,23 @@ const AnimePromptGenerator = () => {
 
         {/* FORMULARIO A LA DERECHA */}
         <form className="anime-generator-form" onSubmit={handleSubmit}>
+            
             <label>
             Cantidad de combinaciones:
-            <input type="number" value={n} onChange={(e) => setN(Number(e.target.value))} min={1} max={20} />
+            <input type="number" value={n} onChange={(e) => setN(Number(e.target.value))} min={1} max={100} />
             </label>
 
-            <label className="checkbox">
-            <input type="checkbox" checked={nsfwOnly} onChange={(e) => setNsfwOnly(e.target.checked)} />
-            Incluir contenido NSFW (si es posible)
-            </label>
+            <div className="nsfw-toggle">
+                <label className="switch">
+                    <input
+                    type="checkbox"
+                    checked={nsfwOnly}
+                    onChange={(e) => setNsfwOnly(e.target.checked)}
+                    />
+                    <span className="slider" />
+                </label>
+                <span className="nsfw-label">🔞 Incluir contenido NSFW (si es posible)</span>
+                </div>
 
             <label>Selecciona un personaje:</label>
             <Select
@@ -283,7 +291,7 @@ const AnimePromptGenerator = () => {
             placeholder="Buscar personaje..."
             isSearchable
             filterOption={filterOption}
-            styles={{ /* tus estilos personalizados aquí */ }}
+            styles={customSelectStyles}
             />
 
             {characterId && (
@@ -310,6 +318,12 @@ const AnimePromptGenerator = () => {
             <button type="submit" className="generate-button" disabled={loading}>
             {loading ? 'Generando...' : '🔄 Generar prompts'}
             </button>
+            {loading && (
+            <div className="global-loader">
+                <div className="spinner" />
+                <span>Generando prompts, por favor espera...</span>
+            </div>
+            )}
         </form>
         </div>
 

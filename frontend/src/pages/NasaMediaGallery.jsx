@@ -2,12 +2,15 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import '../styles/NasaGallery.css';
 import AdBanner from '../components/AdBanner';
+import { useLocation } from 'react-router-dom';
+import AffiliatePopup from '../components/AffiliatePopup';
 
 function NasaMediaGallery({ mediaType }) {
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
   const [zoomItem, setZoomItem] = useState(null);
+  const location = useLocation();
   const topRef = useRef(null);
 
 
@@ -53,6 +56,7 @@ function NasaMediaGallery({ mediaType }) {
     
     <div className="nasa-gallery" ref={topRef}>
       <AdBanner />
+      <AffiliatePopup currentPath={location.pathname} />
       <h2 className="gallery-title">
         {mediaType === 'image' ? 'Fotos del universo' : 'Videos del universo'}
       </h2>

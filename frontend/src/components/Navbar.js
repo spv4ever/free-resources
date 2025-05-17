@@ -141,21 +141,22 @@ function Navbar() {
             </li>
             {user?.role === 'admin' && (
               <li>
-                <Link to="/admin/users">👥 Gestionar usuarios</Link>
+                <Link to="/admin/users"onClick={toggleSidebar}>👥 Gestionar usuarios</Link>
               </li>
             )}
             <li><Link to="/admin/training" onClick={toggleSidebar}>Recursos de Formación</Link></li>
-            <li><Link to="/admin/short-categories">Categorías de Shorts</Link></li>
-            <li><Link to="/admin/sync-shorts">Sincronizar Shorts Virales</Link></li>
-            <li><Link to="/admin/social-posts">📢 Social Posts</Link></li>
+            <li><Link to="/admin/short-categories"onClick={toggleSidebar}>Categorías de Shorts</Link></li>
+            <li><Link to="/admin/sync-shorts"onClick={toggleSidebar}>Sincronizar Shorts Virales</Link></li>
+            <li><Link to="/admin/social-posts"onClick={toggleSidebar}>📢 Social Posts</Link></li>
             <li>
-              <Link to="/admin/email-contexts">📩 Email Contexts</Link>
+              <Link to="/admin/email-contexts"onClick={toggleSidebar}>📩 Email Contexts</Link>
               
             </li>
             <li>
-            <Link to="/admin/email-review" className="sidebar-link">📥 Revisar Emails</Link></li>
-            <li><Link to="/admin/email-articles">Revisar Artículos</Link></li>
+            <Link to="/admin/email-review" className="sidebar-link"onClick={toggleSidebar}>📥 Revisar Emails</Link></li>
+            <li><Link to="/admin/email-articles"onClick={toggleSidebar}>Revisar Artículos</Link></li>
             <li><Link to="/admin/anime-options" onClick={toggleSidebar}>🎨 Opciones Anime Prompts</Link></li>
+            <li><Link to="/admin/affiliate-links"onClick={toggleSidebar}>🔗 Enlaces de Afiliados</Link></li>
 
             
 

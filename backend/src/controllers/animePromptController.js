@@ -18,7 +18,7 @@ function isUnderage(ageStr) {
 
 export const generateRandomPrompt = async (req, res) => {
   try {
-    const count = Math.max(1, Math.min(20, parseInt(req.query.n) || 1));
+    const count = Math.max(1, Math.min(100, parseInt(req.query.n) || 1));
     const characterNameParam = req.query.characterName?.trim();
     const characterFromParam = req.query.characterFrom?.trim();
     let nsfwOnly = req.query.nsfwOnly === 'true';
