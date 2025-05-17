@@ -24,6 +24,53 @@ const AnimePromptGenerator = () => {
   const [prompts, setPrompts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [customName, setCustomName] = useState('');
+  const [customFrom, setCustomFrom] = useState('');
+
+    const [styles, setStyles] = useState([]);
+    const [views, setViews] = useState([]);
+    const [outfits, setOutfits] = useState([]);
+    const [locations, setLocations] = useState([]);
+    const [poses, setPoses] = useState([]);
+    const [tags, setTags] = useState([]);
+
+    // Selecciones del usuario
+    const [selectedStyles, setSelectedStyles] = useState([]);
+    const [selectedViews, setSelectedViews] = useState([]);
+    const [selectedOutfits, setSelectedOutfits] = useState([]);
+    const [selectedLocations, setSelectedLocations] = useState([]);
+    const [selectedPoses, setSelectedPoses] = useState([]);
+    const [selectedTags, setSelectedTags] = useState([]);
+
+    useEffect(() => {
+    const loadOptions = async () => {
+        try {
+        const fetchAll = async (path) => {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/api/anime-prompt-data/${path}`);
+            return res.json();
+        };
+        const [s, v, o, l, p, t] = await Promise.all([
+            fetchAll('styles'),
+            fetchAll('angles'),
+            fetchAll('outfits'),
+            fetchAll('locations'),
+            fetchAll('poses'),
+            fetchAll('tags')
+        ]);
+        setStyles(s);
+        setViews(v);
+        setOutfits(o);
+        setLocations(l);
+        setPoses(p);
+        setTags(t);
+        } catch (err) {
+        console.error('Error cargando opciones de filtro:', err);
+        }
+    };
+    loadOptions();
+    }, []);
+
+  
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -46,8 +93,19 @@ const AnimePromptGenerator = () => {
 
     try {
       const params = new URLSearchParams({ n, flat: 'true' });
-      if (characterId) params.append('characterId', characterId);
-      if (nsfwOnly) params.append('nsfwOnly', 'true');
+    if (characterId) params.append('characterId', characterId);
+    else {
+    if (customName) params.append('characterName', customName);
+    if (customFrom) params.append('characterFrom', customFrom);
+    }
+    if (nsfwOnly) params.append('nsfwOnly', 'true');
+    if (selectedStyles.length) params.append('style', selectedStyles.map(s => s.value).join(','));
+    if (selectedViews.length) params.append('view', selectedViews.map(v => v.value).join(','));
+    if (selectedOutfits.length) params.append('outfit', selectedOutfits.map(o => o.value).join(','));
+    if (selectedLocations.length) params.append('location', selectedLocations.map(l => l.value).join(','));
+    if (selectedPoses.length) params.append('pose', selectedPoses.map(p => p.value).join(','));
+    if (selectedTags.length) params.append('tags', selectedTags.map(t => t.value).join(','));
+
 
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/anime-prompts/random?${params}`);
       const text = await response.text();
@@ -73,142 +131,220 @@ const AnimePromptGenerator = () => {
     );
     }
     const filterOption = (option, inputValue) => {
-        const { label, from } = option.data;
+        const { label, from, age, nsfw } = option.data;
+
         return (
             label.toLowerCase().includes(inputValue.toLowerCase()) ||
-            (from && from.toLowerCase().includes(inputValue.toLowerCase()))
+            from.toLowerCase().includes(inputValue.toLowerCase()) ||
+            (age && age.toLowerCase().includes(inputValue.toLowerCase())) ||
+            (nsfw && 'nsfw'.includes(inputValue.toLowerCase())) || 
+            (!nsfw && 'no nsfw'.includes(inputValue.toLowerCase()))
         );
         };
 
 
-  return (
+    const options = characters
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .slice(0, 50)
+    .map((char) => {
+        const nsfw = !isUnderage(char.age);
+        return {
+        value: char._id,
+        label: char.name,
+        image: char.image,
+        from: char.mainWork?.title || 'Desconocido',
+        age: char.age || 'Desconocida',
+        nsfw
+        };
+    });
+    const customSelectStyles = {
+        control: (provided, state) => ({
+            ...provided,
+            backgroundColor: '#1c1c1c',
+            borderColor: state.isFocused ? '#666' : '#333',
+            boxShadow: state.isFocused ? '0 0 0 1px #888' : 'none',
+            color: '#fff',
+            '&:hover': {
+            borderColor: '#888',
+            },
+        }),
+        menu: (provided) => ({
+            ...provided,
+            backgroundColor: '#121212',
+            color: '#fff',
+            zIndex: 99,
+        }),
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: state.isFocused ? '#333' : '#121212',
+            color: '#fff',
+            padding: 10,
+            cursor: 'pointer',
+        }),
+        singleValue: (provided) => ({
+            ...provided,
+            color: '#fff',
+        }),
+        multiValue: (provided) => ({
+            ...provided,
+            backgroundColor: '#2a2a2a',
+        }),
+        multiValueLabel: (provided) => ({
+            ...provided,
+            color: '#fff',
+        }),
+        multiValueRemove: (provided) => ({
+            ...provided,
+            color: '#ccc',
+            ':hover': {
+            backgroundColor: '#444',
+            color: '#fff',
+            },
+        }),
+        placeholder: (provided) => ({
+            ...provided,
+            color: '#aaa',
+        }),
+        input: (provided) => ({
+            ...provided,
+            color: '#fff',
+        }),
+        };
+
+    return (
     <div className="anime-generator-container">
-      <h1 className="anime-generator-title">🎨 Generador de Prompts Anime</h1>
+        <h1 className="anime-generator-title">🎨 Generador de Prompts Anime</h1>
+        <div className="anime-generator-layout">
+        <div className="anime-generator-columns">
+        {/* FILTROS A LA IZQUIERDA */}
+        <div className="anime-generator-filters">
+            <h3>🎛️ Filtros opcionales</h3>
 
-      <form className="anime-generator-form" onSubmit={handleSubmit}>
-        <label>
-          Cantidad de combinaciones:
-          <input
-            type="number"
-            value={n}
-            onChange={(e) => setN(Number(e.target.value))}
-            min={1}
-            max={20}
-          />
-        </label>
+            <label>Estilos:</label>
+            <Select options={styles.map(s => ({ value: s.style, label: s.style }))} isMulti value={selectedStyles} onChange={setSelectedStyles} placeholder="Todos" styles={customSelectStyles}/>
 
-        <label className="checkbox">
-          <input
-            type="checkbox"
-            checked={nsfwOnly}
-            onChange={(e) => setNsfwOnly(e.target.checked)}
-          />
-          Incluir contenido NSFW (si es posible)
-        </label>
+            <label>Ángulos de vista:</label>
+            <Select options={views.map(v => ({ value: v.view, label: v.view }))} isMulti value={selectedViews} onChange={setSelectedViews} placeholder="Todos" styles={customSelectStyles}/>
 
-        <label>
-            Selecciona un personaje:
-            {/* <p style={{ fontSize: '0.85rem', color: '#ccc', marginTop: '0.5rem' }}>
-            Mostrando {Math.min(characters.length, 50)} de {characters.length} personajes disponibles
-            </p> */}
-            <Select
-                options={[...characters]
-                    .sort((a, b) => a.name.localeCompare(b.name))
-                    .slice(0, 50)
-                    .map((char) => {
-                    const nsfw = !isUnderage(char.age);
-                    return {
-                        value: char._id,
-                        label: char.name,
-                        image: char.image,
-                        from: char.mainWork?.title || 'Desconocido',
-                        age: char.age || 'Desconocida',
-                        nsfw
-                    };
-                    })}
-                onChange={(selected) => setCharacterId(selected.value)}
-                getOptionValue={(e) => e.value}
-                getOptionLabel={(e) => (
-                    <div className="custom-option">
-                    <img src={e.image} alt={e.label} className="option-img" />
-                    <div className="option-details">
-                        <div><strong>{e.label}</strong> ({e.age})</div>
-                        <div><em>{e.from}</em></div>
-                        <div
-                        style={{
-                            fontSize: '0.8rem',
-                            fontWeight: 'bold',
-                            color: e.nsfw ? '#3ee85d' : '#ff4f4f'
-                        }}
-                        >
-                        {e.nsfw ? '🔞 NSFW permitido' : '❌ NSFW no permitido'}
-                        </div>
-                    </div>
-                    </div>
-                )}
-                placeholder="Buscar personaje..."
-                isSearchable={true}
-                filterOption={filterOption}
-                styles={{
-                option: (provided, state) => ({
-                    ...provided,
-                    backgroundColor: state.isFocused ? '#222' : '#121212',
-                    color: state.isFocused ? '#fff' : '#e0e0e0',
-                    padding: 10,
-                }),
-                menu: (provided) => ({
-                    ...provided,
-                    backgroundColor: '#121212',
-                }),
-                control: (provided) => ({
-                    ...provided,
-                    backgroundColor: '#1c1c1c',
-                    borderColor: '#333',
-                    color: '#fff',
-                }),
-                singleValue: (provided) => ({
-                    ...provided,
-                    color: '#fff',
-                }),
-                }}
+            <label>Ropa:</label>
+            <Select options={outfits.map(o => ({ value: o.description, label: o.description }))} isMulti value={selectedOutfits} onChange={setSelectedOutfits} placeholder="Todas" styles={customSelectStyles}/>
 
-                />
+            <label>Ubicaciones:</label>
+            <Select options={locations.map(l => ({ value: l.place, label: l.place }))} isMulti value={selectedLocations} onChange={setSelectedLocations} placeholder="Todas" styles={customSelectStyles} />
 
+            <label>Poses:</label>
+            <Select options={poses.map(p => ({ value: p.pose, label: p.pose }))} isMulti value={selectedPoses} onChange={setSelectedPoses} placeholder="Todas" styles={customSelectStyles} />
 
+            <label>Etiquetas:</label>
+            <Select options={tags.map(t => ({ value: t.value, label: t.value }))} isMulti value={selectedTags} onChange={setSelectedTags} placeholder="Todas" styles={customSelectStyles}/>
+
+            <button type="button" onClick={() => {
+            setSelectedStyles([]);
+            setSelectedViews([]);
+            setSelectedOutfits([]);
+            setSelectedLocations([]);
+            setSelectedPoses([]);
+            setSelectedTags([]);
+            }}>
+            🔄 Limpiar filtros
+            </button>
+        </div>
+
+        {/* FORMULARIO A LA DERECHA */}
+        <form className="anime-generator-form" onSubmit={handleSubmit}>
+            <label>
+            Cantidad de combinaciones:
+            <input type="number" value={n} onChange={(e) => setN(Number(e.target.value))} min={1} max={20} />
             </label>
 
-        <button type="submit" className="generate-button" disabled={loading}>
-          {loading ? 'Generando...' : '🔄 Generar prompts'}
-        </button>
-      </form>
+            <label className="checkbox">
+            <input type="checkbox" checked={nsfwOnly} onChange={(e) => setNsfwOnly(e.target.checked)} />
+            Incluir contenido NSFW (si es posible)
+            </label>
 
-      {error && <p className="error-msg">{error}</p>}
+            <label>Selecciona un personaje:</label>
+            <Select
+            options={options}
+            value={options.find(o => o.value === characterId) || null}
+            onChange={(selected) => setCharacterId(selected?.value || '')}
+            getOptionValue={(e) => e.value}
+            getOptionLabel={(e) => (
+                <div className="custom-option">
+                <img src={e.image} alt={e.label} className="option-img" />
+                <div className="option-details">
+                    <div><strong>{e.label}</strong> ({e.age})</div>
+                    <div><em>{e.from}</em></div>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: e.nsfw ? '#3ee85d' : '#ff4f4f' }}>
+                    {e.nsfw ? '🔞 NSFW permitido' : '❌ NSFW no permitido'}
+                    </div>
+                </div>
+                </div>
+            )}
+            placeholder="Buscar personaje..."
+            isSearchable
+            filterOption={filterOption}
+            styles={{ /* tus estilos personalizados aquí */ }}
+            />
 
-      {prompts.length > 0 && (
+            {characterId && (
+            <button type="button" className="clear-select-button" onClick={() => {
+                setCharacterId('');
+                setCustomName('');
+                setCustomFrom('');
+            }}>
+                ❌ Quitar selección
+            </button>
+            )}
+
+            {!characterId && (
+            <div className="manual-character-fields">
+                <label>Nombre del personaje:
+                <input type="text" value={customName} onChange={(e) => setCustomName(e.target.value)} placeholder="Ej: Yoruichi" />
+                </label>
+                <label>Obra / Anime:
+                <input type="text" value={customFrom} onChange={(e) => setCustomFrom(e.target.value)} placeholder="Ej: Bleach" />
+                </label>
+            </div>
+            )}
+
+            <button type="submit" className="generate-button" disabled={loading}>
+            {loading ? 'Generando...' : '🔄 Generar prompts'}
+            </button>
+        </form>
+        </div>
+
+        {/* ERRORES Y PREVIEW */}
+        {error && <p className="error-msg">{error}</p>}
+
+        {prompts.length > 0 && (
         <div className="prompt-preview">
-          <h3>📝 Vista previa de prompts generados:</h3>
-          <ul>
-            {prompts.map((line, idx) => (
-              <li key={idx}>{line}</li>
-            ))}
-          </ul>
+            <h3>📝 Vista previa de prompts generados:</h3>
+            <ul>
+            {prompts.map((line, idx) => <li key={idx}>{line}</li>)}
+            </ul>
 
-          <button
+            <button
             className="download-button"
             onClick={() => {
-              const params = new URLSearchParams({ n, format: 'csv' });
-              if (characterId) params.append('characterId', characterId);
-              if (nsfwOnly) params.append('nsfwOnly', 'true');
-              const downloadUrl = `${process.env.REACT_APP_API_URL}/api/anime-prompts/random?${params}`;
-              window.open(downloadUrl, '_blank');
+                const params = new URLSearchParams({ n, format: 'csv' });
+                if (characterId) params.append('characterId', characterId);
+                else {
+                if (customName) params.append('characterName', customName);
+                if (customFrom) params.append('characterFrom', customFrom);
+                }
+                if (nsfwOnly) params.append('nsfwOnly', 'true');
+                const downloadUrl = `${process.env.REACT_APP_API_URL}/api/anime-prompts/random?${params}`;
+                window.open(downloadUrl, '_blank');
             }}
-          >
+            >
             📥 Descargar CSV
-          </button>
+            </button>
         </div>
-      )}
+        )}
     </div>
-  );
+    </div>
+    );
+
 };
 
 export default AnimePromptGenerator;

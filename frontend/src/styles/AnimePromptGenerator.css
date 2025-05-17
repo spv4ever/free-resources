@@ -2,8 +2,6 @@
   padding: 2rem;
   background-color: #121212;
   color: #e0e0e0;
-  max-width: 600px;
-  margin: 2rem auto;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0, 255, 128, 0.1);
 }
@@ -15,10 +13,52 @@
   color: #ffffff;
 }
 
+.anime-generator-columns {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* FILTROS */
+.anime-generator-filters {
+  flex: 1;
+  min-width: 280px;
+  max-width: 400px;
+  background-color: #1a1a1a;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+  overflow-y: auto;
+}
+
+.anime-generator-filters h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.anime-generator-filters label {
+  display: block;
+  margin: 1rem 0 0.5rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+/* FORMULARIO PRINCIPAL */
 .anime-generator-form {
+  flex: 2;
+  min-width: 0; /* importante para evitar desbordes */
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
+  padding: 1.5rem;
+  background-color: #1a1a1a;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
 .anime-generator-form label {
@@ -45,21 +85,64 @@
   font-size: 0.9rem;
 }
 
-.generate-button {
-  background-color: #28a745;
+/* BOTONES */
+.generate-button,
+.download-button,
+.clear-select-button {
+  background-color: #3498db;
   color: white;
-  padding: 0.6rem 1rem;
   border: none;
-  border-radius: 6px;
-  font-size: 1rem;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
 }
 
-.generate-button:hover {
-  background-color: #23913d;
+.generate-button:hover,
+.download-button:hover,
+.clear-select-button:hover {
+  background-color: #2980b9;
 }
 
+/* DESCARGA */
+.download-button {
+  margin-top: 1.5rem;
+}
+
+/* CAMPO MANUAL */
+.manual-character-fields input {
+  width: 100%;
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid #444;
+  padding: 0.4rem;
+  border-radius: 6px;
+  margin-top: 0.3rem;
+}
+
+/* SELECCIÓN DE PERSONAJES */
+.custom-option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.option-img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.option-details {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+
+/* RESTRINGIDO */
 .restricted-area {
   padding: 2rem;
   text-align: center;
@@ -70,6 +153,15 @@
   margin: 2rem auto;
   max-width: 500px;
 }
+
+/* ERRORES */
+.error-msg {
+  color: #ff5e5e;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+/* PREVIEW DE PROMPTS */
 .prompt-preview {
   margin-top: 2rem;
   background-color: #1a1a1a;
@@ -93,46 +185,33 @@
   color: #e0e0e0;
   font-size: 0.95rem;
 }
-
-.error-msg {
-  color: #ff5e5e;
-  margin-top: 1rem;
-  font-weight: bold;
-}
-.download-button {
-  margin-top: 1.5rem;
-  background-color: #007bff;
-  color: white;
-  padding: 0.6rem 1rem;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.download-button:hover {
-  background-color: #0056b3;
-}
-.character-select {
-  margin-top: 0.5rem;
-  color: black;
-}
-
-.custom-option {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.option-img {
-  width: 40px;
-  height: 40px;
-  border-radius: 6px;
-  object-fit: cover;
-}
-
-.option-details {
+.anime-generator-layout {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
+  gap: 2rem;
 }
+
+.prompt-preview {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .anime-generator-columns {
+    flex-direction: column;
+  }
+
+  .anime-generator-filters,
+  .anime-generator-form {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+

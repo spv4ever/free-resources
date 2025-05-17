@@ -19,27 +19,44 @@ function isUnderage(ageStr) {
 export const generateRandomPrompt = async (req, res) => {
   try {
     const count = Math.max(1, Math.min(20, parseInt(req.query.n) || 1));
+    const characterNameParam = req.query.characterName?.trim();
+    const characterFromParam = req.query.characterFrom?.trim();
     let nsfwOnly = req.query.nsfwOnly === 'true';
     const flat = req.query.flat === 'true';
     const format = req.query.format;
     const characterId = req.query.characterId || null;
 
-    let fixedCharacter = null;
+    // Opciones fijadas por el usuario (como arrays)
+    const selectedStyles = req.query.style?.split(',').map(x => x.trim());
+    const selectedViews = req.query.view?.split(',').map(x => x.trim());
+    const selectedOutfits = req.query.outfit?.split(',').map(x => x.trim());
+    const selectedLocations = req.query.location?.split(',').map(x => x.trim());
+    const selectedPoses = req.query.pose?.split(',').map(x => x.trim());
+    const selectedTags = req.query.tags?.split(',').map(x => x.trim());
+
+    let character = null;
     let isCharacterUnderage = false;
 
     if (characterId) {
-      fixedCharacter = await AnimeCharacter.findById(characterId);
+      character = await AnimeCharacter.findById(characterId);
+      isCharacterUnderage = isUnderage(character?.age);
 
-      if (!fixedCharacter) {
-        return res.status(400).json({ error: 'Personaje no encontrado.' });
-      }
-
-      isCharacterUnderage = isUnderage(fixedCharacter.age);
-
-      if (nsfwOnly && isCharacterUnderage) {
+      if (isCharacterUnderage && nsfwOnly) {
         nsfwOnly = false;
-        console.log(`[NSFW desactivado] Personaje "${fixedCharacter.name}" no apto para contenido NSFW.`);
+        console.log(`[NSFW AUTO-FALLBACK] Personaje ${character?.name || 'desconocido'} no apto para NSFW`);
       }
+
+      if (!character || (isCharacterUnderage && req.query.nsfwOnly === 'true')) {
+        return res.status(400).json({ error: 'Personaje no válido para NSFW' });
+      }
+    } else if (characterNameParam && characterFromParam) {
+      character = {
+        name: characterNameParam,
+        age: null,
+        image: null,
+        mainWork: { title: characterFromParam }
+      };
+      nsfwOnly = false;
     }
 
     let nsfwTag = null;
@@ -53,16 +70,31 @@ export const generateRandomPrompt = async (req, res) => {
     const prompts = [];
 
     while (prompts.length < count) {
-      const [style] = await IllustrationStyle.aggregate([{ $sample: { size: 1 } }]);
-      const [view] = await ViewAngle.aggregate([{ $sample: { size: 1 } }]);
-      const [outfit] = await Outfit.aggregate([{ $sample: { size: 1 } }]);
-      const [location] = await Location.aggregate([{ $sample: { size: 1 } }]);
-      const [pose] = await Pose.aggregate([{ $sample: { size: 1 } }]);
-      let tags = await Tag.aggregate([{ $sample: { size: 3 } }]);
+      const [style] = selectedStyles?.length
+        ? await IllustrationStyle.aggregate([{ $match: { style: { $in: selectedStyles } } }, { $sample: { size: 1 } }])
+        : await IllustrationStyle.aggregate([{ $sample: { size: 1 } }]);
+
+      const [view] = selectedViews?.length
+        ? await ViewAngle.aggregate([{ $match: { view: { $in: selectedViews } } }, { $sample: { size: 1 } }])
+        : await ViewAngle.aggregate([{ $sample: { size: 1 } }]);
+
+      const [outfit] = selectedOutfits?.length
+        ? await Outfit.aggregate([{ $match: { description: { $in: selectedOutfits } } }, { $sample: { size: 1 } }])
+        : await Outfit.aggregate([{ $sample: { size: 1 } }]);
+
+      const [location] = selectedLocations?.length
+        ? await Location.aggregate([{ $match: { place: { $in: selectedLocations } } }, { $sample: { size: 1 } }])
+        : await Location.aggregate([{ $sample: { size: 1 } }]);
+
+      const [pose] = selectedPoses?.length
+        ? await Pose.aggregate([{ $match: { pose: { $in: selectedPoses } } }, { $sample: { size: 1 } }])
+        : await Pose.aggregate([{ $sample: { size: 1 } }]);
+
+      let tags = selectedTags?.length
+        ? await Tag.aggregate([{ $match: { value: { $in: selectedTags } } }, { $sample: { size: 3 } }])
+        : await Tag.aggregate([{ $sample: { size: 3 } }]);
 
       if (!style || !view || !outfit || !location || !pose) break;
-
-      let character = fixedCharacter;
 
       if (!character) {
         for (let i = 0; i < 10; i++) {
@@ -76,7 +108,6 @@ export const generateRandomPrompt = async (req, res) => {
         if (!character) continue;
       }
 
-      // 🧼 Aplicar reglas NSFW según personaje
       if (nsfwOnly && !isCharacterUnderage) {
         if (!tags.some(t => t.value === 'nsfw')) {
           tags = [nsfwTag, ...tags.filter(t => t.value !== 'nsfw')].slice(0, 3);
@@ -103,7 +134,6 @@ export const generateRandomPrompt = async (req, res) => {
       return res.status(500).json({ error: 'No se pudo generar ningún prompt válido.' });
     }
 
-    // 📤 Texto plano con pipes
     if (flat) {
       const lines = prompts.map(p => {
         const parts = p.prompt.split(', ');
@@ -118,7 +148,6 @@ export const generateRandomPrompt = async (req, res) => {
         .send(['Estilo | Personaje | Obra | Vista | Ropa | Ubicación | Pose | Etiquetas', ...lines].join('\n'));
     }
 
-    // 📤 CSV
     if (format === 'csv') {
       const header = 'Estilo,Personaje,Obra,Vista,Ropa,Ubicación,Pose,Etiquetas';
 
@@ -142,7 +171,6 @@ export const generateRandomPrompt = async (req, res) => {
         .send([header, ...rows].join('\n'));
     }
 
-    // 🧾 JSON por defecto
     return res.json({ total: prompts.length, prompts });
 
   } catch (err) {
