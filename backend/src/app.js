@@ -31,6 +31,12 @@ import adminEmailArticleRoutes from './routes/adminEmailArticleRoutes.js';
 import aiDetectorRoutes from './routes/aiDetectorRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import socialPostRoutes from './routes/socialPostRoutes.js';
+import animeCharacterRoutes from './routes/animeCharacterRoutes.js';
+import animePromptDataRoutes from './routes/animePromptDataRoutes.js';
+import animePromptRoutes from './routes/animePromptRoutes.js';
+
+// Otras rutas...
+
 
 
  // 👈 Importa las rutas de autenticación
@@ -69,6 +75,7 @@ fetchNasaImageDaily();
 
 // Rutas
 app.use('/api/resources', resourceLibraryRoutes);
+app.use('/api/anime-characters', animeCharacterRoutes)
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/aitools', aiToolRoutes);
@@ -87,6 +94,8 @@ app.use('/api/admin/email-entries', adminEmailEntryRoutes);
 app.use('/api/admin/email-articles', adminEmailArticleRoutes);
 app.use('/api/ai', aiDetectorRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/anime-prompt-data', animePromptDataRoutes);
+app.use('/api/anime-prompts', animePromptRoutes);
 
 // app.use((req, res, next) => {
 //   try {
