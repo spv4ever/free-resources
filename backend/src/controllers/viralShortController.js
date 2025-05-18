@@ -1,3 +1,5 @@
+import { franc } from 'franc';
+import langs from 'langs';
 import ViralShort from '../models/ViralShort.js';
 import ShortCategory from '../models/ShortCategory.js';
 
@@ -44,10 +46,29 @@ export const getAllViralShorts = async (req, res) => {
 
 export const createViralShort = async (req, res) => {
   try {
-    const newShort = new ViralShort(req.body);
+    const body = req.body;
+    const rawTitle = body.title || '';
+
+    console.log('📥 Título recibido:', rawTitle);
+
+    const code = franc(rawTitle);
+    const lang = code !== 'und' ? langs.where('3', code) : null;
+    const langName = lang ? lang.name : 'Desconocido';
+
+    console.log(`🌐 Idioma detectado: ${langName} (${code})`);
+
+    const newShort = new ViralShort({
+      ...body,
+      languageCode: code,
+      languageDetected: langName
+    });
+
     const saved = await newShort.save();
+    console.log('✅ Short guardado:', saved);
+
     res.status(201).json(saved);
   } catch (err) {
+    console.error('❌ Error creando short:', err);
     res.status(400).json({ message: 'Error al crear short viral', error: err.message });
   }
 };
@@ -89,11 +110,28 @@ export const getShortsByCategory = async (req, res) => {
   try {
     const { categoryId } = req.params;
 
-    const shorts = await ViralShort.find({ category: categoryId })
+    // Buscar shorts en español
+    let shorts = await ViralShort.find({
+      category: categoryId,
+      languageCode: 'spa'
+    })
       .populate('category', 'nombre')
       .sort({ views: -1 });
 
-    res.json(shorts); // <-- devuelve directamente un array
+    // Si hay menos de 6, completamos con shorts en inglés
+    if (shorts.length < 6) {
+      const englishShorts = await ViralShort.find({
+        category: categoryId,
+        languageCode: 'eng'
+      })
+        .populate('category', 'nombre')
+        .sort({ views: -1 })
+        .limit(30 - shorts.length); // Solo los necesarios para llegar a 6
+
+      shorts = shorts.concat(englishShorts);
+    }
+
+    res.json(shorts);
   } catch (err) {
     console.error('❌ Error en getShortsByCategory:', err);
     res.status(500).json({ message: 'Error al obtener shorts por categoría' });

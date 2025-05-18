@@ -9,6 +9,8 @@ const viralShortSchema = new mongoose.Schema({
   publishedAt: { type: Date },
   thumbnail: { type: String },
   channelTitle: { type: String },
+  languageDetected: { type: String, default: 'Desconocido' },
+  languageCode: { type: String, default: 'und' },
 }, {
   timestamps: true
 });

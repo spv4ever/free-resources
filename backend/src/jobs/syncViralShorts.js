@@ -2,6 +2,8 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import ShortCategory from '../models/ShortCategory.js';
 import ViralShort from '../models/ViralShort.js';
+import { franc } from 'franc';
+import langs from 'langs';
 
 dotenv.config();
 
@@ -151,6 +153,10 @@ export const syncSingleCategory = async (categoryId) => {
   
       for (const video of detailsResponse.data.items) {
         if (!video.statistics?.viewCount) continue;
+        const code = franc(video.snippet.title || '');
+        const lang = code !== 'und' ? langs.where('3', code) : null;
+        const languageCode = code;
+        const languageDetected = lang ? lang.name : 'Desconocido';
   
         if (!video.status?.embeddable) {
           console.warn(`⛔️ No embebible: ${video.id} (${video.snippet.title})`);
@@ -168,6 +174,8 @@ export const syncSingleCategory = async (categoryId) => {
           views: parseInt(video.statistics.viewCount || 0, 10),
           likes: parseInt(video.statistics.likeCount || 0, 10),
           category: cat._id,
+          languageCode,
+          languageDetected,
         });
   
         await newShort.save();
