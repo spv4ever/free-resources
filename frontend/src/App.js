@@ -43,6 +43,15 @@ import CookiesPolicy from './pages/CookiesPolicy';
 import AnimePromptGenerator from './components/AnimePromptGenerator';
 import AnimePromptOptionsPage from './pages/AnimePromptOptionsPage';
 import AffiliateLinksAdmin from './components/AffiliateLinksAdmin';
+import AffiliateClickStatsAdmin from './components/AffiliateClickStatsAdmin';
+import IgraalDealsAdmin from './components/IgraalDealsAdmin';
+import IgraalDealsPage from './components/IgraalDealsPage';
+import IgraalCouponsPage from './components/IgraalCouponsPage';
+import IgraalCouponAdmin from './components/IgraalCouponAdmin';
+
+
+
+
 
 
 
@@ -78,9 +87,14 @@ function App() {
             <Route path="/admin/users" element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
             <Route path="/admin/anime-options" element={<AnimePromptOptionsPage />} />
             <Route path="/admin/affiliate-links" element={<AffiliateLinksAdmin />} />
+            <Route path="/admin/igraal-coupons" element={<IgraalCouponAdmin />} />
             <Route path="/generador-anime-prompts" element={<AdminRoute><AnimePromptGenerator /></AdminRoute>} />
+            <Route path="/admin/igraal-deals" element={<AdminRoute><IgraalDealsAdmin /></AdminRoute> }
+/>
             {/* <Route path="/admin/social-posts" element={<AdminRoute><div>Hola soy admin</div></AdminRoute>} /> */}
             <Route path="/admin/social-posts" element={<AdminRoute><SocialPostAdmin /></AdminRoute>} />
+            <Route path="/admin/affiliate-clicks" element={<AdminRoute><AffiliateClickStatsAdmin /></AdminRoute>}
+/>
             {/* <Route path="/admin/social-posts" element={<SocialPostAdmin />} /> */}
 
             <Route path="/admin/scam-posts" element={<AdminRoute><ScamPostsPage /></AdminRoute>} />
@@ -104,6 +118,9 @@ function App() {
             <Route path="/verify-success" element={<VerifySuccessPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/chollos" element={<IgraalDealsPage />} />
+            <Route path="/cupones" element={<IgraalCouponsPage />} />
+
             
           </Route>
           <Route path="/login" element={<LoginPage />} />

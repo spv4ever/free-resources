@@ -35,6 +35,12 @@ import animeCharacterRoutes from './routes/animeCharacterRoutes.js';
 import animePromptDataRoutes from './routes/animePromptDataRoutes.js';
 import animePromptRoutes from './routes/animePromptRoutes.js';
 import affiliateLinkRoutes from './routes/affiliateLinkRoutes.js';
+import affiliateClickRoutes from './routes/affiliateClickRoutes.js';
+import igraalDealRoutes from './routes/igraalDealRoutes.js';
+import igraalCouponRoutes from './routes/igraalCouponRoutes.js';
+
+
+
 
 
 
@@ -101,6 +107,9 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/anime-prompt-data', animePromptDataRoutes);
 app.use('/api/anime-prompts', animePromptRoutes);
 app.use('/api/affiliate-links', affiliateLinkRoutes);
+app.use('/api/affiliate-clicks', affiliateClickRoutes);
+app.use('/api/igraal-deals', igraalDealRoutes);
+app.use('/api/igraal-coupons', igraalCouponRoutes);
 
 // app.use((req, res, next) => {
 //   try {
@@ -112,8 +121,13 @@ app.use('/api/affiliate-links', affiliateLinkRoutes);
 //   }
 // });
 
+import { fetchIgraalCoupons } from './scripts/fetchIgraalCoupons.js';
+
+//fetchIgraalCoupons(); 
 
 import './jobs/spaceXJob.js';
+import './jobs/igraalJob.js';
+import './jobs/igraalCouponJob.js';
 
 // Intervalo de ejecución: cada 6h (puedes cambiarlo)
 const IMPORT_INTERVAL = 1000 * 60 * 60 * 6;

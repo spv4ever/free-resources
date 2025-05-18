@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { FaBook, FaRobot, FaYoutube, FaFileAlt, FaImage, FaGraduationCap, FaRocket, FaShieldVirus, FaMagic } from 'react-icons/fa';
+import { FaBook, FaRobot, FaYoutube, FaFileAlt, FaImage, FaGraduationCap, FaRocket, FaShieldVirus, FaMagic, FaGift, FaTicketAlt } from 'react-icons/fa';
 import '../styles/HomePage.css';
 import CookieConsentBanner from '../components/CookieConsentBanner';
 import AnalyticsLoader from '../components/AnalyticsLoader';
@@ -32,6 +32,19 @@ function Layout() {
       description: 'Todo lo relacionado Noticias sobre ciberestafas.',
       path: '/scam-posts',
       icon: <FaShieldVirus />
+    },
+    {
+      title: 'Cupones iGraal',
+      description: 'Códigos descuento + cashback real',
+      path: '/cupones',
+      icon: <FaTicketAlt />
+    },
+
+    {
+      title: 'Chollos iGraal',
+      description: 'Ofertas con cashback actualizadas a diario',
+      path: '/chollos',
+      icon: <FaGift />
     }
   ];
 

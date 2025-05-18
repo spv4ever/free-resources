@@ -39,6 +39,19 @@ useEffect(() => {
     fetchAffiliateLinks();
   }, [location.pathname]);
 
+  const handleClick = async (link) => {
+  try {
+    await axios.post(`${process.env.REACT_APP_API_URL}/api/affiliate-clicks`, {
+      linkId: link._id,
+      page: location.pathname
+    });
+  } catch (err) {
+    console.error('Error registrando clic:', err);
+  } finally {
+    window.open(link.url, '_blank');
+  }
+};
+
   return (
     <>
      {banner && (
@@ -51,14 +64,9 @@ useEffect(() => {
           <div className="affiliate-card-content">
             <h3>{banner.title}</h3>
             <p>{banner.cta}</p>
-            <a
-              href={banner.url}
-              className="cta-button"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <button className="cta-button" onClick={() => handleClick(banner)}>
               Ver en Amazon
-            </a>
+            </button>
           </div>
         </div>
       )}
@@ -67,13 +75,13 @@ useEffect(() => {
       {sidebar && visible && (
         <div className="affiliate-sidebar">
             <button className="close-btn" onClick={() => setVisible(false)}>✖</button>
-            <a href={sidebar.url} target="_blank" rel="noopener noreferrer">
-            <img src={sidebar.imageUrl} alt={sidebar.title} className="affiliate-sidebar-img" />
-            <div className="affiliate-sidebar-content">
+            <div onClick={() => handleClick(sidebar)} className="affiliate-sidebar-link">
+              <img src={sidebar.imageUrl} alt={sidebar.title} className="affiliate-sidebar-img" />
+              <div className="affiliate-sidebar-content">
                 <h4>{sidebar.title}</h4>
                 <span className="cta-button">{sidebar.cta}</span>
+              </div>
             </div>
-            </a>
         </div>
         )}
     </>

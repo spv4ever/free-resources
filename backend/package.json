@@ -33,6 +33,7 @@
     "node-cron": "^3.0.3",
     "nodemailer": "^7.0.3",
     "openai": "^4.97.0",
+    "puppeteer": "^24.8.2",
     "react-select": "^5.10.1"
   },
   "devDependencies": {

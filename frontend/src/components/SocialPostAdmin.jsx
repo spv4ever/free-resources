@@ -34,9 +34,12 @@ function SocialPostAdmin() {
   const fetchResourcesByType = async (type) => {
     try {
       const token = localStorage.getItem('token');
-      const endpoint = type === 'aiTool'
-        ? '/api/aitools'
-        : '/api/scam-posts';
+      const endpoint =
+        type === 'aiTool'
+          ? '/api/aitools'
+          : type === 'cyberScamPost'
+          ? '/api/scam-posts'
+          : '/api/igraal-deals'; // 👈 chollos
       const res = await axios.get(`${process.env.REACT_APP_API_URL}${endpoint}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -129,6 +132,7 @@ function SocialPostAdmin() {
             <select value={refType} onChange={(e) => setRefType(e.target.value)}>
               <option value="aiTool">Herramienta IA</option>
               <option value="cyberScamPost">Post de Estafa</option>
+              <option value="chollos">Chollo de iGraal</option>
             </select>
           </div>
 
@@ -137,7 +141,11 @@ function SocialPostAdmin() {
             <select value={selectedRefId} onChange={(e) => setSelectedRefId(e.target.value)}>
               {resources.map((r) => (
                 <option key={r._id} value={r._id}>
-                  {refType === 'aiTool' ? r.herramientaAI : r.titulo}
+                  {refType === 'aiTool'
+                    ? r.herramientaAI
+                    : refType === 'cyberScamPost'
+                    ? r.titulo
+                    : r.title}
                 </option>
               ))}
             </select>
@@ -171,7 +179,15 @@ function SocialPostAdmin() {
             {posts.map(post => (
               <tr key={post._id}>
                 <td>{new Date(post.createdAt).toLocaleDateString('es-ES')}</td>
-                <td>{post.refType}</td>
+                <td>
+                  {post.refType === 'aiTool'
+                    ? 'Herramienta IA'
+                    : post.refType === 'cyberScamPost'
+                    ? 'Ciberestafa'
+                    : post.refType === 'chollos'
+                    ? 'Chollo'
+                    : post.refType}
+                </td>
                 <td>{post.status}</td>
                 <td>
                   <textarea readOnly value={post.generatedText} />

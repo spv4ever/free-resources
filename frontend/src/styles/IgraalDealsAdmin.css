@@ -1,0 +1,33 @@
+.igraal-admin {
+  padding: 1.5rem;
+}
+
+.upload-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.igraal-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.igraal-table th, .igraal-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  vertical-align: top;
+}
+
+.igraal-table input,
+.igraal-table textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 4px;
+}
+
+.igraal-table textarea {
+  resize: vertical;
+  min-height: 40px;
+}

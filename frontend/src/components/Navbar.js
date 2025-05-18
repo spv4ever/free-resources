@@ -157,6 +157,10 @@ function Navbar() {
             <li><Link to="/admin/email-articles"onClick={toggleSidebar}>Revisar Artículos</Link></li>
             <li><Link to="/admin/anime-options" onClick={toggleSidebar}>🎨 Opciones Anime Prompts</Link></li>
             <li><Link to="/admin/affiliate-links"onClick={toggleSidebar}>🔗 Enlaces de Afiliados</Link></li>
+            <li><Link to="/admin/affiliate-clicks" onClick={toggleSidebar}>📊 Clics Afiliados</Link></li>
+            <li><Link to="/admin/igraal-deals" onClick={toggleSidebar}>🛒 Chollos iGraal</Link></li>
+            <li><Link to="/admin/igraal-coupons">🧾 Cupones Igraal</Link></li>
+
 
             
 

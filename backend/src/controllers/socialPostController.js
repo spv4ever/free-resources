@@ -1,6 +1,7 @@
 import SocialPost from '../models/SocialPost.js';
 import AiTool from '../models/AiTool.js'; // y el resto según el tipo
 import CyberScamPost from '../models/CyberScamPost.js';
+import IgraalDeal from '../models/IgraalDeal.js';
 
 // GET: lista de posts
 export const getSocialPosts = async (req, res) => {
@@ -35,6 +36,9 @@ export const generateSocialPost = async (req, res) => {
         case 'cyberScamPost':
           data = await CyberScamPost.findById(refId);
           break;
+        case 'chollos':
+          data = await IgraalDeal.findById(refId);
+          break;
         default:
           return res.status(400).json({ message: 'Tipo no soportado' });
       }
@@ -52,6 +56,7 @@ export const generateSocialPost = async (req, res) => {
   
       res.status(201).json(post);
     } catch (err) {
+      console.error('Error al generar post social:', err);
       res.status(500).json({ message: 'Error al generar post social' });
     }
   };
@@ -86,6 +91,11 @@ function generarTextoBase(data, tipo, variante) {
                `📅 Detectada el ${new Date(data.createdAt).toLocaleDateString('es-ES')}\n` +
                `🔗 https://keikodev.es/scam-posts/${data._id}\n` +
                `#Ciberseguridad #Estafas #Phishing`;
+      case 'chollos':
+        return `🎁 ¡Nuevo chollo con cashback en iGraal!\n` +
+              `🛍️ ${data.title} - ${data.cashback}\n` +
+              `🔗 ${data.url}\n` +
+              `#Cashback #Chollos #Ahorro`;
   
       default:
         return 'Contenido no disponible.';

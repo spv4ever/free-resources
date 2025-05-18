@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const socialPostSchema = new mongoose.Schema({
   refType: {
     type: String,
-    enum: ['aiTool', 'resource', 'cyberScamPost', 'launch', 'category'],
+    enum: ['aiTool', 'resource', 'cyberScamPost', 'launch', 'category', 'chollos'],
     required: true,
   },
   refId: {

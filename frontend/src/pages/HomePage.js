@@ -10,6 +10,7 @@ import NasaCardVideo from '../components/NasaCardVideo';
 import AdBanner from '../components/AdBanner';
 import { useLocation } from 'react-router-dom';
 import AffiliatePopup from '../components/AffiliatePopup';
+import IgraalDealHighlight from '../components/IgraalDealHighlight';
 
 
 
@@ -116,6 +117,7 @@ function HomePage() {
         
         <NasaCard />
         <NasaCardVideo />
+        <IgraalDealHighlight />
       </div>
       
       

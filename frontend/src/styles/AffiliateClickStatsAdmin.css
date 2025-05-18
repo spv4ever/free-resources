@@ -1,0 +1,40 @@
+.ai-admin-container {
+  padding: 2rem;
+  color: #fff;
+  background-color: #121212;
+  min-height: 100vh;
+}
+
+.ai-admin-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  color: #fff;
+  border-bottom: 2px solid #ff9900;
+  padding-bottom: 0.5rem;
+}
+
+.ai-admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ai-admin-table th,
+.ai-admin-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #333;
+}
+
+.ai-admin-table th {
+  background-color: #2a2a2a;
+  color: #ff9900;
+  font-weight: bold;
+}
+
+.ai-admin-table tr:hover {
+  background-color: #2e2e2e;
+}
