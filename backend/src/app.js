@@ -121,13 +121,10 @@ app.use('/api/igraal-coupons', igraalCouponRoutes);
 //   }
 // });
 
-import { fetchIgraalCoupons } from './scripts/fetchIgraalCoupons.js';
-
-//fetchIgraalCoupons(); 
 
 import './jobs/spaceXJob.js';
 import './jobs/igraalJob.js';
-import './jobs/igraalCouponJob.js';
+
 
 // Intervalo de ejecución: cada 6h (puedes cambiarlo)
 const IMPORT_INTERVAL = 1000 * 60 * 60 * 6;
