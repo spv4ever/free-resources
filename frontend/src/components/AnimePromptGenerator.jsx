@@ -70,7 +70,30 @@ const AnimePromptGenerator = () => {
     loadOptions();
     }, []);
 
-  
+  const CopyPromptButton = ({ text }) => {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = async () => {
+        try {
+        await navigator.clipboard.writeText(text);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1000);
+        } catch (err) {
+        console.error('Error copiando al portapapeles:', err);
+        }
+    };
+
+    return (
+        <button
+        className={`copy-button ${copied ? 'copied' : ''}`}
+        onClick={handleCopy}
+        title="Copiar al portapapeles"
+        >
+        {copied ? '✅' : '📋'}
+        </button>
+    );
+    };
+
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -333,9 +356,14 @@ const AnimePromptGenerator = () => {
         {prompts.length > 0 && (
         <div className="prompt-preview">
             <h3>📝 Vista previa de prompts generados:</h3>
-            <ul>
-            {prompts.map((line, idx) => <li key={idx}>{line}</li>)}
-            </ul>
+            <ul className="prompt-list">
+                {prompts.map((line, idx) => (
+                    <li key={idx} className="prompt-line">
+                    <span>{line}</span>
+                    <CopyPromptButton text={line} />
+                    </li>
+                ))}
+                </ul>
 
             <button
             className="download-button"
