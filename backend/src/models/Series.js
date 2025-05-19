@@ -4,21 +4,34 @@ const episodeSchema = new mongoose.Schema({
   season: Number,
   episode: Number,
   title: String,
-  duration: Number,
-  releaseDate: Date
+  releaseDate: Date,
+  duration: Number
+}, { _id: false });
+
+const availabilitySchema = new mongoose.Schema({
+  platform: String,
+  type: String,
+  url: String
 }, { _id: false });
 
 const seriesSchema = new mongoose.Schema({
+  tmdbId: { type: Number, required: true, unique: true },
+  imdbId: String,
   title: String,
-  externalId: String,        // ID de Watchmode
-  imdbId: String,            // ✅ ID de IMDb
-  year: Number,
   synopsis: String,
   image: String,
-  platform: String,          // Plataforma principal (opcional)
+  backdrop: String,
   genres: [String],
   totalSeasons: Number,
   episodes: [episodeSchema],
+  availability: [availabilitySchema],
+  availabilityCheckedAt: Date,  // ✅ última vez que se consultó Watchmode
+  popularity: Number,
+  voteAverage: Number,          // ✅ puntuación media TMDb
+  voteCount: Number,            // ✅ número de votos
+  runtimeAvg: Number,           // ✅ duración media estimada
+  status: String,               // ✅ 'ended', 'running', 'cancelled', etc.
+  topAppearances: { type: Number, default: 0 }, // ✅ veces en el top semanal
   fetchedAt: { type: Date, default: Date.now }
 });
 

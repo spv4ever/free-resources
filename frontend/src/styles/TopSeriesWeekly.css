@@ -1,0 +1,51 @@
+.top-series-card {
+  background: #121212;
+  color: #e0e0e0;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+
+.top-series-card h2 {
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+}
+
+.top-series-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.top-series-item {
+  text-align: center;
+  background: #1e1e1e;
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+.top-poster {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.top-title {
+  font-size: 0.95rem;
+  margin: 0.5rem 0 0.3rem;
+  min-height: 2.5em;
+}
+
+.top-rank {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #ff9800;
+}
+
+.top-platforms {
+  margin-top: 0.4rem;
+}
+
+.top-logo {
+  height: 20px;
+  margin: 0 3px;
+}

@@ -11,6 +11,7 @@ import AdBanner from '../components/AdBanner';
 import { useLocation } from 'react-router-dom';
 import AffiliatePopup from '../components/AffiliatePopup';
 import IgraalDealHighlight from '../components/IgraalDealHighlight';
+import TopSeriesWeekly from '../components/TopSeriesWeekly';
 
 
 
@@ -55,7 +56,7 @@ function HomePage() {
   return (
     <div className="homepage-content">
       <h1 className="homepage-title">Bienvenido a KeikoDev Recursos Gratis</h1>
-
+      <TopSeriesWeekly />
       <div className="cards-container">
         <div className="card-home" onClick={() => navigate('/spacex')}>
           <h2>🚀 Próximos Lanzamientos</h2>
@@ -118,7 +119,9 @@ function HomePage() {
         <NasaCard />
         <NasaCardVideo />
         <IgraalDealHighlight />
+        
       </div>
+      
       
       
 <AdBanner />
