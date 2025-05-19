@@ -38,6 +38,7 @@ import affiliateLinkRoutes from './routes/affiliateLinkRoutes.js';
 import affiliateClickRoutes from './routes/affiliateClickRoutes.js';
 import igraalDealRoutes from './routes/igraalDealRoutes.js';
 import igraalCouponRoutes from './routes/igraalCouponRoutes.js';
+import topSeriesRoutes from './routes/topSeriesRoutes.js';
 
 
 
@@ -110,6 +111,7 @@ app.use('/api/affiliate-links', affiliateLinkRoutes);
 app.use('/api/affiliate-clicks', affiliateClickRoutes);
 app.use('/api/igraal-deals', igraalDealRoutes);
 app.use('/api/igraal-coupons', igraalCouponRoutes);
+app.use('/api/tops', topSeriesRoutes);
 
 // app.use((req, res, next) => {
 //   try {
@@ -124,6 +126,7 @@ app.use('/api/igraal-coupons', igraalCouponRoutes);
 
 import './jobs/spaceXJob.js';
 import './jobs/igraalJob.js';
+import './jobs/index.js';
 
 
 // Intervalo de ejecución: cada 6h (puedes cambiarlo)
