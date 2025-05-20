@@ -48,6 +48,7 @@ import IgraalDealsAdmin from './components/IgraalDealsAdmin';
 import IgraalDealsPage from './components/IgraalDealsPage';
 import IgraalCouponsPage from './components/IgraalCouponsPage';
 import IgraalCouponAdmin from './components/IgraalCouponAdmin';
+import TopSeriesSyncPage from './pages/admin/TopSeriesSyncPage';
 
 
 
@@ -89,8 +90,10 @@ function App() {
             <Route path="/admin/affiliate-links" element={<AffiliateLinksAdmin />} />
             <Route path="/admin/igraal-coupons" element={<IgraalCouponAdmin />} />
             <Route path="/generador-anime-prompts" element={<AdminRoute><AnimePromptGenerator /></AdminRoute>} />
-            <Route path="/admin/igraal-deals" element={<AdminRoute><IgraalDealsAdmin /></AdminRoute> }
-/>
+            <Route path="/admin/igraal-deals" element={<AdminRoute><IgraalDealsAdmin /></AdminRoute> }/>
+            
+
+            <Route path="/admin/top-series-sync" element={<TopSeriesSyncPage />} />
             {/* <Route path="/admin/social-posts" element={<AdminRoute><div>Hola soy admin</div></AdminRoute>} /> */}
             <Route path="/admin/social-posts" element={<AdminRoute><SocialPostAdmin /></AdminRoute>} />
             <Route path="/admin/affiliate-clicks" element={<AdminRoute><AffiliateClickStatsAdmin /></AdminRoute>}

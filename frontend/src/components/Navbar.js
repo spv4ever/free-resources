@@ -160,6 +160,7 @@ function Navbar() {
             <li><Link to="/admin/affiliate-clicks" onClick={toggleSidebar}>📊 Clics Afiliados</Link></li>
             <li><Link to="/admin/igraal-deals" onClick={toggleSidebar}>🛒 Chollos iGraal</Link></li>
             <li><Link to="/admin/igraal-coupons">🧾 Cupones Igraal</Link></li>
+            <li><Link to="/admin/top-series-sync" onClick={toggleSidebar}>🔄 Sincronizar Top Series</Link></li>
 
 
             

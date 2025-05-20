@@ -126,6 +126,7 @@ app.use('/api/series', seriesRoutes);
 
 import './jobs/spaceXJob.js';
 import './jobs/igraalJob.js';
+import './jobs/syncWeeklyTop.js'; // activa el cronjob semanal
 // import './jobs/index.js';
 
 

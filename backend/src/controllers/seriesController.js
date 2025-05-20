@@ -5,6 +5,7 @@ import {
 } from '../services/fetchFromTMDb.js';
 import { getAvailabilityFromWatchmode } from '../services/fetchFromWatchmode.js';
 import WeeklyTopSeries from '../models/WeeklyTopSeries.js';
+import syncWeeklyTop from '../services/syncWeeklyTop.js';
 
 // 🔍 Buscar series en TMDb
 export const searchSeries = async (req, res) => {
@@ -156,3 +157,15 @@ export const getTopHistoricalSeries = async (req, res) => {
     res.status(500).json({ message: 'Error al obtener el top histórico', error: err.message });
   }
 };
+
+
+
+export const triggerWeeklyTopSync = async (req, res) => {
+  try {
+    await syncWeeklyTop();
+    res.status(200).json({ message: 'Sincronización semanal completada con éxito' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error al ejecutar sincronización', error: err.message });
+  }
+};
+

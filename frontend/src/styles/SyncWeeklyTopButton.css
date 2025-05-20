@@ -1,0 +1,24 @@
+.sync-weekly-top {
+  margin: 1rem 0;
+}
+
+.sync-weekly-top button {
+  background: #1e88e5;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.sync-weekly-top button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.sync-message {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: #90caf9;
+}
