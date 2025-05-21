@@ -7,13 +7,19 @@ import { getAvailabilityFromWatchmode } from './fetchFromWatchmode.js';
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
 const getCurrentMonday = () => {
-  const d = new Date();
-  const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  const monday = new Date(d.setDate(diff));
+  // Obtenemos la hora local de Madrid sin dependencias externas
+  const now = new Date();
+  const local = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' }));
+
+  const day = local.getDay(); // 0 (domingo) a 6 (sábado)
+  const diff = local.getDate() - day + (day === 0 ? -6 : 1);
+  const monday = new Date(local.setDate(diff));
   monday.setHours(0, 0, 0, 0);
-  return monday;
+
+  // Devolvemos como fecha UTC
+  return new Date(monday.toISOString());
 };
+
 
 const syncWeeklyTop = async () => {
   try {

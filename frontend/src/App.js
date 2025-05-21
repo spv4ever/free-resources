@@ -49,6 +49,11 @@ import IgraalDealsPage from './components/IgraalDealsPage';
 import IgraalCouponsPage from './components/IgraalCouponsPage';
 import IgraalCouponAdmin from './components/IgraalCouponAdmin';
 import TopSeriesSyncPage from './pages/admin/TopSeriesSyncPage';
+import TopSeriesHistoryPage from './pages/admin/TopSeriesHistoryPage';
+import SerieDetalle from './pages/SerieDetalle'; // Asegúrate de tenerlo
+
+
+
 
 
 
@@ -91,6 +96,8 @@ function App() {
             <Route path="/admin/igraal-coupons" element={<IgraalCouponAdmin />} />
             <Route path="/generador-anime-prompts" element={<AdminRoute><AnimePromptGenerator /></AdminRoute>} />
             <Route path="/admin/igraal-deals" element={<AdminRoute><IgraalDealsAdmin /></AdminRoute> }/>
+            <Route path="/admin/top-series-history" element={<AdminRoute><TopSeriesHistoryPage /></AdminRoute>} />
+            <Route path="/series/:tmdbId" element={<SerieDetalle />} />
             
 
             <Route path="/admin/top-series-sync" element={<TopSeriesSyncPage />} />

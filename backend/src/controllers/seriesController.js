@@ -59,22 +59,37 @@ export const getSeriesDetails = async (req, res) => {
   }
 };
 
-// 📊 Obtener el top semanal más reciente
+// 📊 Obtener el top semanal más reciente (ajustado automáticamente a Madrid)
 export const getWeeklyTop = async (req, res) => {
   try {
     const { week } = req.query;
 
     let query = {};
+
     if (week) {
-      const monday = new Date(week);
-      monday.setHours(0, 0, 0, 0);
-      query.week = monday;
+      // Convertimos la fecha seleccionada como lunes local en Madrid
+      const madridStart = new Date(
+        new Date(`${week}T00:00:00`).toLocaleString('en-US', { timeZone: 'Europe/Madrid' })
+      );
+
+      madridStart.setHours(0, 0, 0, 0);
+
+      const utcStart = new Date(madridStart.toISOString());
+      const utcEnd = new Date(utcStart);
+      utcEnd.setUTCDate(utcEnd.getUTCDate() + 1);
+
+      query.week = { $gte: utcStart, $lte: utcEnd };
+
+      console.log('🕵️‍♂️ Buscando entre:', utcStart.toISOString(), 'y', utcEnd.toISOString());
     }
 
-    const ranking = await WeeklyTopSeries
-      .findOne(query)
-      .sort({ week: -1 }) // si no hay week, devuelve el más reciente
+    const results = await WeeklyTopSeries
+      .find(query)
+      .sort({ week: -1 })
+      .limit(1)
       .populate('seriesRankings.seriesId');
+
+    const ranking = results[0];
 
     if (!ranking) {
       return res.status(404).json({ message: 'No se encontró ranking para esa semana' });
@@ -93,6 +108,7 @@ export const getWeeklyTop = async (req, res) => {
     res.status(500).json({ message: 'Error al obtener el ranking semanal', error: err.message });
   }
 };
+
 
 
 // 📅 Listar todas las semanas para las que hay ranking semanal
@@ -169,3 +185,31 @@ export const triggerWeeklyTopSync = async (req, res) => {
   }
 };
 
+// 🔄 Actualizar una serie manualmente desde TMDb y Watchmode
+export const updateSeries = async (req, res) => {
+  const { tmdbId } = req.params;
+
+  try {
+    const seriesData = await getSeriesDetailsFromTMDb(tmdbId);
+
+    // Volver a obtener disponibilidad (si tiene imdbId)
+    if (seriesData.imdbId) {
+      const availability = await getAvailabilityFromWatchmode(seriesData.imdbId);
+      seriesData.availability = availability;
+    }
+
+    const updated = await Series.findOneAndUpdate(
+      { tmdbId: parseInt(tmdbId) },
+      seriesData,
+      { new: true, upsert: false } // no crea si no existe
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: 'Serie no encontrada para actualizar' });
+    }
+
+    res.json({ message: 'Serie actualizada correctamente', updated });
+  } catch (err) {
+    res.status(500).json({ message: 'Error al actualizar la serie', error: err.message });
+  }
+};

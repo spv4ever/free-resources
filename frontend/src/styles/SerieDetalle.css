@@ -1,0 +1,342 @@
+.serie-detalle-wrapper {
+  background: #121212;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* HEADER CON BACKDROP */
+.serie-header {
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  height: 500px;
+}
+
+.serie-header-overlay {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.85) 30%, rgba(0, 0, 0, 0.4) 100%);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 2rem;
+}
+
+.serie-header-content {
+  display: flex;
+  gap: 2.5rem;
+  max-width: 1300px;
+  margin: auto;
+}
+
+.serie-cover {
+  width: 260px;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+}
+
+.serie-info-main {
+  flex: 1;
+}
+
+.serie-info-main h1 {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+}
+
+.serie-synopsis {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-height: 11em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.serie-genres {
+  color: #bbb;
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
+.serie-status {
+  margin-top: 0.5rem;
+}
+.serie-platforms-inline {
+  margin-top: 1.5rem;
+}
+
+.serie-platforms-inline h4 {
+  margin-bottom: 0.5rem;
+  color: #ccc;
+  font-weight: 500;
+}
+
+.platform-inline-logos {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.platform-inline-card {
+  background: rgba(255, 255, 255, 0.15); /* ✅ fondo blanco con transparencia */
+  backdrop-filter: blur(6px); /* ✅ efecto glass (frosted glass) */
+  -webkit-backdrop-filter: blur(6px);
+  padding: 0.7rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2); /* sutil borde blanco translúcido */
+}
+.platform-inline-card img {
+  max-height: 40px;
+  max-width: 100%;
+  filter: none; /* ✅ Nada de filtros si el fondo ya ayuda */
+  opacity: 1;
+  transition: transform 0.3s ease;
+}
+
+.platform-inline-card:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* STATS */
+.serie-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 1200px;
+  gap: 1rem;
+}
+
+.serie-stats div {
+  background: #1e1e1e;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* PLATAFORMAS */
+.serie-availability {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+.platform-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.platform-card {
+  background: #1e1e1e;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  width: 120px;
+  transition: transform 0.2s ease;
+  color: #e0e0e0;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  text-decoration: none;
+}
+
+.platform-card img {
+  height: 50px;
+  margin-bottom: 0.5rem;
+  filter: grayscale(60%);
+}
+
+.platform-card:hover img {
+  filter: none;
+  transform: scale(1.1);
+}
+
+.platform-card span {
+  display: block;
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+}
+
+/* EPISODIOS */
+.serie-episodes {
+  max-width: 1000px;
+  margin: 3rem auto;
+  padding: 0 2rem;
+}
+
+.season-block-table {
+  margin-top: 2rem;
+}
+
+.season-block-table h4 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.episode-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  table-layout: fixed; /* Fuerza el ancho definido en columnas */
+}
+
+.episode-table th, 
+.episode-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #333;
+  vertical-align: top;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Ep. */
+.episode-table th:nth-child(1),
+.episode-table td:nth-child(1) {
+  width: 8%;
+  text-align: center;
+}
+
+/* Título */
+.episode-table th:nth-child(2),
+.episode-table td:nth-child(2) {
+  width: 52%;
+  text-align: left;
+}
+
+/* Fecha */
+.episode-table th:nth-child(3),
+.episode-table td:nth-child(3) {
+  width: 28%;
+  text-align: right;
+  white-space: nowrap;
+  padding-right: 1.5rem;
+}
+
+/* Duración */
+.episode-table th:nth-child(4),
+.episode-table td:nth-child(4) {
+  width: 12%;
+  text-align: right;
+  padding-right: 1rem;
+}
+
+.episode-table th {
+  background-color: #2a2a2a;
+  color: #fff;
+}
+
+.episode-table tr:hover {
+  background-color: #292929;
+}
+
+/* Miniatura y sinopsis si se usan */
+.episode-title-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.episode-thumb {
+  width: 100px;
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.episode-overview {
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #bbb;
+  margin-top: 0.3rem;
+}
+.update-serie-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: #1976d2;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.update-serie-button:hover {
+  background: #1565c0;
+}
+
+
+@media screen and (max-width: 768px) {
+  .episode-table {
+    display: none;
+  }
+
+  .season-block-table {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .season-block-table h4 {
+    padding-left: 0.5rem;
+  }
+
+  .episode-card {
+    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+  }
+
+  .episode-card-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .episode-card-title {
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .episode-card-body {
+    font-size: 0.95rem;
+    color: #ccc;
+  }
+
+  .episode-card-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #aaa;
+  }
+}
+
+.episode-mobile-list {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .episode-mobile-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .episode-table {
+    display: none; /* Ocultar tabla solo en móvil */
+  }
+}

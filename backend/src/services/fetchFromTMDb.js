@@ -56,8 +56,10 @@ export const getSeriesDetailsFromTMDb = async (tmdbId) => {
           season: s,
           episode: ep.episode_number,
           title: ep.name,
+          overview: ep.overview || '', // ✅ NUEVO CAMPO
           releaseDate: ep.air_date ? new Date(ep.air_date) : null,
-          duration: ep.runtime || null
+          duration: ep.runtime || null,
+          stillImage: ep.still_path ? `https://image.tmdb.org/t/p/w300${ep.still_path}` : null // ✅ NUEVO
         });
       });
     } catch (err) {

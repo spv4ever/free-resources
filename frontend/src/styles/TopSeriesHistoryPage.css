@@ -1,0 +1,60 @@
+.week-selector {
+  margin-bottom: 1rem;
+}
+
+.week-selector select {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.weekly-top-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.top-series-item {
+  background: #1e1e1e;
+  padding: 0.6rem;
+  border-radius: 8px;
+  text-align: center;
+  color: #e0e0e0;
+}
+
+.top-poster {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.top-title {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.top-rank {
+  font-weight: bold;
+  color: #ff9800;
+}
+
+.top-logo {
+  height: 20px;
+  margin: 0 3px;
+}
+
+.update-serie-button {
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  background: #1976d2;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.update-serie-button:hover {
+  background: #1565c0;
+}

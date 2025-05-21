@@ -8,7 +8,7 @@ import {
   getSeriesWeeklyHistory,
   getTopHistoricalSeries
 } from '../controllers/seriesController.js';
-import { triggerWeeklyTopSync } from '../controllers/seriesController.js';
+import { triggerWeeklyTopSync,updateSeries  } from '../controllers/seriesController.js';
 
 
 const router = express.Router();
@@ -20,6 +20,7 @@ router.get('/weeks', getAvailableWeeks);    // Obtener semanas disponibles
 router.get('/:tmdbId/top-history', getSeriesWeeklyHistory); // Consultar el historial de una serie
 router.get('/top-historical', getTopHistoricalSeries);
 router.post('/sync-weekly-now', triggerWeeklyTopSync);
+router.put('/:tmdbId/update', updateSeries);
 router.get('/:tmdbId', getSeriesDetails);         // Consultar detalles de una serie guardada
 
 

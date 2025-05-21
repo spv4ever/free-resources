@@ -4,8 +4,10 @@ const episodeSchema = new mongoose.Schema({
   season: Number,
   episode: Number,
   title: String,
+  overview: String, // ✅ Nueva propiedad
   releaseDate: Date,
-  duration: Number
+  duration: Number,
+  stillImage: String // ✅ NUEVO
 }, { _id: false });
 
 const availabilitySchema = new mongoose.Schema({
