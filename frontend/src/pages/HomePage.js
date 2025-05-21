@@ -11,6 +11,7 @@ import AdBanner from '../components/AdBanner';
 import { useLocation } from 'react-router-dom';
 import AffiliatePopup from '../components/AffiliatePopup';
 import IgraalDealHighlight from '../components/IgraalDealHighlight';
+import IgraalDiscountHighlight from '../components/IgraalDiscountHighlight';
 import TopSeriesWeekly from '../components/TopSeriesWeekly';
 
 
@@ -119,6 +120,7 @@ function HomePage() {
         <NasaCard />
         <NasaCardVideo />
         <IgraalDealHighlight />
+        <IgraalDiscountHighlight />
         
       </div>
       
