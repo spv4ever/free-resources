@@ -39,6 +39,7 @@ import affiliateClickRoutes from './routes/affiliateClickRoutes.js';
 import igraalDealRoutes from './routes/igraalDealRoutes.js';
 import igraalCouponRoutes from './routes/igraalCouponRoutes.js';
 import seriesRoutes from './routes/seriesRoutes.js';
+import { suspiciousRouteLogger } from './middlewares/suspiciousRoutes.js';
 
 
 
@@ -65,7 +66,7 @@ Object.entries(process.env).forEach(([key, value]) => {
 const app = express();
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://free.keikodev.es','https://keikodev.es'],
+    origin: ['http://localhost:3000', 'https://keikodev.es'],
     credentials: true
   }));
   
@@ -76,7 +77,7 @@ app.use(cors({
     next();
   });
 // Middlewares
-app.use(cors());
+app.use(suspiciousRouteLogger);
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
