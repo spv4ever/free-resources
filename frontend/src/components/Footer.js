@@ -3,7 +3,8 @@ import '../styles/Footer.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter, faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom'; // 👈 Importante
+import { Link } from 'react-router-dom';
+import tmdbLogo from '../assets/tmdb.svg';
 
 function Footer() {
   return (
@@ -24,22 +25,33 @@ function Footer() {
       </div>
 
       <div className="footer-center">
-  <p>© 2025 KeikoDev - Todos los derechos reservados</p>
-  <div className="footer-links-row">
-    <Link to="/aviso-legal">Aviso Legal</Link>
-    <span className="separator">|</span>
-    <Link to="/privacidad">Política de Privacidad</Link>
-    <span className="separator">|</span>
-    <Link to="/cookies">Política de Cookies</Link>
-    <span className="separator">|</span>
-    <button
-      onClick={() => localStorage.removeItem('cookieConsent') || window.location.reload()}
-      className="cookie-button"
-    >
-      Cambiar preferencias de cookies
-    </button>
-  </div>
-</div>
+        <p>© 2025 KeikoDev - Todos los derechos reservados</p>
+        <div className="footer-links-row">
+          <Link to="/aviso-legal">Aviso Legal</Link>
+          <span className="separator">|</span>
+          <Link to="/privacidad">Política de Privacidad</Link>
+          <span className="separator">|</span>
+          <Link to="/cookies">Política de Cookies</Link>
+          <span className="separator">|</span>
+          <button
+            onClick={() => localStorage.removeItem('cookieConsent') || window.location.reload()}
+            className="cookie-button"
+          >
+            Cambiar preferencias de cookies
+          </button>
+        </div>
+      </div>
+
+      <div className="footer-right">
+        <p className="tmdb-text">
+          This product uses the TMDb API but is not endorsed or certified by TMDb.
+        </p>
+          <img
+            src={tmdbLogo}
+            alt="TMDb Logo"
+            className="tmdb-logo"
+          />
+      </div>
     </footer>
   );
 }

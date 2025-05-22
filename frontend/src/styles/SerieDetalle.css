@@ -9,7 +9,7 @@
   background-size: cover;
   background-position: center;
   position: relative;
-  height: 500px;
+  min-height: 500px; /* antes era height: 500px */
 }
 
 .serie-header-overlay {
@@ -29,6 +29,8 @@
 
 .serie-cover {
   width: 260px;
+  height: 390px; /* proporción clásica 2:3 */
+  object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
 }
@@ -135,6 +137,11 @@
   flex-wrap: wrap;
   gap: 1rem;
   margin-top: 1rem;
+}
+
+.platform-inline-card img[src*="unknown.svg"] {
+  width: 128px;
+  height: 128px;
 }
 
 .platform-card {

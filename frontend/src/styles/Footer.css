@@ -5,7 +5,7 @@
   position: relative;
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   font-size: 0.95rem;
   flex-wrap: wrap;
 }
@@ -25,6 +25,30 @@
   text-align: center;
 }
 
+/* ✅ NUEVO: footer-right para atribución TMDb */
+.footer-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  flex: 1;
+  gap: 0.25rem;
+}
+
+/* ✅ Atributo de texto TMDb */
+.tmdb-text {
+  font-size: 0.75rem;
+  color: #aaa;
+  margin: 0;
+}
+
+/* ✅ Logo TMDb */
+.tmdb-logo {
+  height: 28px;
+  margin-top: 0.25rem;
+}
+
+/* ✅ Links */
 .footer a {
   color: #ccc;
   text-decoration: none;
@@ -36,17 +60,19 @@
   color: #fff;
 }
 
+/* Redes sociales */
 .social-links {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
 }
 
+/* Links legales + botón de cookies */
 .footer-links-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: center; /* 👈 añade esto para alinear verticalmente */
+  align-items: center;
   gap: 0.5rem;
   margin-top: 0.5rem;
   font-size: 0.9rem;
@@ -63,8 +89,8 @@
   font-size: inherit;
   padding: 0;
   margin: 0;
-  line-height: 1; /* 👈 evita saltos de línea distintos */
-  display: inline-block; /* 👈 asegura que todos tengan el mismo comportamiento */
+  line-height: 1;
+  display: inline-block;
   font-weight: 500;
   transition: color 0.2s ease;
 }
@@ -78,4 +104,33 @@
 .footer-links-row .separator {
   color: #aaa;
   padding: 0 0.25rem;
+}
+
+/* 📱 Responsive para que todo se apile correctamente */
+@media (max-width: 768px) {
+  .footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-left,
+  .footer-right {
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-center {
+    position: static;
+    transform: none;
+    margin-top: 1rem;
+  }
+
+  .footer-right {
+    margin-top: 1rem;
+  }
+
+  .tmdb-logo {
+    margin: 6px auto 0;
+  }
 }

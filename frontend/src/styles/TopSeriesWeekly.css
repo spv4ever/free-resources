@@ -49,3 +49,23 @@
   height: 20px;
   margin: 0 3px;
 }
+
+.ver-mas-container {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.ver-mas-btn {
+  background-color: #444;
+  color: #eee;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.ver-mas-btn:hover {
+  background-color: #666;
+}

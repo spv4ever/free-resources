@@ -67,7 +67,17 @@ const SerieDetalle = () => {
                 <div className="platform-inline-logos">
                     {serie.availability.map((item, i) => (
                     <a key={i} href={item.url} target="_blank" rel="noreferrer" title={item.platform} className="platform-inline-card">
-                        <img src={getLogoPath(item.platform)} alt={item.platform} />
+                        <img
+                        key={i}
+                        src={getLogoPath(item.platform)}
+                        alt={item.platform}
+                        title={item.platform}
+                        className="top-logo"
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/assets/platforms/unknown.svg';
+                        }}
+                        />
                     </a>
                     ))}
                 </div>
