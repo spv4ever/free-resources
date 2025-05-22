@@ -40,6 +40,8 @@ import igraalDealRoutes from './routes/igraalDealRoutes.js';
 import igraalCouponRoutes from './routes/igraalCouponRoutes.js';
 import seriesRoutes from './routes/seriesRoutes.js';
 import { suspiciousRouteLogger } from './middlewares/suspiciousRoutes.js';
+import { secureHeaders } from './middlewares/secureHeaders.js';
+
 
 
 
@@ -78,7 +80,23 @@ app.use(cors({
   });
 // Middlewares
 app.use(suspiciousRouteLogger);
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    useDefaults: true,
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", 'https://apis.google.com'],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc: ["'self'", 'data:', 'https://*'],
+      connectSrc: ["'self'", 'https://free.keikodev.es', 'https://keikodev.es'],
+    },
+  },
+  referrerPolicy: { policy: 'no-referrer-when-downgrade' },
+  crossOriginEmbedderPolicy: false,
+}));
+
+app.use(secureHeaders); // 🛡️ Añade cabeceras de seguridad personalizadas
 app.use(morgan('dev'));
 app.use(express.json());
 fetchNasaImageDaily();
