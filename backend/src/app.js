@@ -1,4 +1,5 @@
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -42,6 +43,7 @@ import seriesRoutes from './routes/seriesRoutes.js';
 import { suspiciousRouteLogger } from './middlewares/suspiciousRoutes.js';
 import { secureHeaders } from './middlewares/secureHeaders.js';
 import seriesCategoryRoutes from './routes/seriesCategoryRoutes.js';
+import adminSuspiciousRoutes from './routes/adminSuspiciousRoutes.js';
 
 
 
@@ -67,6 +69,18 @@ Object.entries(process.env).forEach(([key, value]) => {
 });
 
 const app = express();
+
+// 🧱 Limitar peticiones por IP (protección básica anti-bots)
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // máximo 100 peticiones por IP
+  message: '⛔ Demasiadas peticiones desde esta IP, inténtalo más tarde.',
+  standardHeaders: true, 
+  legacyHeaders: false,
+});
+
+app.use(generalLimiter);
+
 
 app.use(cors({
     origin: ['http://localhost:3000', 'https://keikodev.es'],
@@ -133,6 +147,7 @@ app.use('/api/igraal-deals', igraalDealRoutes);
 app.use('/api/igraal-coupons', igraalCouponRoutes);
 app.use('/api/series/categories', seriesCategoryRoutes);
 app.use('/api/series', seriesRoutes);
+app.use('/api/admin/suspicious-access', adminSuspiciousRoutes);
 
 
 // app.use((req, res, next) => {

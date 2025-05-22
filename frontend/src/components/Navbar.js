@@ -162,6 +162,7 @@ function Navbar() {
             <li><Link to="/admin/igraal-coupons">🧾 Cupones Igraal</Link></li>
             <li><Link to="/admin/top-series-sync" onClick={toggleSidebar}>🔄 Sincronizar Top Series</Link></li>
             <li><Link to="/admin/top-series-history" onClick={toggleSidebar}>📅 Historial Top Series</Link></li>
+            <li><Link to="/admin/suspicious-access">🔐 Accesos sospechosos</Link></li>
             {/* <li><Link to="/admin/users" onClick={toggleSidebar}>Gestionar Usuarios</Link></li>
             <li><Link to="/admin/orders" onClick={toggleSidebar}>Gestionar Pedidos</Link></li> */}
             <button className="sidebar-close-btn" onClick={toggleSidebar}>Cerrar</button>

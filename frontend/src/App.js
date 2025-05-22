@@ -53,6 +53,8 @@ import TopSeriesHistoryPage from './pages/admin/TopSeriesHistoryPage';
 import SerieDetalle from './pages/SerieDetalle'; // Asegúrate de tenerlo
 import SeriesCategoryList from './pages/SeriesCategoryList';
 import CategorySeriesPage from './pages/CategorySeriesPage';
+import SuspiciousAccessAdmin from './components/SuspiciousAccessAdmin';
+
 
 
 
@@ -108,9 +110,9 @@ function App() {
             {/* <Route path="/admin/social-posts" element={<AdminRoute><div>Hola soy admin</div></AdminRoute>} /> */}
             <Route path="/admin/social-posts" element={<AdminRoute><SocialPostAdmin /></AdminRoute>} />
             <Route path="/admin/affiliate-clicks" element={<AdminRoute><AffiliateClickStatsAdmin /></AdminRoute>}
-/>
+            />
             {/* <Route path="/admin/social-posts" element={<SocialPostAdmin />} /> */}
-
+            <Route path="/admin/suspicious-access" element={<AdminRoute><SuspiciousAccessAdmin /></AdminRoute>} />
             <Route path="/admin/scam-posts" element={<AdminRoute><ScamPostsPage /></AdminRoute>} />
             <Route path="category/:categoryName" element={<CategoryResourcesPage />} />
             <Route path="/media" element={<MediaPage />} />
@@ -135,6 +137,7 @@ function App() {
             <Route path="/chollos" element={<IgraalDealsPage />} />
             <Route path="/cupones" element={<IgraalCouponsPage />} />
             <Route path="/series/categoria/:slug" element={<CategorySeriesPage />} />
+            
 
             
           </Route>
