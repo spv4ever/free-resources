@@ -41,6 +41,7 @@ import igraalCouponRoutes from './routes/igraalCouponRoutes.js';
 import seriesRoutes from './routes/seriesRoutes.js';
 import { suspiciousRouteLogger } from './middlewares/suspiciousRoutes.js';
 import { secureHeaders } from './middlewares/secureHeaders.js';
+import seriesCategoryRoutes from './routes/seriesCategoryRoutes.js';
 
 
 
@@ -130,7 +131,9 @@ app.use('/api/affiliate-links', affiliateLinkRoutes);
 app.use('/api/affiliate-clicks', affiliateClickRoutes);
 app.use('/api/igraal-deals', igraalDealRoutes);
 app.use('/api/igraal-coupons', igraalCouponRoutes);
+app.use('/api/series/categories', seriesCategoryRoutes);
 app.use('/api/series', seriesRoutes);
+
 
 // app.use((req, res, next) => {
 //   try {

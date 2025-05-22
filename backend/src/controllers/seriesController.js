@@ -6,6 +6,7 @@ import {
 import { getAvailabilityFromWatchmode } from '../services/fetchFromWatchmode.js';
 import WeeklyTopSeries from '../models/WeeklyTopSeries.js';
 import syncWeeklyTop from '../services/syncWeeklyTop.js';
+import { ensureCategoryExists } from '../services/ensureCategoryExists.js';
 
 // 🔍 Buscar series en TMDb
 export const searchSeries = async (req, res) => {
@@ -37,6 +38,11 @@ export const importSeries = async (req, res) => {
       const availability = await getAvailabilityFromWatchmode(seriesData.imdbId);
       seriesData.availability = availability;
     }
+
+    if (seriesData.genres?.length > 0) {
+        const categoryId = await ensureCategoryExists(seriesData.genres[0]);
+        seriesData.category = categoryId;
+        }
 
     const newSeries = await Series.create(seriesData);
     res.status(201).json(newSeries);
@@ -198,10 +204,16 @@ export const updateSeries = async (req, res) => {
       seriesData.availability = availability;
     }
 
+    // Asignar categoría si aún no tiene y hay géneros
+    if (seriesData.genres?.length > 0) {
+    const categoryId = await ensureCategoryExists(seriesData.genres[0]);
+    seriesData.category = categoryId;
+    }
+
     const updated = await Series.findOneAndUpdate(
-      { tmdbId: parseInt(tmdbId) },
-      seriesData,
-      { new: true, upsert: false } // no crea si no existe
+    { tmdbId: parseInt(tmdbId) },
+    seriesData,
+    { new: true, upsert: false }
     );
 
     if (!updated) {

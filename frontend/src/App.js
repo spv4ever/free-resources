@@ -51,6 +51,8 @@ import IgraalCouponAdmin from './components/IgraalCouponAdmin';
 import TopSeriesSyncPage from './pages/admin/TopSeriesSyncPage';
 import TopSeriesHistoryPage from './pages/admin/TopSeriesHistoryPage';
 import SerieDetalle from './pages/SerieDetalle'; // Asegúrate de tenerlo
+import SeriesCategoryList from './pages/SeriesCategoryList';
+import CategorySeriesPage from './pages/CategorySeriesPage';
 
 
 
@@ -94,10 +96,12 @@ function App() {
             <Route path="/admin/anime-options" element={<AnimePromptOptionsPage />} />
             <Route path="/admin/affiliate-links" element={<AffiliateLinksAdmin />} />
             <Route path="/admin/igraal-coupons" element={<IgraalCouponAdmin />} />
-            <Route path="/generador-anime-prompts" element={<AdminRoute><AnimePromptGenerator /></AdminRoute>} />
+            {/* <Route path="/generador-anime-prompts" element={<AdminRoute><AnimePromptGenerator /></AdminRoute>} /> */}
+            <Route path="/generador-anime-prompts" element={<AnimePromptGenerator />} />
             <Route path="/admin/igraal-deals" element={<AdminRoute><IgraalDealsAdmin /></AdminRoute> }/>
             <Route path="/admin/top-series-history" element={<AdminRoute><TopSeriesHistoryPage /></AdminRoute>} />
             <Route path="/series/:tmdbId" element={<SerieDetalle />} />
+            <Route path="/series" element={<SeriesCategoryList />} />
             
 
             <Route path="/admin/top-series-sync" element={<TopSeriesSyncPage />} />
@@ -130,6 +134,7 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/chollos" element={<IgraalDealsPage />} />
             <Route path="/cupones" element={<IgraalCouponsPage />} />
+            <Route path="/series/categoria/:slug" element={<CategorySeriesPage />} />
 
             
           </Route>

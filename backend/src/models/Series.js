@@ -1,13 +1,14 @@
+// models/Series.js
 import mongoose from 'mongoose';
 
 const episodeSchema = new mongoose.Schema({
   season: Number,
   episode: Number,
   title: String,
-  overview: String, // ✅ Nueva propiedad
+  overview: String,        // ✅ Descripción del episodio
   releaseDate: Date,
   duration: Number,
-  stillImage: String // ✅ NUEVO
+  stillImage: String       // ✅ Imagen del episodio
 }, { _id: false });
 
 const availabilitySchema = new mongoose.Schema({
@@ -23,17 +24,24 @@ const seriesSchema = new mongoose.Schema({
   synopsis: String,
   image: String,
   backdrop: String,
-  genres: [String],
+  genres: [String],                  // ✅ Géneros desde TMDb
   totalSeasons: Number,
   episodes: [episodeSchema],
   availability: [availabilitySchema],
-  availabilityCheckedAt: Date,  // ✅ última vez que se consultó Watchmode
+  availabilityCheckedAt: Date,      // ✅ Última consulta en Watchmode
   popularity: Number,
-  voteAverage: Number,          // ✅ puntuación media TMDb
-  voteCount: Number,            // ✅ número de votos
-  runtimeAvg: Number,           // ✅ duración media estimada
-  status: String,               // ✅ 'ended', 'running', 'cancelled', etc.
-  topAppearances: { type: Number, default: 0 }, // ✅ veces en el top semanal
+  voteAverage: Number,              // ✅ Puntuación media TMDb
+  voteCount: Number,                // ✅ Número de votos
+  runtimeAvg: Number,               // ✅ Duración media estimada
+  status: String,                   // ✅ 'ended', 'running', 'cancelled', etc.
+  topAppearances: { type: Number, default: 0 }, // ✅ Veces en el top semanal
+
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SeriesCategory',
+    required: false                // ✅ Asignación opcional basada en género
+  },
+
   fetchedAt: { type: Date, default: Date.now }
 });
 
