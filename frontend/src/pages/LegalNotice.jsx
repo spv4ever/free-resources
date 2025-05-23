@@ -20,9 +20,9 @@ const LegalNotice = () => {
     textDecoration: 'none'
   };
 
-  const linkHoverStyle = {
-    textDecoration: 'underline'
-  };
+  // const linkHoverStyle = {
+  //   textDecoration: 'underline'
+  // };
 
   return (
     <div style={containerStyle}>

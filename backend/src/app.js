@@ -44,6 +44,8 @@ import { suspiciousRouteLogger } from './middlewares/suspiciousRoutes.js';
 import { secureHeaders } from './middlewares/secureHeaders.js';
 import seriesCategoryRoutes from './routes/seriesCategoryRoutes.js';
 import adminSuspiciousRoutes from './routes/adminSuspiciousRoutes.js';
+import { createRateLimiter } from './middlewares/rateLimitHandler.js';
+import rateLimitBlockRoutes from './routes/rateLimitBlockRoutes.js';
 
 
 
@@ -70,16 +72,22 @@ Object.entries(process.env).forEach(([key, value]) => {
 
 const app = express();
 
-// 🧱 Limitar peticiones por IP (protección básica anti-bots)
-const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // máximo 100 peticiones por IP
-  message: '⛔ Demasiadas peticiones desde esta IP, inténtalo más tarde.',
-  standardHeaders: true, 
-  legacyHeaders: false,
-});
+// // 🧱 Limitar peticiones por IP (protección básica anti-bots)
+// const generalLimiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutos
+//   max: 100, // máximo 100 peticiones por IP
+//   message: '⛔ Demasiadas peticiones desde esta IP, inténtalo más tarde.',
+//   standardHeaders: true, 
+//   legacyHeaders: false,
+// });
 
-app.use(generalLimiter);
+// Limitar rutas sensibles
+app.use('/api/auth', createRateLimiter({ max: 30, windowMs: 15 * 60 * 1000 }));
+app.use('/api/upload', createRateLimiter({ max: 20, windowMs: 15 * 60 * 1000 }));
+app.use('/api/ai', createRateLimiter({ max: 40, windowMs: 15 * 60 * 1000 }));
+app.use('/api/admin', createRateLimiter({ max: 50, windowMs: 15 * 60 * 1000 }));
+
+// app.use(generalLimiter);
 
 
 app.use(cors({
@@ -148,6 +156,7 @@ app.use('/api/igraal-coupons', igraalCouponRoutes);
 app.use('/api/series/categories', seriesCategoryRoutes);
 app.use('/api/series', seriesRoutes);
 app.use('/api/admin/suspicious-access', adminSuspiciousRoutes);
+app.use('/api/admin/rate-limit-blocks', rateLimitBlockRoutes);
 
 
 // app.use((req, res, next) => {

@@ -1,76 +1,51 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import { saveAs } from 'file-saver';
-
-import '../styles/SuspiciousAccessAdmin.css'; // Estilo sugerido
+import '../styles/SuspiciousAccessAdmin.css';
 
 const SuspiciousAccessAdmin = () => {
-  const [accesses, setAccesses] = useState([]);
+  const [view, setView] = useState('suspicious');
+  const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(50);
   const [total, setTotal] = useState(0);
   const [ipFilter, setIpFilter] = useState('');
-  const [pathFilter, setPathFilter] = useState('');
 
-  const exportToCSV = async () => {
+  const fetchData = useCallback(async () => {
     try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/admin/suspicious-access`, {
-        params: { ip: ipFilter, path: pathFilter, limit: 10000 }, // ⚠️ limite alto para exportar todo
-        });
+      const url =
+        view === 'suspicious'
+          ? '/api/admin/suspicious-access'
+          : '/api/admin/rate-limit-blocks';
 
-        const rows = res.data.results;
-        if (!rows.length) {
-        alert('No hay datos para exportar.');
-        return;
-        }
-
-        const headers = ['Fecha', 'IP', 'Ruta', 'User-Agent'];
-        const csvRows = [
-        headers.join(','),
-        ...rows.map(row => [
-            new Date(row.timestamp).toLocaleString(),
-            `"${row.ip}"`,
-            `"${row.path}"`,
-            `"${row.userAgent.replace(/"/g, '""')}"` // Escapar comillas dobles
-        ].join(','))
-        ];
-
-        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8' });
-        saveAs(blob, 'accesos-sospechosos.csv');
-    } catch (err) {
-        console.error('Error al exportar CSV:', err);
-        alert('Error al exportar datos.');
-    }
-    };
-
-
-  useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/admin/suspicious-access`, {
-        params: { page, limit, ip: ipFilter, path: pathFilter }
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}${url}`, {
+        params: { page, limit, ip: ipFilter }
       });
-      setAccesses(res.data.results);
+
+      setData(res.data.results);
       setTotal(res.data.total);
     } catch (err) {
-      console.error('Error al cargar accesos sospechosos:', err);
+      console.error('Error al cargar registros:', err);
     }
-  };
+  }, [view, page, limit, ipFilter]);
 
-  fetchData();
-}, [page, limit, ipFilter, pathFilter]);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const totalPages = Math.ceil(total / limit);
 
   return (
     <div className="suspicious-admin-container">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
-        <h2>🔒 Accesos sospechosos</h2>
-        <button onClick={exportToCSV} style={{ padding: '0.5rem 1rem', background: '#2e7d32', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
-            📥 Exportar CSV
+      <h2>🛡️ Administración de accesos</h2>
+
+      <div className="suspicious-tabs">
+        <button onClick={() => setView('suspicious')} className={view === 'suspicious' ? 'active' : ''}>
+          🔍 Sospechosos
         </button>
-        </div>
-      
+        <button onClick={() => setView('rate-limit')} className={view === 'rate-limit' ? 'active' : ''}>
+          ⏳ Bloqueos 429
+        </button>
+      </div>
 
       <div className="suspicious-filters">
         <input
@@ -78,12 +53,6 @@ const SuspiciousAccessAdmin = () => {
           placeholder="Filtrar por IP"
           value={ipFilter}
           onChange={e => setIpFilter(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Filtrar por ruta"
-          value={pathFilter}
-          onChange={e => setPathFilter(e.target.value)}
         />
       </div>
 
@@ -93,25 +62,29 @@ const SuspiciousAccessAdmin = () => {
             <th>Fecha</th>
             <th>IP</th>
             <th>Ruta</th>
-            <th>User-Agent</th>
+            {view === 'suspicious' && <th>User-Agent</th>}
           </tr>
         </thead>
         <tbody>
-          {accesses.map(access => (
-            <tr key={access._id}>
-              <td>{new Date(access.timestamp).toLocaleString()}</td>
-              <td>{access.ip}</td>
-              <td>{access.path}</td>
-              <td>{access.userAgent}</td>
+          {data.map(row => (
+            <tr key={row._id}>
+              <td>{new Date(row.timestamp).toLocaleString()}</td>
+              <td>{row.ip}</td>
+              <td>{row.path}</td>
+              {view === 'suspicious' && <td>{row.userAgent}</td>}
             </tr>
           ))}
         </tbody>
       </table>
 
       <div className="pagination-controls">
-        <button disabled={page <= 1} onClick={() => setPage(p => p - 1)}>← Anterior</button>
+        <button disabled={page <= 1} onClick={() => setPage(p => p - 1)}>
+          ← Anterior
+        </button>
         <span>Página {page} de {totalPages}</span>
-        <button disabled={page >= totalPages} onClick={() => setPage(p => p + 1)}>Siguiente →</button>
+        <button disabled={page >= totalPages} onClick={() => setPage(p => p + 1)}>
+          Siguiente →
+        </button>
       </div>
     </div>
   );
