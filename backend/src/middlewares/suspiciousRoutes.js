@@ -8,8 +8,11 @@ export const suspiciousRouteLogger = async (req, res, next) => {
     /^\/wp-/,
     /^\/env$/,
     /^\/\.env$/,
+    /^\/config\.json$/,
+    /^\/admin\/\.git/,
     /^\/config\./,
     /^\/remote\/logincheck/,
+    /^\/recordings\//,
     /^\/global-protect\//
   ];
 
@@ -18,6 +21,8 @@ export const suspiciousRouteLogger = async (req, res, next) => {
     /Chrome\/81\.0\.4044\.129/,
     /Chrome\/10[0-9]\./,
     /Arora/i,
+    /l9explore/i,
+    /UCBrowser/i,
     /Unknown.*UNIX/i,
     /^Mozilla\/5\.0 \(Unknown/i,
     /curl/i,
