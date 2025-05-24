@@ -193,9 +193,7 @@ function Navbar() {
                       📥 Enriquecer 1 Lanzamiento {enrichCount > 0 && <span style={{ color: '#00bfff' }}>({enrichCount})</span>}
                     </button>
                   </li>
-                  <li><Link to="/spacex/launches" onClick={toggleSidebar}>🚀 Próximos Lanzamientos</Link></li>
-                  <li><Link to="/spacex/history" onClick={toggleSidebar}>📜 Historial Lanzamientos</Link></li>
-                  <li><Link to="/spacex/stats" onClick={toggleSidebar}>📊 Estadísticas</Link></li>
+                  <li><Link to="/admin/spacex" onClick={toggleSidebar}>🧩 Gestión de Lanzamientos</Link></li>
                 </>
               )}
             {/* 💰 Afiliados y chollos */}

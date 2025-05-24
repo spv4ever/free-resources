@@ -13,7 +13,35 @@ const FREQ_ENRICH_CALLS_PER_HOUR = parseInt(process.env.FREQ_ENRICH_CALLS_PER_HO
 const API_ALLOWED = MAX_API_CALLS_PER_HOUR - RESERVED_FOR_OTHER_USES;
 const isScriptExecution = process.argv[1].includes('enrichNextLaunch');
 
-async function enrichNextLaunch() {
+function getHighlightedVideo(full) {
+  const isSpaceX = full.launch_service_provider?.name?.toLowerCase() === 'spacex';
+
+  if (!Array.isArray(full.vidURLs)) return null;
+
+  // Prioridad: X/Twitter oficial de SpaceX
+  if (isSpaceX) {
+    const xUrl = full.vidURLs.find(v =>
+      v.url.includes('twitter.com') || v.url.includes('x.com')
+    );
+    if (xUrl) return xUrl.url;
+  }
+
+  // Luego YouTube SpaceX
+  const ytOfficial = full.vidURLs.find(v =>
+    v.url.includes('youtube.com') &&
+    (v.url.toLowerCase().includes('spacex') || v.url.includes('@spacex'))
+  );
+  if (ytOfficial) return ytOfficial.url;
+
+  // Luego cualquier YouTube
+  const ytAny = full.vidURLs.find(v => v.url.includes('youtube.com'));
+  if (ytAny) return ytAny.url;
+
+  // Si no, el primero que exista
+  return full.vidURLs[0]?.url || full.webcast || null;
+}
+
+async function enrichNextLaunch(launchId = null) {
   if (FREQ_ENRICH_CALLS_PER_HOUR > API_ALLOWED) {
     console.warn('⏸️ No hay suficientes slots de API disponibles. Reduce FREQ_ENRICH_CALLS_PER_HOUR.');
     return;
@@ -23,7 +51,10 @@ async function enrichNextLaunch() {
     if (isScriptExecution) await mongoose.connect(process.env.MONGO_URI);
     console.log('[🔁] Conectado a MongoDB');
 
-    const launch = await SpacexLaunch.findOne({ isEnriched: { $ne: true } }).sort({ net: 1 });
+    const launch = launchId
+      ? await SpacexLaunch.findById(launchId)
+      : await SpacexLaunch.findOne({ isEnriched: { $ne: true } }).sort({ net: 1 });
+
     if (!launch) {
       console.log('✅ No hay lanzamientos pendientes de enriquecer.');
       if (isScriptExecution) await mongoose.disconnect();
@@ -45,42 +76,41 @@ async function enrichNextLaunch() {
       : [];
 
     await SpacexLaunch.findOneAndUpdate(
-        { id },
-        {
-            $set: {
-            id: full.id,
-            name: full.name,
-            net: full.net,
-            status: full.status,
-            image: full.image || null,
-            webcast: full.vidURLs?.[0]?.url || null,
-            vidURLs: full.vidURLs || [],
-            mission_patches: full.mission_patches || [],
-            updates: full.updates || [],
-            timeline: cleanedTimeline,
-            pad: full.pad
-                ? {
-                    name: full.pad.name || '',
-                    location: {
-                    name: full.pad.location?.name || '',
-                    country_code: full.pad.location?.country_code || ''
-                    },
-                    latitude: full.pad.latitude || null,
-                    longitude: full.pad.longitude || null
-                }
-                : null,
-            rocket: full.rocket || null,
-            mission: full.mission || null,
-            launch_service_provider: full.launch_service_provider || null,
-            spacecraft: full.rocket?.spacecraft_stage?.spacecraft || null,
-            rocketName: full.rocket?.configuration?.name || '',
-            upcoming: ![3, 4, 5, 6, 7].includes(full.status?.id),
-            last_updated: new Date(),
-            isEnriched: true
-            }
-        },
-        { upsert: true, new: true }
-        );
+      { id },
+      {
+        $set: {
+          id: full.id,
+          name: full.name,
+          net: full.net,
+          status: full.status,
+          image: full.image || null,
+          webcast: getHighlightedVideo(full),
+          highlightedVideo: getHighlightedVideo(full),
+          vidURLs: full.vidURLs || [],
+          mission_patches: full.mission_patches || [],
+          updates: full.updates || [],
+          timeline: cleanedTimeline,
+          pad: full.pad ? {
+            name: full.pad.name || '',
+            location: {
+              name: full.pad.location?.name || '',
+              country_code: full.pad.location?.country_code || ''
+            },
+            latitude: full.pad.latitude || null,
+            longitude: full.pad.longitude || null
+          } : null,
+          rocket: full.rocket || null,
+          mission: full.mission || null,
+          launch_service_provider: full.launch_service_provider || null,
+          spacecraft: full.rocket?.spacecraft_stage?.spacecraft || null,
+          rocketName: full.rocket?.configuration?.name || '',
+          upcoming: ![3, 4, 5, 6, 7].includes(full.status?.id),
+          last_updated: new Date(),
+          isEnriched: true
+        }
+      },
+      { upsert: true, new: true }
+    );
 
     console.log(`✅ Enriquecido: ${full.name}`);
     if (isScriptExecution) await mongoose.disconnect();
@@ -89,6 +119,7 @@ async function enrichNextLaunch() {
     if (isScriptExecution) await mongoose.disconnect();
   }
 }
+
 
 // Ejecutar si se llama directamente
 if (isScriptExecution) {

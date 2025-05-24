@@ -22,7 +22,7 @@ import youtubeChannelRoutes from './routes/youtubeChannelRoutes.js';
 import trainingResourceRoutes from './routes/trainingResourceRoutes.js';
 import shortCategoryRoutes from './routes/shortCategoryRoutes.js';
 import viralShortRoutes from './routes/viralShortRoutes.js';
-import spacexRoutes from './routes/spacexRoutes.js';
+
 import gmailRoutes from './routes/gmailRoutes.js';
 import { runScheduledImports } from './services/emailScheduler.js';
 import emailContextsRoutes from './routes/emailContexts.js';
@@ -48,6 +48,8 @@ import { createRateLimiter } from './middlewares/rateLimitHandler.js';
 import rateLimitBlockRoutes from './routes/rateLimitBlockRoutes.js';
 import adminEnrichRoute from './routes/adminEnrichRoute.js';
 import { startEnrichSpacexJob } from './jobs/enrichSpacexJob.js';
+import spacexPublicRoutes from './routes/spacexPublicRoutes.js';
+import spacexAdminRoutes from './routes/spacexAdminRoutes.js';
 
 
 
@@ -141,7 +143,6 @@ app.use('/api/youtube-channels', youtubeChannelRoutes);
 app.use('/api/training-resources', trainingResourceRoutes);
 app.use('/api/short-categories', shortCategoryRoutes);
 app.use('/api/viral-shorts', viralShortRoutes);
-app.use('/api/spacex', spacexRoutes);
 app.use('/api/gmail', gmailRoutes);
 app.use('/api/admin/email-contexts', emailContextsRoutes);
 app.use('/api/scam-posts', scamPostRoutes);
@@ -160,6 +161,8 @@ app.use('/api/series', seriesRoutes);
 app.use('/api/admin/suspicious-access', adminSuspiciousRoutes);
 app.use('/api/admin/rate-limit-blocks', rateLimitBlockRoutes);
 app.use('/api', adminEnrichRoute);
+app.use('/api/spacex', spacexPublicRoutes);
+app.use('/api/admin', spacexAdminRoutes);
 
 
 

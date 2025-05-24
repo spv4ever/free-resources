@@ -55,6 +55,8 @@ import SeriesCategoryList from './pages/SeriesCategoryList';
 import CategorySeriesPage from './pages/CategorySeriesPage';
 import SuspiciousAccessAdmin from './components/SuspiciousAccessAdmin';
 import LaunchDetail from './pages/LaunchDetail';
+import SpacexLaunchAdmin from './pages/admin/SpacexLaunchAdmin';
+
 
 
 
@@ -105,6 +107,7 @@ function App() {
             <Route path="/admin/top-series-history" element={<AdminRoute><TopSeriesHistoryPage /></AdminRoute>} />
             <Route path="/series/:tmdbId" element={<SerieDetalle />} />
             <Route path="/series" element={<SeriesCategoryList />} />
+            <Route path="/admin/spacex" element={<SpacexLaunchAdmin />} />
             
 
             <Route path="/admin/top-series-sync" element={<TopSeriesSyncPage />} />

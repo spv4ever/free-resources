@@ -181,3 +181,84 @@ export const handleEnrichOneLaunch = async (req, res) => {
     res.status(500).json({ message: 'Error al enriquecer lanzamiento', error: err.message });
   }
 };
+
+// 🔍 Obtener todos los lanzamientos (para administración)
+export const getAllLaunchesAdmin = async (req, res) => {
+  try {
+    const launches = await SpacexLaunch.find().sort({ net: -1 });
+    res.json(launches);
+  } catch (err) {
+    res.status(500).json({ message: 'Error al obtener lanzamientos', error: err.message });
+  }
+};
+
+// ✏️ Actualizar enlace manual del webcast
+function extractYouTubeEmbedUrl(url) {
+  if (!url) return null;
+  const match = url.match(/(?:v=|\.be\/|embed\/)([^&?/]+)/);
+  return match ? `https://www.youtube.com/embed/${match[1]}` : null;
+}
+
+
+export const updateWebcastManual = async (req, res) => {
+  const { id } = req.params;
+  const { webcastManual } = req.body;
+
+  const embedUrl = extractYouTubeEmbedUrl(webcastManual);
+
+  try {
+    await SpacexLaunch.findByIdAndUpdate(id, {
+      webcastManual,
+      webcastManualEmbed: embedUrl,
+    });
+    res.json({ message: '✅ Webcast actualizado correctamente' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error al actualizar webcast', error: err.message });
+  }
+};
+
+export const generateYoutubePost = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const launch = await SpacexLaunch.findById(id);
+    if (!launch) return res.status(404).json({ message: 'Lanzamiento no encontrado' });
+
+    const title = `Lanzamiento SpaceX: ${launch.name} (${new Date(launch.net).toUTCString()})`;
+
+    const description = `🚀 ${launch.name}
+🛰 Misión: ${launch.mission?.name || 'Sin nombre'}
+📌 Tipo: ${launch.mission?.type || 'Desconocido'}
+🌍 Órbita: ${launch.mission?.orbit?.name || 'N/A'}
+📍 Plataforma: ${launch.pad?.name || 'Desconocido'}, ${launch.pad?.location?.name || 'N/A'}
+
+📺 Webcast original: ${launch.webcast || 'No disponible'}
+
+Este video se ofrece como rehost para fines educativos e informativos.
+No somos los propietarios del contenido del webcast original.
+Todo el crédito pertenece a sus respectivos creadores.
+
+Generado automáticamente por KeikoDev.es`;
+
+    const tags = [
+      'SpaceX',
+      'Falcon 9',
+      launch.mission?.name,
+      launch.rocket?.configuration?.full_name,
+      launch.pad?.location?.name,
+      'Lanzamiento espacial',
+      'Space launch',
+      'KeikoDev'
+    ].filter(Boolean);
+
+    await SpacexLaunch.findByIdAndUpdate(id, {
+      youtubePost: { title, description, tags }
+    });
+
+    res.status(200).json({ message: 'Post generado y guardado', youtubePost: { title, description, tags } });
+  } catch (err) {
+    console.error('❌ Error al generar post:', err);
+    res.status(500).json({ message: 'Error interno', error: err.message });
+  }
+};
+

@@ -1,5 +1,11 @@
 import mongoose from 'mongoose';
 
+const youtubePostSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  tags: [String]
+}, { _id: false });
+
 const timelineItemSchema = new mongoose.Schema({
   type: {
     id: Number,
@@ -38,6 +44,7 @@ const spacexLaunchSchema = new mongoose.Schema({
       image_url: String
     }
   ],
+  highlightedVideo: String, // URL más representativa (ej. X oficial o YouTube oficial)
 
   updates: [
     {
@@ -59,7 +66,12 @@ const spacexLaunchSchema = new mongoose.Schema({
     latitude: Number,
     longitude: Number
   },
-
+  webcastManual: {
+    type: String,
+    default: null // Enlace personalizado que se mostrará como principal si existe
+  },
+  webcastManualEmbed: { type: String, default: null }, // 👈 nuevo
+  youtubePost: youtubePostSchema,
   rocket: {
     configuration: {
       full_name: String,

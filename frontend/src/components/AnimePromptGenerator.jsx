@@ -233,7 +233,21 @@ const AnimePromptGenerator = () => {
             color: '#fff',
         }),
         };
+        const downloadGeneratedCSV = () => {
+            if (!prompts.length) return;
 
+            const header = 'Prompt\n';
+            const content = prompts.map(p => `"${p.replace(/"/g, '""')}"`).join('\n');
+            const blob = new Blob([header + content], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'prompts_generados.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            };
     return (
     <div className="anime-generator-container">
         <h1 className="anime-generator-title">🎨 Generador de Prompts Anime</h1>
@@ -354,9 +368,9 @@ const AnimePromptGenerator = () => {
         {error && <p className="error-msg">{error}</p>}
 
         {prompts.length > 0 && (
-        <div className="prompt-preview">
-            <h3>📝 Vista previa de prompts generados:</h3>
-            <ul className="prompt-list">
+            <div className="prompt-preview">
+                <h3>📝 Vista previa de prompts generados:</h3>
+                <ul className="prompt-list">
                 {prompts.map((line, idx) => (
                     <li key={idx} className="prompt-line">
                     <span>{line}</span>
@@ -365,24 +379,45 @@ const AnimePromptGenerator = () => {
                 ))}
                 </ul>
 
-            <button
-            className="download-button"
-            onClick={() => {
-                const params = new URLSearchParams({ n, format: 'csv' });
-                if (characterId) params.append('characterId', characterId);
-                else {
-                if (customName) params.append('characterName', customName);
-                if (customFrom) params.append('characterFrom', customFrom);
-                }
-                if (nsfwOnly) params.append('nsfwOnly', 'true');
-                const downloadUrl = `${process.env.REACT_APP_API_URL}/api/anime-prompts/random?${params}`;
-                window.open(downloadUrl, '_blank');
-            }}
-            >
-            📥 Descargar CSV
-            </button>
-        </div>
-        )}
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+                <button
+                    className="download-button"
+                    onClick={() => {
+                    const params = new URLSearchParams({ n, format: 'csv' });
+                    if (characterId) params.append('characterId', characterId);
+                    else {
+                        if (customName) params.append('characterName', customName);
+                        if (customFrom) params.append('characterFrom', customFrom);
+                    }
+                    if (nsfwOnly) params.append('nsfwOnly', 'true');
+                    const downloadUrl = `${process.env.REACT_APP_API_URL}/api/anime-prompts/random?${params}`;
+                    window.open(downloadUrl, '_blank');
+                    }}
+                >
+                    📥 Descargar CSV
+                </button>
+
+                <button
+                    className="download-button"
+                    onClick={() => {
+                    if (!prompts.length) return;
+                    const header = 'Prompt\n';
+                    const content = prompts.map(p => `"${p.replace(/"/g, '""')}"`).join('\n');
+                    const blob = new Blob([header + content], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', 'prompts_generados.csv');
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    }}
+                >
+                    📄 Descargar CSV Generado
+                </button>
+                </div>
+            </div>
+            )}
     </div>
     </div>
     );

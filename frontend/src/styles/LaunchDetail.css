@@ -150,3 +150,23 @@
   border-left: 4px solid #00bfff;
   font-size: 0.95rem;
 }
+
+.twitter-video-box {
+  background: #1da1f2;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.twitter-link-button {
+  background: white;
+  color: #1da1f2;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 0.5rem;
+}

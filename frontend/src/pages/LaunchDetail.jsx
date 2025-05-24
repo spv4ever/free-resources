@@ -8,6 +8,7 @@ const LaunchDetail = () => {
   const { id } = useParams();
   const [launch, setLaunch] = useState(null);
   const [loading, setLoading] = useState(true);
+  
 
     useEffect(() => {
     const fetchLaunch = async () => {
@@ -44,6 +45,8 @@ const LaunchDetail = () => {
     vidURLs,
     updates,
   } = launch;
+  const mainVideo = launch.webcastManualEmbed || launch.highlightedVideo || vidURLs?.[0]?.url || webcast;
+
 
   return (
     <div className="launch-detail">
@@ -64,29 +67,37 @@ const LaunchDetail = () => {
       )}
 
       {/* Video embebido o link */}
-      {(vidURLs?.length > 0 || webcast) && (
-        <section className="video-section">
-          <h2>🎥 Webcast</h2>
-          {vidURLs?.[0]?.url?.includes('youtube.com') ? (
-            <iframe
-              width="100%"
-              height="400"
-              src={vidURLs[0].url.replace('watch?v=', 'embed/')}
-              title="Video del lanzamiento"
-              allowFullScreen
-            ></iframe>
-          ) : (
+      {mainVideo?.includes('youtube.com') || mainVideo?.includes('youtu.be') ? (
+          <iframe
+            width="100%"
+            height="400"
+            src={mainVideo.replace('watch?v=', 'embed/')}
+            title="Video del lanzamiento"
+            allowFullScreen
+          ></iframe>
+        ) : mainVideo?.includes('x.com') || mainVideo?.includes('twitter.com') ? (
+          <div className="twitter-video-box">
+            <p>🎥 Video oficial en X:</p>
             <a
-              href={vidURLs?.[0]?.url || webcast}
+              href={mainVideo}
               target="_blank"
               rel="noreferrer"
-              className="video-link"
+              className="twitter-link-button"
             >
-              Ver video del lanzamiento
+              Ver en X (Twitter)
             </a>
-          )}
-        </section>
-      )}
+          </div>
+        ) : (
+          <a
+            href={mainVideo}
+            target="_blank"
+            rel="noreferrer"
+            className="video-link"
+          >
+            Ver video del lanzamiento
+          </a>
+        )}
+
 
       <section>
         <h2>🗓 Información básica</h2>
