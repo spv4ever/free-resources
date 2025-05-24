@@ -1,6 +1,7 @@
 
 import axios from 'axios';
 import SpacexLaunch from '../models/SpacexLaunch.js';
+import enrichNextLaunch from '../scripts/enrichNextLaunch.js';
 
 const API_URL = 'https://ll.thespacedevs.com/2.2.0/launch/upcoming/?lsp__name=SpaceX&limit=10';
 
@@ -119,7 +120,7 @@ export async function getSpacexLaunches(req, res) {
 // 4. Obtener lanzamientos históricos
 export async function getSpacexHistory(req, res) {
   try {
-    const launches = await SpacexLaunch.find({ upcoming: false }).sort({ net: -1 }).limit(24);
+    const launches = await SpacexLaunch.find({ upcoming: false }).sort({ net: -1 }).limit(60);
     res.json(launches);
   } catch (err) {
     res.status(500).json({ error: 'Error fetching history' });
@@ -159,5 +160,24 @@ export const getLaunchById = async (req, res) => {
     res.json(launch);
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener lanzamiento', error: error.message });
+  }
+};
+
+
+export const getPendingEnrichCount = async (req, res) => {
+  try {
+    const count = await SpacexLaunch.countDocuments({ isEnriched: { $ne: true } });
+    res.json({ count });
+  } catch (err) {
+    res.status(500).json({ error: 'Error al contar lanzamientos sin enriquecer' });
+  }
+};
+
+export const handleEnrichOneLaunch = async (req, res) => {
+  try {
+    await enrichNextLaunch(false); // ❗ No cerrar conexión aquí
+    res.json({ message: 'Lanzamiento enriquecido correctamente' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error al enriquecer lanzamiento', error: err.message });
   }
 };

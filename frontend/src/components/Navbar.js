@@ -11,6 +11,22 @@ function Navbar() {
   const [submenuAnimeOpen, setSubmenuAnimeOpen] = useState(false);
   const [submenuSeriesOpen, setSubmenuSeriesOpen] = useState(false);
   const [submenuAffiliateOpen, setSubmenuAffiliateOpen] = useState(false)
+  const [submenuSpacexOpen, setSubmenuSpacexOpen] = useState(false);
+  const [enrichCount, setEnrichCount] = useState(0);
+
+  useEffect(() => {
+    const fetchPendingEnrich = async () => {
+      try {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/spacex/pending-enrich`);
+        const data = await res.json();
+        setEnrichCount(data.count || 0);
+      } catch (err) {
+        console.error('Error al contar pendientes de enriquecer:', err);
+      }
+    };
+    fetchPendingEnrich();
+  }, []);
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -68,6 +84,19 @@ function Navbar() {
       alert('❌ Error al forzar la imagen de la NASA');
     }
   };
+
+  const handleEnrich = async () => {
+  try {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/enrich-one-launch`, {
+      method: 'POST'
+    });
+    const data = await res.json();
+    alert(data.message || 'Enriquecimiento ejecutado');
+  } catch (err) {
+    console.error('Error al enriquecer:', err);
+    alert('❌ Error al enriquecer el lanzamiento');
+  }
+};
 
   return (
     <nav className="navbar">
@@ -151,7 +180,24 @@ function Navbar() {
                 <li><Link to="/admin/top-series-history" onClick={toggleSidebar}>📅 Historial Top Series</Link></li>
               </>
             )}
-
+            {/* 🚀 SpaceX */}
+              <li>
+                <button onClick={() => setSubmenuSpacexOpen(!submenuSpacexOpen)}>
+                  🚀 SpaceX {submenuSpacexOpen ? '▲' : '▼'}
+                </button>
+              </li>
+              {submenuSpacexOpen && (
+                <>
+                  <li>
+                    <button onClick={handleEnrich} className="admin-link-button">
+                      📥 Enriquecer 1 Lanzamiento {enrichCount > 0 && <span style={{ color: '#00bfff' }}>({enrichCount})</span>}
+                    </button>
+                  </li>
+                  <li><Link to="/spacex/launches" onClick={toggleSidebar}>🚀 Próximos Lanzamientos</Link></li>
+                  <li><Link to="/spacex/history" onClick={toggleSidebar}>📜 Historial Lanzamientos</Link></li>
+                  <li><Link to="/spacex/stats" onClick={toggleSidebar}>📊 Estadísticas</Link></li>
+                </>
+              )}
             {/* 💰 Afiliados y chollos */}
             <li>
               <button onClick={() => setSubmenuAffiliateOpen(!submenuAffiliateOpen)}>

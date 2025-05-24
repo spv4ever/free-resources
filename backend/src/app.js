@@ -46,6 +46,8 @@ import seriesCategoryRoutes from './routes/seriesCategoryRoutes.js';
 import adminSuspiciousRoutes from './routes/adminSuspiciousRoutes.js';
 import { createRateLimiter } from './middlewares/rateLimitHandler.js';
 import rateLimitBlockRoutes from './routes/rateLimitBlockRoutes.js';
+import adminEnrichRoute from './routes/adminEnrichRoute.js';
+import { startEnrichSpacexJob } from './jobs/enrichSpacexJob.js';
 
 
 
@@ -157,6 +159,8 @@ app.use('/api/series/categories', seriesCategoryRoutes);
 app.use('/api/series', seriesRoutes);
 app.use('/api/admin/suspicious-access', adminSuspiciousRoutes);
 app.use('/api/admin/rate-limit-blocks', rateLimitBlockRoutes);
+app.use('/api', adminEnrichRoute);
+
 
 
 // app.use((req, res, next) => {
@@ -173,6 +177,7 @@ app.use('/api/admin/rate-limit-blocks', rateLimitBlockRoutes);
 import './jobs/spaceXJob.js';
 import './jobs/igraalJob.js';
 import './jobs/syncWeeklyTop.js'; // activa el cronjob semanal
+startEnrichSpacexJob();
 // import './jobs/index.js';
 
 

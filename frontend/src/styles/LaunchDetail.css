@@ -10,35 +10,53 @@
 
 .launch-detail h1 {
   font-size: 2rem;
-  margin-bottom: 1rem;
   color: #ffffff;
+  margin-bottom: 1rem;
   text-align: center;
 }
 
 .launch-detail h2 {
-  margin-top: 2rem;
-  margin-bottom: 0.6rem;
   font-size: 1.3rem;
-  color: #90caf9;
+  margin-top: 2rem;
+  margin-bottom: 0.8rem;
   border-bottom: 1px solid #333;
   padding-bottom: 0.3rem;
+  color: #90caf9;
+}
+
+.launch-detail section {
+  margin-bottom: 2rem;
 }
 
 .launch-detail p {
-  margin: 0.4rem 0;
+  margin: 0.3rem 0;
 }
 
-.launch-detail strong {
-  color: #ffffff;
+.launch-detail a {
+  color: #00bfff;
+  text-decoration: none;
+}
+
+.launch-detail a:hover {
+  text-decoration: underline;
+}
+
+.launch-image {
+  width: 100%;
+  max-height: 350px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin: 1rem 0 2rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .mission-patch {
   display: block;
-  width: 100%;
-  max-width: 400px;
-  border-radius: 12px;
-  margin: 1rem auto 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  width: 150px;
+  margin: 0 auto 2rem;
+  border-radius: 8px;
+  background-color: #1e1e1e;
+  padding: 0.5rem;
 }
 
 .video-section {
@@ -46,17 +64,89 @@
   text-align: center;
 }
 
-.video-section a {
+.video-section iframe {
+  border: none;
+  border-radius: 10px;
+  margin-top: 0.5rem;
+}
+
+.video-link {
   display: inline-block;
   background-color: #00bfff;
   color: #ffffff;
-  text-decoration: none;
   padding: 0.6rem 1.2rem;
   border-radius: 6px;
   font-weight: bold;
-  transition: background-color 0.3s ease;
+  margin-top: 0.8rem;
 }
 
-.video-section a:hover {
-  background-color: #009acd;
+.timeline {
+  list-style: none;
+  padding-left: 0;
+  border-left: 2px solid #444;
+  margin-top: 1rem;
+}
+
+.timeline li {
+  padding: 0.5rem 1rem;
+  margin-left: -0.5rem;
+  border-left: 3px solid #00bfff;
+  margin-bottom: 0.6rem;
+}
+
+.timecode {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-left: 0.5rem;
+}
+
+.updates {
+  list-style: none;
+  padding-left: 0;
+}
+
+.updates li {
+  background: #1f1f1f;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  box-shadow: 0 0 10px rgba(0, 191, 255, 0.1);
+}
+
+.profile-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #333;
+}
+
+.updates a {
+  color: #00bfff;
+  font-size: 0.9rem;
+  display: inline-block;
+  margin-top: 0.3rem;
+}
+
+.timeline-section {
+  margin-top: 2rem;
+}
+
+.timeline-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.timeline-list li {
+  background-color: #1f1f1f;
+  margin-bottom: 0.5rem;
+  padding: 0.8rem;
+  border-radius: 8px;
+  color: #e0e0e0;
+  border-left: 4px solid #00bfff;
+  font-size: 0.95rem;
 }

@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/LaunchDetail.css';
+import LaunchTimeline from '../components/LaunchTimeline';
 
 const LaunchDetail = () => {
   const { id } = useParams();
   const [launch, setLaunch] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+    useEffect(() => {
     const fetchLaunch = async () => {
       try {
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/spacex/launch/${id}`);
@@ -35,18 +36,56 @@ const LaunchDetail = () => {
     pad,
     rocket,
     mission,
-    launch_service_provider,
     spacecraft,
+    launch_service_provider,
     upcoming,
-    last_updated
+    last_updated,
+    mission_patches,
+    vidURLs,
+    updates,
   } = launch;
 
   return (
     <div className="launch-detail">
       <h1>{name}</h1>
 
+      {/* Imagen principal */}
       {image && (
-        <img src={image} alt={`Patch del lanzamiento ${name}`} className="mission-patch" />
+        <img src={image} alt={`Lanzamiento ${name}`} className="launch-image" />
+      )}
+
+      {/* Parche de misión */}
+      {mission_patches?.length > 0 && (
+        <img
+          src={mission_patches[0].image_url}
+          alt="Misión Patch"
+          className="mission-patch"
+        />
+      )}
+
+      {/* Video embebido o link */}
+      {(vidURLs?.length > 0 || webcast) && (
+        <section className="video-section">
+          <h2>🎥 Webcast</h2>
+          {vidURLs?.[0]?.url?.includes('youtube.com') ? (
+            <iframe
+              width="100%"
+              height="400"
+              src={vidURLs[0].url.replace('watch?v=', 'embed/')}
+              title="Video del lanzamiento"
+              allowFullScreen
+            ></iframe>
+          ) : (
+            <a
+              href={vidURLs?.[0]?.url || webcast}
+              target="_blank"
+              rel="noreferrer"
+              className="video-link"
+            >
+              Ver video del lanzamiento
+            </a>
+          )}
+        </section>
       )}
 
       <section>
@@ -89,6 +128,9 @@ const LaunchDetail = () => {
           <p><strong>Nombre:</strong> {pad.name}</p>
           <p><strong>Ubicación:</strong> {pad.location?.name} ({pad.location?.country_code})</p>
           <p><strong>Coordenadas:</strong> {pad.latitude}, {pad.longitude}</p>
+          {pad.map_url && (
+            <a href={pad.map_url} target="_blank" rel="noreferrer">Ver en mapa</a>
+          )}
         </section>
       )}
 
@@ -100,10 +142,44 @@ const LaunchDetail = () => {
         </section>
       )}
 
-      {webcast && (
-        <section className="video-section">
-          <h2>🎥 Webcast</h2>
-          <a href={webcast} target="_blank" rel="noreferrer">Ver video del lanzamiento</a>
+      {/* Timeline del vuelo */}
+      {/* {launch.timeline && launch.timeline.length > 0 && (
+        <section className="timeline-section">
+          <h2>🕒 Cronología del lanzamiento</h2>
+          <ul className="timeline-list">
+            {launch.timeline.map((event, i) => (
+              <li key={i}>
+                <strong>{formatRelativeTime(event.relative_time)}</strong>: <em>{event.type?.abbrev}</em> – {event.type?.description}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )} */}
+      {launch.timeline?.length > 0 && (
+        <section>
+          <h2>🕒 Cronología del Lanzamiento</h2>
+          <LaunchTimeline timeline={launch.timeline} isPast={!launch.upcoming} />
+        </section>
+      )}
+
+      {/* Actualizaciones estilo Twitter */}
+      {updates?.length > 0 && (
+        <section>
+          <h2>📢 Actualizaciones</h2>
+          <ul className="updates">
+            {updates.map((u, i) => (
+              <li key={i}>
+                <img src={u.profile_image} alt="user" className="profile-img" />
+                <div>
+                  <p><strong>{u.created_by}</strong> — {new Date(u.created_on).toLocaleString()}</p>
+                  <p>{u.comment}</p>
+                  {u.info_url && (
+                    <a href={u.info_url} target="_blank" rel="noreferrer">Fuente</a>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
         </section>
       )}
     </div>
