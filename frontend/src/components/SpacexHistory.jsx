@@ -1,5 +1,6 @@
-
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import '../styles/SpacexHistory.css';
 
 const SpacexHistory = () => {
   const [history, setHistory] = useState([]);
@@ -20,11 +21,13 @@ const SpacexHistory = () => {
   return (
     <div className="spacex-history">
       {history.map((launch, i) => (
-        <div key={i} className="history-card">
-          <h4>{launch.name}</h4>
-          <p>{new Date(launch.net).toLocaleString()}</p>
-          <p>Estado: {launch.status?.name}</p>
-        </div>
+        <Link to={`/launch/${launch._id}`} key={i} className="history-card-link">
+          <div className="history-card">
+            <h4>{launch.name}</h4>
+            <p>{new Date(launch.net).toLocaleString()}</p>
+            <p>Estado: {launch.status?.name}</p>
+          </div>
+        </Link>
       ))}
     </div>
   );

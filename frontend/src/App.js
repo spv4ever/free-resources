@@ -54,6 +54,7 @@ import SerieDetalle from './pages/SerieDetalle'; // Asegúrate de tenerlo
 import SeriesCategoryList from './pages/SeriesCategoryList';
 import CategorySeriesPage from './pages/CategorySeriesPage';
 import SuspiciousAccessAdmin from './components/SuspiciousAccessAdmin';
+import LaunchDetail from './pages/LaunchDetail';
 
 
 
@@ -122,7 +123,7 @@ function App() {
             <Route path="/youtube-channels/:id" element={<ChannelVideosPage />} />
             <Route path="viral-shorts" element={<ViralShorts />} /> {/* 👈 Nueva ruta */}
             <Route path="/viral-shorts/:categoryId" element={<ViralShortsCategory />} />
-
+            <Route path="/launch/:id" element={<LaunchDetail />} />
             <Route path="training" element={<TrainingPage />} />
             <Route path="/curso/corel-draw" element={<CorelDrawCursoPage />} />
             <Route path="/spacex" element={<SpaceXPage />} />

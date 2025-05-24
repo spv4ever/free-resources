@@ -48,19 +48,57 @@ export async function updateSpacexLaunches() {
     await SpacexLaunch.findOneAndUpdate(
       { id: l.id },
       {
+        id: l.id,
         name: l.name,
         net: l.net,
         status: l.status,
         image: l.image || null,
-        webcast: l.webcast,
-        pad: l.pad,
-        last_updated: new Date(),
+        webcast: l.vidURLs?.[0] || null,
+        pad: {
+          name: l.pad?.name || '',
+          location: {
+            name: l.pad?.location?.name || '',
+            country_code: l.pad?.location?.country_code || ''
+          },
+          latitude: l.pad?.latitude || null,
+          longitude: l.pad?.longitude || null
+        },
+        rocket: {
+          configuration: {
+            full_name: l.rocket?.configuration?.full_name || '',
+            manufacturer: {
+              name: l.rocket?.configuration?.manufacturer?.name || ''
+            }
+          }
+        },
+        mission: l.mission
+          ? {
+              name: l.mission.name || '',
+              description: l.mission.description || '',
+              type: l.mission.type || '',
+              orbit: {
+                name: l.mission.orbit?.name || ''
+              }
+            }
+          : null,
+        launch_service_provider: {
+          name: l.launch_service_provider?.name || '',
+          country_code: l.launch_service_provider?.country_code || ''
+        },
+        spacecraft: l.rocket?.spacecraft_stage?.spacecraft
+          ? {
+              name: l.rocket.spacecraft_stage.spacecraft.name || '',
+              manufacturer: {
+                name: l.rocket.spacecraft_stage.spacecraft.spacecraft_config?.manufacturer?.name || ''
+              }
+            }
+          : null,
         upcoming: isUpcoming,
-        id: l.id,
-        rocketName: l.rocket?.configuration?.name || 'Desconocido'
+        last_updated: new Date()
       },
       { upsert: true }
     );
+
 
     console.log(`[CRON] ${isUpcoming ? 'Guardado como próximo' : 'Actualizado como histórico'}: ${l.name}`);
   }
@@ -110,3 +148,16 @@ export async function getSpacexStats(req, res) {
     res.status(500).json({ error: 'Error generating stats' });
   }
 }
+
+// controllers/spacexController.js
+
+export const getLaunchById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const launch = await SpacexLaunch.findById(id);
+    if (!launch) return res.status(404).json({ message: 'Lanzamiento no encontrado' });
+    res.json(launch);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener lanzamiento', error: error.message });
+  }
+};

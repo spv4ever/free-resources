@@ -1,0 +1,17 @@
+.history-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.history-card {
+  background-color: #1f1f1f;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.history-card:hover {
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}

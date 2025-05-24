@@ -245,3 +245,41 @@
     gap: 0.8rem;           /* 🧊 Espacio entre logo y texto */
     text-decoration: none;
   }
+
+  .sidebar ul li button {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  text-align: left;
+  width: 100%;
+}
+
+.sidebar ul li strong {
+  margin-top: 1rem;
+  display: block;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.sidebar ul li {
+  transition: all 0.2s ease;
+}
+
+.sidebar ul li a, .sidebar ul li button {
+  display: block;
+  padding: 0.5rem 0;
+  color: #ccc;
+  text-decoration: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.sidebar ul li button:hover, .sidebar ul li a:hover {
+  color: white;
+}

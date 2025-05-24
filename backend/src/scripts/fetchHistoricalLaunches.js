@@ -1,4 +1,3 @@
-
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import axios from 'axios';
@@ -21,15 +20,53 @@ async function fetchHistoricalData() {
         await SpacexLaunch.findOneAndUpdate(
           { id: l.id },
           {
+            id: l.id,
             name: l.name,
             net: l.net,
             status: l.status,
             image: l.image || null,
-            webcast: l.webcast,
-            pad: l.pad,
-            last_updated: new Date(),
+            webcast: l.vidURLs?.[0] || l.webcast || null,
+            pad: {
+              name: l.pad?.name || '',
+              location: {
+                name: l.pad?.location?.name || '',
+                country_code: l.pad?.location?.country_code || ''
+              },
+              latitude: l.pad?.latitude || null,
+              longitude: l.pad?.longitude || null
+            },
+            rocket: {
+              configuration: {
+                full_name: l.rocket?.configuration?.full_name || '',
+                manufacturer: {
+                  name: l.rocket?.configuration?.manufacturer?.name || ''
+                }
+              }
+            },
+            mission: l.mission
+              ? {
+                  name: l.mission.name || '',
+                  description: l.mission.description || '',
+                  type: l.mission.type || '',
+                  orbit: {
+                    name: l.mission.orbit?.name || ''
+                  }
+                }
+              : null,
+            launch_service_provider: {
+              name: l.launch_service_provider?.name || '',
+              country_code: l.launch_service_provider?.country_code || ''
+            },
+            spacecraft: l.rocket?.spacecraft_stage?.spacecraft
+              ? {
+                  name: l.rocket.spacecraft_stage.spacecraft.name || '',
+                  manufacturer: {
+                    name: l.rocket.spacecraft_stage.spacecraft.spacecraft_config?.manufacturer?.name || ''
+                  }
+                }
+              : null,
             upcoming: false,
-            id: l.id,
+            last_updated: new Date(),
             rocketName: l.rocket?.configuration?.name || 'Desconocido'
           },
           { upsert: true }
@@ -37,11 +74,11 @@ async function fetchHistoricalData() {
       }
     }
 
-    console.log('Lanzamientos históricos cargados');
-    mongoose.disconnect();
+    console.log('✅ Lanzamientos históricos cargados correctamente.');
+    await mongoose.disconnect();
   } catch (err) {
-    console.error('Error cargando históricos:', err);
-    mongoose.disconnect();
+    console.error('❌ Error cargando históricos:', err);
+    await mongoose.disconnect();
   }
 }
 
