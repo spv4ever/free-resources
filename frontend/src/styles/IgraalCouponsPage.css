@@ -102,3 +102,10 @@
 .show-code-button:hover {
   color: #f3a847;
 }
+
+.coupon-date {
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 0.5rem;
+  font-style: italic;
+}

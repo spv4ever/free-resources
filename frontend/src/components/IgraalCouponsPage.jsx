@@ -11,7 +11,9 @@ function IgraalCouponsPage() {
     const fetchCoupons = async () => {
       try {
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/igraal-coupons`);
-        setCoupons(res.data);
+        // Ordenar por fecha descendente
+        const sorted = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setCoupons(sorted);
       } catch (err) {
         console.error('Error al cargar cupones de iGraal:', err);
       }
@@ -19,6 +21,11 @@ function IgraalCouponsPage() {
 
     fetchCoupons();
   }, []);
+
+  const formatDate = (dateStr) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateStr).toLocaleDateString('es-ES', options);
+  };
 
   return (
     <div className="igraal-coupons-container">
@@ -30,6 +37,7 @@ function IgraalCouponsPage() {
           <div className="igraal-coupon-card" key={index}>
             <h3>{coupon.title}</h3>
             <p className="coupon-description">{coupon.description}</p>
+            
             <p className="coupon-code">
               Código:{" "}
               {user ? (
@@ -60,7 +68,9 @@ function IgraalCouponsPage() {
               >
                 Ir a {coupon.title}
               </a>
+              
             )}
+            <p className="coupon-date">📅 Añadido el: {formatDate(coupon.createdAt)}</p>
           </div>
         ))}
       </div>
