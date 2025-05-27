@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/SeriesCategoryList.css';
+import TopSeriesWeekly from '../components/TopSeriesWeekly';
 
 const SeriesCategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -56,7 +57,9 @@ const SeriesCategoryList = () => {
 
   return (
     <div className="series-category-list">
+      
       <h1>Categorías de Series</h1>
+      <TopSeriesWeekly />
 
       <div className="series-category-grid">
         {categories.map(cat => (

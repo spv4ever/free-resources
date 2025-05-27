@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import '../styles/IgraalDealHighlight.css';
 
 const IgraalDealHighlight = () => {
   const [deal, setDeal] = useState(null);
@@ -24,37 +26,30 @@ const IgraalDealHighlight = () => {
   if (!deal) return null;
 
   return (
-    <div className="card-home" style={{ textAlign: 'center' }}>
-      <h2>🎁 Chollo del Día</h2>
+    <Link to="/chollos" className="igraal-highlight-link">
+      <div className="igraal-highlight-card">
+        <h2>🎁 Chollo del Día</h2>
 
-      <img
-        src={deal.imageUrl}
-        alt={deal.title}
-        style={{
-          width: '100%',
-          height: '200px',
-          objectFit: 'contain',
-          borderRadius: '10px',
-          backgroundColor: '#000',
-          marginBottom: '1rem'
-        }}
-      />
+        <img
+          src={deal.imageUrl}
+          alt={deal.title}
+          className="highlight-img"
+        />
 
-      <h3>{deal.title}</h3>
-      <p style={{ color: '#ff9900', fontWeight: 'bold', marginBottom: '1rem' }}>
-        {deal.cashback}
-      </p>
+        <h3>{deal.title}</h3>
+        <p className="highlight-cashback">{deal.cashback}</p>
 
-      <a
-        href={deal.url}
-        className="cta-button"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ margin: '0 auto' }}
-      >
-        Ver en iGraal
-      </a>
-    </div>
+        <a
+          href={deal.url}
+          className="cta-button"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()} // 👈 evita que el click abra /chollos
+        >
+          Ver en iGraal
+        </a>
+      </div>
+    </Link>
   );
 };
 

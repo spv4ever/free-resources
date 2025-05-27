@@ -1,39 +1,39 @@
-.nasa-card {
+.nasa-video-card {
   background-color: #1e1e1e;
   color: #fff;
   border-radius: 12px;
-  overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  height: 300px; /* 🔧 altura estándar */
+  height: 300px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  cursor: pointer;
   padding: 1rem 1.2rem;
   box-sizing: border-box;
+  cursor: pointer;
+  overflow: hidden;
 }
 
-.nasa-card:hover {
+.nasa-video-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
-.nasa-card-image {
+.nasa-video-iframe {
   width: 100%;
-  height: 140px; /* 🔧 altura fija para la imagen */
-  object-fit: cover;
+  height: 140px;
   border-radius: 8px;
   margin-bottom: 0.5rem;
+  border: none;
 }
 
-.nasa-card-info {
+.nasa-video-info {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
 }
 
-.nasa-card-info h3 {
+.nasa-video-info h3 {
   font-size: 0.9rem;
   margin: 0 0 0.3rem;
   color: #ffffff;
@@ -42,7 +42,7 @@
   text-overflow: ellipsis;
 }
 
-.nasa-card-info p {
+.nasa-video-info p {
   font-size: 0.8rem;
   color: #cccccc;
   margin: 0;

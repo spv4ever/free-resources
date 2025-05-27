@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../styles/HomePage.css';
+import '../styles/NasaCard.css'; // ✅ ahora cargamos el CSS específico
 
 const NasaCard = () => {
   const [image, setImage] = useState(null);
@@ -16,15 +16,20 @@ const NasaCard = () => {
   if (!image) return null;
 
   return (
-    <div className="card-home" onClick={() => navigate('/media/fotos-universo')} style={{ cursor: 'pointer' }}>
+    <div
+      className="nasa-card"
+      onClick={() => navigate('/media/fotos-universo')}
+    >
       <h2>📸 Última Imagen del Universo</h2>
       <img
         src={image.url}
         alt={image.titulo}
-        style={{ maxWidth: '100%', borderRadius: '10px', marginBottom: '1rem' }}
+        className="nasa-card-image"
       />
-      <h3>{image.titulo}</h3>
-      <p>{image.fecha}</p>
+      <div className="nasa-card-info">
+        <h3>{image.titulo}</h3>
+        <p>{image.fecha}</p>
+      </div>
     </div>
   );
 };

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import '../styles/IgraalDiscountHighlight.css';
 
 const IgraalDiscountHighlight = () => {
   const [coupon, setCoupon] = useState(null);
@@ -35,40 +37,33 @@ const IgraalDiscountHighlight = () => {
   const logoSrc = coupon.sourceUrl ? getFavicon(coupon.sourceUrl) : null;
 
   return (
-    <div className="card-home" style={{ textAlign: 'center' }}>
-      <h2>💸 Descuento del Día</h2>
+    <Link to="/cupones" className="igraal-highlight-link">
+      <div className="igraal-highlight-card">
+        <h2>💸 Descuento del Día</h2>
 
-      {logoSrc && (
-        <img
-          src={logoSrc}
-          alt="Logo tienda"
-          style={{
-            width: '160px',
-            height: '160px',
-            objectFit: 'contain',
-            borderRadius: '10px',
-            backgroundColor: '#000',
-            margin: '0 auto 1rem'
-          }}
-        />
-      )}
+        {logoSrc && (
+          <img
+            src={logoSrc}
+            alt="Logo tienda"
+            className="highlight-img-large"
+          />
+        )}
 
-      <h3>{coupon.title}</h3>
-      <p style={{ fontStyle: 'italic', margin: '0.5rem 0' }}>{coupon.description}</p>
+        <h3>{coupon.title}</h3>
+        <p className="discount-description">{coupon.description}</p>
 
-      {coupon.code && (
-        <p style={{ color: '#ff9900', fontWeight: 'bold', marginBottom: '1rem' }}>
-          Código: {coupon.code}
-        </p>
-      )}
+        {coupon.code && (
+          <p className="discount-code">
+            Código: {coupon.code}
+          </p>
+        )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <a
           href={coupon.url}
           className="cta-button"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ marginBottom: '0.75rem' }}
+          onClick={(e) => e.stopPropagation()} // ⛔ evita que redireccione a /cupones
         >
           Usar en iGraal
         </a>
@@ -78,17 +73,14 @@ const IgraalDiscountHighlight = () => {
             href={coupon.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            style={{
-              fontSize: '0.9rem',
-              color: '#66b3ff',
-              textDecoration: 'none'
-            }}
+            className="store-link"
+            onClick={(e) => e.stopPropagation()}
           >
             Visita la tienda
           </a>
         )}
       </div>
-    </div>
+    </Link>
   );
 };
 
