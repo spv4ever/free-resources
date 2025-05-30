@@ -32,6 +32,7 @@ const TopSeriesWeekly = () => {
         <div className="top-weekly-carousel" ref={carouselRef}>
           {series.map((serie, idx) => (
             <Link to={`/series/${serie.tmdbId}`} className="top-weekly-item" key={idx}>
+              <div className="top-weekly-rank">#{idx + 1}</div> {/* ✅ Ranking */}
               <img src={serie.image} alt={serie.title} className="top-weekly-poster" />
               <div className="top-weekly-title">{serie.title}</div>
               <div className="top-weekly-platforms">

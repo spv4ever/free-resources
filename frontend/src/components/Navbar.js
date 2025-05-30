@@ -6,11 +6,12 @@ import logo from '../assets/logo_wbg.png';
 function Navbar() {
   const [user, setUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [submenuContentOpen, setSubmenuContentOpen] = useState(false);
   const [submenuEmailOpen, setSubmenuEmailOpen] = useState(false);
   const [submenuAnimeOpen, setSubmenuAnimeOpen] = useState(false);
   const [submenuSeriesOpen, setSubmenuSeriesOpen] = useState(false);
-  const [submenuAffiliateOpen, setSubmenuAffiliateOpen] = useState(false)
+  const [submenuAffiliateOpen, setSubmenuAffiliateOpen] = useState(false);
   const [submenuSpacexOpen, setSubmenuSpacexOpen] = useState(false);
   const [enrichCount, setEnrichCount] = useState(0);
 
@@ -26,7 +27,6 @@ function Navbar() {
     };
     fetchPendingEnrich();
   }, []);
-
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -86,17 +86,17 @@ function Navbar() {
   };
 
   const handleEnrich = async () => {
-  try {
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/enrich-one-launch`, {
-      method: 'POST'
-    });
-    const data = await res.json();
-    alert(data.message || 'Enriquecimiento ejecutado');
-  } catch (err) {
-    console.error('Error al enriquecer:', err);
-    alert('❌ Error al enriquecer el lanzamiento');
-  }
-};
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/enrich-one-launch`, {
+        method: 'POST'
+      });
+      const data = await res.json();
+      alert(data.message || 'Enriquecimiento ejecutado');
+    } catch (err) {
+      console.error('Error al enriquecer:', err);
+      alert('❌ Error al enriquecer el lanzamiento');
+    }
+  };
 
   return (
     <nav className="navbar">
@@ -107,8 +107,19 @@ function Navbar() {
         </Link>
       </div>
 
+      <button className="hamburger-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>☰</button>
+
       <div className="navbar-links">
         <Link to="/">Home</Link>
+        {(user?.role === 'pro' || user?.role === 'admin') && (
+          <div className="navbar-dropdown">
+            <span className="navbar-link">🏆 PRO ▾</span>
+            <div className="dropdown-content">
+              <Link to="/panel/pro/historial">📑 Mi historial</Link>
+              {/* Puedes añadir más opciones aquí en el futuro */}
+            </div>
+          </div>
+        )}
         {user ? (
           <>
             <span className="navbar-user">
@@ -124,10 +135,26 @@ function Navbar() {
         )}
       </div>
 
+      {mobileMenuOpen && (
+        <div className="mobile-menu">
+          <Link to="/" onClick={() => setMobileMenuOpen(false)}>Home</Link>
+          {user ? (
+            <>
+              <span className="navbar-user">Bienvenido, {user.name} ({user.role})</span>
+              {user.role === 'admin' && (
+                <button className="admin-btn" onClick={() => { toggleSidebar(); setMobileMenuOpen(false); }}>Admin</button>
+              )}
+              <button className="logout-btn" onClick={handleLogout}>Desconectar</button>
+            </>
+          ) : (
+            <Link to="/login" onClick={() => setMobileMenuOpen(false)}>Iniciar sesión</Link>
+          )}
+        </div>
+      )}
+
       {sidebarOpen && user?.role === 'admin' && (
         <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
           <ul>
-            {/* 📁 Gestión de contenido */}
             <li>
               <button onClick={() => setSubmenuContentOpen(!submenuContentOpen)}>
                 📁 Gestión de contenido {submenuContentOpen ? '▲' : '▼'}
@@ -144,7 +171,6 @@ function Navbar() {
               </>
             )}
 
-            {/* 📬 Correos y artículos */}
             <li>
               <button onClick={() => setSubmenuEmailOpen(!submenuEmailOpen)}>
                 📬 Correos y Artículos {submenuEmailOpen ? '▲' : '▼'}
@@ -158,7 +184,6 @@ function Navbar() {
               </>
             )}
 
-            {/* 🎨 Anime */}
             <li>
               <button onClick={() => setSubmenuAnimeOpen(!submenuAnimeOpen)}>
                 🎨 Anime Prompts {submenuAnimeOpen ? '▲' : '▼'}
@@ -168,7 +193,6 @@ function Navbar() {
               <li><Link to="/admin/anime-options" onClick={toggleSidebar}>🎨 Opciones Anime Prompts</Link></li>
             )}
 
-            {/* 📺 Series */}
             <li>
               <button onClick={() => setSubmenuSeriesOpen(!submenuSeriesOpen)}>
                 📺 Series {submenuSeriesOpen ? '▲' : '▼'}
@@ -180,23 +204,23 @@ function Navbar() {
                 <li><Link to="/admin/top-series-history" onClick={toggleSidebar}>📅 Historial Top Series</Link></li>
               </>
             )}
-            {/* 🚀 SpaceX */}
-              <li>
-                <button onClick={() => setSubmenuSpacexOpen(!submenuSpacexOpen)}>
-                  🚀 SpaceX {submenuSpacexOpen ? '▲' : '▼'}
-                </button>
-              </li>
-              {submenuSpacexOpen && (
-                <>
-                  <li>
-                    <button onClick={handleEnrich} className="admin-link-button">
-                      📥 Enriquecer 1 Lanzamiento {enrichCount > 0 && <span style={{ color: '#00bfff' }}>({enrichCount})</span>}
-                    </button>
-                  </li>
-                  <li><Link to="/admin/spacex" onClick={toggleSidebar}>🧩 Gestión de Lanzamientos</Link></li>
-                </>
-              )}
-            {/* 💰 Afiliados y chollos */}
+
+            <li>
+              <button onClick={() => setSubmenuSpacexOpen(!submenuSpacexOpen)}>
+                🚀 SpaceX {submenuSpacexOpen ? '▲' : '▼'}
+              </button>
+            </li>
+            {submenuSpacexOpen && (
+              <>
+                <li>
+                  <button onClick={handleEnrich} className="admin-link-button">
+                    📥 Enriquecer 1 Lanzamiento {enrichCount > 0 && <span style={{ color: '#00bfff' }}>({enrichCount})</span>}
+                  </button>
+                </li>
+                <li><Link to="/admin/spacex" onClick={toggleSidebar}>🧩 Gestión de Lanzamientos</Link></li>
+              </>
+            )}
+
             <li>
               <button onClick={() => setSubmenuAffiliateOpen(!submenuAffiliateOpen)}>
                 💰 Afiliados y Chollos {submenuAffiliateOpen ? '▲' : '▼'}
@@ -211,18 +235,17 @@ function Navbar() {
               </>
             )}
 
-            {/* 🛰 NASA */}
             <li><strong>🛰 NASA</strong></li>
             <li>
               <button onClick={handleTriggerNasa} className="admin-link-button">📸 Forzar imagen NASA</button>
             </li>
             <li><Link to="/admin/nasa-fechas" onClick={toggleSidebar}>📅 Buscar imágenes faltantes</Link></li>
 
-            {/* 🔐 Seguridad */}
             <li><strong>🔐 Seguridad</strong></li>
             <li><Link to="/admin/suspicious-access" onClick={toggleSidebar}>🚨 Accesos sospechosos</Link></li>
+            <li><Link to="/admin/link-analysis" onClick={toggleSidebar}>🔗 Análisis de enlaces</Link></li>
 
-            {/* 👥 Usuarios */}
+
             <li><strong>👥 Usuarios</strong></li>
             <li><Link to="/admin/users" onClick={toggleSidebar}>👤 Gestionar usuarios</Link></li>
 
@@ -230,7 +253,6 @@ function Navbar() {
           </ul>
         </div>
       )}
-
     </nav>
   );
 }

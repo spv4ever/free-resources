@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../styles/IgraalDealHighlight.css';
 
 const IgraalDealHighlight = () => {
   const [deal, setDeal] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRandomDeal = async () => {
@@ -25,8 +26,12 @@ const IgraalDealHighlight = () => {
 
   if (!deal) return null;
 
+  const handleClickCard = () => {
+    navigate('/chollos');
+  };
+
   return (
-    <Link to="/chollos" className="igraal-highlight-link">
+    <div className="igraal-highlight-link" onClick={handleClickCard} style={{ cursor: 'pointer' }}>
       <div className="igraal-highlight-card">
         <h2>🎁 Chollo del Día</h2>
 
@@ -44,12 +49,12 @@ const IgraalDealHighlight = () => {
           className="cta-button"
           target="_blank"
           rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()} // 👈 evita que el click abra /chollos
+          onClick={(e) => e.stopPropagation()} // 👈 evita redirección al hacer click en el botón
         >
           Ver en iGraal
         </a>
       </div>
-    </Link>
+    </div>
   );
 };
 

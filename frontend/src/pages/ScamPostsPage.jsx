@@ -2,10 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/ScamPostsPage.css';
+import LinkAnalyzer from '../components/LinkAnalyzer';
 import { useNavigate } from 'react-router-dom'; // ✅ nuevo
 
 const ScamPostsPage = () => {
   const [posts, setPosts] = useState([]);
+  
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/api/scam-posts/all`)
@@ -19,6 +21,7 @@ const ScamPostsPage = () => {
   return (
     <div className="scam-posts-page">
       <h1>🛡️ Noticias sobre Ciberestafas</h1>
+      <LinkAnalyzer />
       <div className="scam-posts-grid">
         {posts.map((post) => (
             <div

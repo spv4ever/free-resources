@@ -1,0 +1,40 @@
+.user-link-detail-container {
+  padding: 20px;
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.user-link-detail-container h2 {
+  color: #ffffff;
+  margin-bottom: 15px;
+}
+
+.detalles-tecnicos, .detalles-ia {
+  margin-top: 20px;
+  padding: 15px;
+  border-left: 4px solid #90caf9;
+  background-color: #1e1e1e;
+  border-radius: 6px;
+}
+
+.detalles-tecnicos ul, .detalles-ia ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.detalles-ia .recomendaciones {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px dashed #444;
+}
+
+.user-link-detail-container a {
+  color: #90caf9;
+}
+
+.volver {
+  display: inline-block;
+  margin-top: 30px;
+  text-decoration: underline;
+  color: #90caf9;
+}

@@ -50,6 +50,9 @@ import adminEnrichRoute from './routes/adminEnrichRoute.js';
 import { startEnrichSpacexJob } from './jobs/enrichSpacexJob.js';
 import spacexPublicRoutes from './routes/spacexPublicRoutes.js';
 import spacexAdminRoutes from './routes/spacexAdminRoutes.js';
+import linkAnalysisRoutes from './routes/linkAnalysisRoutes.js';
+import adminLinkAnalysisRoutes from './routes/adminLinkAnalysisRoutes.js';
+import proLinkAnalysisRoutes from './routes/proLinkAnalysisRoutes.js';
 
 
 
@@ -163,6 +166,10 @@ app.use('/api/admin/rate-limit-blocks', rateLimitBlockRoutes);
 app.use('/api', adminEnrichRoute);
 app.use('/api/spacex', spacexPublicRoutes);
 app.use('/api/admin', spacexAdminRoutes);
+app.use('/api', linkAnalysisRoutes);
+app.use('/api/admin', adminLinkAnalysisRoutes);
+app.use('/api/pro', proLinkAnalysisRoutes);
+
 
 
 

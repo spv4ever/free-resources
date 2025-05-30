@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../styles/IgraalDiscountHighlight.css';
 
 const IgraalDiscountHighlight = () => {
   const [coupon, setCoupon] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRandomCoupon = async () => {
@@ -36,8 +37,12 @@ const IgraalDiscountHighlight = () => {
 
   const logoSrc = coupon.sourceUrl ? getFavicon(coupon.sourceUrl) : null;
 
+  const handleClickCard = () => {
+    navigate('/cupones');
+  };
+
   return (
-    <Link to="/cupones" className="igraal-highlight-link">
+    <div className="igraal-highlight-link" onClick={handleClickCard} style={{ cursor: 'pointer' }}>
       <div className="igraal-highlight-card">
         <h2>💸 Descuento del Día</h2>
 
@@ -63,7 +68,7 @@ const IgraalDiscountHighlight = () => {
           className="cta-button"
           target="_blank"
           rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()} // ⛔ evita que redireccione a /cupones
+          onClick={(e) => e.stopPropagation()}
         >
           Usar en iGraal
         </a>
@@ -80,7 +85,7 @@ const IgraalDiscountHighlight = () => {
           </a>
         )}
       </div>
-    </Link>
+    </div>
   );
 };
 

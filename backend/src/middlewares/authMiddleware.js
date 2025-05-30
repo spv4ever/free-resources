@@ -37,3 +37,10 @@ const admin = (req, res, next) => {
 };
 
 export { protect, admin };
+
+export const isProOrAdmin = (req, res, next) => {
+  if (!req.user || (req.user.role !== 'pro' && req.user.role !== 'admin')) {
+    return res.status(403).json({ error: 'Acceso restringido a usuarios PRO o ADMIN.' });
+  }
+  next();
+};

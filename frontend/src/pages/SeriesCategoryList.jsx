@@ -59,6 +59,33 @@ const SeriesCategoryList = () => {
     <div className="series-category-list">
       
       <h1>Categorías de Series</h1>
+      <div className="series-search-box">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => handleSearch(e.target.value)}
+          placeholder="🔍 Buscar series en TMDb..."
+        />
+        {loading && <p>Buscando...</p>}
+        {isProcessing && <p className="series-loading-message">Cargando serie...</p>}
+        {results.length > 0 && (
+          <ul className="series-search-results">
+            {results.slice(0, 5).map((serie) => (
+              <li key={serie.tmdbId} onClick={() => handleSelect(serie.tmdbId)}>
+                {serie.image ? (
+                  <img src={serie.image} alt={serie.title || 'Sin título'} />
+                ) : (
+                  <div className="series-img-placeholder">Sin imagen</div>
+                )}
+                <div>
+                  <strong>{serie.title || 'Sin título'}</strong>{' '}
+                  {serie.year ? `(${serie.year})` : ''}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
       <TopSeriesWeekly />
 
       <div className="series-category-grid">

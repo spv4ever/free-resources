@@ -1,0 +1,76 @@
+.user-pro-container {
+  padding: 20px;
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.user-pro-container h2 {
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filtros input,
+.filtros select,
+.filtros button {
+  padding: 6px 10px;
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  color: #e0e0e0;
+  border-radius: 4px;
+}
+
+.user-pro-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.user-pro-table th,
+.user-pro-table td {
+  padding: 10px;
+  border: 1px solid #333;
+  text-align: center;         /* ✅ centrado horizontal */
+  vertical-align: middle;     /* ✅ centrado vertical */
+}
+
+.user-pro-table th {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.user-pro-table td a {
+  color: #90caf9;
+  text-decoration: none;
+}
+
+.user-pro-table td a:hover {
+  color: #90caf9;
+  text-decoration: underline;
+}
+
+.user-pro-table td button {
+  padding: 6px 12px;
+  background-color: #90caf9;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.user-pro-table td button:hover {
+  background-color: #90caf9;
+}
+
+.url-raw {
+  font-family: monospace;
+  color: #90caf9;
+  word-break: break-all;
+}

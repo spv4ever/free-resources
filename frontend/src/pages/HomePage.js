@@ -12,6 +12,7 @@ import AdBanner from '../components/AdBanner';
 import AffiliatePopup from '../components/AffiliatePopup';
 import IgraalDealHighlight from '../components/IgraalDealHighlight';
 import IgraalDiscountHighlight from '../components/IgraalDiscountHighlight';
+import { useCountdown } from '../hooks/useCountdown';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -25,6 +26,16 @@ function HomePage() {
   const [aiStats, setAiStats] = useState([]);
   const [categoryStats, setCategoryStats] = useState([]);
   const [topSeries, setTopSeries] = useState([]);
+
+  const CountdownBox = ({ launchDateUtc }) => {
+    const countdown = useCountdown(launchDateUtc);
+
+    return (
+      <div className="countdown-box">
+        ⏳ Próximo lanzamiento en: <span>{countdown}</span>
+      </div>
+    );
+  };
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/api/resources/stats/per-category`)
@@ -49,6 +60,8 @@ function HomePage() {
     .then(res => setTopSeries(res.data.top.slice(0, 10))) // Solo los 10 primeros
     .catch(() => setTopSeries([]));
     }, []);
+
+    const nextLaunch = launches.length > 0 ? { dateUtc: launches[0].net } : null;
 
   return (
     <div className="homepage-content">
@@ -80,6 +93,7 @@ function HomePage() {
               );
             })}
           </ul>
+          {nextLaunch && <CountdownBox launchDateUtc={nextLaunch.dateUtc} />}
         </div>
 
         {/* NOTICIAS DE ESTAFA */}
@@ -90,7 +104,7 @@ function HomePage() {
               <li key={post._id}>
                 <strong>{new Date(post.createdAt).toLocaleDateString('es-ES')}</strong>:&nbsp;
                 <span style={{ display: 'inline-flex', gap: '0.5rem', alignItems: 'center' }}>
-                  {post.resumen.slice(0, 30)}...
+                  {post.resumen.slice(0, 20)}...
                   <a
                     href={`/scam-posts/${post._id}`}
                     onClick={(e) => e.stopPropagation()}
@@ -102,7 +116,15 @@ function HomePage() {
               </li>
             ))}
           </ul>
+
+          {/* Teletipo visual que hereda el click de la tarjeta */}
+          <div className="teletipo-banner">
+            <div className="teletipo-inner">
+              🔐 Protege tus datos con nuestro Analizador IA de enlaces sospechosos 🔍
+            </div>
+          </div>
         </div>
+
 
         {/* HERRAMIENTAS DE IA */}
         <div className="card-home" onClick={() => navigate('/ai-links')}>

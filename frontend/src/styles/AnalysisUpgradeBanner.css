@@ -1,0 +1,78 @@
+.upgrade-banner {
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-top: 2rem;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  transition: all 0.3s ease-in-out;
+}
+
+.upgrade-banner h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: #ff5c5c;
+}
+
+.upgrade-banner ul {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 1.5rem;
+}
+
+.upgrade-banner li {
+  margin: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  color: #d0d0d0;
+}
+
+.upgrade-banner li::before {
+  content: "🛡️";
+  margin-right: 0.6rem;
+}
+
+.upgrade-banner p {
+  font-size: 1rem;
+  color: #ffa726;
+  margin-bottom: 1rem;
+}
+
+.upgrade-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.upgrade-buttons .btn {
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s ease-in-out;
+}
+
+.btn.primary {
+  background-color: #2196f3;
+  color: white;
+}
+
+.btn.primary:hover {
+  background-color: #1976d2;
+}
+
+.btn.secondary {
+  background-color: transparent;
+  color: #2196f3;
+  border: 2px solid #2196f3;
+}
+
+.btn.secondary:hover {
+  background-color: #0d47a1;
+  color: white;
+}
