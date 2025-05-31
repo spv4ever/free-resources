@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/YouTubeChannels.css';
 import AdBanner from '../components/AdBanner';
+import YoutubeUploadForm from '../components/YoutubeUploadForm';
 
 function YouTubeChannelsPage() {
   const [channels, setChannels] = useState([]);
@@ -24,6 +25,11 @@ function YouTubeChannelsPage() {
     <div className="youtube-channels-page">
       <AdBanner />
       <h2 className="category-title">Canales de YouTube</h2>
+
+      <div>
+        <h1>Gestión de Vídeos</h1>
+        <YoutubeUploadForm />
+      </div>
       <div className="channels-grid">
         {channels.map((channel) => (
             <Link key={channel._id} to={`/youtube-channels/${channel._id}`} className="channel-card">

@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
@@ -53,6 +54,11 @@ import spacexAdminRoutes from './routes/spacexAdminRoutes.js';
 import linkAnalysisRoutes from './routes/linkAnalysisRoutes.js';
 import adminLinkAnalysisRoutes from './routes/adminLinkAnalysisRoutes.js';
 import proLinkAnalysisRoutes from './routes/proLinkAnalysisRoutes.js';
+import youtubeAuthRoutes from './routes/youtubeAuthRoutes.js';
+import youtubeUploadRoutes from './routes/youtubeUploadRoutes.js';
+import youtubeTokenRoutes from './routes/youtubeTokenRoutes.js';
+
+
 
 
 
@@ -78,6 +84,8 @@ Object.entries(process.env).forEach(([key, value]) => {
 });
 
 const app = express();
+
+
 
 // // 🧱 Limitar peticiones por IP (protección básica anti-bots)
 // const generalLimiter = rateLimit({
@@ -169,6 +177,9 @@ app.use('/api/admin', spacexAdminRoutes);
 app.use('/api', linkAnalysisRoutes);
 app.use('/api/admin', adminLinkAnalysisRoutes);
 app.use('/api/pro', proLinkAnalysisRoutes);
+app.use('/api/youtube', youtubeAuthRoutes);
+app.use('/api/youtube', youtubeUploadRoutes);
+app.use('/api/youtube', youtubeTokenRoutes);
 
 
 
@@ -193,6 +204,13 @@ startEnrichSpacexJob();
 
 // Intervalo de ejecución: cada 6h (puedes cambiarlo)
 const IMPORT_INTERVAL = 1000 * 60 * 60 * 6;
+
+// ⬇️ Asegurar carpeta temporal
+const uploadDir = path.resolve('temp_uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+  console.log('📁 Carpeta "temp_uploads" creada automáticamente');
+  }
 
 // Primera ejecución 10s después de iniciar el backend
 setTimeout(() => {

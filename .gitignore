@@ -5,7 +5,8 @@
 /.pnp
 .pnp.js
 
-
+client_secret_youtube.json
+*.bat
 
 # testing
 /coverage

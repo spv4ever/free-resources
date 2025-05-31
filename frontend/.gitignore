@@ -6,6 +6,7 @@
 .pnp.js
 *.jpg*
 
+client_secret_youtube.*
 
 # testing
 /coverage

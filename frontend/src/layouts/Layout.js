@@ -15,53 +15,36 @@ function Layout() {
   // const { user } = useUser();
   const location = useLocation();
   const sections = [
-    { title: 'Recursos', description: 'Accede a nuestra biblioteca de imágenes y recursos.', path: '/resources', icon: <FaBook /> },
-    { title: 'AI Links', description: 'Lista de herramientas de inteligencia artificial.', path: '/ai-links', icon: <FaRobot /> },
-    { title: 'YouTube Channels', description: 'Nuestros canales recomendados de YouTube.', path: '/youtube-channels', icon: <FaYoutube /> },
-    { title: 'Videos Virales', description: 'Los mejores Shorts organizados por categoría', path: '/viral-shorts', icon: <FaFileAlt /> },
-    { title: 'Formación', description: 'Recursos gratuitos para aprender.', path: '/training', icon: <FaGraduationCap /> },
-    { title: 'MultiMedia', description: 'Imágenes del universo, los mejores vídeos, todo Multimedia', path: '/media', icon: <FaImage /> },
-    {
-      title: 'SpaceX',
-      description: 'Todo lo relacionado con los lanzamientos de SpaceX. Rumbo a Marte',
-      path: '/spacex',
-      icon: <FaRocket />
-    },
-    {
-      title: 'CiberEstafas',
-      description: 'Todo lo relacionado Noticias sobre ciberestafas.',
-      path: '/scam-posts',
-      icon: <FaShieldVirus />
-    },
-    {
-      title: 'Cupones iGraal',
-      description: 'Códigos descuento + cashback real',
-      path: '/cupones',
-      icon: <FaTicketAlt />
-    },
+  // 🔥 Inicio atractivo (alto interés / engagement)
+  { title: 'MultiMedia', description: 'Imágenes del universo, los mejores vídeos, todo Multimedia', path: '/media', icon: <FaImage /> },
+  { title: 'Videos Virales', description: 'Los mejores Shorts organizados por categoría', path: '/viral-shorts', icon: <FaFileAlt /> },
+  { title: 'YouTube Channels', description: 'Nuestros canales recomendados de YouTube.', path: '/youtube-channels', icon: <FaYoutube /> },
+  { title: 'Anime Prompts', description: 'Generador de prompts IA con personajes anime', path: '/generador-anime-prompts', icon: <FaMagic /> },
+  { title: 'AI Links', description: 'Lista de herramientas de inteligencia artificial.', path: '/ai-links', icon: <FaRobot /> },
 
-    {
-      title: 'Chollos iGraal',
-      description: 'Ofertas con cashback actualizadas a diario',
-      path: '/chollos',
-      icon: <FaGift />
-    },
-    {
-      title: 'Series',
-      description: 'Explora el catálogo de series por categorías',
-      path: '/series',
-      icon: <FaTv  /> // o el que prefieras
-    },
-  ];
+  // 🎓 Valor educativo / útil
+  { title: 'Recursos', description: 'Accede a nuestra biblioteca de imágenes y recursos.', path: '/resources', icon: <FaBook /> },
+  { title: 'Formación', description: 'Recursos gratuitos para aprender.', path: '/training', icon: <FaGraduationCap /> },
+  { title: 'Series', description: 'Explora el catálogo de series por categorías', path: '/series', icon: <FaTv /> },
 
-  // 🔐 Añadir solo si es usuario PRO
+  // 🚀 Temáticas especializadas
+  { title: 'SpaceX', description: 'Todo lo relacionado con los lanzamientos de SpaceX. Rumbo a Marte', path: '/spacex', icon: <FaRocket /> },
+  { title: 'CiberEstafas', description: 'Todo lo relacionado Noticias sobre ciberestafas.', path: '/scam-posts', icon: <FaShieldVirus /> },
+
+  // 💰 Ofertas y monetización
+  { title: 'Cupones iGraal', description: 'Códigos descuento + cashback real', path: '/cupones', icon: <FaTicketAlt /> },
+  { title: 'Chollos iGraal', description: 'Ofertas con cashback actualizadas a diario', path: '/chollos', icon: <FaGift /> }
+];
+
+
+  // // 🔐 Añadir solo si es usuario PRO
   
-    sections.push({
-      title: 'Anime Prompts',
-      description: 'Generador de prompts IA con personajes anime',
-      path: '/generador-anime-prompts',
-      icon: <FaMagic />
-    });
+  //   sections.push({
+  //     title: 'Anime Prompts',
+  //     description: 'Generador de prompts IA con personajes anime',
+  //     path: '/generador-anime-prompts',
+  //     icon: <FaMagic />
+  //   });
   
 
   return (

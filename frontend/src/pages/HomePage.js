@@ -9,6 +9,7 @@ import timezone from 'dayjs/plugin/timezone';
 import NasaCard from '../components/NasaCard';
 import NasaCardVideo from '../components/NasaCardVideo';
 import AdBanner from '../components/AdBanner';
+import AdBannerExtra from '../components/AdBannerExtra';
 import AffiliatePopup from '../components/AffiliatePopup';
 import IgraalDealHighlight from '../components/IgraalDealHighlight';
 import IgraalDiscountHighlight from '../components/IgraalDiscountHighlight';
@@ -160,6 +161,7 @@ function HomePage() {
       </div>
 
       <AdBanner />
+      <AdBannerExtra />
     </div>
   );
 }
