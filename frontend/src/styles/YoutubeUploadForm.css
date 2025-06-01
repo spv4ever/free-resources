@@ -101,3 +101,30 @@
   border-radius: 4px;
   margin-bottom: 12px;
 }
+
+.youtube-upload-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.youtube-upload-form {
+  flex: 1;
+  min-width: 300px;
+}
+
+.youtube-upload-history-wrapper {
+  flex: 1;
+  min-width: 300px;
+}
+
+
+.upload-warning {
+  background-color: #fff8e1;
+  color: #9e6600;
+  padding: 1rem;
+  border: 1px solid #ffecb3;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+}

@@ -33,7 +33,7 @@ function Navbar() {
     if (token) {
       const decodedToken = decodeJwt(token);
       setUser({
-        name: decodedToken.name,
+        email: decodedToken.email,
         role: decodedToken.role,
       });
     }
@@ -123,7 +123,7 @@ function Navbar() {
         {user ? (
           <>
             <span className="navbar-user">
-              Bienvenido, {user.name} ({user.role})
+              Bienvenido, {user.email} ({user.role})
             </span>
             {user.role === 'admin' && (
               <button className="admin-btn" onClick={toggleSidebar}>Admin</button>

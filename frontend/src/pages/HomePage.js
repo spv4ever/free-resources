@@ -156,6 +156,12 @@ function HomePage() {
             ))}
           </ul>
         </div>
+        {/* CANAL DE TELEGRAM */}
+        <div className="card-home telegram-card" onClick={() => window.open('https://t.me/+DO4DQPYGyJRiN2Nk', '_blank')}>
+          <h2>📢 Únete a nuestro canal de Telegram</h2>
+          <p>Recibe actualizaciones, herramientas y novedades directamente en tu móvil. ¡Comienza como Beta Tester gratis!</p>
+          <p style={{ fontWeight: 'bold', marginTop: '10px' }}>👉 ¡Haz clic aquí para unirte!</p>
+        </div>
 
         <AffiliatePopup currentPath={location.pathname} />
       </div>

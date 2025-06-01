@@ -24,12 +24,13 @@ function YouTubeChannelsPage() {
   return (
     <div className="youtube-channels-page">
       <AdBanner />
-      <h2 className="category-title">Canales de YouTube</h2>
-
       <div>
         <h1>Gestión de Vídeos</h1>
         <YoutubeUploadForm />
       </div>
+      <h2 className="category-title">Canales de YouTube</h2>
+
+      
       <div className="channels-grid">
         {channels.map((channel) => (
             <Link key={channel._id} to={`/youtube-channels/${channel._id}`} className="channel-card">

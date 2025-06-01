@@ -52,14 +52,15 @@ function LoginPage() {
         //console.log('Decoded Token:', decodedToken);
   
         // Guardar información de usuario (nombre y rol) en el estado
-        localStorage.setItem('user', JSON.stringify({
-          name: decodedToken.name,
+        // Guardar información completa del usuario
+        const userInfo = {
+          _id: decodedToken.id,
+          name: decodedToken.email,
           role: decodedToken.role
-        }));
-        setUser({
-          name: decodedToken.name,
-          role: decodedToken.role
-        });
+        };
+
+        localStorage.setItem('user', JSON.stringify(userInfo));
+        setUser(userInfo);
         
   
         navigate('/'); // Redirigir al HomePage

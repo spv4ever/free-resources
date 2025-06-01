@@ -25,8 +25,9 @@ export const getYoutubeAuthUrl = (req, res) => {
 };
 
 export const handleYoutubeCallback = async (req, res) => {
-  const code = req.query.code;
-  if (!code) return res.status(400).send('Código no proporcionado');
+  const { code, userId } = req.query;
+
+  if (!code || !userId) return res.status(400).send('Faltan parámetros: code o userId');
 
   try {
     const { tokens } = await oauth2Client.getToken(code);
@@ -42,12 +43,17 @@ export const handleYoutubeCallback = async (req, res) => {
     const channelTitle = channel.snippet?.title || 'Sin nombre';
 
     await YoutubeToken.findOneAndUpdate(
-      { channelId }, // usamos channelId como clave única
+      { channelId }, // clave única
       {
-        ...tokens,
+        userId, // ✅ se guarda el usuario que autorizó el canal
+        userEmail: channel.snippet?.customUrl || 'desconocido',
+        access_token: tokens.access_token,
+        refresh_token: tokens.refresh_token,
+        scope: tokens.scope,
+        token_type: tokens.token_type,
+        expiry_date: new Date(tokens.expiry_date),
         channelId,
-        channelTitle,
-        expiry_date: new Date(tokens.expiry_date)
+        channelTitle
       },
       { upsert: true, new: true }
     );
@@ -58,3 +64,4 @@ export const handleYoutubeCallback = async (req, res) => {
     res.status(500).send('Error al procesar el callback de Google');
   }
 };
+

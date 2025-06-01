@@ -1,0 +1,40 @@
+.history-table {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.history-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th,
+.history-table td {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.history-table th {
+  background-color: #f0f0f0;
+}
+
+.history-table a {
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.history-table a:hover {
+  text-decoration: underline;
+}
+
+@keyframes flash {
+  0% { background-color: #ffffcc; }
+  100% { background-color: transparent; }
+}
+
+.animate-flash {
+  animation: flash 1s ease-in-out;
+}
