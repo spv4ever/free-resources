@@ -3,26 +3,42 @@
   font-size: 0.9rem;
   width: 100%;
   overflow-x: auto;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  border: 1px solid #2a2a2a;
 }
 
 .history-table table {
   width: 100%;
   border-collapse: collapse;
+  color: #e0e0e0;
 }
 
 .history-table th,
 .history-table td {
   padding: 8px 12px;
-  border: 1px solid #ccc;
+  border: 1px solid #333;
   text-align: left;
 }
 
 .history-table th {
-  background-color: #f0f0f0;
+  background-color: #222;
+  color: #ff4f4f;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.history-table td {
+  background-color: #1a1a1a;
+}
+
+.history-table tr:hover td {
+  background-color: #2a2a2a;
 }
 
 .history-table a {
-  color: #1976d2;
+  color: #4aa3ff;
   text-decoration: none;
 }
 
@@ -30,8 +46,9 @@
   text-decoration: underline;
 }
 
+/* Animación para resaltar cambios */
 @keyframes flash {
-  0% { background-color: #ffffcc; }
+  0% { background-color: #444400; }
   100% { background-color: transparent; }
 }
 

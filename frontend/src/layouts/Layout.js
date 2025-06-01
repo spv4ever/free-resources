@@ -18,7 +18,7 @@ function Layout() {
   // 🔥 Inicio atractivo (alto interés / engagement)
   { title: 'MultiMedia', description: 'Imágenes del universo, los mejores vídeos, todo Multimedia', path: '/media', icon: <FaImage /> },
   { title: 'Videos Virales', description: 'Los mejores Shorts organizados por categoría', path: '/viral-shorts', icon: <FaFileAlt /> },
-  { title: 'YouTube Channels', description: 'Nuestros canales recomendados de YouTube.', path: '/youtube-channels', icon: <FaYoutube /> },
+  { title: 'YouTube Uploader', description: 'Sube y programa tus creaciones! Verán la luz cuando tu decidas', path: '/youtube-uploader', icon: <FaYoutube /> },
   { title: 'Anime Prompts', description: 'Generador de prompts IA con personajes anime', path: '/generador-anime-prompts', icon: <FaMagic /> },
   { title: 'AI Links', description: 'Lista de herramientas de inteligencia artificial.', path: '/ai-links', icon: <FaRobot /> },
 

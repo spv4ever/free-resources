@@ -1,14 +1,16 @@
+/* CONTENEDOR GENERAL */
 .youtube-upload-container {
-  max-width: 700px;
+  max-width: 1000px;
   margin: auto;
   font-family: 'Segoe UI', sans-serif;
   background-color: #1e1e1e;
-  padding: 20px;
-  border-radius: 10px;
+  padding: 2rem;
+  border-radius: 12px;
   color: #e0e0e0;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
+/* BOTONES */
 .youtube-upload-container button {
   padding: 10px 15px;
   background-color: #d93025;
@@ -24,6 +26,7 @@
   background-color: #c5221f;
 }
 
+/* FORMULARIO */
 .youtube-upload-container form {
   background-color: #2a2a2a;
   padding: 20px;
@@ -43,7 +46,8 @@
 .youtube-upload-container form input[type="datetime-local"],
 .youtube-upload-container form select,
 .youtube-upload-container form textarea,
-.youtube-upload-container form input[type="file"] {
+.youtube-upload-container form input[type="file"],
+.custom-datepicker {
   width: 100%;
   padding: 10px;
   background-color: #1b1b1b;
@@ -59,12 +63,7 @@
   resize: vertical;
 }
 
-.youtube-upload-container p {
-  font-weight: bold;
-  text-align: center;
-  margin-top: 15px;
-}
-
+/* ENLACES */
 .youtube-upload-container a {
   display: inline-block;
   margin-top: 15px;
@@ -77,6 +76,14 @@
   text-decoration: underline;
 }
 
+/* TEXTO CENTRAL */
+.youtube-upload-container p {
+  font-weight: bold;
+  text-align: center;
+  margin-top: 15px;
+}
+
+/* PROGRESS BAR */
 .youtube-upload-container .progress-bar {
   height: 10px;
   background: #444;
@@ -92,34 +99,72 @@
   transition: width 0.3s ease;
 }
 
-.custom-datepicker {
-  width: 100%;
-  padding: 10px;
-  background-color: #1b1b1b;
-  color: #f0f0f0;
-  border: 1px solid #444;
-  border-radius: 4px;
-  margin-bottom: 12px;
-}
-
-.youtube-upload-layout {
+/* LAYOUT FLEXIBLE */
+.youtube-upload-layout,
+.yt-upload-wrapper {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   gap: 2rem;
+  margin-top: 1.5rem;
   align-items: flex-start;
 }
 
-.youtube-upload-form {
-  flex: 1;
+/* FORMULARIO LADO IZQUIERDO */
+.youtube-upload-form,
+.yt-upload-form {
+  flex: 1 1 350px;
+  background-color: #1a1a1a;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #2a2a2a;
   min-width: 300px;
 }
 
-.youtube-upload-history-wrapper {
-  flex: 1;
+/* HISTORIAL DE SUBIDAS */
+.youtube-upload-history-wrapper,
+.yt-upload-history {
+  flex: 1 1 350px;
+  background-color: #1a1a1a;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #2a2a2a;
+  overflow-x: auto;
   min-width: 300px;
 }
 
+.yt-upload-history h3 {
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
 
+.yt-upload-history table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #e0e0e0;
+}
+
+.yt-upload-history th,
+.yt-upload-history td {
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid #333;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.yt-upload-history th {
+  background-color: #222;
+  color: #ff4f4f;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.yt-upload-history tr:hover {
+  background-color: #2a2a2a;
+}
+
+/* MENSAJE DE ADVERTENCIA (LIMITACIONES) */
 .upload-warning {
   background-color: #fff8e1;
   color: #9e6600;

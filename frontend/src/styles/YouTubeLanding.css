@@ -1,0 +1,100 @@
+/* YouTubeLanding.css */
+
+.yt-landing-container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.yt-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, #ff4f4f 0%, #121212 100%);
+  padding: 2rem 1rem;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(255, 79, 79, 0.1);
+}
+
+.yt-header h1 {
+  color: #ffffff;
+  font-size: 2.4rem;
+}
+
+.yt-header p {
+  font-size: 1.2rem;
+  color: #f5f5f5;
+  margin-top: 0.8rem;
+}
+
+.yt-section {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+  margin-bottom: 2rem;
+  background-color: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.03);
+}
+
+.yt-section h2 {
+  color: #ffffff;
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.yt-section ul,
+.yt-section ol {
+  margin-top: 0.75rem;
+  padding-left: 1.5rem;
+}
+
+.yt-section li {
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.yt-cta-box {
+  background-color: #1a1a1a;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.03);
+  border: 1px solid #2a2a2a;
+}
+
+.yt-cta-box h2 {
+  font-size: 1.6rem;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  border-left: 4px solid #ff4f4f;
+  padding-left: 0.5rem;
+}
+
+.yt-beta-info {
+  background-color: #222;
+  border-left: 4px solid #ffcc00;
+  padding: 1rem;
+  margin-top: 1.5rem;
+  border-radius: 8px;
+  color: #ffefb0;
+  font-size: 0.95rem;
+}
+
+.yt-footer-note {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 2rem;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

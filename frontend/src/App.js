@@ -59,6 +59,7 @@ import SpacexLaunchAdmin from './pages/admin/SpacexLaunchAdmin';
 import AdminLinkAnalysis from './components/admin/AdminLinkAnalysis';
 import UserLinkDetail from './components/UserLinkDetail';
 import UserLinkHistory from './components/UserLinkHistory';
+import YouTubeLandingPage from './pages/YouTubeLandingPage.jsx'
 
 
 
@@ -148,6 +149,7 @@ function App() {
             <Route path="/admin/link-analysis" element={<AdminLinkAnalysis />} />
             <Route path="/pro/link-analysis/:id" element={<UserLinkDetail />} />
             <Route path="/panel/pro/historial" element={<UserLinkHistory />} />
+            <Route path="/youtube-uploader" element={<YouTubeLandingPage />} />
 
             
 
