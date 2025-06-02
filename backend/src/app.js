@@ -57,6 +57,7 @@ import proLinkAnalysisRoutes from './routes/proLinkAnalysisRoutes.js';
 import youtubeAuthRoutes from './routes/youtubeAuthRoutes.js';
 import youtubeUploadRoutes from './routes/youtubeUploadRoutes.js';
 import youtubeTokenRoutes from './routes/youtubeTokenRoutes.js';
+import userFavoriteSeriesRoutes from './routes/userFavoriteSeriesRoutes.js';
 
 
 
@@ -180,6 +181,7 @@ app.use('/api/pro', proLinkAnalysisRoutes);
 app.use('/api/youtube', youtubeAuthRoutes);
 app.use('/api/youtube', youtubeUploadRoutes);
 app.use('/api/youtube', youtubeTokenRoutes);
+app.use('/api/user/favorites', userFavoriteSeriesRoutes);
 
 
 

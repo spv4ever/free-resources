@@ -140,7 +140,7 @@ function Navbar() {
           <Link to="/" onClick={() => setMobileMenuOpen(false)}>Home</Link>
           {user ? (
             <>
-              <span className="navbar-user">Bienvenido, {user.name} ({user.role})</span>
+              <span className="navbar-user">Bienvenido, {user.email} ({user.role})</span>
               {user.role === 'admin' && (
                 <button className="admin-btn" onClick={() => { toggleSidebar(); setMobileMenuOpen(false); }}>Admin</button>
               )}
