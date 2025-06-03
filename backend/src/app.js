@@ -76,10 +76,7 @@ import userFavoriteSeriesRoutes from './routes/userFavoriteSeriesRoutes.js';
 
 dotenv.config();
 
-app.options('*', cors({
-  origin: ['https://keikodev.es'],
-  credentials: true
-}));
+
 
 // 🔍 Diagnóstico de variables peligrosas en entorno Render
 console.log('🔍 Verificando variables de entorno cargadas:');
@@ -90,6 +87,11 @@ Object.entries(process.env).forEach(([key, value]) => {
 });
 
 const app = express();
+
+// app.options('*', cors({
+//   origin: ['https://keikodev.es'],
+//   credentials: true
+// }));
 
 
 
