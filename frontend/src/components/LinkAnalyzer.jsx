@@ -42,8 +42,7 @@ const LinkAnalyzer = () => {
         }
       );
 
-      console.log('✅ Resultado recibido:', res.data); // Depuración
-      
+      console.log('✅ Resultado recibido:', res.data);
       setResult(res.data);
     } catch (err) {
       if (err.response?.data?.error) {
@@ -55,6 +54,8 @@ const LinkAnalyzer = () => {
       setLoading(false);
     }
   };
+
+  const isProOrAdmin = user?.role === 'pro' || user?.role === 'admin';
 
   return (
     <div className="link-analyzer-card">
@@ -87,10 +88,10 @@ const LinkAnalyzer = () => {
           </p>
           <p>{result.resumen}</p>
 
-          {/* ✅ Detalles técnicos para usuarios free */}
+          {/* 🔧 Detalles técnicos */}
           {result?.detalles?.tecnicos && (
             <div className="detalles-tecnicos">
-              <h4>🔧 Detalles técnicos (nivel FREE)</h4>
+              <h4>🔧 Detalles técnicos</h4>
               <ul>
                 <li><strong>Dominio:</strong> {result.detalles.tecnicos.dominio}</li>
                 <li><strong>SSL:</strong> {result.detalles.tecnicos.ssl}</li>
@@ -109,9 +110,11 @@ const LinkAnalyzer = () => {
               </ul>
             </div>
           )}
-          {user?.role === 'pro' && result?.aiAnalysis && (
+
+          {/* 🧠 IA (nivel avanzado) */}
+          {isProOrAdmin && result?.aiAnalysis && (
             <div className="analisis-ia">
-              <h4>🧠 Análisis con IA (nivel PRO)</h4>
+              <h4>🧠 Análisis con IA (nivel AVANZADO)</h4>
               <ul>
                 <li>
                   <strong>Riesgo estimado:</strong>{' '}
@@ -132,7 +135,6 @@ const LinkAnalyzer = () => {
                 </li>
               </ul>
 
-              {/* 🔐 Recomendaciones adicionales */}
               <div className="recomendaciones">
                 <h5>🔒 Recomendaciones de protección:</h5>
                 <ul>
@@ -161,9 +163,9 @@ const LinkAnalyzer = () => {
             </div>
           )}
 
-          {/* 🔒 Mostrar banner según estado del usuario */}
+          {/* 🔔 Mostrar banner solo si no es pro ni admin */}
           {!user && <AnalysisUpgradeBanner />}
-          {user?.role === 'free' && <AnalysisUpgradeBanner user={user} />}
+          {user && !isProOrAdmin && <AnalysisUpgradeBanner user={user} />}
         </div>
       )}
     </div>

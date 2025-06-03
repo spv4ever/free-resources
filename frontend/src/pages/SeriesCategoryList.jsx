@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/SeriesCategoryList.css';
 import TopSeriesWeekly from '../components/TopSeriesWeekly';
+import SeriesStats from '../components/SeriesStats';
+
 
 const SeriesCategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -58,8 +60,10 @@ const SeriesCategoryList = () => {
   return (
     <div className="series-category-list">
       
-      <h1>Categorías de Series</h1>
+      <h1>Mis Series Favoritas</h1>
+      
       <div className="series-search-box">
+        <SeriesStats />
         <input
           type="text"
           value={query}
@@ -87,7 +91,7 @@ const SeriesCategoryList = () => {
         )}
       </div>
       <TopSeriesWeekly />
-
+      <h1>Categorías de Series</h1>
       <div className="series-category-grid">
         {categories.map(cat => (
           <Link to={`/series/categoria/${cat.slug}`} key={cat._id} className="series-category-card">

@@ -36,25 +36,24 @@ export const analyzeLink = async (req, res) => {
     const resultado = isDangerous ? 'peligroso' : 'seguro';
 
     // Determinar nivel según el usuario
-    const nivel = user?.role === 'pro' ? 3 : user ? 2 : 1;
+    const nivel = (user?.role === 'pro' || user?.role === 'admin') ? 3 : user ? 2 : 1;
 
     // Detalles básicos
     const detalles = {
       origen: 'Google Safe Browsing',
       respuesta: gsbResponse.data || {}
     };
-
+    const domain = new URL(url).hostname;
     // Análisis técnico para free y pro
-    if (user?.role === 'free' || user?.role === 'pro') {
-      const domain = new URL(url).hostname;
-      detalles.tecnicos = {
-        ssl: url.startsWith('https') ? 'válido' : 'no seguro',
-        dominio: domain,
-        whois: `https://who.is/whois/${domain}`,
-        reputacion: `https://urlscan.io/search/#${domain}`
-      };
-      console.log('🧪 Detalles técnicos generados:', detalles.tecnicos);
-    }
+    if (user) {
+        detalles.tecnicos = {
+          ssl: url.startsWith('https') ? 'válido' : 'no seguro',
+          dominio: domain,
+          whois: `https://who.is/whois/${domain}`,
+          reputacion: `https://urlscan.io/search/#${domain}`
+        };
+      }
+
 
     // Construcción del documento
     const nuevo = new LinkAnalysis({
@@ -69,7 +68,7 @@ export const analyzeLink = async (req, res) => {
     });
 
     // Análisis con IA si es PRO
-    if (user?.role === 'pro') {
+    if (user?.role === 'pro' || user?.role === 'admin') {
       try {
         const aiResult = await analyzeWithAI(url);
         nuevo.aiAnalysis = aiResult;

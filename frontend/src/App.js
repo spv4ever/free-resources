@@ -61,6 +61,7 @@ import UserLinkDetail from './components/UserLinkDetail';
 import UserLinkHistory from './components/UserLinkHistory';
 import YouTubeLandingPage from './pages/YouTubeLandingPage.jsx'
 import UserProfile from './pages/UserProfile';
+import SeriesFilteredList from './pages/SeriesFilteredList';
 
 
 
@@ -112,6 +113,7 @@ function App() {
             <Route path="/admin/igraal-deals" element={<AdminRoute><IgraalDealsAdmin /></AdminRoute> }/>
             <Route path="/admin/top-series-history" element={<AdminRoute><TopSeriesHistoryPage /></AdminRoute>} />
             <Route path="/series/:tmdbId" element={<SerieDetalle />} />
+            <Route path="/series/estado/:status" element={<SeriesFilteredList />} />
             <Route path="/series" element={<SeriesCategoryList />} />
             <Route path="/admin/spacex" element={<SpacexLaunchAdmin />} />
             <Route path="/perfil" element={<UserProfile />} />
