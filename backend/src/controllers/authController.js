@@ -10,7 +10,7 @@ export const registerUser = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { email, password } = req.body;
+  const { email, password, nickname } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -25,7 +25,8 @@ export const registerUser = async (req, res) => {
       password,
       role: 'free',
       isVerified: false,
-      verificationToken
+      verificationToken,
+      nickname // ✅ añadido
     });
 
     await user.save();
@@ -73,7 +74,8 @@ export const loginUser = async (req, res) => {
         user: {
           _id: user._id,
           email: user.email,
-          role: user.role
+          role: user.role,
+          nickname: user.nickname // ✅ opcional pero útil
         }
       });
     } catch (error) {
@@ -182,7 +184,7 @@ export const forgotPassword = async (req, res) => {
 
   export const updateUserByAdmin = async (req, res) => {
     const { id } = req.params;
-    const { role, isVerified } = req.body;
+    const { role, isVerified, nickname } = req.body;
   
     try {
       const user = await User.findById(id);
@@ -190,6 +192,7 @@ export const forgotPassword = async (req, res) => {
   
       if (role) user.role = role;
       if (typeof isVerified === 'boolean') user.isVerified = isVerified;
+      if (nickname) user.nickname = nickname.trim().slice(0, 50);
   
       await user.save();
   
@@ -199,3 +202,23 @@ export const forgotPassword = async (req, res) => {
       res.status(500).json({ message: 'Error al actualizar usuario' });
     }
   };
+
+  export const updateUserProfile = async (req, res) => {
+  const userId = req.user.id; // asumimos que usas middleware de autenticación
+  const { nickname } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+    if (nickname) {
+      user.nickname = nickname.trim().slice(0, 50);
+      await user.save();
+    }
+
+    res.json({ message: 'Apodo actualizado correctamente', nickname: user.nickname });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error al actualizar el apodo' });
+  }
+};

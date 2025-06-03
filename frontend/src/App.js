@@ -60,6 +60,7 @@ import AdminLinkAnalysis from './components/admin/AdminLinkAnalysis';
 import UserLinkDetail from './components/UserLinkDetail';
 import UserLinkHistory from './components/UserLinkHistory';
 import YouTubeLandingPage from './pages/YouTubeLandingPage.jsx'
+import UserProfile from './pages/UserProfile';
 
 
 
@@ -113,7 +114,8 @@ function App() {
             <Route path="/series/:tmdbId" element={<SerieDetalle />} />
             <Route path="/series" element={<SeriesCategoryList />} />
             <Route path="/admin/spacex" element={<SpacexLaunchAdmin />} />
-            
+            <Route path="/perfil" element={<UserProfile />} />
+
 
             <Route path="/admin/top-series-sync" element={<TopSeriesSyncPage />} />
             {/* <Route path="/admin/social-posts" element={<AdminRoute><div>Hola soy admin</div></AdminRoute>} /> */}

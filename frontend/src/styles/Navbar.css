@@ -33,7 +33,8 @@
 }
 
 .navbar-links a,
-.navbar-links button {
+.navbar-links button,
+.navbar-links .admin-btn {
   margin-left: 1rem;
   font-weight: bold;
   text-decoration: none;
@@ -47,6 +48,12 @@
   cursor: pointer;
   display: inline-block;
 }
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+} 
 
 .navbar-links a:hover,
 .navbar-links button:hover {
@@ -66,16 +73,30 @@
   border-color: #e60000;
 }
 
-/* Botón "Admin" */
 .admin-btn {
   background-color: #ffcc00;
-  border-color: #ffcc00;
+  border: 2px solid #ffcc00;
   color: #333;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px; /* forzamos misma altura */
+  line-height: 1;
+  box-sizing: border-box;
+  vertical-align: middle;
 }
 
 .admin-btn:hover {
   background-color: #e6b800;
   border-color: #e6b800;
+  color: white;
+  text-decoration: none;
 }
 
 /* Usuario logueado */
@@ -247,7 +268,12 @@
   color: #90caf9; /* ✅ Color claro al hacer hover */
 }
 
-
+.navbar-links a.admin-btn,
+.navbar-links button.admin-btn {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
 /* === Media Queries === */
 @media screen and (max-width: 768px) {
   .navbar-links,

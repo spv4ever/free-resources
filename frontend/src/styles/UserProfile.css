@@ -1,0 +1,28 @@
+.profile-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #1f1f1f;
+  color: #e0e0e0;
+  border-radius: 12px;
+}
+
+.nickname-section {
+  margin-top: 1rem;
+}
+
+.nickname-section input {
+  padding: 5px;
+  margin-right: 0.5rem;
+}
+
+button {
+  margin-left: 0.5rem;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.success-message {
+  color: #00ff88;
+  margin-top: 1rem;
+}

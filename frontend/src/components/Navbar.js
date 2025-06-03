@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import '../styles/Navbar.css';
 import logo from '../assets/logo_wbg.png';
 
+
 function Navbar() {
   const [user, setUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -14,6 +15,7 @@ function Navbar() {
   const [submenuAffiliateOpen, setSubmenuAffiliateOpen] = useState(false);
   const [submenuSpacexOpen, setSubmenuSpacexOpen] = useState(false);
   const [enrichCount, setEnrichCount] = useState(0);
+  
 
   useEffect(() => {
     const fetchPendingEnrich = async () => {
@@ -29,14 +31,15 @@ function Navbar() {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decodedToken = decodeJwt(token);
-      setUser({
-        email: decodedToken.email,
-        role: decodedToken.role,
-      });
+  const storedUser = localStorage.getItem('user');
+  if (storedUser) {
+    try {
+      setUser(JSON.parse(storedUser));
+    } catch (err) {
+      console.error('Error al parsear user en Navbar:', err);
+      setUser(null);
     }
+  }
 
     const handleClickOutside = (e) => {
       if (sidebarOpen && !e.target.closest('.sidebar') && !e.target.closest('.admin-btn')) {
@@ -48,17 +51,17 @@ function Navbar() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, [sidebarOpen]);
 
-  const decodeJwt = (token) => {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
-    );
-    return JSON.parse(jsonPayload);
-  };
+  // const decodeJwt = (token) => {
+  //   const base64Url = token.split('.')[1];
+  //   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  //   const jsonPayload = decodeURIComponent(
+  //     atob(base64)
+  //       .split('')
+  //       .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+  //       .join('')
+  //   );
+  //   return JSON.parse(jsonPayload);
+  // };
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -121,15 +124,16 @@ function Navbar() {
           </div>
         )}
         {user ? (
-          <>
+          <div className="navbar-actions">
             <span className="navbar-user">
-              Bienvenido, {user.email} ({user.role})
+              Bienvenido, {user.nickname || user.email} ({user.role})
             </span>
             {user.role === 'admin' && (
-              <button className="admin-btn" onClick={toggleSidebar}>Admin</button>
+              <Link to="#" onClick={toggleSidebar} className="admin-btn">Admin</Link>
             )}
-            <button className="logout-btn" onClick={handleLogout}>Desconectar</button>
-          </>
+            <Link to="/perfil" className="admin-btn">Mi Perfil</Link>
+            <Link to="#" onClick={(e) => { e.preventDefault(); handleLogout(); }} className="logout-btn">Desconectar</Link>
+          </div>
         ) : (
           <Link to="/login">Iniciar sesión</Link>
         )}
@@ -140,7 +144,7 @@ function Navbar() {
           <Link to="/" onClick={() => setMobileMenuOpen(false)}>Home</Link>
           {user ? (
             <>
-              <span className="navbar-user">Bienvenido, {user.email} ({user.role})</span>
+              <span className="navbar-user">Bienvenido, {user.nickname || user.email} ({user.role})</span>
               {user.role === 'admin' && (
                 <button className="admin-btn" onClick={() => { toggleSidebar(); setMobileMenuOpen(false); }}>Admin</button>
               )}

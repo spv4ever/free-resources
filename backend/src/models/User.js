@@ -13,6 +13,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  nickname: {
+    type: String,
+    trim: true,
+    maxlength: 50,
+    default: function () {
+      return this.email?.split('@')[0]; // valor por defecto si no se define
+    }
+  },
   role: {
     type: String,
     enum: ['free', 'pro', 'admin'],
@@ -26,9 +34,8 @@ const userSchema = new mongoose.Schema({
   resetToken: String,
   resetTokenExpires: Date
 }, {
-  timestamps: true // ✅ Esto añade automáticamente createdAt y updatedAt
+  timestamps: true
 });
-
 
 // Encriptar la contraseña antes de guardarla
 userSchema.pre('save', async function(next) {
@@ -46,5 +53,4 @@ userSchema.methods.matchPassword = async function(password) {
 
 // Crear el modelo
 const User = mongoose.model('User', userSchema);
-
 export default User;

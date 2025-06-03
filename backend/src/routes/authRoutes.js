@@ -2,6 +2,8 @@ import express from 'express';
 import { body } from 'express-validator';
 import { registerUser, loginUser, verifyEmail } from '../controllers/authController.js';
 import { forgotPassword, resetPassword } from '../controllers/authController.js';
+import { updateUserProfile } from '../controllers/authController.js';
+import { protect } from '../middlewares/authMiddleware.js';
 
 
 
@@ -21,5 +23,6 @@ router.post('/login', loginUser);
 router.get('/verify-email', verifyEmail);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
+router.put('/profile', protect, updateUserProfile);
 
 export default router;

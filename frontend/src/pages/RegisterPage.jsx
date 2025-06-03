@@ -11,6 +11,7 @@ const RegisterPage = () => {
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
+  const [nickname, setNickname] = useState('');
 
   const validatePassword = (pwd) => {
     return {
@@ -57,11 +58,13 @@ const RegisterPage = () => {
     try {
       const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/register`, {
         email,
-        password
+        password,
+        nickname // ✅ lo enviamos si lo ha completado
       });
 
       setMessage(res.data.message);
       setEmail('');
+      setNickname(''); // ✅ limpiar
       setPassword('');
       setRepeatPassword('');
       setAcceptedPrivacy(false);
@@ -82,6 +85,13 @@ const RegisterPage = () => {
       <form onSubmit={handleSubmit}>
         <label>Email:</label>
         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <label>Apodo (opcional):</label>
+          <input
+            type="text"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            maxLength={50}
+          />
 
         <label>Contraseña:</label>
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />

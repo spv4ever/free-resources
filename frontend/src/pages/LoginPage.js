@@ -10,20 +10,20 @@ function LoginPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate(); // Hook de navegación
   const { setUser } = useUser();
-  const decodeJwt = (token) => {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map(function(c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        })
-        .join('')
-    );
+  // const decodeJwt = (token) => {
+  //   const base64Url = token.split('.')[1];
+  //   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  //   const jsonPayload = decodeURIComponent(
+  //     atob(base64)
+  //       .split('')
+  //       .map(function(c) {
+  //         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  //       })
+  //       .join('')
+  //   );
   
-    return JSON.parse(jsonPayload);  // Devuelve el payload decodificado
-  };
+  //   return JSON.parse(jsonPayload);  // Devuelve el payload decodificado
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,27 +45,15 @@ function LoginPage() {
         // Guardar el token en localStorage
         const token = data.token;
         localStorage.setItem('token', token);
-        //console.log('Token guardado:', token);
-  
-        // Decodificar el token y extraer la información del usuario
-        const decodedToken = decodeJwt(token);
-        //console.log('Decoded Token:', decodedToken);
-  
-        // Guardar información de usuario (nombre y rol) en el estado
-        // Guardar información completa del usuario
-        const userInfo = {
-          _id: decodedToken.id,
-          name: decodedToken.email,
-          role: decodedToken.role
-        };
+
+        // ✅ Tomar directamente el objeto user con nickname
+        const userInfo = data.user;
 
         localStorage.setItem('user', JSON.stringify(userInfo));
         setUser(userInfo);
-        
-  
-        navigate('/'); // Redirigir al HomePage
-        // Forzar la recarga de la página
-        window.location.reload(); // Recarga la página
+
+        navigate('/');
+        window.location.reload();
       } else {
         setErrorMessage(data.message || 'Credenciales no válidas');
       }

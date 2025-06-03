@@ -14,6 +14,7 @@ import AffiliatePopup from '../components/AffiliatePopup';
 import IgraalDealHighlight from '../components/IgraalDealHighlight';
 import IgraalDiscountHighlight from '../components/IgraalDiscountHighlight';
 import { useCountdown } from '../hooks/useCountdown';
+import { useUser } from '../context/UserContext';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -21,7 +22,7 @@ dayjs.extend(timezone);
 function HomePage() {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const { user } = useUser();
   const [posts, setPosts] = useState([]);
   const [launches, setLaunches] = useState([]);
   const [aiStats, setAiStats] = useState([]);
@@ -166,8 +167,12 @@ function HomePage() {
         <AffiliatePopup currentPath={location.pathname} />
       </div>
 
-      <AdBanner />
-      <AdBannerExtra />
+      {!user || (user.role !== 'pro' && user.role !== 'admin') ? (
+          <>
+            <AdBanner />
+            <AdBannerExtra />
+          </>
+        ) : null}
     </div>
   );
 }
