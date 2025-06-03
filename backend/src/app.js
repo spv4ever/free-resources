@@ -76,6 +76,11 @@ import userFavoriteSeriesRoutes from './routes/userFavoriteSeriesRoutes.js';
 
 dotenv.config();
 
+app.options('*', cors({
+  origin: ['https://keikodev.es'],
+  credentials: true
+}));
+
 // 🔍 Diagnóstico de variables peligrosas en entorno Render
 console.log('🔍 Verificando variables de entorno cargadas:');
 Object.entries(process.env).forEach(([key, value]) => {
@@ -104,19 +109,21 @@ app.use('/api/ai', createRateLimiter({ max: 40, windowMs: 15 * 60 * 1000 }));
 app.use('/api/admin', createRateLimiter({ max: 50, windowMs: 15 * 60 * 1000 }));
 
 // app.use(generalLimiter);
+const allowedOrigins = ['http://localhost:3000', 'https://keikodev.es'];
+
 
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://keikodev.es'],
-    credentials: true
-  }));
-  
-  app.use((req, res, next) => {
-    if (req.originalUrl.startsWith('/socket.io')) {
-      return res.status(204).end();
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS not allowed'));
     }
-    next();
-  });
+  },
+  credentials: true
+}));
+
 // Middlewares
 app.use(suspiciousRouteLogger);
 app.use(helmet({
