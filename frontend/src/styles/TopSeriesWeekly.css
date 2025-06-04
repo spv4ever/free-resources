@@ -159,3 +159,44 @@
 .nav-arrow.right {
   right: -10px;
 }
+
+.top-weekly-user-info {
+  font-size: 0.75rem;
+  margin-top: 0.4rem;
+  text-align: center;
+  color: #ccc;
+}
+
+.top-weekly-user-info {
+  font-size: 0.75rem;
+  margin-top: 0.4rem;
+  text-align: center;
+  color: #ccc;
+  line-height: 1.3;
+}
+
+.followers-count {
+  display: block;
+  margin-top: 4px;
+  color: #aaa;
+  font-size: 0.7rem;
+}
+
+.top-weekly-item.popular-favorite {
+  border: 2px solid gold;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+  position: relative;
+}
+
+.top-weekly-item.popular-favorite::before {
+  content: "⭐ Popular";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: gold;
+  color: #000;
+  font-size: 0.6rem;
+  padding: 2px 5px;
+  border-radius: 5px;
+  font-weight: bold;
+}

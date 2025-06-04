@@ -23,7 +23,7 @@
   text-align: center;
   min-width: 220px;
   width: 220px;
-  height: 60px;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

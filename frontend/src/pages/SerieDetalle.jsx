@@ -199,7 +199,7 @@ const SerieDetalle = () => {
             )}
             <div className="serie-info-main">
               <h1>{serie.title}</h1>
-              {token && (
+              {token && isFavorite && (
                 <button className="btn-accent" onClick={handleMarkSeriesComplete}>
                     {serieVistaCompleta ? '✅ Serie completada' : '📺 Marcar serie completa'}
                   </button>
@@ -243,7 +243,7 @@ const SerieDetalle = () => {
           return (
             <div key={season} className="season-block-table">
               <h4>Temporada {season}</h4>
-              {token && (
+              {token && isFavorite && (
                 <button
                   className="btn-accent"
                   onClick={() => handleMarkSeasonSeen(season, episodios.map(e => e.episode))}
@@ -283,7 +283,7 @@ const SerieDetalle = () => {
                         <td>{new Date(ep.releaseDate).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</td>
                         <td>{ep.duration} min</td>
                         <td>
-                          {token && (
+                          {token && isFavorite && (
                             <button
                               className="episodio-btn"
                               onClick={() => handleMarkEpisodeSeen(season, ep.episode)}

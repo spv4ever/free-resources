@@ -59,7 +59,7 @@ import youtubeUploadRoutes from './routes/youtubeUploadRoutes.js';
 import youtubeTokenRoutes from './routes/youtubeTokenRoutes.js';
 import userFavoriteSeriesRoutes from './routes/userFavoriteSeriesRoutes.js';
 import userSeriesStatsRoutes from './routes/userSeriesStatsRoutes.js';
-
+import favoriteRoutes from './routes/favoriteRoutes.js';
 
 
 
@@ -195,6 +195,8 @@ app.use('/api/youtube', youtubeTokenRoutes);
 app.use('/api/user/favorites', userFavoriteSeriesRoutes);
 app.use('/api', userSeriesStatsRoutes);
 
+
+app.use('/api/series/favorites', favoriteRoutes);
 
 
 

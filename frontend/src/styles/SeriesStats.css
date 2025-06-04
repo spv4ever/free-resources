@@ -38,3 +38,17 @@
   margin: 0.4rem 0 0 0;
   font-size: 1.4rem;
 }
+
+.series-stats-wrapper {
+  margin-top: 2rem;
+}
+
+.series-subtitle {
+  text-align: center;
+  color: #e0e0e0;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  margin-top: 2rem;
+}
+
+

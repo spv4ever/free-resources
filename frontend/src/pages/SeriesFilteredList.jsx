@@ -19,6 +19,7 @@ function SeriesFilteredList() {
   const { user } = useUser();
   const [series, setSeries] = useState([]);
 
+
   useEffect(() => {
     if (!user?._id || !status) return;
     axios
@@ -32,7 +33,12 @@ function SeriesFilteredList() {
       <h1>{statusLabels[status] || 'Series filtradas'}</h1>
       <div className="series-category-grid">
         {series.length > 0 ? (
-            series.map(item => (
+            series.map(item => {
+            const vistos = item.seenEpisodes?.length || 0;
+            const total = item.seriesId?.episodes?.length || 0;
+            const completada = item.markedComplete;
+
+            return (
                 <Link
                 key={item._id}
                 to={`/series/${item.seriesId.tmdbId}`}
@@ -40,8 +46,16 @@ function SeriesFilteredList() {
                 >
                 <img src={item.seriesId.image} alt={item.seriesId.title} />
                 <h2>{item.seriesId.title}</h2>
+                <p>
+                    {completada ? (
+                    <span style={{ color: 'lightgreen' }}>✔️ Completada</span>
+                    ) : (
+                    <span>{vistos} / {total} vistos</span>
+                    )}
+                </p>
                 </Link>
-            ))
+            );
+            })
             ) : (
             <p>No hay series en esta categoría.</p>
             )}

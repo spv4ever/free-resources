@@ -4,7 +4,9 @@ import axios from 'axios';
 import '../styles/SeriesCategoryList.css';
 import TopSeriesWeekly from '../components/TopSeriesWeekly';
 import SeriesStats from '../components/SeriesStats';
-
+import LastFavoritesCarousel from '../components/LastFavoritesCarousel';
+import SeriesCategoryMenu from '../components/SeriesCategoryMenu';
+import { useUser } from '../context/UserContext';
 
 const SeriesCategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -13,6 +15,7 @@ const SeriesCategoryList = () => {
   const [loading, setLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
+  const { user } = useUser();
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/api/series/categories`)
@@ -59,11 +62,12 @@ const SeriesCategoryList = () => {
 
   return (
     <div className="series-category-list">
+      <SeriesCategoryMenu categories={categories} />
       
-      <h1>Mis Series Favoritas</h1>
-      
+      {user && <h1>Mis Series Favoritas</h1>}
+
       <div className="series-search-box">
-        <SeriesStats />
+        {user && <SeriesStats />}
         <input
           type="text"
           value={query}
@@ -91,7 +95,8 @@ const SeriesCategoryList = () => {
         )}
       </div>
       <TopSeriesWeekly />
-      <h1>Categorías de Series</h1>
+      <LastFavoritesCarousel />
+      {/* <h1>Categorías de Series</h1>
       <div className="series-category-grid">
         {categories.map(cat => (
           <Link to={`/series/categoria/${cat.slug}`} key={cat._id} className="series-category-card">
@@ -99,7 +104,7 @@ const SeriesCategoryList = () => {
             <p>{cat.count} series</p>
           </Link>
         ))}
-      </div>
+      </div> */}
 
       <div className="series-search-box">
         <input
