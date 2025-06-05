@@ -28,6 +28,7 @@ export const getLatestFavorites = async (req, res) => {
         const serie = await Series.findById(entry._id);
 
         return {
+          _id: serie._id, // ✅ Este campo es necesario para toggleFavorite
           tmdbId: serie.tmdbId,
           title: serie.title,
           image: serie.image,

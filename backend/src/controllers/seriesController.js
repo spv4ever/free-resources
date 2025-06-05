@@ -106,6 +106,18 @@ export const getWeeklyTop = async (req, res) => {
       ...entry.seriesId.toObject()
     }));
 
+    // const result = ranking.seriesRankings.map(entry => {
+    //   const serie = entry.seriesId.toObject();
+    //   return {
+    //     _id: serie._id, // <- asegúralo
+    //     rank: entry.rank,
+    //     tmdbId: serie.tmdbId,
+    //     title: serie.title,
+    //     image: serie.image,
+    //     availability: serie.availability || []
+    //   };
+    // });
+
     res.json({
       week: ranking.week,
       top: result

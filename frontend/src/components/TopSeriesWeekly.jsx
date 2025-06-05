@@ -2,10 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/TopSeriesWeekly.css';
+import { useFavoriteToggle } from '../hooks/useFavoriteToggle';
+
 
 const TopSeriesWeekly = () => {
   const [series, setSeries] = useState([]);
   const carouselRef = useRef(null);
+  const { isFavorite, toggleFavorite, loading } = useFavoriteToggle();
+
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/api/series/top-weekly`)
@@ -34,6 +38,18 @@ const TopSeriesWeekly = () => {
             <Link to={`/series/${serie.tmdbId}`} className="top-weekly-item" key={idx}>
               <div className="top-weekly-rank">#{idx + 1}</div> {/* ✅ Ranking */}
               <img src={serie.image} alt={serie.title} className="top-weekly-poster" />
+              <div
+                className="card-fav-toggle"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (!loading) toggleFavorite(serie._id);
+                }}
+                title={loading ? 'Cargando...' : isFavorite(serie._id) ? 'Quitar de favoritos' : 'Añadir a favoritos'}
+              >
+                <span className={`heart-icon ${isFavorite(serie._id) ? 'active' : ''}`}>
+                  {isFavorite(serie._id) ? '❤️' : '🤍'}
+                </span>
+              </div>
               <div className="top-weekly-title">{serie.title}</div>
               <div className="top-weekly-platforms">
                 {(serie.availability || []).map((p, i) => (

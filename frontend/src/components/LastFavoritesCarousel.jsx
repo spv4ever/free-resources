@@ -2,10 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/TopSeriesWeekly.css'; // Reutilizamos los estilos
+import { useFavoriteToggle } from '../hooks/useFavoriteToggle';
 
 const LastFavoritesCarousel = () => {
   const [favorites, setFavorites] = useState([]);
   const carouselRef = useRef(null);
+  const { isFavorite, toggleFavorite, loading } = useFavoriteToggle();
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/api/series/favorites/latest`)
@@ -41,7 +43,20 @@ const LastFavoritesCarousel = () => {
                 className={`top-weekly-item ${fav.totalFavorites > 5 ? 'popular-favorite' : ''}`}
                 key={idx}
                 >
+                    
               <img src={fav.image} alt={fav.title} className="top-weekly-poster" />
+              <div
+                className="card-fav-toggle"
+                onClick={(e) => {
+                    e.preventDefault(); // evita que se dispare el enlace si hay <Link>
+                    if (!loading) toggleFavorite(fav._id);
+                }}
+                title={loading ? 'Cargando...' : isFavorite(fav._id) ? 'Quitar de favoritos' : 'Añadir a favoritos'}
+                >
+                <span className={`heart-icon ${isFavorite(fav._id) ? 'active' : ''}`}>
+                    {isFavorite(fav._id) ? '❤️' : '🤍'}
+                </span>
+                </div>
               <div className="top-weekly-title">{fav.title}</div>
 
               <div className="top-weekly-user-info">
