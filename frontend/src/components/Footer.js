@@ -5,8 +5,22 @@ import { faTwitter, faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import tmdbLogo from '../assets/tmdb.svg';
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+  TelegramShareButton,
+  LinkedinShareButton,
+  FacebookIcon,
+  TwitterIcon,
+  WhatsappIcon,
+  TelegramIcon,
+  LinkedinIcon,
+} from 'react-share';
 
 function Footer() {
+  const url = window.location.href;
+  const title = 'Descubre KeikoDev Recursos: herramientas, series y más';
   return (
     <footer className="footer">
       <div className="footer-left">
@@ -52,6 +66,16 @@ function Footer() {
             className="tmdb-logo"
           />
       </div>
+      <div className="footer-share">
+      <p>📢 ¡Comparte esta página!</p>
+      <div className="footer-share-icons">
+        <FacebookShareButton url={url} quote={title}><FacebookIcon size={32} round /></FacebookShareButton>
+        <TwitterShareButton url={url} title={title}><TwitterIcon size={32} round /></TwitterShareButton>
+        <WhatsappShareButton url={url} title={title}><WhatsappIcon size={32} round /></WhatsappShareButton>
+        <TelegramShareButton url={url} title={title}><TelegramIcon size={32} round /></TelegramShareButton>
+        <LinkedinShareButton url={url}><LinkedinIcon size={32} round /></LinkedinShareButton>
+      </div>
+    </div>
     </footer>
   );
 }

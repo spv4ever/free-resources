@@ -18,10 +18,9 @@ export const getLatestFavorites = async (req, res) => {
 
     const enriched = await Promise.all(
       latest.map(async (entry) => {
-        const lastFav = await UserFavoriteSeries.findOne({
-          seriesId: entry._id,
-          createdAt: entry.lastAddedAt
-        }).populate('userId', 'nickname');
+        const firstFav = await UserFavoriteSeries.findOne({
+            seriesId: entry._id
+            }).sort({ createdAt: 1 }).populate('userId', 'nickname');
         const followers = await UserFavoriteSeries.find({ seriesId: entry._id })
             .populate('userId', 'nickname');
 
@@ -33,8 +32,8 @@ export const getLatestFavorites = async (req, res) => {
           title: serie.title,
           image: serie.image,
           availability: serie.availability || [],
-          addedBy: lastFav?.userId?.nickname || 'Anónimo',
-          addedAt: entry.lastAddedAt,
+          addedBy: firstFav?.userId?.nickname || 'Anónimo', // <-- primer usuario
+          addedAt: entry.lastAddedAt,                       // <-- último añadido (para orden)
           totalFavorites: entry.count,
           followerNicknames
         };

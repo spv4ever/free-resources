@@ -49,7 +49,7 @@ const LastFavoritesCarousel = () => {
                 <small>{formatDate(fav.addedAt)}</small><br />
                 <span
                     className="followers-count"
-                    title={`También siguen esta serie: ${fav.followerNicknames.join(', ')}`}
+                    title={`Añadida por ${fav.addedBy} – Última vez añadida: ${formatDate(fav.addedAt)}\nTambién siguen esta serie: ${fav.followerNicknames.join(', ')}`}
                     >
                     👥 Seguido por {fav.totalFavorites} {fav.totalFavorites === 1 ? 'persona' : 'personas'}
                     </span>
