@@ -1,4 +1,4 @@
-import Serie from '../models/Series.js'; // usa tu modelo real
+import Serie from '../models/Series.js'; // usa el nombre correcto de tu modelo
 
 export const renderShareSerie = async (req, res) => {
   try {
@@ -6,9 +6,17 @@ export const renderShareSerie = async (req, res) => {
 
     if (!serie) return res.status(404).send('Serie no encontrada');
 
-    const { title, overview, posterPath, tmdbId } = serie;
-    const finalUrl = `https://keikodev.es/series/${tmdbId}`;
-    const imageUrl = posterPath || 'https://keikodev.es/assets/series-default.jpg';
+    const escapeHtml = (str) =>
+      String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+    const title = escapeHtml(serie.title);
+    const overview = escapeHtml((serie.overview || '').slice(0, 200));
+    const imageUrl = serie.posterPath || 'https://keikodev.es/assets/series-default.jpg';
+    const finalUrl = `https://keikodev.es/series/${serie.tmdbId}`;
 
     res.setHeader('Content-Type', 'text/html');
     res.send(`
@@ -19,21 +27,31 @@ export const renderShareSerie = async (req, res) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Compartiendo: ${title}</title>
 
+        <!-- Open Graph -->
         <meta property="og:title" content="${title}" />
-        <meta property="og:description" content="${(overview || '').slice(0, 200)}" />
+        <meta property="og:description" content="${overview}" />
         <meta property="og:image" content="${imageUrl}" />
         <meta property="og:url" content="${finalUrl}" />
         <meta property="og:type" content="video.tv_show" />
 
+        <!-- Twitter -->
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="${title}" />
-        <meta name="twitter:description" content="${(overview || '').slice(0, 200)}" />
+        <meta name="twitter:description" content="${overview}" />
         <meta name="twitter:image" content="${imageUrl}" />
 
+        <!-- Redirección doble -->
         <meta http-equiv="refresh" content="1; URL='${finalUrl}'" />
+        <script>
+          setTimeout(() => {
+            window.location.href = '${finalUrl}';
+          }, 1000);
+        </script>
       </head>
       <body>
-        <p>Redirigiendo a <a href="${finalUrl}">${title}</a>...</p>
+        <p style="text-align:center; font-family:sans-serif;">
+          Redirigiendo a <a href="${finalUrl}">${title}</a>...
+        </p>
       </body>
       </html>
     `);
