@@ -7,6 +7,7 @@ import SeriesStats from '../components/SeriesStats';
 import LastFavoritesCarousel from '../components/LastFavoritesCarousel';
 import SeriesCategoryMenu from '../components/SeriesCategoryMenu';
 import { useUser } from '../context/UserContext';
+import ShareButtons from '../components/ShareButtons';
 
 const SeriesCategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -63,7 +64,6 @@ const SeriesCategoryList = () => {
   return (
     <div className="series-category-list">
       <SeriesCategoryMenu categories={categories} />
-      
       {user && <h1>Mis Series Favoritas</h1>}
 
       <div className="series-search-box">
@@ -94,6 +94,11 @@ const SeriesCategoryList = () => {
           </ul>
         )}
       </div>
+      <ShareButtons
+        title="Descubre las mejores series en KeikoDev"
+        description="Explora tendencias, plataformas y recomendaciones únicas"
+        imageUrl="https://keikodev.es/assets/series-preview.jpg"
+      />
       <TopSeriesWeekly />
       <LastFavoritesCarousel />
       {/* <h1>Categorías de Series</h1>

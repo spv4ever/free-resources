@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useUser } from '../context/UserContext';
+import ShareButtons from '../components/ShareButtons';
+import ShareFloatingBar from '../components/ShareFloatingBar';
 
 import '../styles/SerieDetalle.css';
 
@@ -184,6 +186,12 @@ const SerieDetalle = () => {
 
   return (
     <div className={`serie-detalle-wrapper${serieVistaCompleta ? ' serie-completa' : ''}`}>
+      <ShareFloatingBar
+        title={`📺 ${serie.title} en KeikoDev`}
+        description={serie.overview}
+        imageUrl={serie.posterPath}
+      />
+      
       <div className="serie-header" style={{ backgroundImage: `url(${serie.backdrop})` }}>
         <div className="serie-header-overlay">
           <div className="serie-header-content">
@@ -233,6 +241,11 @@ const SerieDetalle = () => {
         <div>🕐 Duración media: {serie.runtimeAvg} min</div>
         <div>🎞️ IMDB: {serie.imdbId ? <a href={`https://www.imdb.com/title/${serie.imdbId}`} target="_blank" rel="noreferrer">Ver</a> : 'N/A'}</div>
       </div>
+      <ShareButtons
+                title={`📺 ${serie.title} en KeikoDev`}
+                description={serie.overview}
+                imageUrl={serie.posterPath}
+              />
 
       <div className="serie-episodes">
         <h3>📂 Episodios por temporada</h3>
@@ -252,6 +265,7 @@ const SerieDetalle = () => {
                   {todosVistos ? '✅ Temporada vista' : '📂 Marcar temporada completa'}
                 </button>
               )}
+              
               <table className="episode-table">
                 <thead>
                   <tr>

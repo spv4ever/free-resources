@@ -116,11 +116,12 @@ const AnimePromptGenerator = () => {
 
     try {
       const params = new URLSearchParams({ n, flat: 'true' });
-    if (characterId) params.append('characterId', characterId);
-    else {
-    if (customName) params.append('characterName', customName);
-    if (customFrom) params.append('characterFrom', customFrom);
-    }
+    if (characterId) {
+        params.append('characterId', characterId);
+        } else if (customName || customFrom) {
+        if (customName) params.append('characterName', customName);
+        if (customFrom) params.append('characterFrom', customFrom);
+        }
     if (nsfwOnly) params.append('nsfwOnly', 'true');
     if (selectedStyles.length) params.append('style', selectedStyles.map(s => s.value).join(','));
     if (selectedViews.length) params.append('view', selectedViews.map(v => v.value).join(','));
@@ -384,12 +385,15 @@ const AnimePromptGenerator = () => {
                     className="download-button"
                     onClick={() => {
                     const params = new URLSearchParams({ n, format: 'csv' });
-                    if (characterId) params.append('characterId', characterId);
-                    else {
+                    if (characterId) {
+                        params.append('characterId', characterId);
+                        } else if (customName || customFrom) {
                         if (customName) params.append('characterName', customName);
                         if (customFrom) params.append('characterFrom', customFrom);
-                    }
-                    if (nsfwOnly) params.append('nsfwOnly', 'true');
+                        }
+                        // 🔁 Si no hay personaje ni campos manuales, se deja vacío (random)
+
+                        if (nsfwOnly) params.append('nsfwOnly', 'true');
                     const downloadUrl = `${process.env.REACT_APP_API_URL}/api/anime-prompts/random?${params}`;
                     window.open(downloadUrl, '_blank');
                     }}

@@ -96,17 +96,18 @@ export const generateRandomPrompt = async (req, res) => {
 
       if (!style || !view || !outfit || !location || !pose) break;
 
-      if (!character) {
-        for (let i = 0; i < 10; i++) {
-          const [candidate] = await AnimeCharacter.aggregate([{ $sample: { size: 1 } }]);
-          if (!candidate || isUnderage(candidate.age)) continue;
-          character = candidate;
-          isCharacterUnderage = isUnderage(candidate.age);
-          break;
-        }
+      let currentCharacter = character;
 
-        if (!character) continue;
-      }
+        if (!currentCharacter) {
+          for (let i = 0; i < 10; i++) {
+            const [candidate] = await AnimeCharacter.aggregate([{ $sample: { size: 1 } }]);
+            if (!candidate || isUnderage(candidate.age)) continue;
+            currentCharacter = candidate;
+            break;
+          }
+
+          if (!currentCharacter) continue;
+        }
 
       if (nsfwOnly && !isCharacterUnderage) {
         if (!tags.some(t => t.value === 'nsfw')) {
@@ -117,15 +118,15 @@ export const generateRandomPrompt = async (req, res) => {
       }
 
       const tagList = tags.map(t => t.value).join(', ');
-      const prompt = `${style.style}, ${character.name} from ${character.mainWork?.title || 'Anime'}, ${view.view}, ${outfit.description}, ${location.place}, ${pose.pose}${tagList ? `, ${tagList}` : ''}`;
+      const prompt = `${style.style}, ${currentCharacter.name} from ${currentCharacter.mainWork?.title || 'Anime'}, ${view.view}, ${outfit.description}, ${location.place}, ${pose.pose}${tagList ? `, ${tagList}` : ''}`;
 
       prompts.push({
         prompt,
         character: {
-          name: character.name,
-          age: character.age,
-          image: character.image,
-          mainWork: character.mainWork?.title || null
+          name: currentCharacter.name,
+          age: currentCharacter.age,
+          image: currentCharacter.image,
+          mainWork: currentCharacter.mainWork?.title || null
         }
       });
     }

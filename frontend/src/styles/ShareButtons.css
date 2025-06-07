@@ -1,0 +1,89 @@
+/* Estilo base compartido */
+.share-buttons {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.share-label {
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+  color: #e0e0e0;
+}
+
+.share-icons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 0.4rem;
+}
+
+.copy-link-btn {
+  background-color: #2e89ff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.3s ease;
+}
+
+.copy-link-btn:hover {
+  background-color: #1c6ed2;
+}
+
+.copy-confirm {
+  color: #4caf50;
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+}
+
+.share-floating-bar {
+  position: fixed;
+  top: 50%;
+  right: 12px; /* separa del borde */
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  background: rgba(25, 25, 25, 0.85);
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  z-index: 999;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.share-floating-bar .copy-link-btn {
+  background-color: #2e89ff;
+  border: none;
+  color: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.share-floating-bar .copy-link-btn:hover {
+  background-color: #1c6ed2;
+}
+
+@media (max-width: 768px) {
+  .share-floating-bar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .share-floating-bar {
+    display: none; /* Ocultar en móvil si lo prefieres */
+  }
+}

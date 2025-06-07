@@ -170,7 +170,7 @@ function HomePage() {
                 <p style={{ fontWeight: 'bold', marginTop: '10px' }}>👉 ¡Haz clic aquí para unirte!</p>
               </div>
               <div className="telegram-image">
-                <img src="/assets/qr_telegram.jpg" alt="QR Telegram" className="qr-image" />
+                <img src="/assets/qr_telegram.JPG" alt="QR Telegram" className="qr-image" />
               </div>
             </div>
           </div>
