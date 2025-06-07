@@ -48,11 +48,36 @@ export const renderShareSerie = async (req, res) => {
           }, 1000);
         </script>
       </head>
-      <body>
-        <p style="text-align:center; font-family:sans-serif;">
-          Redirigiendo a <a href="${finalUrl}">${title}</a>...
-        </p>
-      </body>
+      <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            padding: 20px;
+        }
+
+        a {
+            color: #90caf9;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+        </style>
+        <body>
+        <div>
+            <h2>Redirigiendo a <a href="${finalUrl}">${title}</a>...</h2>
+            <p>Si no eres redirigido automáticamente, haz clic en el enlace.</p>
+        </div>
+        </body>
+
       </html>
     `);
   } catch (err) {
