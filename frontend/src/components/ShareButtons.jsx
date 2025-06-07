@@ -16,9 +16,12 @@ import {
 
 import '../styles/ShareButtons.css';
 
-const ShareButtons = ({ title, description, imageUrl }) => {
+const ShareButtons = ({ title, description, imageUrl, tmdbId }) => {
   const [copied, setCopied] = useState(false);
-  const url = window.location.href;
+
+  const url = tmdbId
+    ? `https://keikodev.es/share/series/${tmdbId}`
+    : window.location.href;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(url);

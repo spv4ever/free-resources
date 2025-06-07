@@ -187,10 +187,11 @@ const SerieDetalle = () => {
   return (
     <div className={`serie-detalle-wrapper${serieVistaCompleta ? ' serie-completa' : ''}`}>
       <ShareFloatingBar
-        title={`📺 ${serie.title} en KeikoDev`}
-        description={serie.overview}
-        imageUrl={serie.posterPath}
-      />
+          title={`📺 ${serie.title} en KeikoDev`}
+          description={serie.overview}
+          imageUrl={serie.posterPath}
+          tmdbId={tmdbId}
+        />
       
       <div className="serie-header" style={{ backgroundImage: `url(${serie.backdrop})` }}>
         <div className="serie-header-overlay">
@@ -242,10 +243,11 @@ const SerieDetalle = () => {
         <div>🎞️ IMDB: {serie.imdbId ? <a href={`https://www.imdb.com/title/${serie.imdbId}`} target="_blank" rel="noreferrer">Ver</a> : 'N/A'}</div>
       </div>
       <ShareButtons
-                title={`📺 ${serie.title} en KeikoDev`}
-                description={serie.overview}
-                imageUrl={serie.posterPath}
-              />
+          title={`📺 ${serie.title} en KeikoDev`}
+          description={serie.overview}
+          imageUrl={serie.posterPath}
+          tmdbId={tmdbId}
+        />
 
       <div className="serie-episodes">
         <h3>📂 Episodios por temporada</h3>

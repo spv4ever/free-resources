@@ -17,9 +17,10 @@ import {
 
 import '../styles/ShareButtons.css';
 
-const ShareFloatingBar = ({ title, description, imageUrl }) => {
-  
-  const url = window.location.href;
+const ShareFloatingBar = ({ title, description, imageUrl, tmdbId }) => {
+  const url = tmdbId
+    ? `https://keikodev.es/share/series/${tmdbId}`
+    : window.location.href;
 
   const handleCopy = () => {
   navigator.clipboard.writeText(url);
