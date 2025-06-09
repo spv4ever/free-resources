@@ -16,16 +16,24 @@ const SCOPES = [
 ];
 
 export const getYoutubeAuthUrl = (req, res) => {
+  const { userId } = req.query;
+
+  if (!userId) return res.status(400).send('Falta el parámetro userId');
+
   const authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: SCOPES,
-    prompt: 'select_account consent'
+    prompt: 'select_account consent',
+    state: userId // ✅ Se pasa como parámetro state
   });
+
   res.redirect(authUrl);
 };
 
 export const handleYoutubeCallback = async (req, res) => {
-  const { code, userId } = req.query;
+  // const { code, userId } = req.query;
+  const code = req.query.code;
+  const userId = req.query.state; // ✅ se obtiene del parámetro state
 
   if (!code || !userId) return res.status(400).send('Faltan parámetros: code o userId');
 

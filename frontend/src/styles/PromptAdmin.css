@@ -1,0 +1,77 @@
+.keiko-admin-wrapper {
+  padding: 1.5rem;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #121212;
+  color: #e0e0e0;
+  min-height: 100vh;
+}
+
+.keiko-admin-wrapper h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.keiko-admin-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  background-color: #1e1e1e;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.keiko-admin-form input,
+.keiko-admin-form select {
+  padding: 0.5rem;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  border-radius: 6px;
+  min-width: 160px;
+  font-size: 0.95rem;
+}
+
+.keiko-admin-form input::placeholder {
+  color: #888;
+}
+
+.keiko-admin-form button {
+  padding: 0.5rem 1rem;
+  background-color: #009ee3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 0 4px #009ee3;
+}
+
+.keiko-admin-form button:hover {
+  background-color: #007bb9;
+}
+
+.keiko-admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  margin-top: 1rem;
+}
+
+.keiko-admin-table th,
+.keiko-admin-table td {
+  border: 1px solid #333;
+  padding: 0.6rem;
+  text-align: left;
+}
+
+.keiko-admin-table th {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+.keiko-admin-table td {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+}

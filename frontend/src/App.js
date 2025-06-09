@@ -62,6 +62,20 @@ import UserLinkHistory from './components/UserLinkHistory';
 import YouTubeLandingPage from './pages/YouTubeLandingPage.jsx'
 import UserProfile from './pages/UserProfile';
 import SeriesFilteredList from './pages/SeriesFilteredList';
+import PromptPacksAdmin from './admin/keikoprompts/PromptPacksAdmin';
+import PromptItemsAdmin from './admin/keikoprompts/PromptItemsAdmin';
+import OptionGroupsAdmin from './admin/keikoprompts/OptionGroupsAdmin';
+import OptionsAdmin from './admin/keikoprompts/OptionsAdmin';
+import FavoritesAdmin from './admin/keikoprompts/FavoritesAdmin';
+import UsageLogsAdmin from './admin/keikoprompts/UsageLogsAdmin';
+import KeikoBulkUpload from './admin/keikoprompts/KeikoBulkUpload';
+import KeikoImportAdmin from './admin/keikoprompts/KeikoImportAdmin';
+import KeikoPromptPacks from './pages/KeikoPromptPacks';
+import KeikoPromptList from './pages/KeikoPromptList';
+
+
+
+
 
 
 
@@ -154,6 +168,16 @@ function App() {
             <Route path="/pro/link-analysis/:id" element={<UserLinkDetail />} />
             <Route path="/panel/pro/historial" element={<UserLinkHistory />} />
             <Route path="/youtube-uploader" element={<YouTubeLandingPage />} />
+            <Route path="/admin/keikoprompts/packs" element={<PromptPacksAdmin />} />
+            <Route path="/admin/keikoprompts/prompts" element={<PromptItemsAdmin />} />
+            <Route path="/admin/keikoprompts/groups" element={<OptionGroupsAdmin />} />
+            <Route path="/admin/keikoprompts/options" element={<OptionsAdmin />} />
+            <Route path="/admin/keikoprompts/favorites" element={<FavoritesAdmin />} />
+            <Route path="/admin/keikoprompts/logs" element={<UsageLogsAdmin />} />
+            <Route path="/admin/keikoprompts/bulk-upload" element={<KeikoBulkUpload />} />
+            <Route path="/admin/keiko-import" element={<KeikoImportAdmin />} />
+            <Route path="/keikoprompts" element={<KeikoPromptPacks />} />
+            <Route path="/keikoprompts/:packId" element={<KeikoPromptList />} />
 
             
 

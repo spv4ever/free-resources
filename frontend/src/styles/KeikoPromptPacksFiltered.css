@@ -1,0 +1,153 @@
+.keiko-packs-wrapper {
+  padding: 2rem;
+  color: #e0e0e0;
+}
+
+.keiko-packs-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.keiko-search-bar input {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.keiko-filters {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.keiko-filter-select {
+  padding: 0.4rem;
+  background-color: #121212;
+  color: #e0e0e0;
+  border-radius: 6px;
+  border: 1px solid #444;
+}
+
+.keiko-packs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.2rem;
+  align-items: stretch;
+}
+
+.keiko-pack-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #1e1e1e;
+  padding: 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+  color: #f0f0f0;
+  border: 1px solid #333;
+  height: 100%;
+  position: relative;
+}
+
+.keiko-pack-card-body {
+  flex-grow: 1;
+}
+
+.keiko-pack-card:hover {
+  transform: translateY(-4px);
+  border-color: #555;
+}
+
+.keiko-pack-card h3 {
+  color: #ffffff;
+  margin-bottom: 0.4rem;
+}
+
+.keiko-pack-card p {
+  font-size: 0.9rem;
+  margin: 0.3rem 0;
+}
+
+.keiko-pack-card .btn-accent {
+  align-self: flex-start;
+  margin-top: 1rem;
+  padding: 0.45rem 0.8rem;
+  background-color: #4e6ef2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 3px 6px rgba(78, 110, 242, 0.4);
+  transition: background-color 0.2s ease;
+}
+
+.keiko-pack-card .btn-accent:hover {
+  background-color: #3d59d4;
+}
+
+.keiko-packs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  row-gap: 3rem; /* aumenta la separación vertical */
+  column-gap: 1.2rem; /* puedes mantener este o también aumentarlo */
+}
+
+.keiko-pack-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #1e1e1e;
+  padding: 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.4);
+  transition: transform 0.2s ease;
+  color: #f0f0f0;
+  border: 1px solid #333;
+  height: 100%;
+  min-height: 175px;
+}
+
+.keiko-pack-card:hover {
+  transform: translateY(-4px);
+  border-color: #555;
+}
+
+.keiko-pack-content {
+  flex-grow: 1;
+}
+
+.keiko-pack-footer {
+  margin-top: 1rem;
+}
+
+.keiko-pack-card h3 {
+  color: #ffffff;
+  margin-bottom: 0.4rem;
+}
+
+.keiko-pack-card p {
+  font-size: 0.9rem;
+  margin: 0.3rem 0;
+}
+
+.btn-accent {
+  padding: 0.45rem 0.8rem;
+  background-color: #4e6ef2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 3px 6px rgba(78, 110, 242, 0.4);
+  transition: background-color 0.2s ease;
+}
+
+.btn-accent:hover {
+  background-color: #3d59d4;
+}

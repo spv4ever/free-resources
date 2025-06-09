@@ -61,6 +61,13 @@ import userFavoriteSeriesRoutes from './routes/userFavoriteSeriesRoutes.js';
 import userSeriesStatsRoutes from './routes/userSeriesStatsRoutes.js';
 import favoriteRoutes from './routes/favoriteRoutes.js';
 import shareRoutes from './routes/shareRoutes.js';
+import promptPackRoutes from './routes/promptPackRoutes.js';
+import promptItemRoutes from './routes/promptItemRoutes.js';
+import promptOptionGroupRoutes from './routes/promptOptionGroupRoutes.js';
+import promptOptionRoutes from './routes/promptOptionRoutes.js';
+import userPromptFavoriteRoutes from './routes/userPromptFavoriteRoutes.js';
+import promptUsageLogRoutes from './routes/promptUsageLogRoutes.js';
+import keikoImportRoutes from './routes/keikoImportRoutes.js';
 
 
 
@@ -196,8 +203,18 @@ app.use('/api/youtube', youtubeTokenRoutes);
 app.use('/api/user/favorites', userFavoriteSeriesRoutes);
 app.use('/api', userSeriesStatsRoutes);
 app.use('/api/series/favorites', favoriteRoutes);
-
 app.use('/share', shareRoutes);
+app.use('/api/prompt-packs', promptPackRoutes);
+app.use('/api/prompt-items', promptItemRoutes);
+app.use('/api/option-groups', promptOptionGroupRoutes);
+app.use('/api/prompt-options', promptOptionRoutes);
+app.use('/api/favorites', userPromptFavoriteRoutes);
+app.use('/api/prompt-usage', promptUsageLogRoutes);
+app.use('/api/admin/keiko', keikoImportRoutes);
+
+
+
+
 
 
 

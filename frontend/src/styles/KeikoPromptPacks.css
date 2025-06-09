@@ -1,0 +1,61 @@
+.keiko-packs-wrapper {
+  padding: 2rem;
+  color: #e0e0e0;
+}
+
+.keiko-packs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+.keiko-pack-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #1e1e1e;
+  padding: 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.4);
+  transition: transform 0.2s ease;
+  color: #f0f0f0;
+  border: 1px solid #333;
+  height: 100%;
+}
+
+.keiko-pack-card .btn-accent {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+.keiko-pack-card:hover {
+  transform: translateY(-4px);
+  border-color: #555;
+}
+
+.keiko-pack-card h3 {
+  color: #ffffff;
+  margin-bottom: 0.4rem;
+}
+
+.keiko-pack-card p {
+  font-size: 0.9rem;
+  margin: 0.3rem 0;
+}
+
+.btn-accent {
+  margin-top: 0.7rem;
+  padding: 0.45rem 0.8rem;
+  background-color: #4e6ef2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 3px 6px rgba(78, 110, 242, 0.4);
+  transition: background-color 0.2s ease;
+}
+
+.btn-accent:hover {
+  background-color: #3d59d4;
+}

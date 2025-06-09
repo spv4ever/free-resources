@@ -15,6 +15,7 @@ function Navbar() {
   const [submenuAffiliateOpen, setSubmenuAffiliateOpen] = useState(false);
   const [submenuSpacexOpen, setSubmenuSpacexOpen] = useState(false);
   const [enrichCount, setEnrichCount] = useState(0);
+  const [submenuKeikoOpen, setSubmenuKeikoOpen] = useState(false);
   
 
   useEffect(() => {
@@ -187,7 +188,25 @@ function Navbar() {
                 <li><Link to="/admin/email-articles" onClick={toggleSidebar}>📰 Revisar Artículos</Link></li>
               </>
             )}
+            <li>
+              <button onClick={() => setSubmenuKeikoOpen(!submenuKeikoOpen)}>
+                🧠 KeikoPrompts {submenuKeikoOpen ? '▲' : '▼'}
+              </button>
+            </li>
+            {submenuKeikoOpen && (
+              <>
+                <li><Link to="/admin/keikoprompts/packs" onClick={toggleSidebar}>📦 Packs de Prompts</Link></li>
+                <li><Link to="/admin/keikoprompts/prompts" onClick={toggleSidebar}>🧠 Prompts por Pack</Link></li>
+                <li><Link to="/admin/keikoprompts/groups" onClick={toggleSidebar}>📂 Grupos de Opciones</Link></li>
+                <li><Link to="/admin/keikoprompts/options" onClick={toggleSidebar}>🎛 Opciones</Link></li>
+                <li><Link to="/admin/keikoprompts/favorites" onClick={toggleSidebar}>⭐ Favoritos</Link></li>
+                <li><Link to="/admin/keikoprompts/logs" onClick={toggleSidebar}>📊 Historial de Uso</Link></li>
+                <li><Link to="/admin/keikoprompts/bulk-upload" onClick={toggleSidebar}>📥 Carga Masiva (JSON)</Link></li>
+                <li><Link to="/admin/keiko-import" onClick={toggleSidebar}>📥 Importar Prompts Keiko</Link></li>
 
+
+              </>
+            )}
             <li>
               <button onClick={() => setSubmenuAnimeOpen(!submenuAnimeOpen)}>
                 🎨 Anime Prompts {submenuAnimeOpen ? '▲' : '▼'}
