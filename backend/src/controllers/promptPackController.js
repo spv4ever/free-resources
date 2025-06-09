@@ -16,10 +16,17 @@ export const createPromptPack = async (req, res) => {
 // 📚 Obtener todos los packs
 export const getAllPromptPacks = async (req, res) => {
   try {
-    const packs = await PromptPack.find().sort({ createdAt: -1 });
-    res.json(packs);
+    const packs = await PromptPack.find().lean();
+    const packsWithCounts = await Promise.all(
+      packs.map(async (pack) => {
+        const count = await PromptItem.countDocuments({ pack: pack._id });
+        return { ...pack, promptCount: count };
+      })
+    );
+    res.json(packsWithCounts);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('❌ Error al obtener packs:', error);
+    res.status(500).json({ error: 'Error interno' });
   }
 };
 

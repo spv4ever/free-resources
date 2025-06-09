@@ -23,14 +23,14 @@ const PromptPacksAdmin = () => {
     }
   };
 
-  const handleInput = (e) => {
+  const handleInput = (e, isEdit = false) => {
     const { name, value, type, checked } = e.target;
-    setNewPack({ ...newPack, [name]: type === 'checkbox' ? checked : value });
-  };
-
-  const handleEditChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setEditPackData({ ...editPackData, [name]: type === 'checkbox' ? checked : value });
+    const fieldValue = type === 'checkbox' ? checked : value;
+    if (isEdit) {
+      setEditPackData({ ...editPackData, [name]: fieldValue });
+    } else {
+      setNewPack({ ...newPack, [name]: fieldValue });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -75,15 +75,69 @@ const PromptPacksAdmin = () => {
     }
   };
 
+  const downloadPack = async (packId) => {
+    try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/admin/keiko/export-pack/${packId}`,
+        {
+            headers: {
+            Authorization: `Bearer ${token}`
+            }
+        }
+        );
+
+        const blob = new Blob([JSON.stringify(res.data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `pack_${res.data[0]?.pack?.title || 'keikoprompts'}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    } catch (err) {
+        console.error('Error exportando pack', err);
+    }
+    };
+
+  const downloadAllPacks = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/admin/keiko/export-all`, {
+        headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const blob = new Blob([JSON.stringify(res.data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `keikoprompts_todos_los_packs.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    } catch (err) {
+        console.error('Error exportando todos los packs:', err);
+    }
+    };
+
+  const renderInputField = (name, value, isEdit = false) => (
+    <input
+      name={name}
+      value={value}
+      onChange={(e) => handleInput(e, isEdit)}
+      placeholder={name.charAt(0).toUpperCase() + name.slice(1)}
+    />
+  );
+
   return (
     <div className="keiko-admin-wrapper">
-      <h2>📦 Packs de Prompts</h2>
-
+      {/* <h2>📦 Packs de Prompts</h2> */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <h2>📦 Packs de Prompts</h2>
+        <button onClick={downloadAllPacks} className="btn-secondary">⬇️ Exportar TODOS</button>
+        </div>
       <form className="keiko-admin-form" onSubmit={handleSubmit}>
-        <input name="title" value={newPack.title} onChange={handleInput} placeholder="Título" required />
-        <input name="description" value={newPack.description} onChange={handleInput} placeholder="Descripción" />
-        <input name="category" value={newPack.category} onChange={handleInput} placeholder="Categoría" />
-        <input name="platform" value={newPack.platform} onChange={handleInput} placeholder="Plataforma" />
+        {['title', 'description', 'category', 'platform'].map(field =>
+          renderInputField(field, newPack[field])
+        )}
         <label>
           <input type="checkbox" name="nsfw" checked={newPack.nsfw} onChange={handleInput} /> NSFW
         </label>
@@ -111,13 +165,14 @@ const PromptPacksAdmin = () => {
             <tr key={pack._id}>
               {editPackId === pack._id ? (
                 <>
-                  <td><input name="title" value={editPackData.title} onChange={handleEditChange} /></td>
-                  <td><input name="description" value={editPackData.description} onChange={handleEditChange} /></td>
-                  <td><input name="category" value={editPackData.category} onChange={handleEditChange} /></td>
-                  <td><input name="platform" value={editPackData.platform} onChange={handleEditChange} /></td>
-                  <td><input type="checkbox" name="nsfw" checked={editPackData.nsfw} onChange={handleEditChange} /></td>
+                  {['title', 'description', 'category', 'platform'].map(field =>
+                    <td key={field}>{renderInputField(field, editPackData[field], true)}</td>
+                  )}
                   <td>
-                    <select name="access" value={editPackData.access} onChange={handleEditChange}>
+                    <input type="checkbox" name="nsfw" checked={editPackData.nsfw} onChange={(e) => handleInput(e, true)} />
+                  </td>
+                  <td>
+                    <select name="access" value={editPackData.access} onChange={(e) => handleInput(e, true)}>
                       <option value="free">Free</option>
                       <option value="pro">Pro</option>
                     </select>
@@ -138,6 +193,7 @@ const PromptPacksAdmin = () => {
                   <td>
                     <button onClick={() => startEditing(pack)}>✏️ Editar</button>
                     <button onClick={() => deletePack(pack._id)}>🗑 Eliminar</button>
+                    <button onClick={() => downloadPack(pack._id)}>⬇️ Exportar</button>
                   </td>
                 </>
               )}

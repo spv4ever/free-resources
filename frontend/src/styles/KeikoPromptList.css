@@ -68,7 +68,7 @@
 
 .keiko-sticky-pack-header {
   position: sticky;
-  top: 70px;
+  top: 0px;
   background-color: #121212;
   padding: 1rem 0;
   z-index: 20;

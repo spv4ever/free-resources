@@ -59,3 +59,11 @@
 .btn-accent:hover {
   background-color: #3d59d4;
 }
+
+.prompt-count {
+  color: #81d4fa;
+  font-weight: bold;
+}
+.prompt-count-label {
+  color: #4fc3f7;
+}

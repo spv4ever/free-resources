@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react'; // añade useRef
 import axios from 'axios';
 import '../../styles/KeikoAdmin.css';
 
 const KeikoImportAdmin = () => {
+  const fileInputRef = useRef(); // 🔁 referencia al input de archivo
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -16,15 +17,10 @@ const KeikoImportAdmin = () => {
         const json = JSON.parse(evt.target.result);
         const token = localStorage.getItem('token');
         const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/admin/keiko/import-preview`,
-        json,
-        {
-            headers: {
-            Authorization: `Bearer ${token}`,
-            },
-        }
+          `${process.env.REACT_APP_API_URL}/api/admin/keiko/import-preview`,
+          json,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
-
         setPreview(res.data.prompts || []);
         setSelected([]);
         setImportedCount(0);
@@ -42,50 +38,58 @@ const KeikoImportAdmin = () => {
     );
   };
 
-  const handleImport = async () => {
-  const token = localStorage.getItem('token'); // Asegúrate de tenerlo guardado al hacer login
+  const toggleSelectAll = () => {
+    const validIds = preview.filter(p => p.valid).map(p => p.tempId);
+    const allSelected = validIds.every(id => selected.includes(id));
+    setSelected(allSelected ? [] : validIds);
+  };
 
+  const handleImport = async () => {
+    const token = localStorage.getItem('token');
     const promptsToImport = preview
-        .filter(p => selected.includes(p.tempId) && p.valid)
-        .map(p => ({
+      .filter(p => selected.includes(p.tempId) && p.valid)
+      .map(p => ({
         scene: p.scene,
         prompt: p.prompt,
         nsfw: p.nsfw,
         pack: {
-            title: p.packTitle,
-            platform: p.platform,
-            category: p.category,
-            access: p.access
+          title: p.packTitle,
+          platform: p.platform,
+          category: p.category,
+          access: p.access
         },
-        fixedOptions: {} // puedes actualizar esto si añades filtros
-        }));
+        fixedOptions: {}
+      }));
 
     try {
-        const res = await axios.post(
+      const res = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/admin/keiko/import-confirmed`,
         promptsToImport,
-        {
-            headers: {
-            Authorization: `Bearer ${token}`
-            }
-        }
-        );
-        setImportedCount(promptsToImport.length);
-        alert(res.data.message || '✅ Prompts importados correctamente');
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert(res.data.message || '✅ Prompts importados correctamente');
+      setImportedCount(promptsToImport.length);
+      fileInputRef.current.value = '';
+      // Reset
+      setFile(null);
+      setPreview([]);
+      setSelected([]);
     } catch (err) {
-        alert('❌ Error al importar prompts seleccionados');
+      alert('❌ Error al importar prompts seleccionados');
     }
-    };
-
+  };
 
   return (
     <div className="keiko-admin-wrapper">
       <h2>📦 Importar Prompts desde JSON</h2>
 
-      <input type="file" accept=".json" onChange={handleFileChange} />
-      {file && (
-        <p><strong>Archivo cargado:</strong> {file.name}</p>
-      )}
+      <input
+            type="file"
+            accept=".json"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            />
+      {file && <p><strong>Archivo cargado:</strong> {file.name}</p>}
 
       {preview.length > 0 && (
         <>
@@ -96,7 +100,14 @@ const KeikoImportAdmin = () => {
           <table className="keiko-admin-table" style={{ marginTop: '1rem' }}>
             <thead>
               <tr>
-                <th></th>
+                <th>
+                  <input
+                    type="checkbox"
+                    onChange={toggleSelectAll}
+                    checked={preview.filter(p => p.valid).every(p => selected.includes(p.tempId))}
+                    title="Marcar/Desmarcar todos"
+                  />
+                </th>
                 <th>Pack</th>
                 <th>Plataforma</th>
                 <th>Categoría</th>
