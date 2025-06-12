@@ -1,0 +1,108 @@
+/* src/components/KeikoPromptsList.css */
+
+.keiko-user-container {
+  padding: 20px;
+  background: #121212;
+  color: #e0e0e0;
+  font-family: monospace;
+}
+
+.pack-title {
+  font-size: 2rem;
+  margin-bottom: 4px;
+}
+
+.pack-desc {
+  color: #bbb;
+  margin-bottom: 16px;
+}
+
+.filters-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.filters-bar input,
+.filters-bar select {
+  background: #2c2c2c;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 8px;
+  font-family: monospace;
+}
+
+.prompts-list-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.prompt-row {
+  background: #1e1e1e;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+/* Título en blanco puro */
+.prompt-scene {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #ffffff; /* antes era verde */
+}
+
+.copy-btn {
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.copy-btn:hover {
+  background: #444;
+}
+
+/* Recuadro del prompt en gris oscuro */
+.prompt-box {
+  background: #2c2c2c;    /* gris oscuro */
+  color: #e0e0e0;         /* texto claro */
+  padding: 12px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+  font-family: monospace;
+  border: 1px solid #444; /* ligero marco para resaltar */
+}
+
+.row-meta {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+}
+
+.chip {
+  background: #333;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  color: #fff;
+}
+
+.no-results {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}

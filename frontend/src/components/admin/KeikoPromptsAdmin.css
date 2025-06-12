@@ -1,0 +1,134 @@
+/* src/components/admin/KeikoPromptsAdmin.css */
+
+.keiko-admin-container {
+  padding: 20px;
+  background: #121212;
+  color: #e0e0e0;
+  font-family: sans-serif;
+}
+
+.filters-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.filters-bar select,
+.filters-bar button.keiko-admin-add-btn {
+  background: #2c2c2c;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.keiko-admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #1e1e1e;
+}
+
+/* Elimina cualquier vertical-align y white-space de td genérico */
+.keiko-admin-table th,
+.keiko-admin-table td {
+  padding: 8px;
+  border: 1px solid #333;
+  vertical-align: middle;   /* centrado por defecto */
+  white-space: nowrap;      /* sin salto en columnas normales */
+}
+
+/* Solo el Prompt hace wrap y se alinea arriba */
+.prompt-cell {
+  vertical-align: top !important;
+  white-space: normal !important;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+}
+
+/* Centrar columnas Platform, Access, Acciones */
+.center-col {
+  text-align: center;
+}
+
+/* Anchos de columna */
+.keiko-admin-table th:nth-child(1),
+.keiko-admin-table td:nth-child(1) { width: 25%; }
+.keiko-admin-table th:nth-child(2),
+.keiko-admin-table td:nth-child(2) { width: 50%; }
+.keiko-admin-table th:nth-child(3),
+.keiko-admin-table td:nth-child(3) { width: 12.5%; }
+.keiko-admin-table th:nth-child(4),
+.keiko-admin-table td:nth-child(4) { width: 12.5%; }
+
+/* Botones en tabla */
+.keiko-admin-table button {
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: 4px 6px;
+  margin: 0 2px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.keiko-admin-table button:hover {
+  background: #444;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 6px;
+  width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.form-row {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.form-row label {
+  width: 100px;
+}
+
+.form-row input[type="text"],
+.form-row select,
+.form-row textarea {
+  flex: 1;
+  background: #2c2c2c;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 6px 8px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.cancel-btn {
+  background: #880e0e;
+}
+
+.cancel-btn:hover {
+  background: #aa1414;
+}

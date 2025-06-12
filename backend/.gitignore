@@ -5,3 +5,4 @@ credentials.json
 gmail-token.json
 *.bat
 *.mp4
+data/

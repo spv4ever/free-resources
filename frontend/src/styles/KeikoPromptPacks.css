@@ -1,69 +1,90 @@
-.keiko-packs-wrapper {
-  padding: 2rem;
+.keiko-packs-container {
+  padding: 20px;
+  background: #121212;
   color: #e0e0e0;
 }
 
-.keiko-packs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.2rem;
+.filters-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
-.keiko-pack-card {
+.filters-bar select,
+.filters-bar input {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background: #2c2c2c;
+  color: #e0e0e0;
+  flex: 1;
+}
+
+.filters-bar select {
+  max-width: 200px;
+  flex: none;
+}
+
+.packs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.pack-card {
+  background: #1e1e1e;
+  padding: 16px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: #1e1e1e;
-  padding: 1.2rem;
-  border-radius: 10px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.4);
-  transition: transform 0.2s ease;
-  color: #f0f0f0;
-  border: 1px solid #333;
-  height: 100%;
+  transition: background 0.2s;
 }
 
-.keiko-pack-card .btn-accent {
-  align-self: flex-start;
-  margin-top: auto;
+.pack-card:hover {
+  background: #2a2a2a;
 }
 
-.keiko-pack-card:hover {
-  transform: translateY(-4px);
-  border-color: #555;
+.pack-card h3 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
 }
 
-.keiko-pack-card h3 {
-  color: #ffffff;
-  margin-bottom: 0.4rem;
-}
-
-.keiko-pack-card p {
+.pack-card .description {
+  flex: 1;
+  margin-bottom: 12px;
   font-size: 0.9rem;
-  margin: 0.3rem 0;
+  color: #bbb;
 }
 
-.btn-accent {
-  margin-top: 0.7rem;
-  padding: 0.45rem 0.8rem;
-  background-color: #4e6ef2;
-  color: white;
+.pack-card .info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pack-card .info span {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.pack-card .info button {
+  background: #333;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
+  padding: 6px 10px;
+  color: #fff;
   cursor: pointer;
-  font-weight: bold;
-  box-shadow: 0 3px 6px rgba(78, 110, 242, 0.4);
-  transition: background-color 0.2s ease;
+  transition: background 0.2s;
 }
 
-.btn-accent:hover {
-  background-color: #3d59d4;
+.pack-card .info button:hover {
+  background: #444;
 }
 
-.prompt-count {
-  color: #81d4fa;
-  font-weight: bold;
-}
-.prompt-count-label {
-  color: #4fc3f7;
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #666;
+  margin-top: 40px;
 }

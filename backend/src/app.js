@@ -67,7 +67,12 @@ import promptOptionGroupRoutes from './routes/promptOptionGroupRoutes.js';
 import promptOptionRoutes from './routes/promptOptionRoutes.js';
 import userPromptFavoriteRoutes from './routes/userPromptFavoriteRoutes.js';
 import promptUsageLogRoutes from './routes/promptUsageLogRoutes.js';
-import keikoImportRoutes from './routes/keikoImportRoutes.js';
+import legacyImportRoutes from './routes/keikoImportRoutes.js';
+import keikoPackRoutes from './keikoprompts/routes/packs.js';
+import keikoPromptRoutes from './keikoprompts/routes/prompts.js';
+import keikoOptionRoutes from './keikoprompts/routes/options.js';
+import keikoImportRoutes from './keikoprompts/routes/import.js';
+
 
 
 
@@ -97,7 +102,13 @@ Object.entries(process.env).forEach(([key, value]) => {
 });
 
 const app = express();
+console.log(`🌍 Entorno de ejecución: ${process.env.NODE_ENV || 'no definido'}`);
 
+if (process.env.NODE_ENV === 'development') {
+  console.log('🛠️ CORS configurado en modo DESARROLLO: se permite cualquier origen.');
+} else {
+  console.log('🔒 CORS en modo PRODUCCIÓN: solo se permiten orígenes explícitamente autorizados.');
+}
 // app.options('*', cors({
 //   origin: ['https://keikodev.es'],
 //   credentials: true
@@ -127,13 +138,20 @@ const allowedOrigins = ['http://localhost:3000', 'https://keikodev.es'];
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (process.env.NODE_ENV === 'development') {
+      // En desarrollo, aceptar cualquier origen (útil para pruebas locales, extensiones, Postman)
       callback(null, true);
     } else {
-      callback(new Error('CORS not allowed'));
+      // En producción, solo aceptar orígenes permitidos explícitamente
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.warn(`❌ Origen no permitido en producción: ${origin}`);
+        callback(new Error('CORS not allowed'));
+      }
     }
   },
-  credentials: true
+  credentials: true,
 }));
 
 // Middlewares
@@ -210,7 +228,11 @@ app.use('/api/option-groups', promptOptionGroupRoutes);
 app.use('/api/prompt-options', promptOptionRoutes);
 app.use('/api/favorites', userPromptFavoriteRoutes);
 app.use('/api/prompt-usage', promptUsageLogRoutes);
-app.use('/api/admin/keiko', keikoImportRoutes);
+app.use('/api/admin/keiko', legacyImportRoutes );
+app.use('/api/keiko/packs', keikoPackRoutes);
+app.use('/api/keiko/prompts', keikoPromptRoutes);
+app.use('/api/keiko/options', keikoOptionRoutes);
+app.use('/api/keiko/import', keikoImportRoutes);
 
 
 

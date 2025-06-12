@@ -8,13 +8,13 @@ import timezone from 'dayjs/plugin/timezone';
 
 import NasaCard from '../components/NasaCard';
 import NasaCardVideo from '../components/NasaCardVideo';
-import AdBanner from '../components/AdBanner';
-import AdBannerExtra from '../components/AdBannerExtra';
+// import AdBanner from '../components/AdBanner';
+// import AdBannerExtra from '../components/AdBannerExtra';
 import AffiliatePopup from '../components/AffiliatePopup';
 import IgraalDealHighlight from '../components/IgraalDealHighlight';
 import IgraalDiscountHighlight from '../components/IgraalDiscountHighlight';
 import { useCountdown } from '../hooks/useCountdown';
-import { useUser } from '../context/UserContext';
+// import { useUser } from '../context/UserContext';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -22,7 +22,7 @@ dayjs.extend(timezone);
 function HomePage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useUser();
+  // const { user } = useUser();
   const [posts, setPosts] = useState([]);
   const [launches, setLaunches] = useState([]);
   const [aiStats, setAiStats] = useState([]);
@@ -178,12 +178,12 @@ function HomePage() {
         <AffiliatePopup currentPath={location.pathname} />
       </div>
 
-      {!user || (user.role !== 'pro' && user.role !== 'admin') ? (
+      {/* {!user || (user.role !== 'pro' && user.role !== 'admin') ? (
           <>
             <AdBanner />
             <AdBannerExtra />
           </>
-        ) : null}
+        ) : null} */}
     </div>
   );
 }
