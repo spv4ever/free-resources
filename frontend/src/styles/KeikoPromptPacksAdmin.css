@@ -1,30 +1,27 @@
 /* src/styles/KeikoPromptPacksAdmin.css */
+/* — todos los selectores con el prefijo kpks- */
 
-/* Contenedor principal */
-.keiko-admin-container {
+.kpks-container {
   background-color: #121212;
   color: #e0e0e0;
   padding: 20px;
   font-family: sans-serif;
 }
 
-/* Barra de filtros */
-.filters-bar {
+.kpks-filters {
   display: flex;
   gap: 12px;
   margin-bottom: 16px;
 }
-
-.filters-bar select,
-.filters-bar input {
+.kpks-filters select,
+.kpks-filters input {
   background-color: #2c2c2c;
   color: #e0e0e0;
   border: 1px solid #444;
   padding: 6px 8px;
   border-radius: 4px;
 }
-
-.filters-bar button.keiko-admin-add-btn {
+.kpks-filters button.kpks-add-btn {
   background-color: #333;
   color: #fff;
   border: none;
@@ -32,39 +29,32 @@
   cursor: pointer;
   border-radius: 4px;
 }
-
-.filters-bar button.keiko-admin-add-btn:hover {
+.kpks-filters button.kpks-add-btn:hover {
   background-color: #444;
 }
 
-/* Notificaciones */
-.notification {
+.kpks-notification {
   margin-bottom: 12px;
   padding: 8px 12px;
   border-radius: 4px;
 }
-
-.notification.success {
+.kpks-notification.success {
   background-color: #2a4625;
   color: #a5d6a7;
 }
-
-.notification.error {
+.kpks-notification.error {
   background-color: #462525;
   color: #ef9a9a;
 }
 
-/* Tabla de packs */
-.keiko-admin-table {
+.kpks-table {
   width: 100%;
   border-collapse: collapse;
   background-color: #1e1e1e;
-  table-layout: fixed; /* forzar layout fijo */
+  table-layout: fixed;
 }
-
-/* Encabezados y celdas */
-.keiko-admin-table th,
-.keiko-admin-table td {
+.kpks-table th,
+.kpks-table td {
   padding: 10px;
   border: 1px solid #333;
   vertical-align: middle;
@@ -72,50 +62,33 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-.keiko-admin-table th {
+.kpks-table th {
   background-color: #222;
   color: #fff;
   text-align: left;
 }
 
-/* Anchos de columna */
-.keiko-admin-table th:nth-child(1),
-.keiko-admin-table td:nth-child(1) {
-  width: 25%; /* Título */
-}
-
-.keiko-admin-table th:nth-child(2),
-.keiko-admin-table td:nth-child(2) {
-  width: 15%; /* Categoría */
-}
-
-.keiko-admin-table th:nth-child(3),
-.keiko-admin-table td:nth-child(3) {
-  width: 45%; /* Descripción */
-}
-
-/* # Prompts alineado a la derecha */
-.keiko-admin-table th:nth-child(4),
-.keiko-admin-table td:nth-child(4) {
-  width: 5%; /* # Prompts */
-  text-align: right;
-}
-
-.keiko-admin-table th:nth-child(5),
-.keiko-admin-table td:nth-child(5) {
-  width: 10%;  /* Acciones */
-}
-
-/* Permitir wrap en Descripción */
-.keiko-admin-table th:nth-child(3),
-.keiko-admin-table td:nth-child(3) {
+/* Anchos */
+.kpks-table th:nth-child(1),
+.kpks-table td:nth-child(1) { width: 20%; }
+.kpks-table th:nth-child(2),
+.kpks-table td:nth-child(2) { width: 15%; }
+.kpks-table th:nth-child(3),
+.kpks-table td:nth-child(3) {
+  width: 45%;
   white-space: normal;
   overflow-wrap: anywhere;
 }
+.kpks-table th:nth-child(4),
+.kpks-table td:nth-child(4) {
+  width: 10%;
+  text-align: right;
+}
+.kpks-table th:nth-child(5),
+.kpks-table td:nth-child(5) { width: 10%; }
 
-/* Inputs en modo edición */
-.keiko-admin-table input {
+/* Inputs y botones internos */
+.kpks-table input {
   width: 100%;
   background-color: #2c2c2c;
   color: #e0e0e0;
@@ -123,9 +96,7 @@
   padding: 4px 6px;
   border-radius: 4px;
 }
-
-/* Botones dentro de la tabla */
-.keiko-admin-table button {
+.kpks-table button {
   background-color: #333;
   color: #fff;
   border: none;
@@ -133,23 +104,54 @@
   cursor: pointer;
   border-radius: 4px;
 }
-
-.keiko-admin-table button:hover {
+.kpks-table button:hover {
   background-color: #444;
 }
 
-/* src/styles/KeikoPromptPacksAdmin.css */
-
-.cancel-btn {
-  background-color: #333; /* o el que ya uses */
-  color: #e57373;         /* rojo claro */
+.kpks-cancel-btn {
+  background-color: #333;
+  color: #e57373;
   border: none;
   padding: 4px 8px;
   cursor: pointer;
   border-radius: 4px;
 }
-
-.cancel-btn:hover {
+.kpks-cancel-btn:hover {
   background-color: #444;
-  color: #f44336;         /* rojo más intenso al hover */
+  color: #f44336;
 }
+.sort-bar {
+  margin-top: 1rem;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.sort-bar select {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  padding: 4px 8px;
+}
+
+.kpks-nav-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.kpks-nav-buttons button {
+  padding: 6px 12px;
+  font-size: 14px;
+  background-color: #444;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.kpks-nav-buttons button:hover {
+  background-color: #666;
+}
+
+

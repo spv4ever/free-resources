@@ -132,3 +132,24 @@
 .cancel-btn:hover {
   background: #aa1414;
 }
+
+.keiko-nav-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.keiko-nav-buttons button {
+  padding: 6px 12px;
+  font-size: 14px;
+  background-color: #444;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.keiko-nav-buttons button:hover {
+  background-color: #666;
+}

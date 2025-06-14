@@ -12,5 +12,7 @@ const promptSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+// **Índice único** para evitar prompts idénticos en un mismo pack
+promptSchema.index({ packId: 1, prompt: 1 }, { unique: true });
 
 export default mongoose.models.KeikoPrompt || mongoose.model('KeikoPrompt', promptSchema);

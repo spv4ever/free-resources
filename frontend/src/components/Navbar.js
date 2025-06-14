@@ -198,6 +198,9 @@ function Navbar() {
 
                 <li><Link to="/admin/keiko-packs" onClick={toggleSidebar}>🧩 Packs KeikoPrompts</Link></li>
                 <li><Link to="/admin/keiko-prompts" onClick={toggleSidebar}>📋 Prompts KeikoPrompts</Link></li>
+                <li><Link to="/admin/imports" onClick={toggleSidebar}>📥 Import KeikoPrompts</Link></li>
+                <li><Link to="/admin/DuplicateCleanup" onClick={toggleSidebar}>🧹 DuplicateCleanup</Link></li>
+             
 
 
               </>

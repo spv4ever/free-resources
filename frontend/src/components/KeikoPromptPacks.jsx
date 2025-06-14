@@ -6,40 +6,59 @@ import { useNavigate } from 'react-router-dom';
 export default function KeikoPromptPacks() {
   const [packs, setPacks] = useState([]);
   const [counts, setCounts] = useState({});
+  const [categoryCounts, setCategoryCounts] = useState([]); // <- NUEVO
   const [categoryFilter, setCategoryFilter] = useState('');
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
-      const [packsRes, countsRes] = await Promise.all([
+      const [packsRes, countsRes, categorySummaryRes] = await Promise.all([
         axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/packs`),
-        axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/prompts/count/by-pack`)
+        axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/prompts/count/by-pack`),
+        axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/packs/categories-summary`) // NUEVO
       ]);
+
       setPacks(packsRes.data);
-      // convertir a { packId: count }
+
       const map = countsRes.data.reduce((acc, { packId, count }) => {
         acc[packId] = count;
         return acc;
       }, {});
       setCounts(map);
+
+      setCategoryCounts(categorySummaryRes.data); // ← NUEVO
     }
     fetchData();
   }, []);
 
-  // categorías únicas para selector
   const categories = Array.from(new Set(packs.map(p => p.category))).sort();
 
-  // packs filtrados
   const displayed = packs
     .filter(p => !categoryFilter || p.category === categoryFilter)
-    .filter(p => 
+    .filter(p =>
       p.title.toLowerCase().includes(search.toLowerCase()) ||
       p.description.toLowerCase().includes(search.toLowerCase())
     );
 
   return (
     <div className="keiko-packs-container">
+
+      {/* NUEVO: Tarjetas resumen */}
+      <div className="category-summary-grid">
+        {categoryCounts.map(cat => (
+          <div
+            key={cat.name}
+            className={`category-card ${categoryFilter === cat.name ? 'active' : ''}`}
+            onClick={() => setCategoryFilter(categoryFilter === cat.name ? '' : cat.name)}
+          >
+            <h4>{cat.name}</h4>
+            <p>{cat.promptCount} prompts</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Filtros */}
       <div className="filters-bar">
         <select
           value={categoryFilter}
@@ -59,6 +78,7 @@ export default function KeikoPromptPacks() {
         />
       </div>
 
+      {/* Packs */}
       <div className="packs-grid">
         {displayed.map(pack => (
           <div key={pack._id} className="pack-card">
@@ -66,9 +86,7 @@ export default function KeikoPromptPacks() {
             <p className="description">{pack.description}</p>
             <div className="info">
               <span>{counts[pack._id] ?? 0} prompts</span>
-              <button
-                onClick={() => navigate(`/prompts/${pack._id}`)}
-              >
+              <button onClick={() => navigate(`/prompts/${pack._id}`)}>
                 Ver prompts →
               </button>
             </div>

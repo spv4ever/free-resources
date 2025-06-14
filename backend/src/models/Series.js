@@ -17,6 +17,17 @@ const availabilitySchema = new mongoose.Schema({
   url: String
 }, { _id: false });
 
+// Nuevo esquema para idiomas de audio
+const audioLanguageSchema = new mongoose.Schema({
+  code: { type: String, required: true },
+  name: { type: String, required: true }
+}, { _id: false });
+
+// Nuevo esquema para idiomas de subtítulos
+const subtitleLanguageSchema = new mongoose.Schema({
+  code: { type: String, required: true }
+}, { _id: false });
+
 const seriesSchema = new mongoose.Schema({
   tmdbId: { type: Number, required: true, unique: true },
   imdbId: String,
@@ -41,6 +52,10 @@ const seriesSchema = new mongoose.Schema({
     ref: 'SeriesCategory',
     required: false                // ✅ Asignación opcional basada en género
   },
+
+  // Nuevos campos para idiomas
+  audioLanguages: [audioLanguageSchema],   // Idiomas de audio disponibles
+  subtitleLanguages: [subtitleLanguageSchema], // Idiomas de subtítulos disponibles
 
   fetchedAt: { type: Date, default: Date.now }
 });

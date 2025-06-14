@@ -67,7 +67,8 @@ import KeikoPromptPacks from './components/KeikoPromptPacks';
 import KeikoPromptsList from './components/KeikoPromptsList';
 import KeikoPromptPacksAdmin from './components/admin/KeikoPromptPacksAdmin';
 import KeikoPromptsAdmin from './components/admin/KeikoPromptsAdmin';
-
+import AdminImport from './components/admin/AdminImport';
+import DuplicateCleanup from './components/admin/DuplicateCleanup';
 
 function App() {
   return (
@@ -152,6 +153,9 @@ function App() {
             <Route path="/admin/keiko-packs" element={<KeikoPromptPacksAdmin />} />
             <Route path="/admin/keiko-prompts" element={<KeikoPromptsAdmin />} />
             <Route path="/keikoprompts" element={<KeikoPromptPacks />} />
+            <Route path="/admin/imports" element={<AdminImport />} />
+            <Route path="/admin/DuplicateCleanup" element={<DuplicateCleanup />} />
+
 
 
             

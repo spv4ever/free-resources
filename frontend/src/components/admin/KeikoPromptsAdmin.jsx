@@ -105,6 +105,14 @@ export default function KeikoPromptsAdmin() {
   return (
     <div className="keiko-admin-container">
       <h1>📋 Keiko Prompts</h1>
+      <div className="keiko-nav-buttons">
+        <button onClick={() => window.location.href = '/admin/keiko-packs'}>
+          🧩 Ir a Packs
+        </button>
+        <button onClick={() => window.location.href = '/admin/imports'}>
+          ⬆️ Importar Prompts
+        </button>
+      </div>
 
       <div className="filters-bar">
         <select value={selectedPack} onChange={e => setSelectedPack(e.target.value)}>

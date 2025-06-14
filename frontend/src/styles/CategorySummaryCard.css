@@ -1,0 +1,28 @@
+/* src/styles/CategorySummaryCard.css */
+.category-card {
+  background-color: #1f1f1f;
+  color: #e0e0e0;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 16px;
+  width: 200px;
+  text-align: center;
+  margin: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.category-card:hover {
+  transform: scale(1.05);
+}
+
+.category-name {
+  font-size: 18px;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.category-count {
+  font-size: 14px;
+  color: #9d9d9d;
+}

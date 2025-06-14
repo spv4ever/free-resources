@@ -26,48 +26,62 @@ export const searchSeriesInTMDb = async (query) => {
 
 // 📦 Obtener los detalles completos de una serie
 export const getSeriesDetailsFromTMDb = async (tmdbId) => {
-  const { data: info } = await axios.get(`${TMDB_BASE_URL}/tv/${tmdbId}`, {
-    params: {
-      api_key: TMDB_API_KEY,
-      language: 'es-ES'
-    }
-  });
+  // 1) Info principal con idiomas de audio
+  const { data: info } = await axios.get(
+    `${TMDB_BASE_URL}/tv/${tmdbId}`,
+    { params: { api_key: TMDB_API_KEY, language: 'es-ES' } }
+  );
 
-  const { data: externalIds } = await axios.get(`${TMDB_BASE_URL}/tv/${tmdbId}/external_ids`, {
-    params: { api_key: TMDB_API_KEY }
-  });
+  // Asegurarnos de que siempre sea array
+  const audioLanguages = Array.isArray(info.spoken_languages)
+    ? info.spoken_languages.map(lang => ({
+        code: lang.iso_639_1,
+        name: lang.name
+      }))
+    : [];
 
+  // 2) IDs externos
+  const { data: externalIds } = await axios.get(
+    `${TMDB_BASE_URL}/tv/${tmdbId}/external_ids`,
+    { params: { api_key: TMDB_API_KEY } }
+  );
+
+  // 3) Traducciones (posibles subtítulos)
+  const { data: translationsRes } = await axios.get(
+    `${TMDB_BASE_URL}/tv/${tmdbId}/translations`,
+    { params: { api_key: TMDB_API_KEY } }
+  );
+  const subtitleLanguages = Array.isArray(translationsRes.translations)
+    ? translationsRes.translations.map(t => ({ code: t.iso_639_1 }))
+    : [];
+
+  // 4) Episodios y cálculo de duración media (igual que antes)…
   const episodes = [];
   const allDurations = [];
-
-  for (let s = 1; s <= info.number_of_seasons; s++) {
+  for (let seasonNum = 1; seasonNum <= info.number_of_seasons; seasonNum++) {
     try {
-      const { data: season } = await axios.get(`${TMDB_BASE_URL}/tv/${tmdbId}/season/${s}`, {
-        params: {
-          api_key: TMDB_API_KEY,
-          language: 'es-ES'
-        }
-      });
-
+      const { data: season } = await axios.get(
+        `${TMDB_BASE_URL}/tv/${tmdbId}/season/${seasonNum}`,
+        { params: { api_key: TMDB_API_KEY, language: 'es-ES' } }
+      );
       season.episodes.forEach(ep => {
         if (ep.runtime) allDurations.push(ep.runtime);
-
         episodes.push({
-          season: s,
+          season: seasonNum,
           episode: ep.episode_number,
           title: ep.name,
-          overview: ep.overview || '', // ✅ NUEVO CAMPO
+          overview: ep.overview || '',
           releaseDate: ep.air_date ? new Date(ep.air_date) : null,
           duration: ep.runtime || null,
-          stillImage: ep.still_path ? `https://image.tmdb.org/t/p/w300${ep.still_path}` : null // ✅ NUEVO
+          stillImage: ep.still_path
+            ? `https://image.tmdb.org/t/p/w300${ep.still_path}`
+            : null
         });
       });
     } catch (err) {
-      console.warn(`⚠️ Temporada ${s} no encontrada`);
+      console.warn(`⚠️ Temporada ${seasonNum} no encontrada:`, err.message);
     }
   }
-
-  // Calcular duración promedio
   const runtimeAvg = allDurations.length
     ? Math.round(allDurations.reduce((a, b) => a + b, 0) / allDurations.length)
     : null;
@@ -77,8 +91,12 @@ export const getSeriesDetailsFromTMDb = async (tmdbId) => {
     imdbId: externalIds.imdb_id || null,
     title: info.name,
     synopsis: info.overview,
-    image: info.poster_path ? `https://image.tmdb.org/t/p/w500${info.poster_path}` : null,
-    backdrop: info.backdrop_path ? `https://image.tmdb.org/t/p/w780${info.backdrop_path}` : null,
+    image: info.poster_path
+      ? `https://image.tmdb.org/t/p/w500${info.poster_path}`
+      : null,
+    backdrop: info.backdrop_path
+      ? `https://image.tmdb.org/t/p/w780${info.backdrop_path}`
+      : null,
     genres: info.genres.map(g => g.name),
     totalSeasons: info.number_of_seasons,
     episodes,
@@ -86,7 +104,9 @@ export const getSeriesDetailsFromTMDb = async (tmdbId) => {
     voteAverage: info.vote_average || null,
     voteCount: info.vote_count || null,
     runtimeAvg,
-    status: info.status ? info.status.toLowerCase() : null // "Ended" → "ended"
+    status: info.status?.toLowerCase() || null,
+    audioLanguages,       // ← array garantizado
+    subtitleLanguages     // ← array garantizado
   };
 };
 

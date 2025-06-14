@@ -72,6 +72,7 @@ import keikoPackRoutes from './keikoprompts/routes/packs.js';
 import keikoPromptRoutes from './keikoprompts/routes/prompts.js';
 import keikoOptionRoutes from './keikoprompts/routes/options.js';
 import keikoImportRoutes from './keikoprompts/routes/import.js';
+import duplicateRoutes from './keikoprompts/routes/duplicateRoutes.js';
 
 
 
@@ -233,6 +234,8 @@ app.use('/api/keiko/packs', keikoPackRoutes);
 app.use('/api/keiko/prompts', keikoPromptRoutes);
 app.use('/api/keiko/options', keikoOptionRoutes);
 app.use('/api/keiko/import', keikoImportRoutes);
+app.use('/api/keiko/duplicates', duplicateRoutes);
+
 
 
 

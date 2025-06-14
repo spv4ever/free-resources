@@ -56,3 +56,41 @@ export const deletePack = async (req, res) => {
     res.status(500).json({ error: 'Error al eliminar el pack y sus prompts' });
   }
 };
+
+export const getPromptCountsByCategory = async (req, res) => {
+  try {
+    const packCollectionName = KeikoPromptPack.collection.name; // nombre real de la colección
+
+    const counts = await KeikoPrompt.aggregate([
+      {
+        $lookup: {
+          from: packCollectionName,
+          localField: 'packId',
+          foreignField: '_id',
+          as: 'packInfo'
+        }
+      },
+      { $unwind: '$packInfo' },
+      {
+        $group: {
+          _id: '$packInfo.category',
+          promptCount: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          name: '$_id',
+          promptCount: 1,
+          _id: 0
+        }
+      },
+      { $sort: { name: 1 } }
+    ]);
+
+    res.json(counts);
+  } catch (err) {
+    console.error('❌ Error al agrupar prompts por categoría:', err);
+    res.status(500).json({ error: 'Error al obtener el resumen por categoría' });
+  }
+};
+

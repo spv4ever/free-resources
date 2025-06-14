@@ -137,24 +137,27 @@ const KeikoPromptPacksAdmin = () => {
   };
 
   return (
-    <div className="keiko-admin-container">
+    <div className="kpks-container">
       <h1>📦 KeikoPrompt Packs</h1>
+      <div className="kpks-nav-buttons">
+        <button onClick={() => window.location.href = '/admin/keiko-prompts'}>
+          📋 Ir a Prompts
+        </button>
+        <button onClick={() => window.location.href = '/admin/imports'}>
+          ⬆️ Importar Prompts
+        </button>
+      </div>
 
       {deleteMessage && (
-        <div className={`notification ${deleteType}`}>
+        <div className={`kpks-notification ${deleteType}`}>
           {deleteMessage}
         </div>
       )}
 
-      <div className="filters-bar">
-        <select
-          value={filterCategory}
-          onChange={e => setFilterCategory(e.target.value)}
-        >
+      <div className="kpks-filters">
+        <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}>
           <option value="">— Todas las categorías —</option>
-          {categories.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
+          {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
         </select>
 
         <input
@@ -164,12 +167,19 @@ const KeikoPromptPacksAdmin = () => {
           onChange={e => setSearchTerm(e.target.value)}
         />
 
-        <button className="keiko-admin-add-btn" onClick={handleAddNewClick}>
+        <button className="kpks-add-btn" onClick={handleAddNewClick}>
           ➕ Añadir nuevo pack
         </button>
       </div>
 
-      <table className="keiko-admin-table">
+      <table className="kpks-table">
+        <colgroup>
+          <col style={{ width: '20%' }} />
+          <col style={{ width: '15%' }} />
+          <col style={{ width: '45%' }} />
+          <col style={{ width: '10%' }} />
+          <col style={{ width: '10%' }} />
+        </colgroup>
         <thead>
           <tr>
             <th>Título</th>
@@ -207,7 +217,7 @@ const KeikoPromptPacksAdmin = () => {
               <td>
                 <button onClick={handleAddNewSave}>💾</button>
                 <button
-                  className="cancel-btn"
+                  className="kpks-cancel-btn"
                   onClick={handleAddNewCancel}
                   style={{ marginLeft: '8px' }}
                 >
@@ -252,10 +262,7 @@ const KeikoPromptPacksAdmin = () => {
                   <td>{pack.totalPrompts}</td>
                   <td>
                     <button onClick={() => handleEditClick(pack)}>✏️</button>
-                    <button
-                      style={{ marginLeft: 8 }}
-                      onClick={() => handleDelete(pack._id)}
-                    >
+                    <button style={{ marginLeft: 8 }} onClick={() => handleDelete(pack._id)}>
                       🗑️
                     </button>
                   </td>
