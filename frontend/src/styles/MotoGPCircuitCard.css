@@ -1,0 +1,20 @@
+/* src/styles/MotoGPCircuitCard.css */
+.motogp-card {
+  background-color: #111;
+  color: #eee;
+  border: 2px solid #444;
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin-top: 1rem;
+  box-shadow: 0 0 12px rgba(0,0,0,0.3);
+}
+.motogp-card h2 {
+  color: #00f0ff;
+}
+.motogp-card ul {
+  list-style: none;
+  padding: 0;
+}
+.motogp-card li {
+  margin-bottom: 0.5rem;
+}

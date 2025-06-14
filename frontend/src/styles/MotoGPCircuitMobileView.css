@@ -1,0 +1,46 @@
+/* src/styles/MotoGPCircuitMobileView.css */
+.motogp-mobile {
+  background-color: #000;
+  color: #fff;
+  padding: 1.5rem;
+  font-family: sans-serif;
+  font-size: 1.4rem;
+}
+
+.motogp-mobile h1 {
+  font-size: 2rem;
+  color: #00bfff;
+  margin-bottom: 0.5rem;
+}
+
+.motogp-mobile h2 {
+  font-size: 1.6rem;
+  color: #ffd700;
+  margin-bottom: 1.5rem;
+}
+
+.motogp-event-block {
+  border: 2px solid #444;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #1a1a1a;
+}
+
+.motogp-event-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.motogp-event-date {
+  font-size: 1.2rem;
+  color: #ccc;
+  margin-bottom: 0.3rem;
+}
+
+.motogp-event-countdown {
+  font-size: 1.5rem;
+  color: #00ff00;
+  font-weight: bold;
+}

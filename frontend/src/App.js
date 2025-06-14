@@ -69,6 +69,8 @@ import KeikoPromptPacksAdmin from './components/admin/KeikoPromptPacksAdmin';
 import KeikoPromptsAdmin from './components/admin/KeikoPromptsAdmin';
 import AdminImport from './components/admin/AdminImport';
 import DuplicateCleanup from './components/admin/DuplicateCleanup';
+import MotoGPCircuitMobileView from './components/MotoGPCircuitMobileView';
+
 
 function App() {
   return (
@@ -155,11 +157,13 @@ function App() {
             <Route path="/keikoprompts" element={<KeikoPromptPacks />} />
             <Route path="/admin/imports" element={<AdminImport />} />
             <Route path="/admin/DuplicateCleanup" element={<DuplicateCleanup />} />
+            
 
 
 
             
           </Route>
+          <Route path="/motogp-live" element={<MotoGPCircuitMobileView />} />
           <Route path="/login" element={<LoginPage />} />
           
 

@@ -14,6 +14,7 @@ import AffiliatePopup from '../components/AffiliatePopup';
 import IgraalDealHighlight from '../components/IgraalDealHighlight';
 import IgraalDiscountHighlight from '../components/IgraalDiscountHighlight';
 import { useCountdown } from '../hooks/useCountdown';
+import MotoGPCircuitCard from '../components/MotoGPCircuitCard';
 // import { useUser } from '../context/UserContext';
 
 dayjs.extend(utc);
@@ -145,6 +146,7 @@ function HomePage() {
         <NasaCardVideo />
         <IgraalDealHighlight />
         <IgraalDiscountHighlight />
+        <MotoGPCircuitCard />
 
         {/* TARJETA MOVIDA AL FINAL */}
         <div className="card-home" onClick={() => navigate('/resources')}>
