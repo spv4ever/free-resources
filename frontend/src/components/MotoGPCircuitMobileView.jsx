@@ -7,6 +7,29 @@ const MotoGPCircuitMobileView = () => {
   const [events, setEvents] = useState([]);
   const [circuitName, setCircuitName] = useState('');
   const [loading, setLoading] = useState(true);
+  const sessionDescriptions = {
+    FP1: 'Entrenamientos Libres 1',
+    FP2: 'Entrenamientos Libres 2',
+    FP3: 'Entrenamientos Libres 3',
+    FP4: 'Entrenamientos Libres 4',
+    FP5: 'Entrenamientos Libres 5',
+    FP6: 'Entrenamientos Libres 6',
+    FP7: 'Entrenamientos Libres 7',
+    FP8: 'Entrenamientos Libres 8',
+    FP9: 'Entrenamientos Libres 9',
+    Q1: 'Clasificación 1',
+    Q2: 'Clasificación 2',
+    PR: 'Práctica',
+    WUP: 'Warm Up',
+    SPR: 'Carrera Sprint',
+    RAC: 'Carrera',
+    TEST: 'Test'
+    };
+    const extractSessionType = (summary) => {
+        const sessionRegex = /(FP\d|Q\d|SPR|RAC|WUP|PR|TEST)/i;
+        const result = sessionRegex.exec(summary);
+        return result ? result[1].toUpperCase() : null;
+        };
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -49,20 +72,33 @@ const MotoGPCircuitMobileView = () => {
     <div className="motogp-mobile">
       <h1>🏁 MotoGP – Próximo circuito</h1>
       <h2>{circuitName}</h2>
-      {events.map(e => (
-        <div key={e._id} className="motogp-event-block">
-          <div className="motogp-event-title">{e.title}</div>
-          <div className="motogp-event-date">
-            {new Date(e.start).toLocaleString('es-ES', {
-              dateStyle: 'short',
-              timeStyle: 'short'
+      {events.map(e => {
+            const sessionType = extractSessionType(e.title);
+            const description = sessionDescriptions[sessionType] || '';
+            const startDate = new Date(e.start).toLocaleString('es-ES', {
+                dateStyle: 'full',
+                timeStyle: 'short'
+            });
+            const countdown = getCountdown(e.start);
+
+            return (
+                <div
+                key={e._id}
+                className="motogp-event-block"
+                role="region"
+                aria-label={`Evento ${e.title}. ${description ? description + '.' : ''} Empieza el ${startDate}. Tiempo restante: ${countdown}.`}
+                >
+                <div className="motogp-event-title">{e.title}</div>
+                {description && <div className="motogp-event-description">{description}</div>}
+                <div className="motogp-event-date">
+                    🕒 {startDate}
+                </div>
+                <div className="motogp-event-countdown">
+                    ⏱ {countdown}
+                </div>
+                </div>
+            );
             })}
-          </div>
-          <div className="motogp-event-countdown">
-            ⏱ {getCountdown(e.start)}
-          </div>
-        </div>
-      ))}
     </div>
   );
 };

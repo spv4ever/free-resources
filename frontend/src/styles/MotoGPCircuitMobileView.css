@@ -44,3 +44,15 @@
   color: #00ff00;
   font-weight: bold;
 }
+
+.motogp-event-description {
+  font-size: 1.2rem;
+  color: #f0c674;
+  margin-top: 0.2rem;
+  margin-bottom: 0.6rem;
+}
+.motogp-event-date {
+  font-size: 1.2rem;
+  color: #88f;
+  margin-bottom: 0.6rem;
+}

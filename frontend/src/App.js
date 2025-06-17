@@ -70,6 +70,11 @@ import KeikoPromptsAdmin from './components/admin/KeikoPromptsAdmin';
 import AdminImport from './components/admin/AdminImport';
 import DuplicateCleanup from './components/admin/DuplicateCleanup';
 import MotoGPCircuitMobileView from './components/MotoGPCircuitMobileView';
+import MotoGPCalendarPage from './pages/MotoGPCalendar'; // ⚠️ Ajusta la ruta si va en otro sitio
+import MotoGPCircuitPage from './pages/MotoGPCircuitPage';
+
+
+
 
 
 function App() {
@@ -157,6 +162,9 @@ function App() {
             <Route path="/keikoprompts" element={<KeikoPromptPacks />} />
             <Route path="/admin/imports" element={<AdminImport />} />
             <Route path="/admin/DuplicateCleanup" element={<DuplicateCleanup />} />
+            <Route path="/motogp-calendar" element={<MotoGPCalendarPage />} />
+            <Route path="/motogp/:slug" element={<MotoGPCircuitPage />} />
+
             
 
 

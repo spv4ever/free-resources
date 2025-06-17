@@ -24,11 +24,20 @@ const parseDate = (raw) => {
 
 // Extraer tipo de sesión
 const extractSessionType = (summary) => {
-  const sessionRegex = /(FP\d|Q\d|SPR|RAC|WUP|PR|Test)/i;
-  const result = sessionRegex.exec(summary);
-  return result ? result[1].toUpperCase() : null;
-};
+  if (!summary) return null;
 
+  const lower = summary.toLowerCase();
+
+  if (lower.includes('test') || lower.includes('shakedown')) return 'TEST';
+  if (lower.includes('fp')) return 'FP';
+  if (lower.includes('q')) return 'Q';
+  if (lower.includes('spr')) return 'SPR';
+  if (lower.includes('rac')) return 'RAC';
+  if (lower.includes('wup')) return 'WUP';
+  if (lower.includes('pr')) return 'PR';
+
+  return null;
+};
 // Generar slug de evento
 const generateEventSlug = (summary) => {
   const match = summary.match(/–\s(.+?)\sGP$/i);
