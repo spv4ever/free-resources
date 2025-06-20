@@ -1,7 +1,10 @@
 .keiko-packs-container {
+  max-width: 80%;
+  margin: 0 auto;
   padding: 20px;
   background: #121212;
   color: #e0e0e0;
+  box-sizing: border-box;
 }
 
 .filters-bar {
@@ -25,9 +28,10 @@
   flex: none;
 }
 
+/* Ahora un layout en columna de tarjetas */
 .packs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 16px;
 }
 
@@ -36,8 +40,8 @@
   padding: 16px;
   border-radius: 8px;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  flex-direction: row;      /* eje horizontal */
+  align-items: center;      /* centra verticalmente */
   transition: background 0.2s;
 }
 
@@ -45,22 +49,29 @@
   background: #2a2a2a;
 }
 
+/* Título fijo */
 .pack-card h3 {
-  margin: 0 0 8px;
+  margin: 0;
+  margin-right: 16px;
   font-size: 1.1rem;
+  flex: 0 0 auto;
 }
 
+/* Descripción flexible para empujar el botón al extremo */
 .pack-card .description {
-  flex: 1;
-  margin-bottom: 12px;
+  flex: 1 1 auto;
+  margin: 0;
+  margin-right: 16px;
   font-size: 0.9rem;
   color: #bbb;
 }
 
+/* Info + botón al final */
 .pack-card .info {
+  flex: 0 0 auto;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 8px;
 }
 
 .pack-card .info span {
@@ -83,7 +94,7 @@
 }
 
 .no-results {
-  grid-column: 1 / -1;
+  /* Ya no usamos grid-column */
   text-align: center;
   color: #666;
   margin-top: 40px;
@@ -94,7 +105,7 @@
   flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 20px;
-  justify-content: center; /* <- esto centra horizontalmente */
+  justify-content: center;
 }
 
 .category-card {

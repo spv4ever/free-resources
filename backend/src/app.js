@@ -74,6 +74,10 @@ import keikoOptionRoutes from './keikoprompts/routes/options.js';
 import keikoImportRoutes from './keikoprompts/routes/import.js';
 import duplicateRoutes from './keikoprompts/routes/duplicateRoutes.js';
 import motogpRoutes from './routes/motogpRoutes.js';
+import comfyRoutes from './routes/comfyRoutes.js';
+import fluxRoutes from './routes/fluxRoutes.js';
+
+
 
 
 
@@ -237,6 +241,10 @@ app.use('/api/keiko/options', keikoOptionRoutes);
 app.use('/api/keiko/import', keikoImportRoutes);
 app.use('/api/keiko/duplicates', duplicateRoutes);
 app.use('/api/sports/motogp', motogpRoutes);
+app.use('/api/comfy', comfyRoutes);
+
+app.use('/api/flux', fluxRoutes);
+
 
 
 

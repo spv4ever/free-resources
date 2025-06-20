@@ -194,3 +194,62 @@
 .reset-btn:hover {
   background-color: #444;
 }
+
+/* Imagen generada por Flux */
+.flux-image-preview {
+  margin-top: 12px;
+  background: #1a1a1a;
+  padding: 10px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.flux-image-preview img {
+  border-radius: 6px;
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.flux-image-preview a {
+  display: inline-block;
+  margin-top: 6px;
+  color: #4fc3f7;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.flux-image-preview a:hover {
+  text-decoration: underline;
+}
+
+/* Estado de carga */
+.prompt-row p {
+  margin-top: 8px;
+  font-style: italic;
+  color: #aaa;
+}
+
+.flux-pending-box {
+  background: #1e1e1e;
+  border: 1px dashed #444;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 6px;
+  color: #ccc;
+}
+
+.flux-pending-box button {
+  margin-top: 6px;
+  padding: 6px 12px;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.flux-pending-box button:hover {
+  background: #444;
+}

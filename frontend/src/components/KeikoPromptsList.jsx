@@ -14,6 +14,9 @@ export default function KeikoPromptsList() {
   const [filterAccess, setFilterAccess] = useState('');
   const [sortField, setSortField] = useState('createdAt');
   const [sortOrder, setSortOrder] = useState('desc'); // o 'asc'
+  const [generando, setGenerando] = useState(null); // promptId actual
+  const [imagenes, setImagenes] = useState({});
+  const [pendientes, setPendientes] = useState({});
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/packs/${packId}`)
@@ -46,7 +49,13 @@ export default function KeikoPromptsList() {
         return sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
       }
     });
-  const handleCopyAndOpen = (promptText, platform) => {
+
+  const handleCopyAndOpen = (promptText, platform, id) => {
+    if (platform.toLowerCase() === 'flux') {
+      handleFluxPrompt(promptText, id);
+      return;
+    }
+
     navigator.clipboard.writeText(promptText);
 
     const urls = {
@@ -60,10 +69,83 @@ export default function KeikoPromptsList() {
     if (url) window.open(url, '_blank');
     else alert('Plataforma no reconocida');
   };
+
   const copyToClipboard = text => {
     navigator.clipboard.writeText(text);
     // podrías mostrar un toast aquí si quieres
   };
+
+  const handleFluxPrompt = async (promptText, promptId) => {
+    try {
+      setGenerando(promptId);
+
+      const token = localStorage.getItem('token'); // o como gestiones auth
+
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/flux/generate`,
+        {
+          prompt: promptText,
+          ratio: '3:4',
+          filename_prefix: 'keiko'
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      const prompt_id = data.prompt_id;
+
+      setPendientes(prev => ({ ...prev, [promptId]: prompt_id }));
+
+      // Esperar unos segundos antes de consultar resultado
+      await new Promise(r => setTimeout(r, 8000));
+
+      const { data: img } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/flux/imagen/${prompt_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setImagenes(prev => ({ ...prev, [promptId]: img.imageUrl }));
+    } catch (err) {
+      console.error('Error al generar con Flux:', err.message);
+      alert('Error al generar imagen.');
+    } finally {
+      setGenerando(null);
+    }
+  };
+
+  const verificarImagen = async (promptId, prompt_id) => {
+  try {
+    const token = localStorage.getItem('token');
+
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/flux/verificar/${prompt_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    if (data.found) {
+      setImagenes(prev => ({ ...prev, [promptId]: data.imageUrl }));
+      const newPendientes = { ...pendientes };
+      delete newPendientes[promptId];
+      setPendientes(newPendientes);
+    } else {
+      alert('La imagen aún no está disponible. Intenta más tarde.');
+    }
+  } catch (err) {
+    console.error('Error al verificar imagen:', err.message);
+    alert('Error al verificar estado de la imagen.');
+  }
+};
 
   if (!pack) return <p>Cargando pack…</p>;
 
@@ -146,13 +228,34 @@ export default function KeikoPromptsList() {
               <h2 className="prompt-scene">{p.scene}</h2>
               <div className="prompt-actions">
                 <button className="copy-btn" onClick={() => copyToClipboard(p.prompt)}>📋 Copiar</button>
-                <button className="open-btn" onClick={() => handleCopyAndOpen(p.prompt, p.platform)}>🚀 Copiar y Abrir IA</button>
+                <button className="open-btn" onClick={() => handleCopyAndOpen(p.prompt, p.platform, p._id)}>
+                  🚀 {p.platform === 'flux' ? 'Generar en Flux' : 'Copiar y Abrir IA'}
+                </button>
               </div>
             </div>
             
             <pre className="prompt-box">
               {p.prompt}
             </pre>
+
+            {pendientes[p._id] && (
+              <div className="flux-pending-box">
+                <p>⏳ Imagen pendiente de generación…</p>
+                <button onClick={() => verificarImagen(p._id, pendientes[p._id])}>
+                  🔄 Verificar estado
+                </button>
+              </div>
+            )}
+            {imagenes[p._id] && (
+              <div className="flux-image-preview">
+                <img src={imagenes[p._id]} alt="Imagen generada" style={{ maxWidth: '100%', marginTop: '10px' }} />
+                <a href={imagenes[p._id]} target="_blank" rel="noopener noreferrer">🔗 Ver tamaño completo</a>
+              </div>
+            )}
+
+            {generando === p._id && !imagenes[p._id] && !pendientes[p._id] && (
+              <p>⏳ Generando imagen con Flux…</p>
+            )}
             <div className="row-meta">
               <span className="chip">{p.platform}</span>
               <span className="chip">{p.access}</span>
