@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
 import { getComfyUrl } from './comfyService.js';
+import { getComfyAuth } from '../utils/comfyAuth.js';
 
 const proporciones = {
   '1:1': [1024, 1024],
@@ -36,13 +37,6 @@ export const generarImagenConFlux = async ({
   modificado['10'].inputs.steps = steps < defaultSteps ? steps : defaultSteps;
 
   const url = await getComfyUrl('flux');
-  const authHeader = {
-    auth: {
-        username: process.env.COMFY_AUTH_USER,
-        password: process.env.COMFY_AUTH_PASS
-    }
-    };
-
-    const { data } = await axios.post(`${url}/prompt`, { prompt: modificado }, authHeader);
+  const { data } = await axios.post(`${url}/prompt`, { prompt: modificado }, getComfyAuth());
   return data;
 };

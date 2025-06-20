@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getComfyUrl } from './comfyService.js';
+import { getComfyAuth } from '../utils/comfyAuth.js';
 
 export const consultarImagenGenerada = async (prompt_id, maxRetries = 40, delayMs = 10000) => {
   if (!prompt_id) throw new Error('Se requiere el prompt_id');
@@ -9,12 +10,8 @@ export const consultarImagenGenerada = async (prompt_id, maxRetries = 40, delayM
   for (let intento = 0; intento < maxRetries; intento++) {
     try {
       console.log(`🌀 Intento ${intento + 1} de ${maxRetries} → Consultando imagen...`);
-      const { data } = await axios.get(`${url}/history/${prompt_id}`, {
-                        auth: {
-                            username: process.env.COMFY_AUTH_USER,
-                            password: process.env.COMFY_AUTH_PASS
-                        }
-                        });
+
+      const { data } = await axios.get(`${comfyUrl}/history/${prompt_id}`, getComfyAuth());
       const entry = data[prompt_id] || data;
       const nodoSalida = entry.outputs?.['30'];
 

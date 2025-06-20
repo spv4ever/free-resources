@@ -3,6 +3,7 @@ import { consultarImagenGenerada } from '../services/resultadoImagenService.js';
 import ImagenGenerada from '../models/ImagenGenerada.js';
 import { getComfyUrl } from '../services/comfyService.js';
 import axios from 'axios';
+import { getComfyAuth } from '../utils/comfyAuth.js';
 
 export const generarImagen = async (req, res) => {
   try {
@@ -70,18 +71,23 @@ export const verificarImagen = async (req, res) => {
     const { id } = req.params;
     const comfyUrl = await getComfyUrl('flux');
 
-    const { data } = await axios.get(`${url}/history/${prompt_id}`, {
-                    auth: {
-                        username: process.env.COMFY_AUTH_USER,
-                        password: process.env.COMFY_AUTH_PASS
-                    }
-                    });
+    const { data } = await axios.get(`${comfyUrl}/history/${id}`, getComfyAuth());
     const entry = data[id] || data;
     const nodoSalida = entry.outputs?.['30'];
 
     if (nodoSalida && nodoSalida.images?.length > 0) {
       const { filename } = nodoSalida.images[0];
       const imageUrl = `${comfyUrl}/view?filename=output/${filename}`;
+
+      // ✅ ACTUALIZA en base de datos
+      await ImagenGenerada.findOneAndUpdate(
+        { prompt_id: id },
+        {
+          filename,
+          url: imageUrl,
+          status: 'completada',
+        }
+      );
 
       return res.json({ found: true, filename, imageUrl });
     }
@@ -92,3 +98,4 @@ export const verificarImagen = async (req, res) => {
     return res.status(200).json({ found: false });
   }
 };
+
