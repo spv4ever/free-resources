@@ -70,7 +70,12 @@ export const verificarImagen = async (req, res) => {
     const { id } = req.params;
     const comfyUrl = await getComfyUrl('flux');
 
-    const { data } = await axios.get(`${comfyUrl}/history/${id}`);
+    const { data } = await axios.get(`${url}/history/${prompt_id}`, {
+                    auth: {
+                        username: process.env.COMFY_AUTH_USER,
+                        password: process.env.COMFY_AUTH_PASS
+                    }
+                    });
     const entry = data[id] || data;
     const nodoSalida = entry.outputs?.['30'];
 

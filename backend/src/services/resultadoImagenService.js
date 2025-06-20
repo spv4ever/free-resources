@@ -9,7 +9,12 @@ export const consultarImagenGenerada = async (prompt_id, maxRetries = 40, delayM
   for (let intento = 0; intento < maxRetries; intento++) {
     try {
       console.log(`🌀 Intento ${intento + 1} de ${maxRetries} → Consultando imagen...`);
-      const { data } = await axios.get(`${comfyUrl}/history/${prompt_id}`);
+      const { data } = await axios.get(`${url}/history/${prompt_id}`, {
+                        auth: {
+                            username: process.env.COMFY_AUTH_USER,
+                            password: process.env.COMFY_AUTH_PASS
+                        }
+                        });
       const entry = data[prompt_id] || data;
       const nodoSalida = entry.outputs?.['30'];
 
