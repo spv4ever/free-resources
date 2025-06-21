@@ -5,6 +5,21 @@
   background: #121212;
   color: #e0e0e0;
   font-family: monospace;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;       /* Centra horizontalmente */
+  gap: 24px;                 /* Espacio entre los elementos */
+}
+
+.ratio-text {
+  font-size: 1.2rem;  
+  color: #bbb;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center; 
+  justify-content: center; /* Centra horizontalmente */
 }
 
 .pack-title {
@@ -63,8 +78,12 @@
 
 .prompt-actions {
   display: flex;
-  gap: 10px;
+  justify-content: flex-end; /* alinea los botones a la derecha */
+  gap: 8px;
+  margin-bottom: 12px; /* espacio inferior */
+  flex-wrap: wrap;
 }
+
 .copy-btn,
 .open-btn {
   background-color: #333;
@@ -118,6 +137,8 @@
 
 .filters-wrapper {
   margin-top: 1.5rem;
+  max-width: 60%;  
+  align-items: center;
 }
 
 .search-input {
@@ -180,6 +201,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
+
 }
 
 .reset-btn {
@@ -272,3 +294,67 @@
 .flux-thumbnail:hover {
   transform: scale(1.05);
 }
+
+.prompt-card-wrapper {
+  max-width: 60%;
+  margin: 0 auto 24px auto; /* centrar y dejar separación inferior */
+}
+
+.prompt-row.two-column {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.prompt-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.prompt-status-image {
+  width: 200px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 12px;
+  border-left: 1px dashed #444;
+}
+
+.prompt-status-image img.flux-thumbnail {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.prompt-status-image .pending-text {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: #bbb;
+  margin-bottom: 8px;
+}
+
+.prompt-status-image .check-btn {
+  padding: 6px 10px;
+  background: #333;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.prompt-status-image .check-btn:hover {
+  background: #444;
+}
+
+.open-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+

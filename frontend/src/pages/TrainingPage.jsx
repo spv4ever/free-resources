@@ -2,11 +2,15 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/TrainingPage.css';
 import AdBanner from '../components/AdBanner';
+import { useUser } from '../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 
 function TrainingPage() {
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useUser();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTrainingResources = async () => {
@@ -47,14 +51,24 @@ function TrainingPage() {
                 <p className="precio">Precio: {resource.precio}</p>
               )}
               {resource.certificado && <p className="certificado">✅ Certificado disponible</p>}
-              <a
-                href={resource.url}
-                className="training-link"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Acceder al curso
-              </a>
+              {user ? (
+                <a
+                  href={resource.url}
+                  className="training-link"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Acceder al curso
+                </a>
+              ) : (
+                <button
+                  className="training-link"
+                  onClick={() => navigate('/login')}
+                  title="Regístrate para acceder al curso"
+                >
+                  Acceder al curso
+                </button>
+              )}
             </div>
           ))}
         </div>

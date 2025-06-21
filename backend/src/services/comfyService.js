@@ -6,14 +6,13 @@ export const getComfyUrl = async (key = 'flux') => {
     return process.env.COMFY_LOCAL_URL;
   }
   const config = await ComfyConfig.findOne({ key });
-  return config?.url ? decrypt(config.url) : process.env.COMFY_PROD_URL;
+  return config?.url || process.env.COMFY_PROD_URL;
 };
 
 export const setComfyUrl = async (key, newUrl) => {
-  const encrypted = encrypt(newUrl);
   return await ComfyConfig.findOneAndUpdate(
     { key },
-    { url: encrypted },
+    { url: newUrl }, // ⛔ sin encrypt()
     { upsert: true, new: true }
   );
 };

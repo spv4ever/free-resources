@@ -103,3 +103,7 @@
   border-radius: 4px;
   text-align: center;
 }
+.tmdb-search-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

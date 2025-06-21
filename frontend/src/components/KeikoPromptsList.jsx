@@ -6,8 +6,10 @@ import '../styles/KeikoPromptsList.css';
 import AspectRatioSelector from '../components/AspectRatioSelector';
 import '../styles/AspectRatioSelector.css';
 import { useParams } from 'react-router-dom';
+import { useUser } from '../context/UserContext'; 
 
 export default function KeikoPromptsList() {
+  const { user, loading } = useUser();
   const { packId } = useParams();
   const [pack, setPack] = useState(null);
   const [prompts, setPrompts] = useState([]);
@@ -21,8 +23,68 @@ export default function KeikoPromptsList() {
   const [pendientes, setPendientes] = useState({});
   const [pendientesTimestamps, setPendientesTimestamps] = useState({});
   const [selectedRatio, setSelectedRatio] = useState('3:4');
+  const [tiempoTranscurrido, setTiempoTranscurrido] = useState({});
+  const [progresoGeneracion, setProgresoGeneracion] = useState({});
 
   useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/comfy/jobs`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const mapeoProgreso = {};
+        const cola = data
+          .filter(j => j.status === 'queued')
+          .sort((a, b) => a.createdAt - b.createdAt);
+
+        for (let i = 0; i < data.length; i++) {
+          const { promptId, progress, status } = data[i];
+          if (status === 'running' || status === 'queued') {
+            mapeoProgreso[promptId] = {
+              progress: Math.round(progress * 100),
+              colaIndex: status === 'queued'
+                ? cola.findIndex(j => j.promptId === promptId) + 1
+                : null
+            };
+          }
+        }
+
+        setProgresoGeneracion(mapeoProgreso);
+      } catch (err) {
+        console.warn('⚠️ Error consultando progreso:', err.message);
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+
+  useEffect(() => {
+  const interval = setInterval(() => {
+    setTiempoTranscurrido((prev) => {
+      const nuevo = {};
+      Object.entries(pendientes).forEach(([id, info]) => {
+        if (!info) return;
+
+        const createdAt = typeof info.createdAt === 'string'
+          ? new Date(info.createdAt).getTime()
+          : typeof info.createdAt === 'number'
+            ? info.createdAt
+            : Date.now();
+
+        const delta = Math.floor((Date.now() - createdAt) / 1000);
+        nuevo[id] = delta;
+      });
+      return nuevo;
+    });
+  }, 1000);
+  return () => clearInterval(interval);
+}, [pendientes]);
+
+  useEffect(() => {
+    if (loading || !user || (user.role !== 'pro' && user.role !== 'admin')) return;
     axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/packs/${packId}`)
       .then(({ data }) => setPack(data))
       .catch(console.error);
@@ -30,11 +92,27 @@ export default function KeikoPromptsList() {
     axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/prompts/by-pack/${packId}`)
       .then(({ data }) => setPrompts(data))
       .catch(console.error);
-  }, [packId]);
+  }, [packId,user,loading]);
+
+  if (loading) return <div className="page-loader">⏳ Cargando...</div>;
+  if (!user) return <div className="restricted-area">
+        <h2>🔒 Acceso restringido</h2>
+        <p>Esta sección está disponible solo para usuarios registrados.</p>
+      </div>
+  // if (user.role !== 'pro' && user.role !== 'admin') {
+  //   return (
+  //     <div className="restricted-area">
+  //       <h2>🔒 Acceso restringido</h2>
+  //       <p>Esta sección está disponible solo para usuarios con nivel <strong>PRO</strong> o <strong>ADMIN</strong>.</p>
+  //     </div>
+  //   );
+  // }
+  
 
   const platforms = Array.from(new Set(prompts.map(p => p.platform))).sort();
   const accesses = ['free', 'pro'];
 
+  
   const displayed = prompts
     .filter(p =>
       p.scene.toLowerCase().includes(search.toLowerCase()) ||
@@ -99,7 +177,14 @@ export default function KeikoPromptsList() {
 
       const prompt_id = data.prompt_id;
 
-      setPendientes(prev => ({ ...prev, [promptId]: prompt_id }));
+      setPendientes(prev => ({
+        ...prev,
+        [promptId]: {
+          id: prompt_id,
+          createdAt: Date.now()
+        }
+      }));
+
       setPendientesTimestamps(prev => ({ ...prev, [promptId]: Date.now() }));
       const currentPromptId = promptId;
       const currentPromptBackendId = prompt_id;
@@ -222,9 +307,16 @@ export default function KeikoPromptsList() {
       alert('Error al verificar estado de la imagen.');
     }
   };
+  
+  if (loading) return <p>⏳ Cargando usuario...</p>;
+  
+  if (!user) {
+    return <p>🔐 Debes iniciar sesión para ver esta sección.</p>;
+  }
+
+  
 
   if (!pack) return <p>Cargando pack…</p>;
-
   return (
     <div className="keiko-user-container">
       <h1 className="pack-title">{pack.title}</h1>
@@ -304,50 +396,79 @@ export default function KeikoPromptsList() {
           <p className="no-results">No hay prompts que coincidan.</p>
         )}
         {displayed.map(p => (
-          <div key={p._id} className="prompt-row">
-            <div className="row-header">
-              <h2 className="prompt-scene">{p.scene}</h2>
-              <div className="prompt-actions">
-                <button className="copy-btn" onClick={() => copyToClipboard(p.prompt)}>📋 Copiar</button>
-                <button className="open-btn" onClick={() => handleCopyAndOpen(p.prompt, p.platform, p._id)}>
-                  🚀 {p.platform.toLowerCase() === 'flux' ? 'Generar en Flux' : 'Copiar y Abrir IA'}
-                </button>
-              </div>
-            </div>
+          <div key={p._id} className="prompt-card-wrapper">
+            <div className="prompt-row two-column">
+              <div className="prompt-content">
+                <div className="row-header">
+                  <h2 className="prompt-scene">{p.scene}</h2>
+                  <div className="prompt-actions">
+                    <button className="copy-btn" onClick={() => copyToClipboard(p.prompt)}>📋 Copiar</button>
+                    <button
+                      className="open-btn"
+                      onClick={() => handleCopyAndOpen(p.prompt, p.platform, p._id)}
+                      disabled={generando === p._id}
+                    >
+                      🚀 {p.platform.toLowerCase() === 'flux' ? 'Generar en Flux' : 'Copiar y Abrir IA'}
+                    </button>
+                  </div>
+                </div>
 
-            <pre className="prompt-box">
-              {p.prompt}
-            </pre>
+                <pre className="prompt-box">{p.prompt}</pre>
 
-            {pendientes[p._id] && (
-              <div className="flux-pending-box">
-                <p>⏳ Imagen pendiente de generación…</p>
-                <button onClick={() => verificarImagen(p._id, pendientes[p._id])}>
-                  🔄 Verificar estado
-                </button>
-              </div>
-            )}
-            {imagenes[p._id] && (
-              <div className="flux-image-preview">
-                <img
-                  src={imagenes[p._id]}
-                  alt="Imagen generada"
-                  className="flux-thumbnail"
-                  onClick={() => window.open(imagenes[p._id], '_blank')}
-                />
-              </div>
-            )}
+                {/* ⏳ PROGRESO DE GENERACIÓN */}
+                {pendientes[p._id] && (
+                  <div className="flux-pending-box">
+                    <p>
+                      ⏳ Imagen pendiente de generación…
+                      {typeof tiempoTranscurrido[p._id] === 'number' && (
+                        <span> ({tiempoTranscurrido[p._id]}s)</span>
+                      )}
+                      {progresoGeneracion[pendientes[p._id]?.id] && progresoGeneracion[pendientes[p._id]?.id].colaIndex !== undefined && (
+                        <span> – 🕓 En cola (#{progresoGeneracion[pendientes[p._id].id].colaIndex})</span>
+                      )}
+                      {progresoGeneracion[pendientes[p._id]?.id] && typeof progresoGeneracion[pendientes[p._id].id].progress === 'number' && (
+                        <span> – Progreso: {progresoGeneracion[pendientes[p._id].id].progress}%</span>
+                      )}
+                    </p>
+                    <button onClick={() => verificarImagen(p._id, pendientes[p._id])}>
+                      🔄 Verificar estado
+                    </button>
+                  </div>
+                )}
 
-            {generando === p._id && !imagenes[p._id] && !pendientes[p._id] && (
-              <p>⏳ Generando imagen con Flux…</p>
-            )}
-            <div className="row-meta">
-              <span className="chip">{p.platform}</span>
-              <span className="chip">{p.access}</span>
-              <span className="chip">{new Date(p.createdAt).toLocaleDateString()}</span>
+
+                {generando === p._id && !imagenes[p._id] && !pendientes[p._id] && (
+                  <p>⏳ Generando imagen con Flux…</p>
+                )}
+
+                <div className="row-meta">
+                  <span className="chip">{p.platform}</span>
+                  <span className="chip">{p.access}</span>
+                  <span className="chip">{new Date(p.createdAt).toLocaleDateString()}</span>
+                </div>
+              </div>
+
+              {/* ✅ SOLO LA IMAGEN A LA DERECHA */}
+              <div className="prompt-status-image">
+                {p.platform.toLowerCase() === 'flux' && (
+                  imagenes[p._id] ? (
+                    <img
+                      src={imagenes[p._id]}
+                      alt="Imagen generada"
+                      className="flux-thumbnail"
+                      onClick={() => window.open(imagenes[p._id], '_blank')}
+                    />
+                  ) : (
+                    <div className="image-placeholder">🖼 Esperando imagen...</div>
+                  )
+                )}
+              </div>
             </div>
           </div>
         ))}
+
+
+
       </div>
     </div>
   );

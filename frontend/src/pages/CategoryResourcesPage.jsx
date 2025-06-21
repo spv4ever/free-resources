@@ -5,9 +5,12 @@ import { useUser } from '../context/UserContext';
 import { FaDownload, FaEdit, FaTrash, FaSave, FaTimes   } from 'react-icons/fa';
 import AdBanner from '../components/AdBanner';
 import ImageUploadModal from '../components/ImageUploadModal'; // ajusta la ruta si es necesario
+import { useNavigate } from 'react-router-dom';
+
 
 
 function CategoryResourcesPage() {
+    const navigate = useNavigate();
     const { categoryName } = useParams();
     const [resources, setResources] = useState([]);
     //const [loading, setLoading] = useState(true);
@@ -339,7 +342,19 @@ function CategoryResourcesPage() {
             <p>{r.description}</p>
             <p className="resource-date">{formatDate(r.updatedAt)}</p>
             <div className="resource-actions">
-              <a href={r.downloadUrl} target="_blank" rel="noreferrer" title="Descargar"><FaDownload /></a>
+              {user ? (
+                  <a href={r.downloadUrl} target="_blank" rel="noreferrer" title="Descargar">
+                    <FaDownload />
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => navigate('/login')}
+                    title="Inicia sesión para descargar"
+                    style={{ cursor: 'pointer', background: 'none', border: 'none', color: 'inherit' }}
+                  >
+                    <FaDownload />
+                  </button>
+                )}
               {isAdmin && (
                 <>
                   <button onClick={() => handleEdit(r)} title="Editar"><FaEdit /></button>

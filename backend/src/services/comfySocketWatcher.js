@@ -137,7 +137,7 @@ export const trackPendingJob = (promptId, meta = {}) => {
     status: 'queued',
     progress: 0,
     inQueue: true,
-    createdAt: Date.now(),
-    ...meta
+    ...meta,
+    createdAt: meta.createdAt || Date.now() // se mantiene si ya lo trae
   });
 };
