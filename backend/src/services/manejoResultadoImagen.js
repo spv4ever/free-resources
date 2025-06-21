@@ -72,7 +72,8 @@ export const manejarFinalizacionDeJob = async (promptId, { nickname, prompt, use
       {
         filename,
         url: result.secure_url,
-        status: 'completada'
+        status: 'completada',
+        finalUrl: result.secure_url, // la definitiva (cloudinary)
       }
     );
 
