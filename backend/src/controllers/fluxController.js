@@ -4,6 +4,11 @@ import { consultarImagenGenerada } from '../services/resultadoImagenService.js';
 import ImagenGenerada from '../models/ImagenGenerada.js';
 import { getComfyUrl } from '../services/comfyService.js';
 import { getComfyAuth } from '../utils/comfyAuth.js';
+import { trackPendingJob } from '../services/comfySocketWatcher.js';
+import { manejarFinalizacionDeJob } from '../services/manejoResultadoImagen.js';
+
+
+
 import axios from 'axios';
 
 export const generarImagen = async (req, res) => {
@@ -23,6 +28,11 @@ export const generarImagen = async (req, res) => {
       user: req.user._id,
       prompt_id: resultado.prompt_id,
       prompt,
+    });
+    trackPendingJob(resultado.prompt_id, {
+      userId: req.user._id,
+      nickname: filename_prefix, // ya es el nickname
+      prompt
     });
 
     res.json({ prompt_id: resultado.prompt_id });
@@ -78,12 +88,26 @@ export const verificarImagen = async (req, res) => {
       const { filename } = nodoSalida.images[0];
       const imageUrl = `${comfyUrl}/view?filename=output/${filename}`;
 
+      // 🔎 Buscar los datos guardados en Mongo
+      const imagen = await ImagenGenerada.findOne({ prompt_id: id });
+
+      // ⚡ Subir a Cloudinary y actualizar
+      if (imagen) {
+        await manejarFinalizacionDeJob(id, {
+          userId: imagen.user,
+          nickname: req.user.nickname, // puede que quieras también guardar esto en Mongo
+          prompt: imagen.prompt,
+          filename
+        });
+      }
+
+      // ✅ (opcional) Mantener también la URL local
       await ImagenGenerada.findOneAndUpdate(
         { prompt_id: id },
         {
           filename,
           url: imageUrl,
-          status: 'completada',
+          status: 'completada'
         }
       );
 
@@ -96,7 +120,6 @@ export const verificarImagen = async (req, res) => {
     return res.status(200).json({ found: false });
   }
 };
-
 // src/controllers/fluxController.js
 
 

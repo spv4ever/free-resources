@@ -4,6 +4,7 @@ import path from 'path';
 import axios from 'axios';
 import { getComfyUrl } from './comfyService.js';
 import { getComfyAuth } from '../utils/comfyAuth.js';
+import { trackPendingJob } from '../services/comfySocketWatcher.js'; // ajusta la ruta si es necesario
 
 const proporciones = {
   '1:1': [1024, 1024],
@@ -57,5 +58,8 @@ export const generarImagenOptimizada = async ({
 
   const comfyUrl = await getComfyUrl('flux');
   const { data } = await axios.post(`${comfyUrl}/prompt`, { prompt: modificado }, getComfyAuth());
+  if (data?.prompt_id) {
+    trackPendingJob(data.prompt_id); // 👈 registrar job como "queued"
+    }
   return data;
 };

@@ -76,7 +76,7 @@ import duplicateRoutes from './keikoprompts/routes/duplicateRoutes.js';
 import motogpRoutes from './routes/motogpRoutes.js';
 import comfyRoutes from './routes/comfyRoutes.js';
 import fluxRoutes from './routes/fluxRoutes.js';
-
+import { startComfySocketWatcher } from './services/comfySocketWatcher.js';
 
 
 
@@ -269,6 +269,7 @@ import './jobs/spaceXJob.js';
 import './jobs/igraalJob.js';
 import './jobs/syncWeeklyTop.js'; // activa el cronjob semanal
 startEnrichSpacexJob();
+startComfySocketWatcher();
 // import './jobs/index.js';
 
 
