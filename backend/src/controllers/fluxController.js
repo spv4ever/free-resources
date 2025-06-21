@@ -1,28 +1,29 @@
-import { generarImagenConFlux } from '../services/generarImagenService.js';
+// src/controllers/fluxController.js
+import { generarImagenOptimizada } from '../services/generarImagenOptimizada.js';
 import { consultarImagenGenerada } from '../services/resultadoImagenService.js';
 import ImagenGenerada from '../models/ImagenGenerada.js';
 import { getComfyUrl } from '../services/comfyService.js';
-import axios from 'axios';
 import { getComfyAuth } from '../utils/comfyAuth.js';
+import axios from 'axios';
 
 export const generarImagen = async (req, res) => {
   try {
-    const { prompt, ratio, seed, steps} = req.body;
+    const { prompt, ratio, seed, steps } = req.body;
     const filename_prefix = req.user.nickname || 'keiko';
 
-    const resultado = await generarImagenConFlux({
-        prompt: `aidmaHyperrealism , ${prompt}`,
-        ratio,
-        seed,
-        steps,
-        filename_prefix,
-        });
+    const resultado = await generarImagenOptimizada({
+      prompt: `aidmaHyperrealism , ${prompt}`,
+      ratio,
+      seed,
+      steps,
+      filename_prefix,
+    });
 
-        await ImagenGenerada.create({
-        user: req.user._id,
-        prompt_id: resultado.prompt_id,
-        prompt,
-        });
+    await ImagenGenerada.create({
+      user: req.user._id,
+      prompt_id: resultado.prompt_id,
+      prompt,
+    });
 
     res.json({ prompt_id: resultado.prompt_id });
   } catch (error) {
@@ -31,20 +32,18 @@ export const generarImagen = async (req, res) => {
   }
 };
 
-
-
 export const obtenerImagen = async (req, res) => {
   try {
     const { id } = req.params;
     console.log('Obteniendo imagen para prompt_id:', id);
     const resultado = await consultarImagenGenerada(id);
     await ImagenGenerada.findOneAndUpdate(
-    { prompt_id: id },
-    {
+      { prompt_id: id },
+      {
         filename: resultado.filename,
         url: resultado.imageUrl,
         status: 'completada',
-    }
+      }
     );
     console.log('Resultado:', resultado);
     res.json(resultado);
@@ -79,7 +78,6 @@ export const verificarImagen = async (req, res) => {
       const { filename } = nodoSalida.images[0];
       const imageUrl = `${comfyUrl}/view?filename=output/${filename}`;
 
-      // ✅ ACTUALIZA en base de datos
       await ImagenGenerada.findOneAndUpdate(
         { prompt_id: id },
         {
@@ -98,4 +96,3 @@ export const verificarImagen = async (req, res) => {
     return res.status(200).json({ found: false });
   }
 };
-

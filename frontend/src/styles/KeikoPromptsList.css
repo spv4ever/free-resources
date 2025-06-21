@@ -253,3 +253,22 @@
 .flux-pending-box button:hover {
   background: #444;
 }
+
+.flux-image-preview {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.flux-thumbnail {
+  max-width: 200px;
+  max-height: 200px;
+  cursor: pointer;
+  border-radius: 6px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease;
+}
+
+.flux-thumbnail:hover {
+  transform: scale(1.05);
+}
