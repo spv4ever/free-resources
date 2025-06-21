@@ -15,8 +15,8 @@ export default function KeikoPromptsList() {
   const [filterPlatform, setFilterPlatform] = useState('');
   const [filterAccess, setFilterAccess] = useState('');
   const [sortField, setSortField] = useState('createdAt');
-  const [sortOrder, setSortOrder] = useState('desc'); // o 'asc'
-  const [generando, setGenerando] = useState(null); // promptId actual
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [generando, setGenerando] = useState(null);
   const [imagenes, setImagenes] = useState({});
   const [pendientes, setPendientes] = useState({});
   const [pendientesTimestamps, setPendientesTimestamps] = useState({});
@@ -53,12 +53,12 @@ export default function KeikoPromptsList() {
         return sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
       }
     });
-
+  
   const handleCopyAndOpen = (promptText, platform, id) => {
     if (platform.toLowerCase() === 'flux') {
-        handleFluxPrompt(promptText, id);
-        return;
-      }
+      handleFluxPrompt(promptText, id);
+      return;
+    }
 
     navigator.clipboard.writeText(promptText);
 
@@ -76,7 +76,6 @@ export default function KeikoPromptsList() {
 
   const copyToClipboard = text => {
     navigator.clipboard.writeText(text);
-    // podrías mostrar un toast aquí si quieres
   };
 
   const handleFluxPrompt = async (promptText, promptId) => {
@@ -122,31 +121,46 @@ export default function KeikoPromptsList() {
   };
 
   const verificarImagenConRetry = (promptId, prompt_id, intentos = 0) => {
-      const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
 
-      axios.get(
-        `${process.env.REACT_APP_API_URL}/api/flux/verificar/${prompt_id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+    axios.get(
+      `${process.env.REACT_APP_API_URL}/api/flux/verificar/${prompt_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      )
+      }
+    )
       .then(({ data }) => {
         if (data.found) {
-          setImagenes(prev => ({ ...prev, [promptId]: data.imageUrl }));
-          setPendientes(prev => {
-            const nuevo = { ...prev };
-            delete nuevo[promptId];
-            return nuevo;
-          });
-          setPendientesTimestamps(prev => {
-            const nuevo = { ...prev };
-            delete nuevo[promptId];
-            return nuevo;
-          });
+          // ✅ Pedimos la imagen protegida con token y blob
+          axios.get(
+            `${process.env.REACT_APP_API_URL}/api/flux/image/${data.filename}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              },
+              responseType: 'blob'
+            }
+          )
+            .then(res => {
+              const imageUrl = URL.createObjectURL(res.data);
+              setImagenes(prev => ({ ...prev, [promptId]: imageUrl }));
+              setPendientes(prev => {
+                const nuevo = { ...prev };
+                delete nuevo[promptId];
+                return nuevo;
+              });
+              setPendientesTimestamps(prev => {
+                const nuevo = { ...prev };
+                delete nuevo[promptId];
+                return nuevo;
+              });
+            })
+            .catch(err => {
+              console.error('❌ Error al descargar imagen:', err.message);
+            });
         } else {
-          // Si aún no está, reintentar tras 5s
           setTimeout(() => {
             verificarImagenConRetry(promptId, prompt_id, intentos + 1);
           }, 5000);
@@ -154,12 +168,12 @@ export default function KeikoPromptsList() {
       })
       .catch(err => {
         console.warn(`Verificación ${intentos} fallida (${prompt_id}):`, err.message);
-        // No alertamos al usuario, solo seguimos reintentando silenciosamente
         setTimeout(() => {
           verificarImagenConRetry(promptId, prompt_id, intentos + 1);
         }, 5000);
       });
-    };
+  };
+
   const verificarImagen = async (promptId, prompt_id) => {
     const createdAt = pendientesTimestamps[promptId];
     if (createdAt && Date.now() - createdAt < 60000) {
@@ -180,7 +194,19 @@ export default function KeikoPromptsList() {
       );
 
       if (data.found) {
-        setImagenes(prev => ({ ...prev, [promptId]: data.imageUrl }));
+        const imageResponse = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/flux/image/${data.filename}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            },
+            responseType: 'blob'
+          }
+        );
+
+        const imageUrl = URL.createObjectURL(imageResponse.data);
+        setImagenes(prev => ({ ...prev, [promptId]: imageUrl }));
+
         const newPendientes = { ...pendientes };
         delete newPendientes[promptId];
         setPendientes(newPendientes);
@@ -196,7 +222,6 @@ export default function KeikoPromptsList() {
       alert('Error al verificar estado de la imagen.');
     }
   };
-
 
   if (!pack) return <p>Cargando pack…</p>;
 
@@ -274,12 +299,6 @@ export default function KeikoPromptsList() {
         </div>
       </div>
 
-      
-
-
-
-      
-
       <div className="prompts-list-rows">
         {displayed.length === 0 && (
           <p className="no-results">No hay prompts que coincidan.</p>
@@ -295,7 +314,7 @@ export default function KeikoPromptsList() {
                 </button>
               </div>
             </div>
-            
+
             <pre className="prompt-box">
               {p.prompt}
             </pre>
@@ -309,15 +328,15 @@ export default function KeikoPromptsList() {
               </div>
             )}
             {imagenes[p._id] && (
-                <div className="flux-image-preview">
-                  <img
-                    src={imagenes[p._id]}
-                    alt="Imagen generada"
-                    className="flux-thumbnail"
-                    onClick={() => window.open(imagenes[p._id], '_blank')}
-                  />
-                </div>
-              )}
+              <div className="flux-image-preview">
+                <img
+                  src={imagenes[p._id]}
+                  alt="Imagen generada"
+                  className="flux-thumbnail"
+                  onClick={() => window.open(imagenes[p._id], '_blank')}
+                />
+              </div>
+            )}
 
             {generando === p._id && !imagenes[p._id] && !pendientes[p._id] && (
               <p>⏳ Generando imagen con Flux…</p>

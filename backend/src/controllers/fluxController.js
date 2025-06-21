@@ -96,3 +96,28 @@ export const verificarImagen = async (req, res) => {
     return res.status(200).json({ found: false });
   }
 };
+
+// src/controllers/fluxController.js
+
+
+export const servirImagenDesdeComfy = async (req, res) => {
+  try {
+    const { filename } = req.params;
+    const comfyUrl = await getComfyUrl('flux'); // por ejemplo, https://xxxx.ngrok-free.app
+    const auth = {
+      username: process.env.COMFY_AUTH_USER,
+      password: process.env.COMFY_AUTH_PASS
+    };
+
+    const response = await axios.get(`${comfyUrl}/view?filename=output/${filename}`, {
+      responseType: 'stream',
+      auth
+    });
+
+    res.setHeader('Content-Type', response.headers['content-type']);
+    response.data.pipe(res);
+  } catch (err) {
+    console.error('❌ Error al servir imagen:', err.message);
+    res.status(500).send('No se pudo obtener la imagen');
+  }
+};
