@@ -1,5 +1,5 @@
 // src/components/KeikoPromptsList.jsx
-
+import Select from 'react-select';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/KeikoPromptsList.css';
@@ -7,6 +7,8 @@ import AspectRatioSelector from '../components/AspectRatioSelector';
 import '../styles/AspectRatioSelector.css';
 import { useParams } from 'react-router-dom';
 import { useUser } from '../context/UserContext'; 
+import { useNavigate } from 'react-router-dom';
+import BotonBiblioteca from '../components/BotonBiblioteca';
 
 export default function KeikoPromptsList() {
   const { user, loading } = useUser();
@@ -25,6 +27,9 @@ export default function KeikoPromptsList() {
   const [selectedRatio, setSelectedRatio] = useState('3:4');
   const [tiempoTranscurrido, setTiempoTranscurrido] = useState({});
   const [progresoGeneracion, setProgresoGeneracion] = useState({});
+  const [opcionesSeleccionadas, setOpcionesSeleccionadas] = useState({});
+  const [selectedExtras, setSelectedExtras] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -159,13 +164,16 @@ export default function KeikoPromptsList() {
   const handleFluxPrompt = async (promptText, promptId) => {
     try {
       setGenerando(promptId);
+      const extras = (selectedExtras[promptId] || []).map(e => e.value);
+      const finalPrompt = `${promptText}, ${extras.join(', ')}`.trim();
+      
 
       const token = localStorage.getItem('token');
 
       const { data } = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/flux/generate`,
         {
-          prompt: promptText,
+          prompt: finalPrompt,
           ratio: selectedRatio,
         },
         {
@@ -258,6 +266,15 @@ export default function KeikoPromptsList() {
         }, 5000);
       });
   };
+ const opcionesAuxiliares = [
+  { value: 'white background', label: 'White background' },
+  { value: 'neutral background', label: 'Neutral background' },
+  { value: 'blurred background', label: 'Blurred background' },
+  { value: 'chromatic background', label: 'Chromatic background' }, // 🆕 para keying
+  { value: 'soft lighting', label: 'Soft lighting' },
+  { value: 'extra detail', label: 'Extra detail' },
+  { value: 'high contrast', label: 'High contrast' }
+];
 
   const verificarImagen = async (promptId, prompt_id) => {
     const createdAt = pendientesTimestamps[promptId];
@@ -321,7 +338,9 @@ export default function KeikoPromptsList() {
     <div className="keiko-user-container">
       <h1 className="pack-title">{pack.title}</h1>
       <p className="pack-desc">{pack.description}</p>
-
+      <div className="top-bar">
+        <BotonBiblioteca />
+      </div>
       <div className="filters-wrapper">
         <input
           type="text"
@@ -368,15 +387,8 @@ export default function KeikoPromptsList() {
               ))}
             </select>
           </div>
+          
         </div>
-
-        <div className="ratio-selector-wrapper">
-          <p className="ratio-text">
-            Proporción seleccionada: <strong>{selectedRatio}</strong>
-          </p>
-          <AspectRatioSelector selected={selectedRatio} onChange={setSelectedRatio} />
-        </div>
-
         <div className="reset-wrapper">
           <button className="reset-btn" onClick={() => {
             setSearch('');
@@ -388,6 +400,19 @@ export default function KeikoPromptsList() {
           }}>
             🔄 Limpiar filtros
           </button>
+          <button
+            className="reset-btn"
+            onClick={() => navigate('/keikoprompts')}
+          >
+            ⬅️ Volver a Packs
+          </button>
+        </div>
+
+        <div className="ratio-selector-wrapper">
+          <p className="ratio-text">
+            Proporción seleccionada: <strong>{selectedRatio}</strong>
+          </p>
+          <AspectRatioSelector selected={selectedRatio} onChange={setSelectedRatio} />
         </div>
       </div>
 
@@ -402,7 +427,27 @@ export default function KeikoPromptsList() {
                 <div className="row-header">
                   <h2 className="prompt-scene">{p.scene}</h2>
                   <div className="prompt-actions">
+                    {p.platform.toLowerCase() === 'flux' && (
+                      <div className="aux-options">
+                        <label>Extras:</label>
+                        <Select
+                          isMulti
+                          options={opcionesAuxiliares}
+                          value={selectedExtras[p._id] || []}
+                          onChange={(selected) =>
+                            setSelectedExtras(prev => ({
+                              ...prev,
+                              [p._id]: selected
+                            }))
+                          }
+                          className="react-select-container"
+                          classNamePrefix="react-select"
+                        />
+                      </div>
+                    )}
+
                     <button className="copy-btn" onClick={() => copyToClipboard(p.prompt)}>📋 Copiar</button>
+                    
                     <button
                       className="open-btn"
                       onClick={() => handleCopyAndOpen(p.prompt, p.platform, p._id)}
@@ -423,11 +468,11 @@ export default function KeikoPromptsList() {
                       {typeof tiempoTranscurrido[p._id] === 'number' && (
                         <span> ({tiempoTranscurrido[p._id]}s)</span>
                       )}
-                      {progresoGeneracion[pendientes[p._id]?.id] && progresoGeneracion[pendientes[p._id]?.id].colaIndex !== undefined && (
-                        <span> – 🕓 En cola (#{progresoGeneracion[pendientes[p._id].id].colaIndex})</span>
+                      {progresoGeneracion[pendientes[p._id]?.id]?.colaIndex !== undefined && (
+                        <span> – 🕓 En cola (#{progresoGeneracion[pendientes[p._id]?.id].colaIndex})</span>
                       )}
                       {progresoGeneracion[pendientes[p._id]?.id] && typeof progresoGeneracion[pendientes[p._id].id].progress === 'number' && (
-                        <span> – Progreso: {progresoGeneracion[pendientes[p._id].id].progress}%</span>
+                        <span> – Progreso: {progresoGeneracion[pendientes[p._id].id].progress} %</span>
                       )}
                     </p>
                     <button onClick={() => verificarImagen(p._id, pendientes[p._id])}>

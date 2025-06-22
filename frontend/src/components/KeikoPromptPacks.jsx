@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/KeikoPromptPacks.css';
 import { useNavigate } from 'react-router-dom';
+import BotonBiblioteca from '../components/BotonBiblioteca';
 
 export default function KeikoPromptPacks() {
   const [packs, setPacks] = useState([]);
@@ -57,7 +58,9 @@ export default function KeikoPromptPacks() {
           </div>
         ))}
       </div>
-
+      <div className="top-bar">
+        <BotonBiblioteca />
+      </div>
       {/* Filtros */}
       <div className="filters-bar">
         <select

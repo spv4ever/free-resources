@@ -17,7 +17,9 @@ export const generarImagen = async (req, res) => {
     const filename_prefix = req.user.nickname || 'keiko';
 
     const resultado = await generarImagenOptimizada({
-      prompt: `aidmaHyperrealism , ${prompt}`,
+      //prompt: `aidmaHyperrealism , ${prompt}`,
+      //prompt: `Anime Scene, ${prompt}`,
+      prompt,
       ratio,
       seed,
       steps,

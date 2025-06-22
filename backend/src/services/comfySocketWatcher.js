@@ -124,20 +124,43 @@ export const startComfySocketWatcher = async () => {
 };
 
 export const getAllJobs = () => {
-  return Array.from(jobStatusMap.entries()).map(([promptId, data]) => ({
-    promptId,
-    ...data,
-    progress: Math.round((data.progress || 0) * 100) // 🔢 como porcentaje 0-100
-  }));
+  // 🧮 Calculamos la cola actual, ordenada por tiempo de creación
+  const queue = Array.from(jobStatusMap.entries())
+    .filter(([, data]) => data.status === 'queued')
+    .sort((a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0));
+
+  // 🔁 Creamos lista con cada job incluyendo su posición (si está en cola)
+  return Array.from(jobStatusMap.entries()).map(([promptId, data]) => {
+    const colaIndex = data.status === 'queued'
+      ? queue.findIndex(([id]) => id === promptId) + 1
+      : null;
+
+    return {
+      promptId,
+      ...data,
+      progress: data.progress || 0,
+      colaIndex
+    };
+  });
 };
 
 export const trackPendingJob = (promptId, meta = {}) => {
   const id = String(promptId).trim().toLowerCase();
+  const colaIndex = calcularPosicionEnCola(id);
+
   jobStatusMap.set(id, {
     status: 'queued',
     progress: 0,
     inQueue: true,
-    ...meta,
-    createdAt: meta.createdAt || Date.now() // se mantiene si ya lo trae
+    createdAt: Date.now(),
+    colaIndex,
+    ...meta
   });
+};
+const calcularPosicionEnCola = (promptId) => {
+  const queue = Array.from(jobStatusMap.entries())
+    .filter(([, data]) => data.status === 'queued')
+    .sort((a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0)) // ordenados por tiempo
+
+  return queue.findIndex(([id]) => id === promptId) + 1; // +1 para que empiece en 1
 };

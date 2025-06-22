@@ -65,7 +65,7 @@ export const manejarFinalizacionDeJob = async (promptId, { nickname, prompt, use
       unique_filename: false
     });
 
-    fs.unlinkSync(tempFilePath); // 🧹 borrar temporal
+    // fs.unlinkSync(tempFilePath); // 🧹 borrar temporal
 
     await ImagenGenerada.findOneAndUpdate(
       { prompt_id: promptId },

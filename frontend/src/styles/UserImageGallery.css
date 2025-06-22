@@ -1,0 +1,115 @@
+.user-gallery-container {
+  padding: 20px;
+  background: #121212;
+  color: #e0e0e0;
+  font-family: monospace;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.gallery-item {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 6px;
+  overflow: hidden;
+  text-align: center;
+  padding: 10px;
+}
+
+.gallery-item img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.gallery-item img:hover {
+  transform: scale(1.05);
+}
+
+.gallery-date {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  position: relative;
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  color: #eee;
+}
+
+.modal-content img {
+  max-width: 100%;
+  max-height: 70vh;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: transparent !important;
+  color: #ccc !important;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.modal-close:hover {
+  color: #fff !important;
+}
+
+.gallery-load-more {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.load-more-btn {
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.load-more-btn:hover {
+  background-color: #444;
+}
+
+.no-more {
+  margin-top: 16px;
+  text-align: center;
+  color: #888;
+  font-style: italic;
+}
