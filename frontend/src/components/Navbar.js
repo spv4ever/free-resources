@@ -269,6 +269,7 @@ function Navbar() {
 
             <li><strong>👥 Usuarios</strong></li>
             <li><Link to="/admin/users" onClick={toggleSidebar}>👤 Gestionar usuarios</Link></li>
+            <li><Link to="/admin/register-logs" onClick={toggleSidebar}>👤 Intentos de registro</Link></li>
 
             <li><button className="sidebar-close-btn" onClick={toggleSidebar}>❌ Cerrar</button></li>
           </ul>

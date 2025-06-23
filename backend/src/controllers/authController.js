@@ -3,18 +3,34 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import User from '../models/User.js';
 import { sendEmail } from '../services/sendEmail.js';
+import { logUserRegistrationAttempt } from '../services/userLogService.js'
 
 export const registerUser = async (req, res) => {
+  const { email, password, nickname } = req.body;
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
+    logUserRegistrationAttempt({
+      email,
+      nickname,
+      success: false,
+      reason: 'Errores de validación',
+      details: errors.array()
+    });
+
     return res.status(400).json({ errors: errors.array() });
   }
-
-  const { email, password, nickname } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
     if (userExists) {
+      logUserRegistrationAttempt({
+        email,
+        nickname,
+        success: false,
+        reason: 'Correo ya registrado'
+      });
+
       return res.status(400).json({ message: 'El correo ya está registrado' });
     }
 
@@ -26,25 +42,35 @@ export const registerUser = async (req, res) => {
       role: 'free',
       isVerified: false,
       verificationToken,
-      nickname // ✅ añadido
+      nickname
     });
 
     await user.save();
 
-    const verifyUrl = `${process.env.FRONTEND_BASE_URL}/verify-email?token=${verificationToken}`;
-    const html = `<p>Gracias por registrarte.</p>
-                  <p>Confirma tu correo haciendo clic en el siguiente enlace:</p>
-                  <a href="${verifyUrl}">Verificar Email</a>`;
-
     await sendEmail({
       to: email,
       subject: 'Confirma tu cuenta',
-      html
+      html: `<p>Gracias por registrarte. <a href="${process.env.FRONTEND_BASE_URL}/verify-email?token=${verificationToken}">Verifica tu correo aquí</a></p>`
+    });
+
+    logUserRegistrationAttempt({
+      email,
+      nickname,
+      success: true
     });
 
     res.status(201).json({ message: 'Registro exitoso. Verifica tu email para activar la cuenta.' });
   } catch (error) {
     console.error(error);
+
+    logUserRegistrationAttempt({
+      email,
+      nickname,
+      success: false,
+      reason: 'Error del servidor',
+      error: error.message
+    });
+
     res.status(500).json({ message: 'Error en el servidor' });
   }
 };
@@ -220,5 +246,16 @@ export const forgotPassword = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error al actualizar el apodo' });
+  }
+};
+
+// Solo accesible por admin
+export const getRegisterLogs = async (req, res) => {
+  try {
+    const logs = await RegistroUsuarioLog.find().sort({ createdAt: -1 }).limit(100);
+    res.json(logs);
+  } catch (err) {
+    console.error('❌ Error al obtener logs:', err);
+    res.status(500).json({ message: 'Error al obtener los logs' });
   }
 };

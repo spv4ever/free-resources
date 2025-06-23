@@ -73,6 +73,7 @@ import MotoGPCircuitMobileView from './components/MotoGPCircuitMobileView';
 import MotoGPCalendarPage from './pages/MotoGPCalendar'; // ⚠️ Ajusta la ruta si va en otro sitio
 import MotoGPCircuitPage from './pages/MotoGPCircuitPage';
 import UserImageGallery from './components/UserImageGallery';
+import RegisterLogsTable from './components/admin/RegisterLogsTable';
 
 
 
@@ -166,6 +167,7 @@ function App() {
             <Route path="/motogp-calendar" element={<MotoGPCalendarPage />} />
             <Route path="/motogp/:slug" element={<MotoGPCircuitPage />} />
             <Route path="/mis-imagenes" element={<UserImageGallery />} />
+            <Route path="/admin/register-logs" element={<RegisterLogsTable />} />
 
             
 
