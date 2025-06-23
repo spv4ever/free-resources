@@ -24,6 +24,6 @@ router.get('/verify-email', verifyEmail);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 router.put('/profile', protect, updateUserProfile);
-router.get('/admin/register-logs', protect, admin, getRegisterLogs);
+router.get('/register-logs', getRegisterLogs);
 
 export default router;

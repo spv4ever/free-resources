@@ -12,7 +12,7 @@ const RegisterLogsTable = () => {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/auth/admin/register-logs`, {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/auth/register-logs`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

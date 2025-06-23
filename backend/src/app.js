@@ -132,10 +132,10 @@ if (process.env.NODE_ENV === 'development') {
 // });
 
 // Limitar rutas sensibles
-app.use('/api/auth', createRateLimiter({ max: 30, windowMs: 15 * 60 * 1000 }));
-app.use('/api/upload', createRateLimiter({ max: 20, windowMs: 15 * 60 * 1000 }));
-app.use('/api/ai', createRateLimiter({ max: 40, windowMs: 15 * 60 * 1000 }));
-app.use('/api/admin', createRateLimiter({ max: 50, windowMs: 15 * 60 * 1000 }));
+// app.use('/api/auth', createRateLimiter({ max: 30, windowMs: 15 * 60 * 1000 }));
+// app.use('/api/upload', createRateLimiter({ max: 20, windowMs: 15 * 60 * 1000 }));
+// app.use('/api/ai', createRateLimiter({ max: 40, windowMs: 15 * 60 * 1000 }));
+// app.use('/api/admin', createRateLimiter({ max: 50, windowMs: 15 * 60 * 1000 }));
 
 // app.use(generalLimiter);
 const allowedOrigins = ['http://localhost:3000', 'https://keikodev.es'];

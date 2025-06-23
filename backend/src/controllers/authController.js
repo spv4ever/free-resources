@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import User from '../models/User.js';
 import { sendEmail } from '../services/sendEmail.js';
 import { logUserRegistrationAttempt } from '../services/userLogService.js'
+import RegistroUsuarioLog from '../models/RegistroUsuarioLog.js';
 
 export const registerUser = async (req, res) => {
   const { email, password, nickname } = req.body;
