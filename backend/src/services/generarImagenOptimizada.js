@@ -49,7 +49,7 @@ export const generarImagenOptimizada = async ({
   modificado['30'].inputs.filename_prefix = filename_prefix;
 
   // Limitar steps a máximo 15
-  modificado['10'].inputs.steps = Math.min(steps, 12);
+  modificado['10'].inputs.steps = Math.min(steps, 30);
 
   // Eliminar upscale para aceleración
   delete modificado['28'];

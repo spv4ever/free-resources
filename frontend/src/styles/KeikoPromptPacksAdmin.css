@@ -1,6 +1,4 @@
-/* src/styles/KeikoPromptPacksAdmin.css */
-/* — todos los selectores con el prefijo kpks- */
-
+/* Estilo general */
 .kpks-container {
   background-color: #121212;
   color: #e0e0e0;
@@ -8,6 +6,7 @@
   font-family: sans-serif;
 }
 
+/* Filtros */
 .kpks-filters {
   display: flex;
   gap: 12px;
@@ -33,6 +32,7 @@
   background-color: #444;
 }
 
+/* Notificaciones */
 .kpks-notification {
   margin-bottom: 12px;
   padding: 8px 12px;
@@ -47,6 +47,7 @@
   color: #ef9a9a;
 }
 
+/* Tabla */
 .kpks-table {
   width: 100%;
   border-collapse: collapse;
@@ -68,24 +69,33 @@
   text-align: left;
 }
 
-/* Anchos */
+/* Ajustes de columnas (6 columnas ahora) */
 .kpks-table th:nth-child(1),
-.kpks-table td:nth-child(1) { width: 20%; }
+.kpks-table td:nth-child(1) { width: 15%; } /* Título */
 .kpks-table th:nth-child(2),
-.kpks-table td:nth-child(2) { width: 15%; }
+.kpks-table td:nth-child(2) { width: 12%; } /* Imagen */
 .kpks-table th:nth-child(3),
-.kpks-table td:nth-child(3) {
-  width: 45%;
+.kpks-table td:nth-child(3) { width: 15%; } /* Categoría */
+.kpks-table th:nth-child(4),
+.kpks-table td:nth-child(4) {
+  width: 38%;
   white-space: normal;
   overflow-wrap: anywhere;
 }
-.kpks-table th:nth-child(4),
-.kpks-table td:nth-child(4) {
-  width: 10%;
-  text-align: right;
-}
 .kpks-table th:nth-child(5),
-.kpks-table td:nth-child(5) { width: 10%; }
+.kpks-table td:nth-child(5) { width: 10%; text-align: right; } /* Prompts */
+.kpks-table th:nth-child(6),
+.kpks-table td:nth-child(6) { width: 10%; }
+
+/* Miniaturas de imagen */
+.kpks-table td img {
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+  margin: 0 auto;
+}
 
 /* Inputs y botones internos */
 .kpks-table input {
@@ -120,6 +130,8 @@
   background-color: #444;
   color: #f44336;
 }
+
+/* Barra de ordenación opcional */
 .sort-bar {
   margin-top: 1rem;
   display: flex;
@@ -133,12 +145,12 @@
   padding: 4px 8px;
 }
 
+/* Botones de navegación superior */
 .kpks-nav-buttons {
   display: flex;
   gap: 12px;
   margin-bottom: 16px;
 }
-
 .kpks-nav-buttons button {
   padding: 6px 12px;
   font-size: 14px;
@@ -149,9 +161,6 @@
   border-radius: 4px;
   transition: background 0.2s;
 }
-
 .kpks-nav-buttons button:hover {
   background-color: #666;
 }
-
-

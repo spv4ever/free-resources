@@ -113,3 +113,42 @@
   color: #888;
   font-style: italic;
 }
+
+.gallery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.refresh-button {
+  background: #2a2a2a;
+  color: #eee;
+  border: 1px solid #444;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.refresh-button:hover {
+  background: #3a3a3a;
+}
+
+.prompt-preview {
+  background: #1a1a1a;
+  color: #eee;
+  padding: 12px;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 10px;
+  font-family: monospace;
+  border: 1px solid #444;
+}
+.modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+}

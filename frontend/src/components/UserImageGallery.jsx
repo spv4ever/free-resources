@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/UserImageGallery.css';
 import { useUser } from '../context/UserContext';
+import ScrollToTopButton from '../components/ScrollToTopButton';
 
 const UserImageGallery = () => {
   const { user, loading } = useUser();
@@ -42,7 +43,20 @@ const UserImageGallery = () => {
 
   return (
     <div className="user-gallery-container">
-      <h2>🖼 Tus imágenes generadas</h2>
+      <div className="gallery-header">
+        <h2>🖼 Tus imágenes generadas</h2>
+        <button
+          className="refresh-button"
+          onClick={() => {
+            setImagenes([]);
+            setCursor(null);
+            setHasMore(true);
+            fetchImages(); // reinicia la carga desde el principio
+          }}
+        >
+          🔄 Recargar
+        </button>
+      </div>
 
       <div className="gallery-grid">
         {imagenes.map((img, i) => (
@@ -78,6 +92,7 @@ const UserImageGallery = () => {
           </div>
         </div>
       )}
+      <ScrollToTopButton />
     </div>
   );
 };

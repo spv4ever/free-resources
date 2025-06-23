@@ -5,6 +5,10 @@ import User from '../models/User.js';
 dotenv.config();
 
 const protect = async (req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return next(); // dejar pasar la preflight sin validar token
+  }
+
   let token;
 
   if (
@@ -13,19 +17,15 @@ const protect = async (req, res, next) => {
   ) {
     try {
       token = req.headers.authorization.split(' ')[1];
-
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
       req.user = await User.findById(decoded.id).select('-password');
-      next();
+      return next();
     } catch (error) {
-      res.status(401).json({ message: 'No autorizado, token fallido' });
+      return res.status(401).json({ message: 'No autorizado, token fallido' });
     }
   }
 
-  if (!token) {
-    res.status(401).json({ message: 'No autorizado, no hay token' });
-  }
+  return res.status(401).json({ message: 'No autorizado, no hay token' });
 };
 
 // Middleware para roles de acceso

@@ -7,6 +7,51 @@
   box-sizing: border-box;
 }
 
+.top-bar {
+  margin-bottom: 20px;
+}
+
+/* CATEGORÍAS - horizontal, responsivo */
+.category-summary-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  justify-content: flex-start;
+}
+
+.category-card {
+  flex: 1 1 160px;
+  max-width: 200px;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 12px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, background 0.2s;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+}
+
+.category-card:hover {
+  transform: scale(1.03);
+  border-color: #3f8efc;
+  background-color: #222;
+}
+
+.category-card.active {
+  background-color: #3f8efc;
+  color: white;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .category-card {
+    flex: 1 1 45%;
+  }
+}
+
 .filters-bar {
   display: flex;
   gap: 12px;
@@ -28,105 +73,73 @@
   flex: none;
 }
 
-/* Ahora un layout en columna de tarjetas */
+/* Packs en columna con imagen izquierda */
 .packs-grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .pack-card {
-  background: #1e1e1e;
-  padding: 16px;
-  border-radius: 8px;
   display: flex;
-  flex-direction: row;      /* eje horizontal */
-  align-items: center;      /* centra verticalmente */
-  transition: background 0.2s;
+  background: #1e1e1e;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
 }
 
 .pack-card:hover {
   background: #2a2a2a;
+  transform: scale(1.01);
 }
 
-/* Título fijo */
-.pack-card h3 {
-  margin: 0;
-  margin-right: 16px;
+.pack-image {
+  flex: 0 0 120px;
+  height: 120px;
+  overflow: hidden;
+}
+
+.pack-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pack-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+
+.pack-content h3 {
+  margin: 0 0 4px;
   font-size: 1.1rem;
-  flex: 0 0 auto;
+  color: #fff;
 }
 
-/* Descripción flexible para empujar el botón al extremo */
-.pack-card .description {
-  flex: 1 1 auto;
-  margin: 0;
-  margin-right: 16px;
+.pack-content .category {
+  font-size: 0.85rem;
+  color: #9ab;
+  margin-bottom: 6px;
+}
+
+.pack-content .description {
+  margin: 0 0 8px;
   font-size: 0.9rem;
   color: #bbb;
 }
 
-/* Info + botón al final */
-.pack-card .info {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.pack-card .info span {
+.pack-content .info {
   font-size: 0.85rem;
   color: #888;
 }
 
-.pack-card .info button {
-  background: #333;
-  border: none;
-  border-radius: 4px;
-  padding: 6px 10px;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.pack-card .info button:hover {
-  background: #444;
-}
-
 .no-results {
-  /* Ya no usamos grid-column */
   text-align: center;
   color: #666;
   margin-top: 40px;
-}
-
-.category-summary-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 20px;
-  justify-content: center;
-}
-
-.category-card {
-  background-color: #1e1e1e;
-  color: #e0e0e0;
-  border: 1px solid #444;
-  border-radius: 10px;
-  padding: 12px 16px;
-  min-width: 160px;
-  text-align: center;
-  cursor: pointer;
-  transition: transform 0.2s, border-color 0.2s;
-}
-
-.category-card:hover {
-  transform: scale(1.03);
-  border-color: #3f8efc;
-}
-
-.category-card.active {
-  background-color: #3f8efc;
-  color: white;
-  font-weight: bold;
 }

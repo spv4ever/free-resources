@@ -19,24 +19,14 @@
 .pack-desc {
   color: #bbb;
   margin-bottom: 16px;
-  max-width: 60%;
+  width: 80%;
   text-align: justify;
 }
 
-.ratio-text {
-  font-size: 1.2rem;
-  color: #bbb;
-  margin-bottom: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* === Filtros === */
+/* === Buscador y filtros === */
 .filters-wrapper {
   margin-top: 1.5rem;
-  max-width: 60%;
-  align-items: center;
+  width: 80%;
 }
 
 .search-input {
@@ -48,42 +38,91 @@
   border-radius: 4px;
   margin-bottom: 1rem;
 }
-
-.selectors-bar {
+.filtros-bar {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-auto-flow: row;
+  grid-template-columns: repeat(auto-fit, minmax(160px, auto));
   gap: 12px;
-  margin-bottom: 2rem;
-  align-items: end;
+  align-items: center;
+  justify-content: start;
+  margin-bottom: 0;
 }
 
-.selectors-bar select {
-  background-color: #1e1e1e;
-  color: #e0e0e0;
+.filtros-bar button,
+.filtros-bar select {
+  height: 40px;
+  padding: 0 14px;
+  font-size: 14px;
+  line-height: 1;
+  border-radius: 6px;
   border: 1px solid #444;
-  padding: 8px 12px;
-  border-radius: 4px;
-  width: 100%;
+  background-color: #2a2a2a;
+  color: #eee;
+  cursor: pointer;
   appearance: none;
-}
-
-.reset-wrapper {
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: center;
 }
 
-.reset-btn {
-  background-color: #333;
-  color: #e0e0e0;
-  border: 1px solid #444;
-  border-radius: 4px;
+.filtros-bar select {
+  min-width: 160px;
+}
+
+.filtros-bar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.filtros-bar button:hover,
+.filtros-bar select:hover {
+  background-color: #3a3a3a;
+}
+
+/* === Modal === */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: #1e1e1e;
+  padding: 20px 30px;
+  border-radius: 12px;
+  color: #eee;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+}
+
+.close-modal {
+  margin-top: 20px;
+  background: #444;
+  color: #fff;
   padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
 }
 
-.reset-btn:hover {
-  background-color: #444;
+/* === Ratio texto === */
+.ratio-text {
+  font-size: 1.2rem;
+  color: #bbb;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* === Lista de prompts === */
@@ -94,7 +133,7 @@
 }
 
 .prompt-card-wrapper {
-  max-width: 60%;
+  width: 80%;
   margin: 0 auto 24px auto;
 }
 
@@ -105,7 +144,6 @@
   border: 1px solid #333;
 }
 
-/* Diseño en columnas */
 .prompt-row.two-column {
   display: flex;
   gap: 24px;
@@ -119,19 +157,18 @@
   flex-direction: column;
 }
 
-/* Título del prompt */
 .prompt-scene {
   margin-bottom: 2rem;
   font-size: 1.3rem;
   color: #ffffff;
 }
 
-/* Botones */
 .prompt-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 8px;
   margin-bottom: 12px;
+  padding: 8px 8px;
   flex-wrap: wrap;
 }
 
@@ -156,7 +193,6 @@
   cursor: not-allowed;
 }
 
-/* Prompt text */
 .prompt-box {
   background: #2c2c2c;
   color: #e0e0e0;
@@ -169,7 +205,6 @@
   border: 1px solid #444;
 }
 
-/* Meta información */
 .row-meta {
   margin-top: 12px;
   display: flex;
@@ -214,13 +249,6 @@
   background: #444;
 }
 
-/* Imagen generada */
-.flux-image-preview {
-  margin-top: 12px;
-  display: flex;
-  justify-content: center;
-}
-
 .flux-thumbnail {
   max-width: 200px;
   max-height: 200px;
@@ -234,7 +262,6 @@
   transform: scale(1.05);
 }
 
-/* Columna derecha con imagen o texto */
 .prompt-status-image {
   width: 200px;
   min-height: 200px;
@@ -267,7 +294,6 @@
   background: #444;
 }
 
-/* === Selector de opciones auxiliares (react-select) === */
 .aux-options {
   margin-bottom: 12px;
   display: flex;
@@ -288,7 +314,6 @@
   font-size: 14px;
 }
 
-/* Contenedor principal del selector */
 .react-select__control {
   background-color: #222 !important;
   border: 1px solid #555 !important;
@@ -302,7 +327,6 @@
   border-color: #777 !important;
 }
 
-/* Menú desplegable */
 .react-select__menu {
   background-color: #1a1a1a !important;
   border: 1px solid #444;
@@ -310,7 +334,6 @@
   z-index: 10;
 }
 
-/* Opciones del menú */
 .react-select__option {
   background-color: #1a1a1a !important;
   color: #ddd !important;
@@ -327,7 +350,6 @@
   color: #fff !important;
 }
 
-/* Chips seleccionados */
 .react-select__multi-value {
   background-color: #4caf50 !important;
   color: #fff !important;
@@ -349,3 +371,97 @@
   color: #fff !important;
 }
 
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 30px 0;
+}
+
+.pagination-controls button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 6px;
+  background: #2c2c2c;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  cursor: pointer;
+}
+
+.pagination-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-controls span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 12px;
+  font-weight: bold;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background: #1e1e1e;
+  color: #fff;
+  margin-top: 14px;
+}
+.filtros-bar-v2 {
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-columns: repeat(auto-fit, minmax(160px, auto));
+  gap: 12px;
+  align-items: center;
+  justify-content: start;
+  margin-bottom: 0;
+}
+
+.filtros-bar-v2 > * {
+  height: 40px;
+  padding: 0 14px;
+  font-size: 14px;
+  line-height: 1;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: #eee;
+  cursor: pointer;
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.filtros-bar-v2 > *:hover {
+  background-color: #3a3a3a;
+}
+
+.dropdown-filter {  
+  margin-top: 15px;
+}
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #ff9292;
+  color: #fff;
+  font-size: 24px;
+  padding: 10px 14px;
+  border: 1px solid #444;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  z-index: 999;
+  transition: background 0.2s ease-in-out;
+}
+
+.scroll-to-top:hover {
+  background: #ff0000;
+}

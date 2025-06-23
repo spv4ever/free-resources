@@ -9,6 +9,7 @@ const promptPackSchema = new mongoose.Schema({
   platform: String, // ChatGPT, PixAI, Leonardo, etc.
   nsfw: { type: Boolean, default: false },
   access: { type: String, enum: ['free', 'pro'], default: 'free' },
+  image: String, // ← NUEVO CAMPO: URL imagen representativa
   createdAt: { type: Date, default: Date.now },
   updatedAt: Date
 });

@@ -123,3 +123,54 @@ export const countPromptsForOnePack = async (req, res) => {
     res.status(500).json({ message: 'Error interno al contar los prompts' });
   }
 };
+
+
+/**
+ * GET /api/keiko/prompts/by-pack-paginated/:packId
+ * Obtiene los prompts paginados con filtros y orden
+ */
+export const getPromptsByPackPaginated = async (req, res) => {
+  const { packId } = req.params;
+  const {
+    search = '',
+    platform,
+    access,
+    nsfw,
+    sortField = 'createdAt',
+    sortOrder = 'desc',
+    page = 1,
+    limit = 10
+  } = req.query;
+
+  const query = {
+    packId,
+    $or: [
+      { scene: { $regex: search, $options: 'i' } },
+      { prompt: { $regex: search, $options: 'i' } }
+    ]
+  };
+
+  if (platform) query.platform = platform;
+  if (access) query.access = access;
+  if (nsfw !== undefined) query.nsfw = nsfw === 'true';
+
+  const sort = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
+  const skip = (parseInt(page) - 1) * parseInt(limit);
+
+  try {
+    const [total, prompts] = await Promise.all([
+      KeikoPrompt.countDocuments(query),
+      KeikoPrompt.find(query).sort(sort).skip(skip).limit(parseInt(limit))
+    ]);
+
+    res.json({
+      prompts,
+      page: parseInt(page),
+      total,
+      totalPages: Math.ceil(total / parseInt(limit))
+    });
+  } catch (err) {
+    console.error('Error al obtener prompts paginados:', err);
+    res.status(500).json({ error: 'Error al obtener prompts paginados' });
+  }
+};

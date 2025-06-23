@@ -1,5 +1,3 @@
-// src/components/KeikoPromptPacksAdmin.jsx
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../../styles/KeikoPromptPacksAdmin.css';
@@ -12,28 +10,24 @@ const KeikoPromptPacksAdmin = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [newPackMode, setNewPackMode] = useState(false);
-  const [editedPack, setEditedPack] = useState({ title: '', category: '', description: '' });
+  const [editedPack, setEditedPack] = useState({
+    title: '',
+    category: '',
+    description: '',
+    image: ''
+  });
   const [deleteMessage, setDeleteMessage] = useState('');
-  const [deleteType, setDeleteType] = useState(''); // 'success' | 'error'
+  const [deleteType, setDeleteType] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1) Obtener packs
-        const { data: packsData } = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/keiko/packs`
-        );
-
-        // 2) Obtener conteos
-        const { data: countData } = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/keiko/prompts/count/by-pack`
-        );
+        const { data: packsData } = await axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/packs`);
+        const { data: countData } = await axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/prompts/count/by-pack`);
         const countMap = countData.reduce((acc, { packId, count }) => {
           acc[packId] = count;
           return acc;
         }, {});
-
-        // 3) Enriquecer packs y recopilar categorías
         const cats = new Set();
         const enriched = packsData.map(p => {
           cats.add(p.category);
@@ -42,7 +36,6 @@ const KeikoPromptPacksAdmin = () => {
             totalPrompts: countMap[p._id] ?? 0
           };
         });
-
         setPacks(enriched);
         setCategories([...cats].sort());
         setFilteredPacks(enriched);
@@ -50,16 +43,12 @@ const KeikoPromptPacksAdmin = () => {
         console.error('Error cargando datos:', err);
       }
     };
-
     fetchData();
   }, []);
 
-  // Aplicar filtros y búsqueda
   useEffect(() => {
     let temp = [...packs];
-    if (filterCategory) {
-      temp = temp.filter(p => p.category === filterCategory);
-    }
+    if (filterCategory) temp = temp.filter(p => p.category === filterCategory);
     if (searchTerm.trim()) {
       const lower = searchTerm.toLowerCase();
       temp = temp.filter(p =>
@@ -91,7 +80,8 @@ const KeikoPromptPacksAdmin = () => {
     setEditedPack({
       title: pack.title,
       category: pack.category,
-      description: pack.description
+      description: pack.description,
+      image: pack.image || ''
     });
   };
 
@@ -113,7 +103,7 @@ const KeikoPromptPacksAdmin = () => {
   const handleAddNewClick = () => {
     setNewPackMode(true);
     setEditingId(null);
-    setEditedPack({ title: '', category: '', description: '' });
+    setEditedPack({ title: '', category: '', description: '', image: '' });
   };
 
   const handleAddNewSave = async () => {
@@ -124,7 +114,7 @@ const KeikoPromptPacksAdmin = () => {
         editedPack
       );
       setPacks([{ ...newPack, totalPrompts: 0 }, ...packs]);
-      setEditedPack({ title: '', category: '', description: '' });
+      setEditedPack({ title: '', category: '', description: '', image: '' });
       setNewPackMode(false);
     } catch (err) {
       console.error('Error al crear pack:', err);
@@ -133,19 +123,16 @@ const KeikoPromptPacksAdmin = () => {
 
   const handleAddNewCancel = () => {
     setNewPackMode(false);
-    setEditedPack({ title: '', category: '', description: '' });
+    setEditedPack({ title: '', category: '', description: '', image: '' });
   };
 
   return (
     <div className="kpks-container">
       <h1>📦 KeikoPrompt Packs</h1>
+
       <div className="kpks-nav-buttons">
-        <button onClick={() => window.location.href = '/admin/keiko-prompts'}>
-          📋 Ir a Prompts
-        </button>
-        <button onClick={() => window.location.href = '/admin/imports'}>
-          ⬆️ Importar Prompts
-        </button>
+        <button onClick={() => window.location.href = '/admin/keiko-prompts'}>📋 Ir a Prompts</button>
+        <button onClick={() => window.location.href = '/admin/imports'}>⬆️ Importar Prompts</button>
       </div>
 
       {deleteMessage && (
@@ -174,15 +161,17 @@ const KeikoPromptPacksAdmin = () => {
 
       <table className="kpks-table">
         <colgroup>
-          <col style={{ width: '20%' }} />
           <col style={{ width: '15%' }} />
-          <col style={{ width: '45%' }} />
+          <col style={{ width: '12%' }} />
+          <col style={{ width: '15%' }} />
+          <col style={{ width: '38%' }} />
           <col style={{ width: '10%' }} />
           <col style={{ width: '10%' }} />
         </colgroup>
         <thead>
           <tr>
             <th>Título</th>
+            <th>Imagen</th>
             <th>Categoría</th>
             <th>Descripción</th>
             <th># Prompts</th>
@@ -197,6 +186,13 @@ const KeikoPromptPacksAdmin = () => {
                   placeholder="Título"
                   value={editedPack.title}
                   onChange={e => setEditedPack({ ...editedPack, title: e.target.value })}
+                />
+              </td>
+              <td>
+                <input
+                  placeholder="URL imagen"
+                  value={editedPack.image}
+                  onChange={e => setEditedPack({ ...editedPack, image: e.target.value })}
                 />
               </td>
               <td>
@@ -239,6 +235,12 @@ const KeikoPromptPacksAdmin = () => {
                   </td>
                   <td>
                     <input
+                      value={editedPack.image}
+                      onChange={e => setEditedPack({ ...editedPack, image: e.target.value })}
+                    />
+                  </td>
+                  <td>
+                    <input
                       value={editedPack.category}
                       onChange={e => setEditedPack({ ...editedPack, category: e.target.value })}
                     />
@@ -257,6 +259,15 @@ const KeikoPromptPacksAdmin = () => {
               ) : (
                 <>
                   <td>{pack.title}</td>
+                  <td>
+                    {pack.image ? (
+                      <img
+                        src={pack.image}
+                        alt="preview"
+                        style={{ width: '60px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
+                      />
+                    ) : '—'}
+                  </td>
                   <td>{pack.category}</td>
                   <td>{pack.description}</td>
                   <td>{pack.totalPrompts}</td>

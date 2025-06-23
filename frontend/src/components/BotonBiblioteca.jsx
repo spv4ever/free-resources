@@ -6,7 +6,7 @@ import '../styles/BotonBiblioteca.css'; // Asegúrate de tener este CSS
 export default function BotonBiblioteca() {
   const navigate = useNavigate();
   return (
-    <button className="library-btn" onClick={() => navigate('/mis-imagenes')}>
+    <button className="accordion-toggle" onClick={() => navigate('/mis-imagenes')}>
       📁 Ver biblioteca de imágenes
     </button>
   );

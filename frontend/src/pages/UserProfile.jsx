@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useUser } from '../context/UserContext';
 import '../styles/UserProfile.css';
+import BotonBiblioteca from '../components/BotonBiblioteca';
 
 const UserProfile = () => {
   const { user, setUser } = useUser();
@@ -61,6 +62,9 @@ const UserProfile = () => {
       </div>
 
       {message && <p className="success-message">{message}</p>}
+      <div className="top-bar">
+              <BotonBiblioteca />
+      </div>
     </div>
   );
 };

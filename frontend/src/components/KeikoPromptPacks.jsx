@@ -1,13 +1,15 @@
+// src/pages/KeikoPromptPacks.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/KeikoPromptPacks.css';
 import { useNavigate } from 'react-router-dom';
 import BotonBiblioteca from '../components/BotonBiblioteca';
+import ScrollToTopButton from '../components/ScrollToTopButton';
 
 export default function KeikoPromptPacks() {
   const [packs, setPacks] = useState([]);
   const [counts, setCounts] = useState({});
-  const [categoryCounts, setCategoryCounts] = useState([]); // <- NUEVO
+  const [categoryCounts, setCategoryCounts] = useState([]);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
@@ -17,7 +19,7 @@ export default function KeikoPromptPacks() {
       const [packsRes, countsRes, categorySummaryRes] = await Promise.all([
         axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/packs`),
         axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/prompts/count/by-pack`),
-        axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/packs/categories-summary`) // NUEVO
+        axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/packs/categories-summary`)
       ]);
 
       setPacks(packsRes.data);
@@ -27,9 +29,9 @@ export default function KeikoPromptPacks() {
         return acc;
       }, {});
       setCounts(map);
-
-      setCategoryCounts(categorySummaryRes.data); // ← NUEVO
+      setCategoryCounts(categorySummaryRes.data);
     }
+
     fetchData();
   }, []);
 
@@ -44,8 +46,6 @@ export default function KeikoPromptPacks() {
 
   return (
     <div className="keiko-packs-container">
-
-      {/* NUEVO: Tarjetas resumen */}
       <div className="category-summary-grid">
         {categoryCounts.map(cat => (
           <div
@@ -58,15 +58,13 @@ export default function KeikoPromptPacks() {
           </div>
         ))}
       </div>
+
       <div className="top-bar">
         <BotonBiblioteca />
       </div>
-      {/* Filtros */}
+
       <div className="filters-bar">
-        <select
-          value={categoryFilter}
-          onChange={e => setCategoryFilter(e.target.value)}
-        >
+        <select value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)}>
           <option value="">— Todas las categorías —</option>
           {categories.map(cat => (
             <option key={cat} value={cat}>{cat}</option>
@@ -81,17 +79,25 @@ export default function KeikoPromptPacks() {
         />
       </div>
 
-      {/* Packs */}
       <div className="packs-grid">
         {displayed.map(pack => (
-          <div key={pack._id} className="pack-card">
-            <h3>{pack.title}</h3>
-            <p className="description">{pack.description}</p>
-            <div className="info">
-              <span>{counts[pack._id] ?? 0} prompts</span>
-              <button onClick={() => navigate(`/prompts/${pack._id}`)}>
-                Ver prompts →
-              </button>
+          <div
+            key={pack._id}
+            className="pack-card"
+            onClick={() => navigate(`/prompts/${pack._id}`)}
+          >
+            {pack.image && (
+              <div className="pack-image">
+                <img src={pack.image} alt={pack.title} />
+              </div>
+            )}
+            <div className="pack-content">
+              <h3>{pack.title}</h3>
+              <p className="category">{pack.category}</p>
+              <p className="description">{pack.description}</p>
+              <div className="info">
+                <span>{counts[pack._id] ?? 0} prompts</span>
+              </div>
             </div>
           </div>
         ))}
@@ -99,6 +105,7 @@ export default function KeikoPromptPacks() {
           <p className="no-results">No se encontraron packs</p>
         )}
       </div>
+      <ScrollToTopButton />
     </div>
   );
 }
