@@ -15,6 +15,7 @@ import IgraalDealHighlight from '../components/IgraalDealHighlight';
 import IgraalDiscountHighlight from '../components/IgraalDiscountHighlight';
 import { useCountdown } from '../hooks/useCountdown';
 import MotoGPCircuitCard from '../components/MotoGPCircuitCard';
+import { useUser } from '../context/UserContext';
 // import { useUser } from '../context/UserContext';
 
 dayjs.extend(utc);
@@ -29,6 +30,7 @@ function HomePage() {
   const [aiStats, setAiStats] = useState([]);
   const [categoryStats, setCategoryStats] = useState([]);
   const [topSeries, setTopSeries] = useState([]);
+  const { user } = useUser(); // ⬅️ extraer el usuario
 
   const CountdownBox = ({ launchDateUtc }) => {
     const countdown = useCountdown(launchDateUtc);
@@ -69,6 +71,31 @@ function HomePage() {
   return (
     <div className="homepage-content">
       <div className="cards-container">
+        <div className="card-home card-keikoprompts" onClick={() => navigate('/keikoprompts')}>
+          <h2>🎯 Explora KeikoPrompts</h2>
+          <p>Inspiración creativa y generación de imágenes IA desde un solo lugar.</p>
+          <ul>
+            <li>🧩 Navega y copia prompts optimizados</li>
+            <li>🎨 Genera imágenes con tokens directamente en la web</li>
+            <li>🚀 Compatible con MidJourney, ChatGPT, PixAI y más</li>
+          </ul>
+
+          {user && (
+            <button
+              className="btn-imagenes"
+              onClick={(e) => {
+                e.stopPropagation(); // ← para que no active el navigate de la tarjeta
+                navigate('/mis-imagenes');
+              }}
+            >
+              📸 Ver mis imágenes
+            </button>
+          )}
+
+          <p className="keiko-footer">
+            ¡Empieza gratis con tokens diarios!
+          </p>
+        </div>
 
         {/* TOP 10 SERIES */}
         <div className="card-home" onClick={() => navigate('/series')}>

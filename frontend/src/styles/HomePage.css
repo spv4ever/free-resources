@@ -40,7 +40,7 @@
   min-width: 0;
   width: 100%;
   box-sizing: border-box;
-  height: 300px; /* ✅ altura fija uniforme */
+  height: 360px; /* ✅ altura fija uniforme */
   overflow: hidden;
 }
 
@@ -136,6 +136,12 @@
   font-weight: bold;
 }
 
+.card-keikoprompts {
+  background: linear-gradient(135deg, #1f1f1f, #292929);
+  border: 1px solid #444;
+  box-shadow: 0 0 12px rgba(255, 215, 89, 0.1);
+}
+
 @media (max-width: 1200px) {
   .cards-container {
     grid-template-columns: repeat(3, 1fr);
@@ -195,4 +201,25 @@
 .layout-content {
   flex: 1;
   padding: 1rem;
+}
+
+.card-home .btn-imagenes {
+  margin-top: 12px;
+  background-color: #2b2b2b;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.card-home .btn-imagenes:hover {
+  background-color: #3a3a3a;
+}
+.card-home .keiko-footer {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #ffd859;
 }
