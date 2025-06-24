@@ -223,3 +223,24 @@
   font-weight: bold;
   color: #ffd859;
 }
+
+.telegram-fab {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 56px;
+  height: 56px;
+  background-color: #444;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.telegram-fab:hover {
+  background-color: #666;
+}

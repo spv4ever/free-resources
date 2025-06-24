@@ -7,7 +7,7 @@
   margin: 0 auto;
 }
 
-.gallery-grid {
+.gallery-grid-userimage {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 16px;
@@ -151,4 +151,54 @@
 .modal-content {
   max-height: 90vh;
   overflow-y: auto;
+}
+
+.social-button {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  color: #ccc;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+   text-decoration: none;
+}
+
+.social-button:hover {
+  background-color: #292929;
+  color: #fff;
+}
+
+.social-button svg {
+  font-size: 1.1rem;
+}
+
+.social-button.facebook {
+  color: #1877f2;
+  border-color: #1877f2;
+}
+
+.social-button.telegram {
+  color: #0088cc;
+  border-color: #0088cc;
+}
+
+.social-button.x {
+  color: #e0245e;
+  border-color: #e0245e;
+}
+
+.social-button.copy {
+  background-color: #0077ff;
+  color: white;
+  border: none;
+}
+
+.social-button.copy:hover {
+  background-color: #005dd1;
 }

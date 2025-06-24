@@ -75,6 +75,7 @@ import MotoGPCircuitPage from './pages/MotoGPCircuitPage';
 import UserImageGallery from './components/UserImageGallery';
 import RegisterLogsTable from './components/admin/RegisterLogsTable';
 import TokenInfoPage from './pages/TokenInfoPage';
+import KeikoIAGallery from './pages/KeikoIAGallery';
 
 
 
@@ -171,6 +172,7 @@ function App() {
             <Route path="/mis-imagenes" element={<UserImageGallery />} />
             <Route path="/admin/register-logs" element={<RegisterLogsTable />} />
             <Route path="/info/tokens" element={<TokenInfoPage />} />
+            <Route path="/multimedia/keikoia" element={<KeikoIAGallery />} />
             
 // ...
 

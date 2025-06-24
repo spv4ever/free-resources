@@ -78,6 +78,8 @@ import comfyRoutes from './routes/comfyRoutes.js';
 import fluxRoutes from './routes/fluxRoutes.js';
 import { startComfySocketWatcher } from './services/comfySocketWatcher.js';
 import tokenRoutes from './routes/tokenRoutes.js';
+import imagenesPublicasRoutes from './routes/imagenesPublicasRoutes.js';
+
 
 
 
@@ -245,6 +247,7 @@ app.use('/api/sports/motogp', motogpRoutes);
 app.use('/api/comfy', comfyRoutes);
 app.use('/api/tokens', tokenRoutes);
 app.use('/api/flux', fluxRoutes);
+app.use('/api/public-images', imagenesPublicasRoutes);
 
 
 

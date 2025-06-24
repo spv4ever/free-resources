@@ -26,6 +26,7 @@ const userSchema = new mongoose.Schema({
     enum: ['free', 'pro', 'admin'],
     default: 'free'
   },
+  permiteImagenesPublicas: { type: Boolean, default: false },
   isVerified: {
     type: Boolean,
     default: false

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/HomePage.css';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { FaCircleInfo } from 'react-icons/fa6';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -213,6 +214,18 @@ function HomePage() {
             <AdBannerExtra />
           </>
         ) : null} */}
+          <p style={{ color: '#ccc', fontSize: '0.85rem', marginTop: '0.5rem' }}>
+          🎯 Para participar, únete primero a nuestro canal en Telegram.
+        </p>
+        <a
+        href="https://t.me/keikodevrecursos"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="telegram-fab"
+        title="Únete al canal para acceder al soporte"
+      >
+        <FaCircleInfo size={24} color="white" />
+      </a>
     </div>
   );
 }

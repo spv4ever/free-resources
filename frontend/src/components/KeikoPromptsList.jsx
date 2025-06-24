@@ -229,7 +229,8 @@ export default function KeikoPromptsList() {
         {
           prompt: finalPrompt,
           ratio: selectedRatio,
-          steps: 20
+          steps: 20,
+          promptRef: promptId
         },
         {
           headers: {

@@ -227,26 +227,27 @@ export const getAllUsers = async (req, res) => {
     }
   };
 
-  export const updateUserByAdmin = async (req, res) => {
-    const { id } = req.params;
-    const { role, isVerified, nickname } = req.body;
-  
-    try {
-      const user = await User.findById(id);
-      if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
-  
-      if (role) user.role = role;
-      if (typeof isVerified === 'boolean') user.isVerified = isVerified;
-      if (nickname) user.nickname = nickname.trim().slice(0, 50);
-  
-      await user.save();
-  
-      res.json({ message: 'Usuario actualizado correctamente' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error al actualizar usuario' });
-    }
-  };
+export const updateUserByAdmin = async (req, res) => {
+  const { id } = req.params;
+  const { role, isVerified, nickname, permiteImagenesPublicas } = req.body;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+    if (role) user.role = role;
+    if (typeof isVerified === 'boolean') user.isVerified = isVerified;
+    if (nickname) user.nickname = nickname.trim().slice(0, 50);
+    if (typeof permiteImagenesPublicas === 'boolean') user.permiteImagenesPublicas = permiteImagenesPublicas;
+
+    await user.save();
+
+    res.json({ message: 'Usuario actualizado correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error al actualizar usuario' });
+  }
+};
 
   export const updateUserProfile = async (req, res) => {
   const userId = req.user.id; // asumimos que usas middleware de autenticación

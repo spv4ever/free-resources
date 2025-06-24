@@ -5,21 +5,28 @@ import AdBanner from '../components/AdBanner';
 
 function MediaPage() {
   const libraries = [
-    {
-      title: 'Fotos del universo',
-      description: 'Explora imágenes astronómicas obtenidas de la NASA.',
-      path: '/media/fotos-universo',
-      background: '#1e1e2f',
-      icon: '📷'
-    },
-    {
-      title: 'Videos del universo',
-      description: 'Descubre videos educativos y espectaculares del espacio.',
-      path: '/media/videos-universo',
-      background: '#1e2f2f',
-      icon: '🎥'
-    }
-  ];
+      {
+        title: 'Fotos del universo',
+        description: 'Explora imágenes astronómicas obtenidas de la NASA.',
+        path: '/media/fotos-universo',
+        background: '#1e1e2f',
+        icon: '📷'
+      },
+      {
+        title: 'Videos del universo',
+        description: 'Descubre videos educativos y espectaculares del espacio.',
+        path: '/media/videos-universo',
+        background: '#1e2f2f',
+        icon: '🎥'
+      },
+      {
+        title: 'KeikoIA Imágenes',
+        description: 'Descubre creaciones generadas con IA y compartidas públicamente.',
+        path: '/multimedia/keikoia',
+        background: '#292929',
+        icon: '🧠'
+      }
+    ];
 
   return (
     <div className="media-page">

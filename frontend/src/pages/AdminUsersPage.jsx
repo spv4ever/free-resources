@@ -81,6 +81,7 @@ const AdminUsersPage = () => {
             <th>Tokens</th>
             <th>Verificado</th>
             <th>Fecha de registro</th>
+            <th>Imágenes públicas</th>
           </tr>
         </thead>
         <tbody>
@@ -110,6 +111,13 @@ const AdminUsersPage = () => {
                 </td>
 
                 <td>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—'}</td>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={user.permiteImagenesPublicas}
+                    onChange={(e) => updateUser(user._id, { permiteImagenesPublicas: e.target.checked })}
+                  />
+                </td>
 
             </tr>
           ))}

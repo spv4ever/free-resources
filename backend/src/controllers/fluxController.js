@@ -7,7 +7,8 @@ import { getComfyAuth } from '../utils/comfyAuth.js';
 import { trackPendingJob } from '../services/comfySocketWatcher.js';
 import { manejarFinalizacionDeJob } from '../services/manejoResultadoImagen.js';
 import { consumirToken } from '../services/tokenService.js';
-
+import Prompt from '../keikoprompts/models/KeikoPrompt.js';
+import Pack from '../keikoprompts/models/KeikoPromptPack.js';
 
 
 
@@ -34,12 +35,15 @@ export const generarImagen = async (req, res) => {
       steps,
       filename_prefix,
     });
-
+    console.log(req.user.permiteImagenesPublicas)
     await ImagenGenerada.create({
       user: req.user._id,
       prompt_id: resultado.prompt_id,
       prompt,
+      promptRef: req.body.promptRef, // ← asegúrate de mandarlo desde el frontend
+      public: req.user.permiteImagenesPublicas === true // ← se guarda como pública si el usuario lo permite
     });
+
     trackPendingJob(resultado.prompt_id, {
       userId: req.user._id,
       nickname: filename_prefix, // ya es el nickname
@@ -77,14 +81,26 @@ export const obtenerImagen = async (req, res) => {
 export const obtenerImagenesDelUsuario = async (req, res) => {
   try {
     const imagenes = await ImagenGenerada.find({ user: req.user._id })
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'promptRef',
+        populate: { path: 'packId' }
+      });
 
-    res.json(imagenes);
+    const resultado = imagenes.map(img => ({
+      ...img.toObject(),
+      promptScene: img.promptRef?.scene || 'Sin título',
+      packTitle: img.promptRef?.packId?.title || 'Desconocido'
+    }));
+
+    console.log('🖼️ Resultado final con populate:', JSON.stringify(resultado, null, 2));
+    res.json(resultado);
   } catch (error) {
-    console.error('Error al obtener imágenes:', error.message);
-    res.status(500).json({ error: 'No se pudieron obtener las imágenes del usuario' });
+    console.error('Error al obtener imágenes del usuario:', error.message);
+    res.status(500).json({ error: 'No se pudieron obtener las imágenes' });
   }
 };
+
 
 export const verificarImagen = async (req, res) => {
   try {

@@ -73,25 +73,31 @@ export const getUserImagesFromDB = async (req, res) => {
       status: 'completada',
       finalUrl: { $exists: true, $ne: null }
     })
-      .sort({ createdAt: -1 }) // Más recientes primero
-      .limit(100)              // Puedes ajustar este límite según el plan de usuario
-      .select('finalUrl createdAt prompt');
+      .sort({ createdAt: -1 })
+      .limit(300)
+      .populate({
+        path: 'promptRef',
+        populate: { path: 'packId' }
+      });
 
     const formatted = images.map(img => ({
       url: img.finalUrl,
       createdAt: img.createdAt,
-      prompt: img.prompt
+      prompt: img.prompt,
+      promptScene: img.promptRef?.scene || 'Sin título',
+      packTitle: img.promptRef?.packId?.title || 'Pack desconocido'
     }));
 
     res.json({
       images: formatted,
-      nextCursor: null // listo para futura paginación
+      nextCursor: null // Futuro: agregar paginación real si es necesario
     });
   } catch (error) {
     console.error('❌ Error al cargar imágenes desde la base de datos:', error);
     res.status(500).json({ error: 'No se pudieron cargar las imágenes del usuario' });
   }
 };
+
 
 
 
