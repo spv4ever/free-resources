@@ -30,7 +30,7 @@ function AdBanner() {
   }, []);
 
   return (
-    <div ref={adRef} style={{ textAlign: 'center', margin: '2rem auto' }} />
+    <div ref={adRef} style={{ textAlign: 'center', margin: '0rem auto' }} />
   );
 }
 

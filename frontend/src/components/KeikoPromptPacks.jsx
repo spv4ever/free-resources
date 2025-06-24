@@ -5,6 +5,7 @@ import '../styles/KeikoPromptPacks.css';
 import { useNavigate } from 'react-router-dom';
 import BotonBiblioteca from '../components/BotonBiblioteca';
 import ScrollToTopButton from '../components/ScrollToTopButton';
+import AdBanner from '../components/AdBanner';
 
 export default function KeikoPromptPacks() {
   const [packs, setPacks] = useState([]);
@@ -46,6 +47,7 @@ export default function KeikoPromptPacks() {
 
   return (
     <div className="keiko-packs-container">
+      <AdBanner />
       <div className="category-summary-grid">
         {categoryCounts.map(cat => (
           <div
