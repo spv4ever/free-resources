@@ -77,6 +77,7 @@ import motogpRoutes from './routes/motogpRoutes.js';
 import comfyRoutes from './routes/comfyRoutes.js';
 import fluxRoutes from './routes/fluxRoutes.js';
 import { startComfySocketWatcher } from './services/comfySocketWatcher.js';
+import tokenRoutes from './routes/tokenRoutes.js';
 
 
 
@@ -242,7 +243,7 @@ app.use('/api/keiko/import', keikoImportRoutes);
 app.use('/api/keiko/duplicates', duplicateRoutes);
 app.use('/api/sports/motogp', motogpRoutes);
 app.use('/api/comfy', comfyRoutes);
-
+app.use('/api/tokens', tokenRoutes);
 app.use('/api/flux', fluxRoutes);
 
 

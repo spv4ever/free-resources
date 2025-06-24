@@ -47,6 +47,8 @@ function Footer() {
           <span className="separator">|</span>
           <Link to="/cookies">Política de Cookies</Link>
           <span className="separator">|</span>
+          <Link to="/info/tokens">Información sobre tokens</Link>
+          <span className="separator">|</span>
           <button
             onClick={() => localStorage.removeItem('cookieConsent') || window.location.reload()}
             className="cookie-button"

@@ -1,0 +1,65 @@
+.alerta-overlay {
+  position: fixed;
+  inset: 0; /* top: 0; right: 0; bottom: 0; left: 0 */
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.alerta-contenido {
+  background: #1e1e1e;
+  color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  border: 1px solid #444;
+  animation: aparecerModal 0.3s ease-out;
+}
+
+@keyframes aparecerModal {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.alerta-contenido h3 {
+  margin-top: 0;
+  color: #ffd859;
+}
+
+.alerta-link {
+  display: block;
+  margin-top: 10px;
+  color: #00bfff;
+  text-decoration: underline;
+}
+
+.alerta-boton.oscuro {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 8px 16px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.alerta-boton.oscuro:hover {
+  background-color: #444;
+}
+
+.alerta-imagen {
+  width: 100px;
+  height: auto;
+  margin-bottom: 15px;
+}

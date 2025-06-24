@@ -26,3 +26,66 @@ button {
   color: #00ff88;
   margin-top: 1rem;
 }
+
+.user-profile-balance {
+  background: #fff4bf;               /* más saturado que #fff9d6 */
+  padding: 16px 20px;
+  border: 2px solid #ffcf3f;         /* tono dorado */
+  border-radius: 12px;
+  margin-top: 20px;
+  font-size: 16px;
+  color: #333;
+}
+
+.user-profile-balance h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: #996600;                   /* marrón oscuro para destacar */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-profile-balance p {
+  margin: 0;
+  font-weight: 500;
+}
+
+.token-info-link {
+  margin-top: 12px;
+  text-align: left;
+}
+
+.token-info-link a {
+  color: #00bfff;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.token-info-link a:hover {
+  text-decoration: underline;
+}
+
+.tabla-movimientos {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 15px;
+  color: #eee;
+}
+
+.tabla-movimientos th, .tabla-movimientos td {
+  border-bottom: 1px solid #444;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.tabla-movimientos th {
+  background-color: #222;
+  color: #ffd859;
+}
+
+.tabla-movimientos tr:hover {
+  background-color: #2a2a2a;
+}

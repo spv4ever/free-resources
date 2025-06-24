@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Navbar.css';
 import logo from '../assets/new_logo2.png';
+import { useToken } from '../context/TokenContext';
+
 
 
 function Navbar() {
@@ -16,7 +18,8 @@ function Navbar() {
   const [submenuSpacexOpen, setSubmenuSpacexOpen] = useState(false);
   const [enrichCount, setEnrichCount] = useState(0);
   const [submenuKeikoOpen, setSubmenuKeikoOpen] = useState(false);
-  
+  const { balance } = useToken();
+
 
   useEffect(() => {
     const fetchPendingEnrich = async () => {
@@ -125,19 +128,20 @@ function Navbar() {
           </div>
         )}
         {user ? (
-          <div className="navbar-actions">
-            <span className="navbar-user">
-              Bienvenido, {user.nickname || user.email} ({user.role})
-            </span>
-            {user.role === 'admin' && (
-              <Link to="#" onClick={toggleSidebar} className="admin-btn">Admin</Link>
-            )}
-            <Link to="/perfil" className="admin-btn">Mi Perfil</Link>
-            <Link to="#" onClick={(e) => { e.preventDefault(); handleLogout(); }} className="logout-btn">Desconectar</Link>
-          </div>
-        ) : (
-          <Link to="/login">Iniciar sesión</Link>
-        )}
+            <div className="navbar-actions">
+              <span className="navbar-user">
+                Bienvenido, {user.nickname || user.email} ({user.role})
+              </span>
+              <span className="token-balance">💰 {balance} tokens</span> {/* <- AÑADIDO */}
+              {user.role === 'admin' && (
+                <Link to="#" onClick={toggleSidebar} className="admin-btn">Admin</Link>
+              )}
+              <Link to="/perfil" className="admin-btn">Mi Perfil</Link>
+              <Link to="#" onClick={(e) => { e.preventDefault(); handleLogout(); }} className="logout-btn">Desconectar</Link>
+            </div>
+          ) : (
+            <Link to="/login">Iniciar sesión</Link>
+          )}
       </div>
 
       {mobileMenuOpen && (

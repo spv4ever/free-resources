@@ -25,10 +25,10 @@ const RegisterLogsTable = () => {
       }
     };
 
-    if (user?.role === 'admin') {
+    if (user?.role === 'admin' && token) {
       fetchLogs();
     }
-  }, [user, token]);
+      }, [user, token]);
 
   if (!user || user.role !== 'admin') {
     return <p>Acceso denegado</p>;

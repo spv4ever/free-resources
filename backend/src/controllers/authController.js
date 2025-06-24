@@ -5,6 +5,7 @@ import User from '../models/User.js';
 import { sendEmail } from '../services/sendEmail.js';
 import { logUserRegistrationAttempt } from '../services/userLogService.js'
 import RegistroUsuarioLog from '../models/RegistroUsuarioLog.js';
+import UserTokenBalance from '../models/UserTokenBalance.js';
 
 export const registerUser = async (req, res) => {
   const { email, password, nickname } = req.body;
@@ -199,10 +200,27 @@ export const forgotPassword = async (req, res) => {
     }
   };
   
-  export const getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res) => {
     try {
-      const users = await User.find().sort({ createdAt: -1 }).select('-password');
-      res.json(users);
+      // Obtener todos los usuarios sin contraseña
+      const users = await User.find().sort({ createdAt: -1 }).select('-password').lean();
+
+      // Obtener balances
+      const balances = await UserTokenBalance.find().lean();
+
+      // Crear un mapa { userId: balance }
+      const balanceMap = {};
+      balances.forEach(b => {
+        balanceMap[b.user.toString()] = b.balance;
+      });
+
+      // Enriquecer los usuarios con su saldo
+      const enrichedUsers = users.map(user => ({
+        ...user,
+        tokenBalance: balanceMap[user._id.toString()] ?? 0
+      }));
+
+      res.json(enrichedUsers);
     } catch (err) {
       console.error('Error al obtener usuarios:', err);
       res.status(500).json({ message: 'Error al obtener los usuarios' });

@@ -62,7 +62,7 @@ import UserLinkHistory from './components/UserLinkHistory';
 import YouTubeLandingPage from './pages/YouTubeLandingPage.jsx'
 import UserProfile from './pages/UserProfile';
 import SeriesFilteredList from './pages/SeriesFilteredList';
-
+import { TokenProvider } from './context/TokenContext';
 import KeikoPromptPacks from './components/KeikoPromptPacks';
 import KeikoPromptsList from './components/KeikoPromptsList';
 import KeikoPromptPacksAdmin from './components/admin/KeikoPromptPacksAdmin';
@@ -74,6 +74,7 @@ import MotoGPCalendarPage from './pages/MotoGPCalendar'; // ⚠️ Ajusta la rut
 import MotoGPCircuitPage from './pages/MotoGPCircuitPage';
 import UserImageGallery from './components/UserImageGallery';
 import RegisterLogsTable from './components/admin/RegisterLogsTable';
+import TokenInfoPage from './pages/TokenInfoPage';
 
 
 
@@ -83,6 +84,7 @@ function App() {
   return (
     
     <UserProvider>
+      <TokenProvider>
       
       <Router>
       
@@ -168,23 +170,18 @@ function App() {
             <Route path="/motogp/:slug" element={<MotoGPCircuitPage />} />
             <Route path="/mis-imagenes" element={<UserImageGallery />} />
             <Route path="/admin/register-logs" element={<RegisterLogsTable />} />
-
+            <Route path="/info/tokens" element={<TokenInfoPage />} />
             
+// ...
 
 
-
-            
           </Route>
           <Route path="/motogp-live" element={<MotoGPCircuitMobileView />} />
           <Route path="/login" element={<LoginPage />} />
-          
-
           {/* Ruta fuera del layout */}
-         
-        </Routes>
-        
-      </Router>
-
+          </Routes>
+        </Router>
+      </TokenProvider>
     </UserProvider>
   );
 }

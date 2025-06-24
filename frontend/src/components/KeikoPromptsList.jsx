@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom';
 import BotonBiblioteca from '../components/BotonBiblioteca';
 import PromptCard from './PromptCard';
 import ScrollToTopButton from '../components/ScrollToTopButton';
+import AlertaModal from './AlertaModal';
+import imgSinTokens from '../assets/sin_tokens.png'; // pon ahí tu imagen divertida
 // import { FixedSizeList as List } from 'react-window';
 
 export default function KeikoPromptsList() {
@@ -37,6 +39,7 @@ export default function KeikoPromptsList() {
   const [promptsPerPage, setPromptsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [mostrarOpciones, setMostrarOpciones] = useState(false);
+  const [errorModal, setErrorModal] = useState(null);
   
 
   useEffect(() => {
@@ -107,7 +110,7 @@ export default function KeikoPromptsList() {
 
 
   useEffect(() => {
-    if (loading || !user || (user.role !== 'pro' && user.role !== 'admin')) return;
+    if (loading || !user) return;
     axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/packs/${packId}`)
       .then(({ data }) => setPack(data))
       .catch(console.error);
@@ -142,7 +145,7 @@ export default function KeikoPromptsList() {
   promptsPerPage]);
 
   // useEffect(() => {
-  //     if (loading || !user || (user.role !== 'pro' && user.role !== 'admin')) return;
+  //     if (loading || !user) return;
 
   //     axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/prompts/by-pack-paginated/${packId}`, {
   //       params: {
@@ -258,7 +261,17 @@ export default function KeikoPromptsList() {
       }, 60000);
     } catch (err) {
       console.error('Error al generar con Flux:', err.message);
-      alert('Error al generar imagen.');
+      if (err.response && err.response.status === 403) {
+          setErrorModal({
+            mensaje: 'No tienes tokens suficientes para generar imágenes.',
+            link: '/info/tokens',
+            imagen: imgSinTokens
+          });
+        } else {
+          setErrorModal({
+            mensaje: 'Ocurrió un error al generar la imagen. Inténtalo más tarde.'
+          });
+        }
     } finally {
       setGenerando(null);
     }
@@ -428,7 +441,7 @@ export default function KeikoPromptsList() {
             {accesses.map(ac => <option key={ac} value={ac}>{ac}</option>)}
           </select>
 
-          <BotonBiblioteca />
+          
 
           <button className="reset-btn" onClick={() => {
             setSearch('');
@@ -445,7 +458,9 @@ export default function KeikoPromptsList() {
             ⚙ Opciones avanzadas ({selectedRatio})
           </button>
         </div>
-
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <BotonBiblioteca />
+        </div>
         {mostrarOpciones && (
           <div className="modal-overlay" onClick={() => setMostrarOpciones(false)}>
             <div className="modal-content" onClick={e => e.stopPropagation()}>
@@ -548,13 +563,18 @@ export default function KeikoPromptsList() {
             </button>
           </div>
         )}
-
-
-
-
-
       </div>
         <ScrollToTopButton />
+        {errorModal && (
+        <AlertaModal
+          mensaje={errorModal.mensaje}
+          link={errorModal.link}
+          imagen={errorModal.imagen} // ✅ añadir esta línea
+          onClose={() => setErrorModal(null)}
+        />
+      )}
+        
     </div>
+    
   );
 }

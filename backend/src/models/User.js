@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-
+import UserTokenBalance from './UserTokenBalance.js'; // ← añadir esta línea
 // Definir el esquema de Usuario
 const userSchema = new mongoose.Schema({
   email: {
@@ -43,6 +43,15 @@ userSchema.pre('save', async function(next) {
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+// Crear saldo inicial post-registro
+userSchema.post('save', async function (doc, next) {
+  const exists = await UserTokenBalance.findOne({ user: doc._id });
+  if (!exists) {
+    await UserTokenBalance.create({ user: doc._id, balance: 5 }); // 5 tokens iniciales
+  }
   next();
 });
 

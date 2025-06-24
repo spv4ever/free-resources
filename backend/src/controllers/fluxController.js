@@ -6,6 +6,8 @@ import { getComfyUrl } from '../services/comfyService.js';
 import { getComfyAuth } from '../utils/comfyAuth.js';
 import { trackPendingJob } from '../services/comfySocketWatcher.js';
 import { manejarFinalizacionDeJob } from '../services/manejoResultadoImagen.js';
+import { consumirToken } from '../services/tokenService.js';
+
 
 
 
@@ -15,6 +17,13 @@ export const generarImagen = async (req, res) => {
   try {
     const { prompt, ratio, seed, steps } = req.body;
     const filename_prefix = req.user.nickname || 'keiko';
+    await consumirToken({
+        userId: req.user._id,
+        type: 'generation',
+        tool: 'comfyui',
+        description: `Generación de imagen con prompt: ${prompt}`
+      });
+
 
     const resultado = await generarImagenOptimizada({
       //prompt: `aidmaHyperrealism , ${prompt}`,
@@ -146,3 +155,4 @@ export const servirImagenDesdeComfy = async (req, res) => {
     res.status(500).send('No se pudo obtener la imagen');
   }
 };
+
