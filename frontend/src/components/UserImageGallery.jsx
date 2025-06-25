@@ -84,9 +84,9 @@ const UserImageGallery = () => {
       )}
 
       {imagenAmpliada && (
-        <div className="modal-overlay" onClick={() => setImagenAmpliada(null)}>
+        <div className="modal-overlay-gallery" onClick={() => setImagenAmpliada(null)}>
           <div
-            className="modal-content"
+            className="modal-content-gallery"
             onClick={(e) => e.stopPropagation()}
             style={{
               display: 'flex',
@@ -141,7 +141,7 @@ const UserImageGallery = () => {
               <div style={{ marginTop: '1rem' }}>
                 <h4 style={{ fontSize: '1rem', color: '#ffd859' }}>Prompt completo:</h4>
                 <pre
-                  className="prompt-preview"
+                  className="prompt-preview-gallery"
                   style={{
                     whiteSpace: 'pre-wrap',
                     wordBreak: 'break-word',

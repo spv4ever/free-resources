@@ -42,7 +42,7 @@
   color: #aaa;
 }
 
-.modal-overlay {
+.modal-overlay-gallery {
   position: fixed;
   top: 0;
   left: 0;
@@ -55,7 +55,7 @@
   z-index: 999;
 }
 
-.modal-content {
+.modal-content-gallery {
   position: relative;
   background: #1e1e1e;
   padding: 20px;
@@ -66,7 +66,7 @@
   color: #eee;
 }
 
-.modal-content img {
+.modal-content-gallery img {
   max-width: 100%;
   max-height: 70vh;
   border-radius: 6px;
@@ -135,7 +135,7 @@
   background: #3a3a3a;
 }
 
-.prompt-preview {
+.prompt-preview-gallery {
   background: #1a1a1a;
   color: #eee;
   padding: 12px;
@@ -148,7 +148,7 @@
   font-family: monospace;
   border: 1px solid #444;
 }
-.modal-content {
+.modal-content-gallery {
   max-height: 90vh;
   overflow-y: auto;
 }
