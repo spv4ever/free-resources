@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import '../styles/NasaGallery.css';
-import AdBanner from '../components/AdBanner';
+// import AdBanner from '../components/AdBanner';
 import { useLocation } from 'react-router-dom';
 import AffiliatePopup from '../components/AffiliatePopup';
 
@@ -55,7 +55,7 @@ function NasaMediaGallery({ mediaType }) {
   return (
     
     <div className="nasa-gallery" ref={topRef}>
-      <AdBanner />
+      {/* <AdBanner /> */}
       <AffiliatePopup currentPath={location.pathname} />
       <h2 className="gallery-title">
         {mediaType === 'image' ? 'Fotos del universo' : 'Videos del universo'}
@@ -178,7 +178,7 @@ function NasaMediaGallery({ mediaType }) {
             </div>
         </div>
         )}
-        <AdBanner />
+        {/* <AdBanner /> */}
     </div>
   );
 }

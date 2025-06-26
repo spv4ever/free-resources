@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/ResourcesPage.css';
-import AdBanner from '../components/AdBanner';
+// import AdBanner from '../components/AdBanner';
 
 const RecursosPage = () => {
   const [categories, setCategories] = useState([]);
@@ -41,7 +41,7 @@ const RecursosPage = () => {
 
   return (
     <div>
-       <AdBanner />
+       {/* <AdBanner /> */}
       <h1>Categorías de Recursos</h1>
       
       <div className="categories-container">

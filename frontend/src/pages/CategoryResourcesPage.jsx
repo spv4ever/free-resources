@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useUser } from '../context/UserContext';
 import { FaDownload, FaEdit, FaTrash, FaSave, FaTimes   } from 'react-icons/fa';
-import AdBanner from '../components/AdBanner';
+// import AdBanner from '../components/AdBanner';
 import ImageUploadModal from '../components/ImageUploadModal'; // ajusta la ruta si es necesario
 import { useNavigate } from 'react-router-dom';
 
@@ -212,7 +212,7 @@ function CategoryResourcesPage() {
   
   return (
     <div className="resource-wrapper">
-      <AdBanner />
+      {/* <AdBanner /> */}
       <h2 className="resource-title">Categoría: {decodeURIComponent(categoryName)}</h2>
       <div className="resource-filters">
         <input

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/TrainingPage.css';
-import AdBanner from '../components/AdBanner';
+// import AdBanner from '../components/AdBanner';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -30,7 +30,7 @@ function TrainingPage() {
  
   return (
     <div className="training-public-page">
-      <AdBanner />
+      {/* <AdBanner /> */}
       <h2>Recursos de Formación</h2>
       {loading ? (
         <p>Cargando...</p>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/MediaPage.css';
-import AdBanner from '../components/AdBanner';
+// import AdBanner from '../components/AdBanner';
 
 function MediaPage() {
   const libraries = [
@@ -30,7 +30,7 @@ function MediaPage() {
 
   return (
     <div className="media-page">
-      <AdBanner />
+      {/* <AdBanner /> */}
       <h2 className="media-title">Biblioteca de medios</h2>
       <div className="media-grid">
         {libraries.map((item, index) => (

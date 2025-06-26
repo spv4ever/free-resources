@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/YouTubeChannels.css';
-import AdBanner from '../components/AdBanner';
+// import AdBanner from '../components/AdBanner';
 import YoutubeUploadForm from '../components/YoutubeUploadForm';
 
 function YouTubeChannelsPage() {
@@ -23,7 +23,7 @@ function YouTubeChannelsPage() {
 
   return (
     <div className="youtube-channels-page">
-      <AdBanner />
+      {/* <AdBanner /> */}
       <div>
         <h1>Gestión de Vídeos</h1>
         <YoutubeUploadForm />

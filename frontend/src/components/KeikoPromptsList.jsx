@@ -13,7 +13,7 @@ import PromptCard from './PromptCard';
 import ScrollToTopButton from '../components/ScrollToTopButton';
 import AlertaModal from './AlertaModal';
 import imgSinTokens from '../assets/sin_tokens.png'; // pon ahí tu imagen divertida
-import AdBanner from '../components/AdBanner';
+// import AdBanner from '../components/AdBanner';
 // import { FixedSizeList as List } from 'react-window';
 
 export default function KeikoPromptsList() {
@@ -229,7 +229,7 @@ export default function KeikoPromptsList() {
         {
           prompt: finalPrompt,
           ratio: selectedRatio,
-          steps: 20,
+          steps: 15,
           promptRef: promptId
         },
         {
@@ -403,7 +403,7 @@ export default function KeikoPromptsList() {
   if (!pack) return <p>Cargando pack…</p>;
   return (
     <div className="keiko-user-container">
-      <AdBanner />
+      {/* <AdBanner /> */}
       <h1 className="pack-title">{pack.title}</h1>
       <p className="pack-desc">{pack.description}</p>
 

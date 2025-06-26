@@ -1,0 +1,134 @@
+.promptmodal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.promptmodal-content {
+  background: #1a1a1a;
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 1000px;
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+  color: #f1f1f1;
+}
+
+.promptmodal-img {
+  max-width: 70%;
+  max-height: 80vh;
+  border-radius: 10px;
+  object-fit: contain;
+  border: 1px solid #333;
+}
+
+.promptmodal-details {
+  flex: 1;
+}
+
+.promptmodal-details h3 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.promptmodal-details p {
+  margin: 0.5rem 0;
+}
+
+.promptmodal-prompt {
+  background: #2b2b2b;
+  padding: 1rem;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+  color: #ccc;
+  margin-top: 1rem;
+  border: 1px solid #444;
+}
+
+.promptmodal-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 1.5rem;
+  background: transparent;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.promptmodal-details button {
+  background-color: #3a7ca5;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.promptmodal-details button:hover {
+  background-color: #529ccf;
+}
+
+.promptmodal-share {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.promptmodal-share h4 {
+  font-size: 1rem;
+  color: #ffd859;
+  margin-bottom: 0.8rem;
+}
+
+.promptmodal-social {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.social-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #2d2d2d;
+  border: 1px solid #444;
+  color: #f0f0f0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.social-button:hover {
+  background-color: #444;
+  color: #fff;
+  text-decoration: none;
+}
+
+.social-button.copy {
+  background-color: #3a7ca5;
+  border: none;
+}
+
+.social-button.copy:hover {
+  background-color: #529ccf;
+}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/ResourcesPage.css';
 import { FaExternalLinkAlt, FaYoutube } from 'react-icons/fa';
-import AdBanner from '../components/AdBanner';
+// import AdBanner from '../components/AdBanner';
 
 function AiLinksPage() {
   const [tools, setTools] = useState([]);
@@ -45,7 +45,7 @@ function AiLinksPage() {
   //const tiposDisponibles = ['Todos', ...new Set(tools.map(tool => tool.tipo))];
   return (
     <div className="resources">
-      <AdBanner />
+      {/* <AdBanner /> */}
       <h2 className="category-title" style={{ marginTop: '1rem' }}>Herramientas de Inteligencia Artificial</h2>
       <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
       <select

@@ -128,3 +128,14 @@
   max-height: 200px;
   overflow-y: auto;
 }
+
+.ver-pack-link {
+  margin-left: 10px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: #3a7ca5;
+}
+
+.ver-pack-link:hover {
+  text-decoration: underline;
+}

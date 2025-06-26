@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/KeikoIAGallery.css';
+import PromptImageModal from '../components/PromptImageModal';
+
 
 export default function KeikoIAGallery() {
   const [imagenesPorPack, setImagenesPorPack] = useState({});
@@ -9,7 +11,7 @@ export default function KeikoIAGallery() {
 useEffect(() => {
   axios.get(`${process.env.REACT_APP_API_URL}/api/public-images`)
     .then(res => {
-      console.log('✅ Imagenes recibidas:', res.data);  // ← AÑADE ESTO
+      // console.log('✅ Imagenes recibidas:', res.data);  // ← AÑADE ESTO
       setImagenesPorPack(res.data);
     })
     .catch(err => console.error('Error cargando imágenes públicas:', err));
@@ -21,7 +23,18 @@ useEffect(() => {
 
       {Object.entries(imagenesPorPack).map(([pack, imagenes]) => (
         <div key={pack} className="pack-section">
-          <h2 className="pack-title">{pack}</h2>
+          <h2 className="pack-title">
+            {pack}
+            {imagenes[0]?.packId && (
+              <a
+                href={`/biblioteca/pack/${imagenes[0].packId}`}
+                className="ver-pack-link"
+                title="Ver todas las imágenes del pack"
+              >
+                🔍 Ver todas
+              </a>
+            )}
+          </h2>
           <div className="image-grid">
             {imagenes.map(img => (
               <div key={img._id} className="image-card" onClick={() => setImagenAmpliada(img)}>
@@ -36,27 +49,7 @@ useEffect(() => {
         </div>
       ))}
 
-      {imagenAmpliada && (
-        <div className="modal-overlay" onClick={() => setImagenAmpliada(null)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setImagenAmpliada(null)}>×</button>
-
-            <div className="modal-body">
-              <img src={imagenAmpliada.finalUrl} alt="Imagen IA" className="modal-img" />
-              <div className="modal-details">
-                <h3>{imagenAmpliada.promptScene}</h3>
-                <p><strong>Pack:</strong> {imagenAmpliada.packTitle}</p>
-                <p><strong>Autor:</strong> {imagenAmpliada.nickname}</p>
-                <p><strong>Fecha:</strong> {new Date(imagenAmpliada.createdAt).toLocaleString()}</p>
-                <pre className="modal-prompt">{imagenAmpliada.prompt}</pre>
-                <button onClick={() => navigator.clipboard.writeText(imagenAmpliada.finalUrl)}>
-                  📋 Copiar URL
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {imagenAmpliada && <PromptImageModal image={imagenAmpliada} onClose={() => setImagenAmpliada(null)} />}
     </div>
   );
 }

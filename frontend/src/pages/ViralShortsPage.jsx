@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/ViralShortsPage.css';
-import AdBanner from '../components/AdBanner';
+// import AdBanner from '../components/AdBanner';
 
 function ViralShortsPage() {
   const [data, setData] = useState([]);
@@ -32,7 +32,7 @@ function ViralShortsPage() {
   
   return (
     <div className="viral-shorts-page">
-      <AdBanner />
+      {/* <AdBanner /> */}
       {/* <h2>Shorts Virales</h2> */}
       {Array.isArray(data) && data.map((group) => (
         <div key={group.categoriaId} className="short-category">
@@ -59,7 +59,7 @@ function ViralShortsPage() {
               </div>
             ))}
           </div>
-          <AdBanner />
+          {/* <AdBanner /> */}
         </div>
       ))}
     </div>

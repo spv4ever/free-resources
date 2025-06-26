@@ -76,6 +76,7 @@ import UserImageGallery from './components/UserImageGallery';
 import RegisterLogsTable from './components/admin/RegisterLogsTable';
 import TokenInfoPage from './pages/TokenInfoPage';
 import KeikoIAGallery from './pages/KeikoIAGallery';
+import PackImages from './components/PackImages';
 
 
 
@@ -173,6 +174,7 @@ function App() {
             <Route path="/admin/register-logs" element={<RegisterLogsTable />} />
             <Route path="/info/tokens" element={<TokenInfoPage />} />
             <Route path="/multimedia/keikoia" element={<KeikoIAGallery />} />
+            <Route path="/biblioteca/pack/:packId" element={<PackImages />} />
             
 // ...
 
