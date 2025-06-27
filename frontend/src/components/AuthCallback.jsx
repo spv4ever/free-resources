@@ -4,20 +4,36 @@ import { useUser } from '../context/UserContext';
 
 function AuthCallback() {
   const navigate = useNavigate();
-  const { setToken } = useUser(); // ← solo necesitas esto ahora
+  const { setUser, setToken } = useUser();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
 
     if (token) {
-      localStorage.setItem('token', token); // opcional si el contexto también lo guarda
-      setToken(token); // activa carga automática desde /api/auth/me
-      navigate('/');
+      localStorage.setItem('token', token);
+      setToken(token); // ✅ actualiza el contexto
+
+      fetch(`${apiUrl}/api/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then(res => res.json())
+        .then(data => {
+          localStorage.setItem('user', JSON.stringify(data));
+          setUser(data); // ✅ actualiza el contexto
+          navigate('/');
+        })
+        .catch((err) => {
+          console.error('❌ Error al cargar usuario desde token:', err);
+          navigate('/login');
+        });
     } else {
       navigate('/login');
     }
-  }, [navigate, setToken]);
+  }, [navigate, apiUrl, setUser, setToken]);
 
   return <p>Iniciando sesión con Google...</p>;
 }

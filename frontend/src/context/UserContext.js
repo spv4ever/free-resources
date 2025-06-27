@@ -4,37 +4,27 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Cargar datos desde localStorage
   useEffect(() => {
-    const fetchUser = async () => {
-      if (token) {
-        try {
-          const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/me`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+    const storedUser = localStorage.getItem('user');
+    const storedToken = localStorage.getItem('token');
 
-          if (!res.ok) throw new Error('Token inválido');
-
-          const data = await res.json();
-          setUser(data);
-          localStorage.setItem('user', JSON.stringify(data));
-        } catch (err) {
-          console.error('❌ Error cargando usuario con token:', err);
-          setUser(null);
-          localStorage.removeItem('user');
-          localStorage.removeItem('token');
-        }
+    if (storedUser && storedToken) {
+      try {
+        setUser(JSON.parse(storedUser));
+        setToken(storedToken);
+      } catch (e) {
+        console.error('❌ Error al parsear user/token:', e);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
       }
+    }
 
-      setLoading(false);
-    };
-
-    fetchUser();
-  }, [token]);
+    setLoading(false);
+  }, []);
 
   const logout = () => {
     setUser(null);

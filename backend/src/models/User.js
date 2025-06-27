@@ -26,6 +26,11 @@ const userSchema = new mongoose.Schema({
     enum: ['free', 'pro', 'admin'],
     default: 'free'
   },
+  provider: {
+    type: String,
+    enum: ['local', 'google'],
+    default: 'local' // 👈 Afecta solo a nuevos registros
+  },
   permiteImagenesPublicas: { type: Boolean, default: false },
   isVerified: {
     type: Boolean,

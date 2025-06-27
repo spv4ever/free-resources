@@ -82,6 +82,11 @@ export const loginUser = async (req, res) => {
   
     try {
       const user = await User.findOne({ email });
+
+      // 🚫 Validar si la cuenta fue creada por Google
+      if (user && user.provider === 'google') {
+        return res.status(403).json({ message: 'Esta cuenta solo puede iniciar sesión con Google.' });
+      }
   
       if (!user || !(await user.matchPassword(password))) {
         return res.status(400).json({ message: 'Credenciales no válidas' });
