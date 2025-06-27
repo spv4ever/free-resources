@@ -1,9 +1,13 @@
+import dotenv from 'dotenv';
+dotenv.config();
+import passport from 'passport';
+import './config/passport.js'; // 👈 registra las estrategias (como google-free-resources)
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
+
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -92,13 +96,14 @@ import imagenesPublicasRoutes from './routes/imagenesPublicasRoutes.js';
 
 
 
+
 // Otras rutas...
 
 
 
  // 👈 Importa las rutas de autenticación
 
-dotenv.config();
+
 
 
 
@@ -111,6 +116,8 @@ Object.entries(process.env).forEach(([key, value]) => {
 });
 
 const app = express();
+// Inicializar passport (👈 necesario para estrategias como Google)
+app.use(passport.initialize());
 console.log(`🌍 Entorno de ejecución: ${process.env.NODE_ENV || 'no definido'}`);
 
 if (process.env.NODE_ENV === 'development') {

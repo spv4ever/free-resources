@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import { UserProvider } from './context/UserContext';
 import HomePage from './pages/HomePage';
 import ResourcesPage from './pages/ResourcesPage';
@@ -78,6 +79,9 @@ import TokenInfoPage from './pages/TokenInfoPage';
 import KeikoIAGallery from './pages/KeikoIAGallery';
 import PackImages from './components/PackImages';
 
+import AuthCallback from './components/AuthCallback';
+import PrivateRoute from './components/PrivateRoute';
+
 
 
 
@@ -87,11 +91,8 @@ function App() {
     
     <UserProvider>
       <TokenProvider>
-      
       <Router>
-      
         <Routes>
-        
           {/* Rutas que comparten el layout */}
           <Route path="/" element={<Layout />}>
             <Route index element={<HomePage />} />
@@ -121,8 +122,7 @@ function App() {
             <Route path="/series/estado/:status" element={<SeriesFilteredList />} />
             <Route path="/series" element={<SeriesCategoryList />} />
             <Route path="/admin/spacex" element={<SpacexLaunchAdmin />} />
-            <Route path="/perfil" element={<UserProfile />} />
-
+            <Route path="/perfil" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
 
             <Route path="/admin/top-series-sync" element={<TopSeriesSyncPage />} />
             {/* <Route path="/admin/social-posts" element={<AdminRoute><div>Hola soy admin</div></AdminRoute>} /> */}
@@ -182,7 +182,9 @@ function App() {
           </Route>
           <Route path="/motogp-live" element={<MotoGPCircuitMobileView />} />
           <Route path="/login" element={<LoginPage />} />
+          
           {/* Ruta fuera del layout */}
+          <Route path="/auth/callback" element={<AuthCallback />} />
           </Routes>
         </Router>
       </TokenProvider>

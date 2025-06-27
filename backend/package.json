@@ -40,6 +40,8 @@
     "node-ical": "^0.20.1",
     "nodemailer": "^7.0.3",
     "openai": "^4.97.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "puppeteer": "^24.8.2",
     "react-select": "^5.10.1"
   },

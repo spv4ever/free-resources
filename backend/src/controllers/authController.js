@@ -279,3 +279,29 @@ export const getRegisterLogs = async (req, res) => {
     res.status(500).json({ message: 'Error al obtener los logs' });
   }
 };
+
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    // Obtener balance de tokens
+    const balanceRecord = await UserTokenBalance.findOne({ user: user._id });
+    const tokenBalance = balanceRecord ? balanceRecord.balance : 0;
+
+    res.json({
+      _id: user._id,
+      email: user.email,
+      role: user.role,
+      nickname: user.nickname,
+      isVerified: user.isVerified,
+      permiteImagenesPublicas: user.permiteImagenesPublicas,
+      tokenBalance
+    });
+  } catch (error) {
+    console.error('❌ Error en getMe:', error);
+    res.status(500).json({ message: 'Error al obtener el usuario' });
+  }
+};

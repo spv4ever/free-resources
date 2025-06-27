@@ -1,35 +1,39 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/LoginPage.css';
 import { useUser } from '../context/UserContext';
-
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate(); // Hook de navegación
+  const navigate = useNavigate();
+  const location = useLocation();
   const { setUser } = useUser();
-  // const decodeJwt = (token) => {
-  //   const base64Url = token.split('.')[1];
-  //   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  //   const jsonPayload = decodeURIComponent(
-  //     atob(base64)
-  //       .split('')
-  //       .map(function(c) {
-  //         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  //       })
-  //       .join('')
-  //   );
-  
-  //   return JSON.parse(jsonPayload);  // Devuelve el payload decodificado
-  // };
+
+const { user, loading } = useUser();
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate('/');
+    }
+  }, [user, loading, navigate]);
+
+
+  useEffect(() => {
+    const queryError = new URLSearchParams(location.search).get('error');
+    if (queryError === 'unauthorized') {
+      setErrorMessage('No tienes acceso. Tu cuenta no está registrada.');
+    } else if (queryError === 'unverified') {
+      setErrorMessage('Debes verificar tu correo electrónico antes de acceder.');
+    }
+  }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const userData = { email, password };
-  
+
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
         method: 'POST',
@@ -38,20 +42,15 @@ function LoginPage() {
         },
         body: JSON.stringify(userData),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
-        // Guardar el token en localStorage
         const token = data.token;
         localStorage.setItem('token', token);
-
-        // ✅ Tomar directamente el objeto user con nickname
         const userInfo = data.user;
-
         localStorage.setItem('user', JSON.stringify(userInfo));
         setUser(userInfo);
-
         navigate('/');
         window.location.reload();
       } else {
@@ -61,6 +60,10 @@ function LoginPage() {
       setErrorMessage('Error en el servidor');
       console.error(error);
     }
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = `${process.env.REACT_APP_API_URL}/api/auth/google`;
   };
 
   return (
@@ -88,15 +91,20 @@ function LoginPage() {
               required
             />
           </div>
+
           {errorMessage && <p className="error-message">{errorMessage}</p>}
+
           <button type="submit" className="login-btn">Entrar</button>
+
+          <div className="separator">o</div>
+
+          <button type="button" className="google-login-btn" onClick={handleGoogleLogin}>
+            Iniciar sesión con Google
+          </button>
+
           <div className="login-links">
-            <p>
-              <a href="/forgot-password">¿Olvidaste tu contraseña?</a>
-            </p>
-            <p>
-              ¿No tienes cuenta? <a href="/register">Registrarse como nuevo usuario</a>
-            </p>
+            <p><a href="/forgot-password">¿Olvidaste tu contraseña?</a></p>
+            <p>¿No tienes cuenta? <a href="/register">Registrarse como nuevo usuario</a></p>
           </div>
         </form>
       </div>
