@@ -6,7 +6,7 @@ export const sendVerificationForGoogleUser = async (user) => {
   try {
     const verificationToken = crypto.randomBytes(32).toString('hex');
     user.verificationToken = verificationToken;
-    user.isVerified = false;
+    // user.isVerified = false;
 
     await user.save();
 
