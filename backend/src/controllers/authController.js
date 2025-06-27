@@ -136,7 +136,7 @@ export const verifyEmail = async (req, res) => {
     user.verificationToken = undefined;
     await user.save();
 
-    res.status(200).json({ message: 'Cuenta verificada correctamente' });
+    res.redirect(`${process.env.FRONTEND_BASE_URL}/login?verified=true`);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error al verificar el email' });

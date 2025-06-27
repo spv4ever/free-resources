@@ -21,11 +21,16 @@ const { user, loading } = useUser();
 
 
   useEffect(() => {
-    const queryError = new URLSearchParams(location.search).get('error');
+    const params = new URLSearchParams(location.search);
+    const queryError = params.get('error');
+    const verified = params.get('verified');
+
     if (queryError === 'unauthorized') {
       setErrorMessage('No tienes acceso. Tu cuenta no está registrada.');
     } else if (queryError === 'unverified') {
       setErrorMessage('Debes verificar tu correo electrónico antes de acceder.');
+    } else if (!queryError && verified === 'true') {
+      setErrorMessage('✅ Cuenta verificada. Ya puedes iniciar sesión.');
     }
   }, [location]);
 

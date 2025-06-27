@@ -33,7 +33,7 @@ passport.use('google-free-resources', new GoogleStrategy({
         avatar: profile.photos?.[0]?.value,
         role: 'free',
         nickname: profile.displayName?.slice(0, 50) ?? 'user',
-        isVerified: false,
+        isVerified: true,
         provider: 'google' // 👈 esto lo identifica como Google-user
         });
 
