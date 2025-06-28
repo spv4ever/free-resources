@@ -8,7 +8,7 @@ const promptSchema = new mongoose.Schema({
   nsfw: { type: Boolean, default: false },
   platform: { type: String, required: true },
   access: { type: String, enum: ['free', 'pro'], default: 'free' },
-  fixedOptions: { type: Map, of: [Object] }
+  fixedOptions: { type: Object, default: {} }
 }, {
   timestamps: true
 });

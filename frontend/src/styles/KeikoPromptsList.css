@@ -125,16 +125,19 @@
   align-items: center;
 }
 
-/* === Lista de prompts === */
+/* === Lista de prompts (MODIFICADO) === */
 .prompts-list-rows {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  width: 100%; /* Ocupa todo el ancho disponible */
+  max-width: 1280px; /* Límite para pantallas grandes. AJÚSTALO a tu gusto (ej. 1400px) */
+  margin: 0 auto; /* Centra la lista en la página */
 }
-
 .prompt-card-wrapper {
-  width: 80%;
-  margin: 0 auto 24px auto;
+  width: 95%; /* Ocupa más espacio en pantallas pequeñas/medianas */
+  max-width: 1280px; /* Límite de ancho máximo para pantallas de escritorio */
+  margin: 0 0 24px 0; /* Ya no necesitamos el centrado con margin auto */
 }
 
 .prompt-row {
@@ -544,3 +547,68 @@
   box-shadow: 0 0 8px rgba(0,0,0,0.5);
 }
 
+.prompt-tags-dark {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #f0f0f0; /* texto claro */
+}
+
+.prompt-tag-group-dark {
+  margin-bottom: 4px;
+  padding: 4px 8px;
+  background-color: #222; /* fondo más oscuro que el card */
+  border-left: 3px solid #4db8ff; /* azul claro o temático */
+  border-radius: 4px;
+}
+
+.prompt-tag-label {
+  font-weight: bold;
+  color: #ffffff;
+  margin-right: 4px;
+}
+
+.toggles-ia {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.toggle-button {
+  border: none;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.toggle-button.on {
+  background-color: #38bdf8; /* azul claro */
+  color: white;
+}
+
+.toggle-button.off {
+  background-color: #e5e7eb; /* gris claro */
+  color: #555;
+}
+
+.toggle-button:disabled {
+  background-color: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+}

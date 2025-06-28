@@ -1,4 +1,3 @@
-// PromptCard.jsx
 import React from 'react';
 import Select from 'react-select';
 
@@ -14,9 +13,17 @@ const PromptCard = React.memo(({
   handleCopyAndOpen,
   copyToClipboard,
   verificarImagen,
-  opcionesAuxiliares
+  opcionesAuxiliares,
+  advancedMode,
+  setAdvancedMode,
+  removeBackground,
+  setRemoveBackground,
+  isProUser
 }) => {
   const promptId = prompt._id;
+  const fixedOptionsObj = prompt.fixedOptions instanceof Map
+    ? Object.fromEntries(prompt.fixedOptions)
+    : prompt.fixedOptions;
 
   return (
     <div className="prompt-card-wrapper" key={promptId}>
@@ -27,22 +34,31 @@ const PromptCard = React.memo(({
             <pre className="prompt-box">{prompt.prompt}</pre>
             <div className="prompt-actions">
               {prompt.platform.toLowerCase() === 'flux' && (
-                <div className="aux-options">
-                  <label>Extras:</label>
-                  <Select
-                    isMulti
-                    options={opcionesAuxiliares}
-                    value={selectedExtras[promptId] || []}
-                    onChange={(selected) =>
-                      setSelectedExtras(prev => ({
-                        ...prev,
-                        [promptId]: selected
-                      }))
-                    }
-                    className="react-select-container"
-                    classNamePrefix="react-select"
-                  />
-                </div>
+                <>
+                  <div className="aux-options toggles-ia">
+                    <div className="toggle-row">
+                      <span>Modo avanzado</span>
+                      <button
+                        className={`toggle-button ${advancedMode ? 'on' : 'off'}`}
+                        onClick={() => isProUser && setAdvancedMode(!advancedMode)}
+                      >
+                        {advancedMode ? 'Activado' : 'Desactivado'}
+                      </button>
+                    </div>
+
+                    <div className="toggle-row">
+                      <span>Eliminar fondo</span>
+                      <button
+                        className={`toggle-button ${removeBackground ? 'on' : 'off'}`}
+                        onClick={() => isProUser && advancedMode && setRemoveBackground(!removeBackground)}
+                        disabled={!advancedMode}
+                      >
+                        {removeBackground ? 'Sí' : 'No'}
+                      </button>
+                    </div>
+                  </div>
+
+                </>
               )}
               <button className="copy-btn" onClick={() => copyToClipboard(prompt.prompt)}>📋 Copiar</button>
               <button
@@ -55,7 +71,18 @@ const PromptCard = React.memo(({
             </div>
           </div>
 
-          
+          {fixedOptionsObj && (
+            <div className="prompt-tags-dark">
+              {Object.entries(fixedOptionsObj).map(([groupName, options]) => (
+                <div key={groupName} className="prompt-tag-group-dark">
+                  <span className="prompt-tag-label">
+                    {options[0]?.group?.label || groupName}:
+                  </span>{' '}
+                  {options.map(opt => opt.label).join(', ')}
+                </div>
+              ))}
+            </div>
+          )}
 
           {pendientes[promptId] && (
             <div className="flux-pending-box">

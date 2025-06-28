@@ -1,6 +1,6 @@
 // src/components/KeikoPromptsList.jsx
 // import Select from 'react-select';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo  } from 'react';
 import axios from 'axios';
 import '../styles/KeikoPromptsList.css';
 import AspectRatioSelector from '../components/AspectRatioSelector';
@@ -9,10 +9,12 @@ import { useParams } from 'react-router-dom';
 import { useUser } from '../context/UserContext'; 
 import { useNavigate } from 'react-router-dom';
 import BotonBiblioteca from '../components/BotonBiblioteca';
-import PromptCard from './PromptCard';
+// import PromptCard from './PromptCard';
+import PromptCardRedesigned from './PromptCardRedesigned';
 import ScrollToTopButton from '../components/ScrollToTopButton';
 import AlertaModal from './AlertaModal';
 import imgSinTokens from '../assets/sin_tokens.png'; // pon ahí tu imagen divertida
+import qs from 'qs'; // al principio del archivo
 // import AdBanner from '../components/AdBanner';
 // import { FixedSizeList as List } from 'react-window';
 
@@ -43,7 +45,17 @@ export default function KeikoPromptsList() {
   const [useRandomSeed, setUseRandomSeed] = useState(true);
   const [customSeed, setCustomSeed] = useState('');
   const [totalPromptsPack, setTotalPromptsPack] = useState(0);
+  const [availableOptions, setAvailableOptions] = useState({}); // datos de /options/by-group
+  const [extraFilters, setExtraFilters] = useState({}); // valores seleccionados por grupo
+  const [advancedMode, setAdvancedMode] = useState(false);
+  const [removeBackground, setRemoveBackground] = useState(true);
+  const isProUser = useMemo(() => ['admin', 'pro'].includes(user?.role), [user]);
   
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/options/used-in-pack/${packId}`)
+      .then(res => setAvailableOptions(res.data))
+      .catch(err => console.error('Error cargando opciones dinámicas:', err));
+  },[packId]);
 
   useEffect(() => {
     if (Object.keys(pendientes).length === 0) return; // ❌ Nada pendiente, no hacemos polling
@@ -118,6 +130,7 @@ export default function KeikoPromptsList() {
       .then(({ data }) => setPack(data))
       .catch(console.error);
 
+    
     axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/prompts/by-pack-paginated/${packId}`, {
       params: {
         search,
@@ -126,8 +139,10 @@ export default function KeikoPromptsList() {
         sortField,
         sortOrder,
         page: currentPage,
-        limit: promptsPerPage
-      }
+        limit: promptsPerPage,
+        filters: extraFilters
+      },
+      paramsSerializer: params => qs.stringify(params, { encode: false })
     })
     .then(({ data }) => {
       setPrompts(data.prompts);
@@ -146,7 +161,9 @@ export default function KeikoPromptsList() {
   sortField,
   sortOrder,
   currentPage,
-  promptsPerPage]);
+  promptsPerPage,
+  extraFilters // ✅ aquí lo añades
+]);
 
   // useEffect(() => {
   //     if (loading || !user) return;
@@ -220,7 +237,13 @@ export default function KeikoPromptsList() {
 
   const handleFluxPrompt = async (promptText, promptId) => {
     try {
+        setImagenes(prevImagenes => {
+          const newImagenes = { ...prevImagenes };
+          delete newImagenes[promptId]; // Usamos 'delete' para eliminar la propiedad del objeto.
+          return newImagenes;
+        });
       setGenerando(promptId);
+
       const extras = (selectedExtras[promptId] || []).map(e => e.value);
       const finalPrompt = `${promptText}, ${extras.join(', ')}`.trim();
       
@@ -233,13 +256,13 @@ export default function KeikoPromptsList() {
           prompt: finalPrompt,
           ratio: selectedRatio,
           steps: 15,
-          seed: (user.role === 'pro' || user.role === 'admin') && !useRandomSeed ? parseInt(customSeed) : undefined,
-          promptRef: promptId
+          seed: (isProUser && !useRandomSeed) ? parseInt(customSeed) : undefined,
+          promptRef: promptId,
+          advancedMode,
+          removeBackground
         },
         {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+          headers: { Authorization: `Bearer ${token}` }
         }
       );
 
@@ -453,6 +476,31 @@ export default function KeikoPromptsList() {
             <option value="">Todos los accesos</option>
             {accesses.map(ac => <option key={ac} value={ac}>{ac}</option>)}
           </select>
+          {Object.entries(availableOptions).map(([groupName, options]) => (
+            <select
+              key={groupName}
+              value={extraFilters[groupName] || ''}
+              onChange={e => {
+                const value = e.target.value;
+                setExtraFilters(prev => {
+                  const updated = { ...prev };
+                  if (value === '') {
+                    delete updated[groupName]; // elimina el filtro si se escoge la opción por defecto
+                  } else {
+                    updated[groupName] = value;
+                  }
+                  return updated;
+                });
+                setCurrentPage(1); // reset page
+              }}
+              className="dropdown-filter"
+            >
+              <option value="">{groupName.charAt(0).toUpperCase() + groupName.slice(1)}</option>
+              {options.map(opt => (
+                <option key={opt.name} value={opt.name}>{opt.label}</option>
+              ))}
+            </select>
+          ))}
 
           
 
@@ -463,6 +511,7 @@ export default function KeikoPromptsList() {
             setSortField('createdAt');
             setSortOrder('desc');
             setSelectedRatio('3:4');
+            setExtraFilters({});
           }}>🔄 Limpiar filtros</button>
 
           <button className="reset-btn" onClick={() => navigate('/keikoprompts')}>⬅ Volver a Packs</button>
@@ -566,7 +615,7 @@ export default function KeikoPromptsList() {
           <p className="no-results">No hay prompts que coincidan.</p>
         )}
         {displayed.map(p => (
-          <PromptCard
+          <PromptCardRedesigned 
             key={p._id}
             prompt={p}
             imagenes={imagenes}
@@ -580,7 +629,13 @@ export default function KeikoPromptsList() {
             copyToClipboard={copyToClipboard}
             verificarImagen={verificarImagen}
             opcionesAuxiliares={opcionesAuxiliares}
+            advancedMode={advancedMode}
+            setAdvancedMode={setAdvancedMode}
+            removeBackground={removeBackground}
+            setRemoveBackground={setRemoveBackground}
+            isProUser={isProUser}
           />
+
         ))}
         {totalPages > 1 && (
           <div className="pagination-controls">

@@ -13,24 +13,11 @@ const token = process.env.TELEGRAM_BOT_TOKEN;
 const chatId = process.env.TELEGRAM_CHAT_ID;
 const apiUrl = `${process.env.API_URL}/api/sports/motogp/next`;
 
-// 3. Verificación de Variables de Entorno
-if (!token || !chatId || !apiUrl) {
-  console.error('❌ Error: Faltan variables de entorno. Asegúrate de que TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID y API_URL estén definidos.');
-}
-
-// --- ¡NUEVA FUNCIÓN AUXILIAR! ---
-/**
- * Convierte un string en un hashtag válido para Telegram.
- * Elimina espacios y caracteres especiales.
- * @param {string} text - El texto a convertir.
- * @returns {string} - El texto formateado como hashtag (ej: #MiHashtag) o un string vacío si no hay texto.
- */
+// 3. Función auxiliar para Hashtags
 const createHashtag = (text) => {
   if (!text) return '';
-  // Elimina todos los caracteres que no sean letras o números y lo prefija con #
   return `#${text.replace(/[^a-zA-Z0-9]/g, '')}`;
 };
-
 
 // 4. Lógica del Notificador
 let bot;
@@ -78,16 +65,10 @@ const checkEventsAndNotify = async () => {
       const diffMinutes = Math.floor((eventStart - now) / (1000 * 60));
       
       const eventNotifications = notifiedEvents.get(event._id) || [];
-
-      // --- ¡GENERACIÓN DE HASHTAGS! ---
-      // Obtenemos los datos del evento y los convertimos en hashtags usando nuestra nueva función.
       const circuitHashtag = createHashtag(event.location);
       const categoryHashtag = createHashtag(event.category);
-      // Los unimos en un solo string para añadirlos fácilmente a los mensajes.
       const hashtags = `${circuitHashtag} ${categoryHashtag}`.trim();
 
-      // --- ¡MENSAJES ACTUALIZADOS CON HASHTAGS! ---
-      // Añadimos la variable `hashtags` al final de cada mensaje.
       if (diffMinutes <= 60 && diffMinutes >= 59 && !eventNotifications.includes('60m')) {
         sendMessage(`<b>🏁 Aviso de Evento 🏁</b>\n\nFalta <b>1 hora</b> para el inicio de:\n<i>${event.title}</i>\n\n${hashtags}`);
         eventNotifications.push('60m');
@@ -112,14 +93,29 @@ const checkEventsAndNotify = async () => {
 };
 
 // 5. Función de Arranque (la que se exporta y se llama desde app.js)
+
+/**
+ * Inicia el sistema de notificaciones de MotoGP, PERO SOLO EN PRODUCCIÓN.
+ * Se encarga de crear el bot y programar la tarea cron.
+ */
 export const startMotoGPNotifier = () => {
+  // --- ¡AQUÍ ESTÁ EL CAMBIO FINAL! ---
+  // Condición de salida si no estamos en el entorno de producción.
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('ℹ️ El notificador de MotoGP está deshabilitado en el entorno de desarrollo (NODE_ENV no es "production").');
+    return; // Detiene la ejecución de esta función.
+  }
+
+  // El resto del código solo se ejecutará si la condición anterior es falsa.
   if (!token || !chatId || !apiUrl) {
-    console.warn('⚠️ El notificador de MotoGP no se iniciará por falta de configuración.');
+    console.warn('⚠️ El notificador de MotoGP (en producción) no se iniciará por falta de configuración.');
     return;
   }
 
   bot = new TelegramBot(token);
   cron.schedule('* * * * *', checkEventsAndNotify);
-  console.log('🚀 Notificador de eventos de motor para Telegram listo e integrado.');
+  
+  console.log('🚀 Notificador de eventos de motor para Telegram iniciado en modo PRODUCCIÓN.');
+  
   checkEventsAndNotify();
 };

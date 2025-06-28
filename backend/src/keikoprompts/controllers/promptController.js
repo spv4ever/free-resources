@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import KeikoPrompt from '../models/KeikoPrompt.js';
-
+import KeikoPromptOption from '../models/KeikoPromptOption.js';
+import KeikoPromptOptionGroup from '../models/KeikoPromptOptionGroup.js';
+import { enrichFixedOptions } from '../../middlewares/enrichFixedOptions.js';
 /**
  * GET  /api/keiko/prompts/by-pack/:packId
  * Obtiene todos los prompts del pack indicado
@@ -15,7 +17,8 @@ export const getPromptsByPack = async (req, res) => {
   if (nsfw !== undefined) query.nsfw = nsfw === 'true';
 
   try {
-    const prompts = await KeikoPrompt.find(query);
+    const rawPrompts = await KeikoPrompt.find(query).lean();
+    const prompts = await enrichFixedOptions(rawPrompts);
     res.json(prompts);
   } catch (err) {
     console.error('Error al obtener prompts:', err);
@@ -111,6 +114,7 @@ export const countPromptsByPack = async (req, res) => {
  */
 export const countPromptsForOnePack = async (req, res) => {
   const { packId } = req.params;
+  
   try {
     const result = await KeikoPrompt.aggregate([
       { $match: { packId: mongoose.Types.ObjectId(packId) } },
@@ -142,6 +146,23 @@ export const getPromptsByPackPaginated = async (req, res) => {
     limit = 10
   } = req.query;
 
+  const groupKeyMap = {
+    tematica: 'temática',
+    estilo: 'estilo',
+    // añade más si tienes otros nombres especiales
+  };
+
+  // 🔍 Parseo de filtros estilo filters[tematica]=halloween
+  let filters = {};
+  Object.keys(req.query).forEach(key => {
+    const match = key.match(/^filters\[(.+)\]$/);
+    if (match) {
+      filters[match[1]] = req.query[key];
+    }
+  });
+
+  console.log('🧪 DEBUG QUERY - filters parsed:', filters);
+
   const query = {
     packId,
     $or: [
@@ -154,14 +175,30 @@ export const getPromptsByPackPaginated = async (req, res) => {
   if (access) query.access = access;
   if (nsfw !== undefined) query.nsfw = nsfw === 'true';
 
+  // 🎯 Aplicar filtros por opciones fijas (tematica, estilo, etc.)
+  for (const [groupKey, optionName] of Object.entries(filters)) {
+    const realGroupKey = groupKeyMap[groupKey] || groupKey; // usa mapeo si existe
+    const option = await KeikoPromptOption.findOne({ name: optionName }).lean();
+    if (option) {
+      query[`fixedOptions.${realGroupKey}`] = option._id;
+    } else {
+      query[`fixedOptions.${realGroupKey}`] = '000000000000000000000000';
+    }
+  }
+
   const sort = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
   const skip = (parseInt(page) - 1) * parseInt(limit);
 
   try {
-    const [total, prompts] = await Promise.all([
-      KeikoPrompt.countDocuments(query),
-      KeikoPrompt.find(query).sort(sort).skip(skip).limit(parseInt(limit))
-    ]);
+    console.log('🧪 Query Mongo FINAL aplicado en .find():', query);
+
+    // Sin limit ni skip para contar total filtrado
+    const allFiltered = await KeikoPrompt.find(query).sort(sort).lean();
+    const total = allFiltered.length;
+
+    // Aplicamos paginación después
+    const paginated = allFiltered.slice(skip, skip + parseInt(limit));
+    const prompts = await enrichFixedOptions(paginated);
 
     res.json({
       prompts,
@@ -170,7 +207,40 @@ export const getPromptsByPackPaginated = async (req, res) => {
       totalPages: Math.ceil(total / parseInt(limit))
     });
   } catch (err) {
-    console.error('Error al obtener prompts paginados:', err);
+    console.error('❌ Error al obtener prompts paginados:', err);
     res.status(500).json({ error: 'Error al obtener prompts paginados' });
   }
 };
+// const enrichFixedOptions = async prompts => {
+//   const allOptionIds = new Set();
+
+//   // 1. Recoger todos los ObjectId usados en los prompts
+//   for (const prompt of prompts) {
+//     const fixed = prompt.fixedOptions;
+//     if (!fixed) continue;
+//     for (const ids of Object.values(fixed)) {
+//       ids.forEach(id => allOptionIds.add(id));
+//     }
+//   }
+
+//   // 2. Obtener todos los objetos de opciones y sus grupos
+//   const options = await KeikoPromptOption.find({ _id: { $in: [...allOptionIds] } }).populate('group').lean();
+
+//   const optionMap = {};
+//   for (const opt of options) {
+//     optionMap[opt._id.toString()] = opt;
+//   }
+
+//   // 3. Reemplazar en cada prompt los IDs por los objetos
+//   for (const prompt of prompts) {
+//     const fixed = prompt.fixedOptions;
+//     if (!fixed) continue;
+//     for (const [group, ids] of Object.entries(fixed)) {
+//       prompt.fixedOptions[group] = ids
+//         .map(id => optionMap[id.toString()])
+//         .filter(Boolean);
+//     }
+//   }
+
+//   return prompts;
+// };

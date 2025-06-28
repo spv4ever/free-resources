@@ -1,5 +1,5 @@
 // src/controllers/fluxController.js
-import { generarImagenOptimizada } from '../services/generarImagenOptimizada.js';
+import { generarImagenOptimizada, generarImagenAvanzada } from '../services/generarImagenOptimizada.js';
 import { consultarImagenGenerada } from '../services/resultadoImagenService.js';
 import ImagenGenerada from '../models/ImagenGenerada.js';
 import { getComfyUrl } from '../services/comfyService.js';
@@ -16,7 +16,7 @@ import axios from 'axios';
 
 export const generarImagen = async (req, res) => {
   try {
-    const { prompt, ratio, seed, steps } = req.body;
+    const { prompt, ratio, seed, steps, advancedMode = false, removeBackground = false  } = req.body;
     const filename_prefix = req.user.nickname || 'keiko';
     await consumirToken({
         userId: req.user._id,
@@ -26,15 +26,18 @@ export const generarImagen = async (req, res) => {
       });
 
 
-    const resultado = await generarImagenOptimizada({
-      //prompt: `aidmaHyperrealism , ${prompt}`,
-      //prompt: `Anime Scene, ${prompt}`,
+    const generarImagen = advancedMode ? generarImagenAvanzada : generarImagenOptimizada;
+
+    const resultado = await generarImagen({
       prompt,
       ratio,
       seed,
       steps,
       filename_prefix,
+      removeBackground // solo se usará en flujo avanzado
     });
+
+
     console.log(req.user.permiteImagenesPublicas)
     await ImagenGenerada.create({
       user: req.user._id,

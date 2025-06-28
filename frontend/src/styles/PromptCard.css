@@ -1,0 +1,331 @@
+/*
+  ==================================================================
+  == PROMPTCARD.CSS -- Versión Final y Definitiva ==
+  ==================================================================
+*/
+
+/* --- Paleta de colores unificada --- */
+:root {
+  --card-bg: #1e1e1e;
+  --card-border: #333;
+  --interactive-bg: #2a2a2a;
+  --interactive-bg-hover: #3a3a3a;
+  --text-primary: #e0e0e0;
+  --text-secondary: #bbb;
+  --code-bg: #2c2c2c;
+  --accent-primary: #4caf50;
+  --accent-primary-hover: #45a049;
+  --chip-bg: #333;
+  --disabled-color: #444;
+  --font-family-ui: 'Inter', sans-serif;
+  --font-family-code: 'monospace';
+}
+
+/* --- Estructura Principal de la Tarjeta --- */
+.keiko-prompt-card {
+  font-family: var(--font-family-ui);
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+  max-width: 1280px;
+  margin: 0 auto 24px auto;
+}
+
+/* --- Elementos y Modificadores --- */
+
+.keiko-prompt-card__header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.keiko-prompt-card__header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.keiko-prompt-card__meta-tags {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.keiko-prompt-card__chip {
+  background: var(--chip-bg);
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  color: #fff;
+}
+
+.keiko-prompt-card__body {
+  display: flex;
+  padding: 1.5rem;
+  gap: 2rem;
+}
+
+@media (max-width: 900px) {
+  .keiko-prompt-card__body {
+    flex-direction: column;
+  }
+}
+
+.keiko-prompt-card__content {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.keiko-prompt-card__prompt-text-container {
+  background-color: var(--code-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  padding: 1rem;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.keiko-prompt-card__prompt-text-container code {
+  font-family: var(--font-family-code);
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.keiko-prompt-card__prompt-tags {
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.keiko-prompt-card__prompt-tags .keiko-prompt-card__tag-group {
+  margin-bottom: 0.5rem;
+}
+
+.keiko-prompt-card__prompt-tags .keiko-prompt-card__tag-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-right: 0.5em;
+}
+
+.keiko-prompt-card__prompt-tags .keiko-prompt-card__tag-values {
+  color: var(--text-primary);
+}
+
+.keiko-prompt-card__generation-options {
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+}
+
+.keiko-prompt-card__generation-options h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.keiko-prompt-card__toggles-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.toggle-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+.toggle-switch.locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.toggle-switch label {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--interactive-bg);
+  border: 1px solid var(--card-border);
+  transition: .4s;
+  border-radius: 34px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 3px;
+  background-color: var(--text-secondary);
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+input:checked + .slider:before {
+    background-color: white;
+}
+input:disabled + .slider {
+  cursor: not-allowed;
+  background-color: var(--disabled-color);
+}
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.keiko-prompt-card__actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--card-border);
+}
+
+.keiko-prompt-card__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.keiko-prompt-card__btn--primary {
+  background-color: var(--accent-primary);
+  color: white;
+  flex-grow: 1;
+}
+.keiko-prompt-card__btn--primary:hover {
+  background-color: var(--accent-primary-hover);
+}
+.keiko-prompt-card__btn:disabled {
+  background-color: var(--disabled-color);
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.keiko-prompt-card__btn--secondary {
+  background-color: var(--interactive-bg);
+  color: var(--text-primary);
+}
+
+.keiko-prompt-card__btn--secondary:hover {
+  background-color: var(--interactive-bg-hover);
+}
+
+.keiko-prompt-card__image-status {
+  flex: 2;
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.keiko-prompt-card__generated-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.keiko-prompt-card__generated-image:hover {
+  transform: scale(1.02);
+}
+
+.keiko-prompt-card__image-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 2px dashed var(--card-border);
+}
+
+.keiko-prompt-card__image-placeholder-text {
+  font-size: 4rem;
+  opacity: 0.3;
+  user-select: none;
+}
+
+.keiko-prompt-card__status-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(30, 30, 30, 0.85);
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+  gap: 0.75rem;
+  border-radius: 8px;
+}
+.keiko-prompt-card__status-overlay p { margin: 0; }
+.keiko-prompt-card__status-detail { font-size: 0.8rem; color: var(--text-secondary); }
+
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-left-color: var(--text-primary);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 0.5rem;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.react-select-container .react-select__control {
+  background-color: #222 !important;
+  border: 1px solid #555 !important;
+}
+.react-select-container .react-select__input-container,
+.react-select-container .react-select__single-value,
+.react-select-container .react-select__placeholder {
+  color: var(--text-primary);
+}
+
+/* Y el resto de estilos para react-select, etc. */
