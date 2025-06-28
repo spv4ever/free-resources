@@ -465,3 +465,82 @@
 .scroll-to-top:hover {
   background: #ff0000;
 }
+
+.seed-options {
+  background: #1e1e1e;
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 20px;
+  border: 1px solid #333;
+  color: #e0e0e0;
+}
+
+.seed-options.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.seed-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.seed-fixed-input {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.seed-fixed-input input {
+  width: 100%;
+  padding: 8px;
+  background: #2c2c2c;
+  border: 1px solid #444;
+  color: #fff;
+  border-radius: 4px;
+}
+
+.seed-fixed-input button {
+  background: #4caf50;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+}
+
+.pack-header-container {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.pack-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffd700;
+  margin-bottom: 10px;
+}
+
+.pack-desc {
+  color: #ccc;
+  font-size: 1rem;
+  max-width: 80%;
+  margin: 0 auto 20px;
+  line-height: 1.6;
+}
+
+.pack-total-prompts {
+  font-size: 1.5rem;
+  color: #4caf50;
+  font-weight: bold;
+  background: #1e1e1e;
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: 1px solid #333;
+  box-shadow: 0 0 8px rgba(0,0,0,0.5);
+}
+

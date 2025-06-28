@@ -33,7 +33,6 @@ export default function KeikoPromptsList() {
   const [selectedRatio, setSelectedRatio] = useState('3:4');
   const [tiempoTranscurrido, setTiempoTranscurrido] = useState({});
   const [progresoGeneracion, setProgresoGeneracion] = useState({});
-  // const [opcionesSeleccionadas, setOpcionesSeleccionadas] = useState({});
   const [selectedExtras, setSelectedExtras] = useState({});
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,6 +40,9 @@ export default function KeikoPromptsList() {
   const [totalPages, setTotalPages] = useState(1);
   const [mostrarOpciones, setMostrarOpciones] = useState(false);
   const [errorModal, setErrorModal] = useState(null);
+  const [useRandomSeed, setUseRandomSeed] = useState(true);
+  const [customSeed, setCustomSeed] = useState('');
+  const [totalPromptsPack, setTotalPromptsPack] = useState(0);
   
 
   useEffect(() => {
@@ -131,6 +133,7 @@ export default function KeikoPromptsList() {
       setPrompts(data.prompts);
       setTotalPages(data.totalPages);
       setCurrentPage(data.page);
+      setTotalPromptsPack(data.total || data.totalPrompts || data.prompts.length); // depende del backend
     })
     .catch(console.error);
 
@@ -230,6 +233,7 @@ export default function KeikoPromptsList() {
           prompt: finalPrompt,
           ratio: selectedRatio,
           steps: 15,
+          seed: (user.role === 'pro' || user.role === 'admin') && !useRandomSeed ? parseInt(customSeed) : undefined,
           promptRef: promptId
         },
         {
@@ -404,8 +408,14 @@ export default function KeikoPromptsList() {
   return (
     <div className="keiko-user-container">
       {/* <AdBanner /> */}
-      <h1 className="pack-title">{pack.title}</h1>
-      <p className="pack-desc">{pack.description}</p>
+      <div className="pack-header-container">
+        <h1 className="pack-title">{pack.title}</h1>
+        <p className="pack-desc">{pack.description}</p>
+
+        <div className="pack-total-prompts">
+          📦 <span>{totalPromptsPack.toLocaleString('es-ES')}</span> Prompts
+        </div>
+      </div>
 
       <div className="filters-wrapper">
         <input
@@ -469,6 +479,41 @@ export default function KeikoPromptsList() {
             <div className="modal-content" onClick={e => e.stopPropagation()}>
               <h3>⚙ Opciones avanzadas</h3>
               <AspectRatioSelector selected={selectedRatio} onChange={setSelectedRatio} />
+              {(user.role === 'pro' || user.role === 'admin') ? (
+                <div className="seed-options">
+                  <label className="seed-toggle">
+                    <input
+                      type="checkbox"
+                      checked={useRandomSeed}
+                      onChange={() => setUseRandomSeed(!useRandomSeed)}
+                    />
+                    Usar semilla aleatoria
+                  </label>
+
+                  {!useRandomSeed && (
+                    <div className="seed-fixed-input">
+                      <input
+                        type="number"
+                        value={customSeed}
+                        onChange={(e) => setCustomSeed(e.target.value)}
+                        placeholder="Introduce una semilla"
+                      />
+                      <button
+                        onClick={() => {
+                          const nueva = Math.floor(Math.random() * 1_000_000_000).toString();
+                          setCustomSeed(nueva);
+                        }}
+                      >
+                        Generar aleatoria
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="seed-options disabled">
+                  <p>🎲 Opción de semilla solo disponible para usuarios Pro.</p>
+                </div>
+              )}
               <button className="close-modal" onClick={() => setMostrarOpciones(false)}>✖ Cerrar</button>
             </div>
           </div>

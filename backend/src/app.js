@@ -27,7 +27,7 @@ import youtubeChannelRoutes from './routes/youtubeChannelRoutes.js';
 import trainingResourceRoutes from './routes/trainingResourceRoutes.js';
 import shortCategoryRoutes from './routes/shortCategoryRoutes.js';
 import viralShortRoutes from './routes/viralShortRoutes.js';
-
+import { startMotoGPNotifier } from './services/motogp-notifier.js';
 import gmailRoutes from './routes/gmailRoutes.js';
 import { runScheduledImports } from './services/emailScheduler.js';
 import emailContextsRoutes from './routes/emailContexts.js';
@@ -192,6 +192,7 @@ app.use(secureHeaders); // 🛡️ Añade cabeceras de seguridad personalizadas
 app.use(morgan('dev'));
 app.use(express.json());
 fetchNasaImageDaily();
+startMotoGPNotifier();
 
 //fetchTodayImage();
 
