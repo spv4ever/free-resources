@@ -12,8 +12,13 @@ const RocketIcon = () => (
 const SpinnerIcon = () => (
     <div className="spinner"></div>
 );
-const ToggleSwitch = ({ label, checked, onChange, disabled, isProUser }) => (
-  <div className={`toggle-switch ${!isProUser ? 'locked' : ''}`}>
+// --- Toggle Switch Component ---
+// Añadimos la prop 'tooltipText'
+const ToggleSwitch = ({ label, checked, onChange, disabled, isProUser, tooltipText }) => (
+  <div
+    className={`toggle-switch ${!isProUser || disabled ? 'locked' : ''}`}
+    title={tooltipText} // <-- Aquí se aplica el tooltip
+  >
     <label>
       <input type="checkbox" checked={checked} onChange={onChange} disabled={disabled || !isProUser} />
       <span className="slider"></span>
@@ -47,6 +52,16 @@ const PromptCardRedesigned = React.memo(({
   const isPending = pendientes[promptId];
   const imageUrl = imagenes[promptId];
   const fixedOptionsObj = prompt.fixedOptions instanceof Map ? Object.fromEntries(prompt.fixedOptions) : prompt.fixedOptions;
+
+  const advancedTooltipText = !isProUser ? "Función solo para usuarios PRO" : "";
+
+  const proFeatureTooltip = !isProUser ? "Función solo para usuarios PRO" : "";
+
+  const removeBgTooltipText = !isProUser 
+    ? "Función solo para usuarios PRO" 
+    : !(advancedMode[promptId] || false) 
+      ? "Debes activar el 'Modo Avanzado' primero" 
+      : "";
 
   const renderStatusContent = () => {
     if (isPending) {
@@ -103,19 +118,24 @@ const PromptCardRedesigned = React.memo(({
           {isFlux && (
             <div className="keiko-prompt-card__generation-options">
               <h4>Opciones Adicionales</h4>
-              <Select
-                options={opcionesAuxiliares}
-                isMulti
-                value={selectedExtras[promptId] || []}
-                onChange={value => setSelectedExtras(prev => ({...prev, [promptId]: value}))}
-                className="react-select-container"
-                classNamePrefix="react-select"
-                placeholder="Seleccionar extras..."
-                isDisabled={!isProUser}
-              />
+              <div 
+                className={`react-select-wrapper ${!isProUser ? 'disabled' : ''}`}
+                title={proFeatureTooltip}
+              >
+                <Select
+                  options={opcionesAuxiliares}
+                  isMulti
+                  value={selectedExtras[promptId] || []}
+                  onChange={value => setSelectedExtras(prev => ({...prev, [promptId]: value}))}
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                  placeholder="Seleccionar extras..."
+                  isDisabled={!isProUser} // <-- Mantenemos el isDisabled para la funcionalidad
+                />
+              </div>
               <div className="keiko-prompt-card__toggles-container">
-                <ToggleSwitch label="Modo Avanzado" checked={advancedMode[promptId] || false} onChange={() => setAdvancedMode(prev => ({...prev, [promptId]: !prev[promptId]}))} isProUser={isProUser} />
-                <ToggleSwitch label="Eliminar Fondo" checked={removeBackground[promptId] || false} onChange={() => setRemoveBackground(prev => ({...prev, [promptId]: !prev[promptId]}))} disabled={!(advancedMode[promptId] || false)} isProUser={isProUser} />
+                <ToggleSwitch label="Modo Avanzado" checked={advancedMode[promptId] || false} onChange={() => setAdvancedMode(prev => ({...prev, [promptId]: !prev[promptId]}))} isProUser={isProUser} tooltipText={advancedTooltipText}/>
+                <ToggleSwitch label="Eliminar Fondo" checked={removeBackground[promptId] || false} onChange={() => setRemoveBackground(prev => ({...prev, [promptId]: !prev[promptId]}))} disabled={!(advancedMode[promptId] || false)} isProUser={isProUser} tooltipText={removeBgTooltipText}/>
               </div>
             </div>
           )}

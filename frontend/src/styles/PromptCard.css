@@ -327,5 +327,22 @@ input:checked + .slider:before {
 .react-select-container .react-select__placeholder {
   color: var(--text-primary);
 }
+/* En PromptCard.css */
+.toggle-switch.locked {
+  opacity: 0.6;
+  cursor: not-allowed; /* <-- AÑADE O VERIFICA ESTA LÍNEA */
+}
+
+/* --- Wrapper para React Select --- */
+.react-select-wrapper {
+  /* Por defecto no hace nada, solo es un contenedor */
+  transition: opacity 0.3s ease;
+}
+
+.react-select-wrapper.disabled {
+  /* Cuando está deshabilitado, se aplica el efecto visual */
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 /* Y el resto de estilos para react-select, etc. */

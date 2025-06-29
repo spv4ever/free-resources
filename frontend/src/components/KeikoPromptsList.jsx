@@ -258,8 +258,8 @@ export default function KeikoPromptsList() {
           steps: 15,
           seed: (isProUser && !useRandomSeed) ? parseInt(customSeed) : undefined,
           promptRef: promptId,
-          advancedMode,
-          removeBackground
+          advancedMode: advancedMode[promptId] || false,
+          removeBackground: removeBackground[promptId] || false
         },
         {
           headers: { Authorization: `Bearer ${token}` }
