@@ -310,3 +310,53 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* --- EFECTO DE ENTRADA SUAVE PARA PACKS --- */
+.pack-card {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- MEJORA VISUAL EN MOVIL --- */
+@media (max-width: 480px) {
+  .page-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .page-header p {
+    font-size: 0.95rem;
+  }
+
+  .category-chip {
+    min-width: 130px;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .pack-card-content {
+    padding: 1rem;
+  }
+
+  .pack-card-title {
+    font-size: 1.1rem;
+  }
+
+  .pack-card-description {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 4;
+  }
+
+  .sort-controls select,
+  .search-bar input {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+  }
+}

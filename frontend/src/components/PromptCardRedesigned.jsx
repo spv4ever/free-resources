@@ -146,7 +146,16 @@ const PromptCardRedesigned = React.memo(({
             </button>
             <button
               className="keiko-prompt-card__btn keiko-prompt-card__btn--primary"
-              onClick={() => handleCopyAndOpen(prompt.prompt, prompt.platform, promptId)}
+              onClick={() => {
+                if (prompt.platform.toLowerCase() === 'flux') {
+                  const token = localStorage.getItem('token');
+                  if (!token) {
+                    alert('⚠️ Debes iniciar sesión para generar imágenes en Flux.');
+                    return;
+                  }
+                }
+                handleCopyAndOpen(prompt.prompt, prompt.platform, promptId);
+              }}
               disabled={isGenerating || isPending}
             >
               <RocketIcon /> {isFlux ? 'Generar en Flux' : 'Copiar y Abrir IA'}

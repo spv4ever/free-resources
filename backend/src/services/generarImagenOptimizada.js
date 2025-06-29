@@ -5,6 +5,9 @@ import axios from 'axios';
 import { getComfyUrl } from './comfyService.js';
 import { getComfyAuth } from '../utils/comfyAuth.js';
 import { trackPendingJob } from '../services/comfySocketWatcher.js'; // ajusta la ruta si es necesario
+import { flujosCargados } from '../config/flujosCargados.js';
+
+const clonarFlujo = (flujoBase) => JSON.parse(JSON.stringify(flujoBase));
 
 const proporciones = {
   '1:1': [1024, 1024],
@@ -20,9 +23,9 @@ const resolucionesOptimizadas = {
   '3:4': [576, 768],
   '4:3': [768, 576],
   '5:4': [640, 512],
-  '16:9': [896, 504],
-  '9:16': [504, 896],
-  '21:9': [1050, 450]
+  '16:9': [896, 512],
+  '9:16': [512, 896],
+  '21:9': [1024, 448]
 };
 
 
@@ -35,32 +38,26 @@ export const generarImagenOptimizada = async ({
 }) => {
   if (!prompt) throw new Error('El prompt es obligatorio');
 
-  const ruta = path.join(process.cwd(), 'src', 'modeloia', 'flux_keiko.json');
-  const original = JSON.parse(fs.readFileSync(ruta, 'utf-8'));
-  const modificado = JSON.parse(JSON.stringify(original));
-
+  const modificado = clonarFlujo(flujosCargados.normal);
   const [width, height] = resolucionesOptimizadas[ratio] || resolucionesOptimizadas['4:3'];
 
-  // Aplicar ajustes
   modificado['1'].inputs.width = width;
   modificado['1'].inputs.height = height;
   modificado['13'].inputs.string = prompt;
   modificado['12'].inputs.noise_seed = seed || Math.floor(Math.random() * 1e16);
+  modificado['10'].inputs.steps = Math.min(steps, 30);
   modificado['30'].inputs.filename_prefix = filename_prefix;
 
-  // Limitar steps a máximo 15
-  modificado['10'].inputs.steps = Math.min(steps, 30);
-
-  // Eliminar upscale para aceleración
-  delete modificado['28'];
-  delete modificado['29'];
+  // Redirigir imagen generada directamente (sin upscale)
   modificado['30'].inputs.images = ['3', 0];
 
   const comfyUrl = await getComfyUrl('flux');
   const { data } = await axios.post(`${comfyUrl}/prompt`, { prompt: modificado }, getComfyAuth());
+
   if (data?.prompt_id) {
-    trackPendingJob(data.prompt_id); // 👈 registrar job como "queued"
-    }
+    trackPendingJob(data.prompt_id);
+  }
+
   return data;
 };
 
@@ -70,28 +67,26 @@ export const generarImagenAvanzada = async ({
   seed = null,
   steps = 15,
   filename_prefix = 'keiko',
-  removeBackground = false // 👈 nuevo parámetro con valor por defecto
+  removeBackground = false
 }) => {
   if (!prompt) throw new Error('El prompt es obligatorio');
 
-  const ruta = path.join(process.cwd(), 'src', 'modeloia', 'flux_advanced.json');
-  const original = JSON.parse(fs.readFileSync(ruta, 'utf-8'));
-  const modificado = JSON.parse(JSON.stringify(original));
-
+  const modificado = clonarFlujo(flujosCargados.pro);
   const [width, height] = resolucionesOptimizadas[ratio] || resolucionesOptimizadas['4:3'];
 
-  // Aplicar ajustes
   modificado['1'].inputs.width = width;
   modificado['1'].inputs.height = height;
   modificado['13'].inputs.string = prompt;
   modificado['12'].inputs.noise_seed = seed || Math.floor(Math.random() * 1e16);
-  modificado['30'].inputs.filename_prefix = filename_prefix;
   modificado['10'].inputs.steps = Math.min(steps, 30);
+  modificado['30'].inputs.filename_prefix = filename_prefix;
 
+  // Redirigir según si se desea eliminar fondo
   modificado['30'].inputs.images = removeBackground ? ['31', 0] : ['29', 0];
 
   const comfyUrl = await getComfyUrl('flux');
   const { data } = await axios.post(`${comfyUrl}/prompt`, { prompt: modificado }, getComfyAuth());
+
   if (data?.prompt_id) {
     trackPendingJob(data.prompt_id);
   }

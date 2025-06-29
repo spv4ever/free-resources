@@ -639,6 +639,158 @@ section {
     animation: pulse-infinite 2s infinite ease-in-out;
 }
 
+/* Nueva Sección: Bono Especial Telegram */
+.bonus-section {
+    background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(var(--primary-color), 0.2);
+    border-bottom: 1px solid rgba(var(--secondary-color), 0.2);
+}
+
+.bonus-section .container {
+    position: relative;
+    z-index: 1;
+}
+
+.bonus-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: var(--bg-medium);
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--accent-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.bonus-content::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
+    opacity: 0.05;
+    z-index: 0;
+    animation: rotateElement 15s linear infinite;
+}
+.bonus-content::after {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--secondary-color) 0%, transparent 70%);
+    opacity: 0.05;
+    z-index: 0;
+    animation: rotateElementReverse 18s linear infinite;
+}
+
+@keyframes rotateElement {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes rotateElementReverse {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+}
+
+
+.bonus-icon {
+    font-size: 5em;
+    color: var(--accent-color);
+    margin-bottom: 30px;
+    text-shadow: 0 0 20px rgba(var(--accent-color), 0.7);
+}
+
+.bonus-section h2 {
+    font-size: 3em;
+    margin-bottom: 25px;
+    color: var(--text-color);
+    text-align: center;
+}
+
+.bonus-section .section-description { /* Reutilizamos la clase existente para el párrafo */
+    font-size: 1.2em;
+    margin-bottom: 40px;
+    color: var(--text-light);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bonus-btn {
+    font-size: 1.3em;
+    padding: 18px 36px;
+    box-shadow: 0 8px 30px rgba(var(--primary-color), 0.5);
+}
+
+.bonus-btn i {
+    margin-left: 10px;
+}
+
+.bonus-btn:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 40px rgba(var(--secondary-color), 0.6);
+}
+
+.bonus-section .small-text {
+    font-size: 0.9em;
+    margin-top: 25px;
+    color: var(--text-light);
+    opacity: 0.7;
+}
+
+/* Animación de pulsación para el icono de bono (más lenta) */
+@keyframes pulse-slow {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.08); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+.animate-pulse-slow {
+    animation: pulse-slow 3s infinite ease-in-out;
+}
+
+
+/* Responsive para la nueva sección */
+@media (max-width: 768px) {
+    .bonus-section {
+        padding: 60px 0;
+    }
+    .bonus-section h2 {
+        font-size: 2.2em;
+    }
+    .bonus-section .section-description {
+        font-size: 1em;
+    }
+    .bonus-btn {
+        font-size: 1.1em;
+        padding: 14px 28px;
+    }
+    .bonus-icon {
+        font-size: 4em;
+    }
+}
+
+@media (max-width: 480px) {
+    .bonus-section h2 {
+        font-size: 1.8em;
+    }
+    .bonus-content {
+        padding: 20px;
+    }
+    .bonus-icon {
+        font-size: 3.5em;
+    }
+}
+
 @media (min-width: 769px) and (max-width: 1200px) {
     .features-grid {
         grid-template-columns: repeat(2, minmax(300px, 1fr)); /* Fuerza 2 columnas */

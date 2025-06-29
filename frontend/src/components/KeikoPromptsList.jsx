@@ -125,7 +125,7 @@ export default function KeikoPromptsList() {
 
 
   useEffect(() => {
-    if (loading || !user) return;
+    if (loading) return;
     axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/packs/${packId}`)
       .then(({ data }) => setPack(data))
       .catch(console.error);
@@ -191,10 +191,10 @@ export default function KeikoPromptsList() {
   //   ]);
 
   if (loading) return <div className="page-loader">⏳ Cargando...</div>;
-  if (!user) return <div className="restricted-area">
-        <h2>🔒 Acceso restringido</h2>
-        <p>Esta sección está disponible solo para usuarios registrados.</p>
-      </div>
+  // if (!user) return <div className="restricted-area">
+  //       <h2>🔒 Acceso restringido</h2>
+  //       <p>Esta sección está disponible solo para usuarios registrados.</p>
+  //     </div>
   // if (user.role !== 'pro' && user.role !== 'admin') {
   //   return (
   //     <div className="restricted-area">
@@ -421,9 +421,9 @@ export default function KeikoPromptsList() {
   
   if (loading) return <p>⏳ Cargando usuario...</p>;
   
-  if (!user) {
-    return <p>🔐 Debes iniciar sesión para ver esta sección.</p>;
-  }
+  // if (!user) {
+  //   return <p>🔐 Debes iniciar sesión para ver esta sección.</p>;
+  // }
 
   
 
@@ -431,7 +431,7 @@ export default function KeikoPromptsList() {
   return (
     <div className="keiko-user-container">
       {/* <AdBanner /> */}
-      <div className="pack-header-container">
+      <div id="prompt-section" className="pack-header-container">
         <h1 className="pack-title">{pack.title}</h1>
         <p className="pack-desc">{pack.description}</p>
 

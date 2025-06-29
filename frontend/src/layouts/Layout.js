@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { FaBook, FaRobot, FaYoutube, FaFileAlt, FaImage, FaGraduationCap, FaRocket, FaShieldVirus, FaMagic, FaGift, FaTicketAlt, FaTv, FaBoxes  } from 'react-icons/fa';
@@ -14,6 +15,12 @@ import AffiliateBannerAndSidebar from '../components/AffiliateBannerAndSidebar';
 function Layout() {
   // const { user } = useUser();
   const location = useLocation();
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const handleStart = () => {
+    sessionStorage.setItem('scrollToPromptSection', 'true');
+    navigate('/keikoprompts');
+  };
   const sections = [
   // 🔥 Inicio atractivo (alto interés / engagement)
   { title: 'MultiMedia', description: 'Imágenes del universo, los mejores vídeos, todo Multimedia', path: '/media', icon: <FaImage /> },
@@ -57,7 +64,15 @@ function Layout() {
       
       <Navbar />
 
-      <div className="menu-bar">
+      {/* SOLO visible en móvil */}
+      <div className="mobile-only mobile-menu-toggle">
+        <button onClick={() => setMenuOpen(!menuOpen)} className="menu-toggle-btn">
+          {menuOpen ? '▲ Ocultar Menú' : '▼ Mostrar Menú'}
+        </button>
+      </div>
+
+      {/* El menú: ocultar/mostrar solo en móvil */}
+      <div className={`menu-bar ${menuOpen ? 'show' : 'hide'}`}>
         {sections.map((section, index) => (
           <Link
             key={index}
@@ -69,6 +84,19 @@ function Layout() {
             <span>{section.title}</span>
           </Link>
         ))}
+      </div>
+          
+      <div className="home-intro">
+        <h2>🎨 Crea imágenes increíbles con IA</h2>
+        <img
+          src="https://res.cloudinary.com/dhoaeyjpt/image/upload/v1751195850/keikoprompts/KeikoLover/2025-06-29/KeikoLover_00515_.png"
+          alt="Ejemplo de imagen IA"
+          className="intro-image"
+        />
+        <p>Prueba KeikoPrompts y genera tu primera imagen en segundos. ¡Gratis!</p>
+        <button className="cta-button" onClick={handleStart}>
+          Empezar ahora
+        </button>
       </div>
 
       <main className="layout-content">

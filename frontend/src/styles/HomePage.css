@@ -244,3 +244,153 @@
 .telegram-fab:hover {
   background-color: #666;
 }
+
+@media (max-width: 600px) {
+  .menu-button {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+    margin-bottom: 6px;
+    flex: 1 1 40%;
+    justify-content: center;
+  }
+
+  .menu-bar {
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+}
+
+.home-intro {
+  background-color: #1e1e1e;
+  color: white;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  border-radius: 8px;
+  margin: 1rem auto;
+  max-width: 480px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.home-intro h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.cta-button {
+  display: inline-block;
+  background-color: #00bfff;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.cta-button:hover {
+  background-color: #009fd8;
+}
+.scroll-cue {
+  text-align: center;
+  font-size: 1.5rem;
+  animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* Ocultar por defecto */
+.home-intro {
+  display: none;
+}
+
+/* Mostrar solo en móvil (hasta 600px) */
+@media (max-width: 600px) {
+  .home-intro {
+    display: block;
+  }
+}
+
+.mobile-menu-toggle {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.menu-toggle-btn {
+  background-color: #222;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border: 1px solid #444;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .menu-bar.hide {
+    display: none;
+  }
+}
+
+/* Ocultar el botón y comportamiento en escritorio */
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .mobile-only {
+    display: block;
+  }
+
+  /* Solo en móvil ocultamos el menú por defecto */
+  .menu-bar.hide {
+    display: none;
+  }
+}
+
+.home-intro {
+  background-color: #1f1f1f;
+  color: white;
+  padding: 2rem 1rem;
+  text-align: center;
+  border-radius: 12px;
+  margin: 2rem auto 1rem auto;
+  max-width: 460px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+.home-intro h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: #ffd859;
+}
+
+.home-intro p {
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.intro-image {
+  width: 100%;
+  border-radius: 8px;
+  margin: 1rem 0;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.cta-button {
+  display: inline-block;
+  background-color: #00bfff;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.cta-button:hover {
+  background-color: #009fd8;
+}
