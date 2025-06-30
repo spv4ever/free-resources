@@ -249,7 +249,7 @@ export default function KeikoPromptsList() {
       
 
       const token = localStorage.getItem('token');
-
+      
       const { data } = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/flux/generate`,
         {
@@ -287,7 +287,7 @@ export default function KeikoPromptsList() {
           }
           return p;
         });
-      }, 60000);
+      }, 30000);
     } catch (err) {
       console.error('Error al generar con Flux:', err.message);
       if (err.response && err.response.status === 403) {

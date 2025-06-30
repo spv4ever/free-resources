@@ -93,3 +93,66 @@ export const generarImagenAvanzada = async ({
 
   return data;
 };
+
+export const generarImagenStickers = async ({
+  prompt,
+  ratio = '3:4',
+  seed = null,
+  steps = 30,
+  filename_prefix = 'keiko'
+}) => {
+  if (!prompt) throw new Error('El prompt es obligatorio');
+
+  const modificado = clonarFlujo(flujosCargados.stickers);
+  const [width, height] = resolucionesOptimizadas[ratio] || resolucionesOptimizadas['3:4'];
+
+  if (modificado['6']) {
+    modificado['6'].inputs.width = width;
+    modificado['6'].inputs.height = height;
+  }
+
+  if (modificado['3']) {
+    modificado['3'].inputs.text = prompt;
+  }
+
+  if (modificado['5']) {
+    modificado['5'].inputs.seed = seed || Math.floor(Math.random() * 1e16);
+    modificado['5'].inputs.steps = Math.min(steps, 30);
+  }
+
+  if (modificado['28']) {
+    modificado['28'].inputs.filename_prefix = filename_prefix;
+  }
+
+  const comfyUrl = await getComfyUrl('flux');
+  const { data } = await axios.post(`${comfyUrl}/prompt`, { prompt: modificado }, getComfyAuth());
+
+  if (data?.prompt_id) {
+    trackPendingJob(data.prompt_id);
+  }
+
+  return data;
+};
+
+export const generarImagen = async ({
+  prompt,
+  ratio,
+  seed,
+  steps,
+  filename_prefix,
+  advancedMode = false,
+  removeBackground = false,
+  category = ''
+}) => {
+  const esSticker = ['Stickers', 'T-Shirt'].includes(category);
+
+  if (esSticker) {
+    return generarImagenStickers({ prompt, ratio, seed, steps, filename_prefix });
+  }
+
+  if (advancedMode) {
+    return generarImagenAvanzada({ prompt, ratio, seed, steps, filename_prefix, removeBackground });
+  }
+
+  return generarImagenOptimizada({ prompt, ratio, seed, steps, filename_prefix });
+};

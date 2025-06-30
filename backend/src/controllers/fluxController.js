@@ -1,5 +1,5 @@
 // src/controllers/fluxController.js
-import { generarImagenOptimizada, generarImagenAvanzada } from '../services/generarImagenOptimizada.js';
+import { generarImagen as generarImagenServicio } from '../services/generarImagenOptimizada.js';
 import { consultarImagenGenerada } from '../services/resultadoImagenService.js';
 import ImagenGenerada from '../models/ImagenGenerada.js';
 import { getComfyUrl } from '../services/comfyService.js';
@@ -16,40 +16,63 @@ import axios from 'axios';
 
 export const generarImagen = async (req, res) => {
   try {
-    const { prompt, ratio, seed, steps, advancedMode = false, removeBackground = false  } = req.body;
-    const filename_prefix = req.user.nickname || 'keiko';
-    await consumirToken({
-        userId: req.user._id,
-        type: 'generation',
-        tool: 'comfyui',
-        description: `Generación de imagen con prompt: ${prompt}`
-      });
-
-
-    const generarImagen = advancedMode ? generarImagenAvanzada : generarImagenOptimizada;
-
-    const resultado = await generarImagen({
+    const {
       prompt,
       ratio,
       seed,
       steps,
+      advancedMode = false,
+      removeBackground = false,
+      promptRef
+    } = req.body;
+    // console.log('📦 Categoría detectada para promptRef:', category);
+    const filename_prefix = req.user.nickname || 'keiko';
+
+    // 🔎 Obtener categoría del pack (si viene referencia de prompt)
+    let category = '';
+    if (promptRef) {
+      const promptDoc = await Prompt.findById(promptRef).populate('packId');
+      category = promptDoc?.packId?.category || '';
+    }
+    console.log('📦 Categoría detectada para promptRef:', category);
+    await consumirToken({
+      userId: req.user._id,
+      type: 'generation',
+      tool: 'comfyui',
+      description: `Generación de imagen con prompt: ${prompt}`
+    });
+    const categoriasAltaCalidad = ['stickers', 'tshirts', 't-shirts'];
+    const stepsFinal = categoriasAltaCalidad.includes(category.toLowerCase())
+      ? 30
+      : steps || 15;
+    const resultado = await generarImagenServicio({
+      prompt,
+      ratio,
+      seed,
+      steps: stepsFinal,
       filename_prefix,
-      removeBackground // solo se usará en flujo avanzado
+      removeBackground,
+      advancedMode,
+      category
     });
 
+    console.log('📥 Resultado de generarImagenServicio:', resultado);
 
-    console.log(req.user.permiteImagenesPublicas)
+    if (!resultado || !resultado.prompt_id) {
+      throw new Error('❌ No se recibió prompt_id desde generarImagenServicio');
+    }
+
     await ImagenGenerada.create({
       user: req.user._id,
       prompt_id: resultado.prompt_id,
       prompt,
-      promptRef: req.body.promptRef, // ← asegúrate de mandarlo desde el frontend
-      public: req.user.permiteImagenesPublicas === true // ← se guarda como pública si el usuario lo permite
+      promptRef,
+      public: req.user.permiteImagenesPublicas === true
     });
 
     trackPendingJob(resultado.prompt_id, {
       userId: req.user._id,
-      nickname: filename_prefix, // ya es el nickname
+      nickname: filename_prefix,
       prompt
     });
 
@@ -112,7 +135,8 @@ export const verificarImagen = async (req, res) => {
 
     const { data } = await axios.get(`${comfyUrl}/history/${id}`, getComfyAuth());
     const entry = data[id] || data;
-    const nodoSalida = entry.outputs?.['30'];
+    const nodoSalida = Object.values(entry.outputs || {}).find(nodo => nodo?.images?.length > 0);
+
 
     if (nodoSalida && nodoSalida.images?.length > 0) {
       const { filename } = nodoSalida.images[0];
@@ -120,12 +144,13 @@ export const verificarImagen = async (req, res) => {
 
       // 🔎 Buscar los datos guardados en Mongo
       const imagen = await ImagenGenerada.findOne({ prompt_id: id });
+      const user = await import('../models/User.js').then(m => m.default.findById(imagen.user));
 
       // ⚡ Subir a Cloudinary y actualizar
       if (imagen) {
         await manejarFinalizacionDeJob(id, {
           userId: imagen.user,
-          nickname: req.user.nickname, // puede que quieras también guardar esto en Mongo
+          nickname: user.nickname, // puede que quieras también guardar esto en Mongo
           prompt: imagen.prompt,
           filename
         });

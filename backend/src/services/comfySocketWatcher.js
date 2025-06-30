@@ -1,7 +1,9 @@
 import WebSocket from 'ws';
+import axios from 'axios';
 import { getComfyUrl } from '../services/comfyService.js';
 import { getComfyAuth } from '../utils/comfyAuth.js';
 import { manejarFinalizacionDeJob } from '../services/manejoResultadoImagen.js';
+import { verificarImagen } from '../controllers/fluxController.js'; // asegúrate de que se puede importar
 
 const jobStatusMap = new Map();
 
@@ -83,6 +85,21 @@ export const startComfySocketWatcher = async () => {
 
               jobStatusMap.set(promptId, updated);
               // console.log('🔄 Actualizando job:', promptId, `(${Math.round(progress * 100)}%)`);
+              // ⚡ Detectar que ha alcanzado el 100%
+              if (value === max && updated.status !== 'finished') {
+                console.log(`✅ Job completado por progreso (${promptId})`);
+
+                jobStatusMap.set(promptId, {
+                  ...updated,
+                  status: 'finished',
+                  progress: 1,
+                  inQueue: false,
+                  finishedAt: Date.now()
+                });
+
+                // ⚡ Ejecutar verificación como función async dentro
+                esperarYVerificarImagen(promptId);
+              }
             }
             break;
 
@@ -163,4 +180,32 @@ const calcularPosicionEnCola = (promptId) => {
     .sort((a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0)) // ordenados por tiempo
 
   return queue.findIndex(([id]) => id === promptId) + 1; // +1 para que empiece en 1
+};
+
+export const esperarYVerificarImagen = async (promptId, intentos = 10, delay = 1000) => {
+  const comfyUrl = await getComfyUrl('flux');
+
+  for (let i = 0; i < intentos; i++) {
+    try {
+      const { data } = await axios.get(`${comfyUrl}/history/${promptId}`, getComfyAuth());
+      const entry = data[promptId] || data;
+      const nodoSalida = Object.values(entry.outputs || {}).find(n => n?.images?.length > 0);
+
+      if (nodoSalida && nodoSalida.images.length > 0) {
+        console.log(`🧠 Imagen detectada tras ${i + 1} intento(s). Ejecutando verificación...`);
+        await verificarImagen({ params: { id: promptId } }, {
+          json: () => {},
+          status: () => ({ json: () => {} })
+        });
+        return;
+      }
+    } catch (e) {
+      // Silenciar errores hasta que sea el último intento
+      if (i === intentos - 1) {
+        console.error(`❌ Error al verificar imagen tras ${intentos} intentos:`, e.message);
+      }
+    }
+
+    await new Promise(r => setTimeout(r, delay));
+  }
 };
