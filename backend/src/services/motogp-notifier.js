@@ -1,27 +1,23 @@
 // motogp-notifier.js
 
-// 1. Importación de Módulos
 import dotenv from 'dotenv';
 import axios from 'axios';
-import cron from 'node-cron';
 import TelegramBot from 'node-telegram-bot-api';
 
 dotenv.config();
 
-// 2. Configuración y Constantes
 const token = process.env.TELEGRAM_BOT_TOKEN;
 const chatId = process.env.TELEGRAM_CHAT_ID;
 const apiUrl = `${process.env.API_URL}/api/sports/motogp/next`;
 
-// 3. Función auxiliar para Hashtags
 const createHashtag = (text) => {
   if (!text) return '';
   return `#${text.replace(/[^a-zA-Z0-9]/g, '')}`;
 };
 
-// 4. Lógica del Notificador
 let bot;
 const notifiedEvents = new Map();
+let dailySummarySentDate = null;
 
 const sendMessage = (message) => {
   if (!bot) return;
@@ -33,53 +29,77 @@ const sendMessage = (message) => {
     .catch(err => console.error(`❌ Error al enviar mensaje a Telegram: ${err.response?.body?.description || err.message}`));
 };
 
-const checkEventsAndNotify = async () => {
-  console.log(`\n[${new Date().toLocaleString()}] 🔄 Comprobando eventos del fin de semana...`);
+const maybeSendDailySummary = (events) => {
+  const now = new Date();
+  const today = now.toISOString().split('T')[0];
+
+  if (dailySummarySentDate === today) return;
+
+  const todayEvents = events.filter(e => e.start.startsWith(today));
+  if (todayEvents.length === 0) return;
+
+  const firstEventTime = new Date(todayEvents[0].start);
+  const diffMinutes = Math.floor((firstEventTime - now) / (1000 * 60));
+
+  if (diffMinutes <= 30 && diffMinutes >= 29) {
+    const resumen = todayEvents.map(e => {
+      const hour = new Date(e.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return `🕒 <b>${hour}</b> — <i>${e.title}</i>`;
+    }).join('\n');
+
+    const circuit = createHashtag(todayEvents[0].location);
+    sendMessage(`<b>📅 Día de Carreras</b>\n\nEventos para hoy:\n\n${resumen}\n\n${circuit}`);
+
+    dailySummarySentDate = today;
+  }
+};
+
+export const checkEventsAndNotify = async () => {
+  console.log(`\n[${new Date().toLocaleString()}] 🔄 Comprobando eventos MotoGP...`);
 
   try {
     const res = await axios.get(apiUrl);
     const allEvents = res.data.events || [];
-    
+
     const futureEvents = allEvents
       .filter(e => new Date(e.start) > new Date())
       .sort((a, b) => new Date(a.start) - new Date(b.start));
 
     if (futureEvents.length === 0) {
-      console.log('ℹ️ No se encontraron próximos eventos para el fin de semana.');
+      console.log('ℹ️ No se encontraron próximos eventos MotoGP.');
       return;
     }
-    
+
     const currentEventIds = new Set(futureEvents.map(e => e._id));
     for (const eventId of notifiedEvents.keys()) {
-        if (!currentEventIds.has(eventId)) {
-            notifiedEvents.delete(eventId);
-            console.log(`🗑️ Evento antiguo (${eventId}) limpiado del registro.`);
-        }
+      if (!currentEventIds.has(eventId)) {
+        notifiedEvents.delete(eventId);
+        console.log(`🗑️ Evento antiguo (${eventId}) limpiado del registro.`);
+      }
     }
-    
-    console.log(`🔍 Encontrados ${futureEvents.length} eventos futuros (todas las categorías). Próximo: "${futureEvents[0].title}"`);
 
-    for (const event of futureEvents) {
+    maybeSendDailySummary(futureEvents);
+
+    for (let i = 0; i < futureEvents.length; i++) {
+      const event = futureEvents[i];
       const now = new Date();
       const eventStart = new Date(event.start);
       const diffMinutes = Math.floor((eventStart - now) / (1000 * 60));
-      
+
       const eventNotifications = notifiedEvents.get(event._id) || [];
       const circuitHashtag = createHashtag(event.location);
       const categoryHashtag = createHashtag(event.category);
       const hashtags = `${circuitHashtag} ${categoryHashtag}`.trim();
 
-      if (diffMinutes <= 60 && diffMinutes >= 59 && !eventNotifications.includes('60m')) {
-        sendMessage(`<b>🏁 Aviso de Evento 🏁</b>\n\nFalta <b>1 hora</b> para el inicio de:\n<i>${event.title}</i>\n\n${hashtags}`);
-        eventNotifications.push('60m');
-      }
-      else if (diffMinutes <= 5 && diffMinutes >= 4 && !eventNotifications.includes('5m')) {
-        sendMessage(`<b>🔥 ¡Atención Pilotos! 🔥</b>\n\nSolo faltan <b>5 minutos</b> para que empiece:\n<i>${event.title}</i>\n\n${hashtags}`);
+      const previousEvent = futureEvents[i - 1];
+      const isConsecutive = previousEvent &&
+        Math.abs(new Date(previousEvent.start) - eventStart) <= 10 * 60 * 1000;
+
+      if (diffMinutes <= 5 && diffMinutes >= 4 && !eventNotifications.includes('5m')) {
+        if (!isConsecutive) {
+          sendMessage(`<b>🔥 ¡Atención Pilotos! 🔥</b>\n\nSolo faltan <b>5 minutos</b> para que empiece:\n<i>${event.title}</i>\n\n${hashtags}`);
+        }
         eventNotifications.push('5m');
-      }
-      else if (diffMinutes <= 0 && diffMinutes >= -1 && !eventNotifications.includes('0m')) {
-        sendMessage(`<b>🟢 ¡SEMÁFORO EN VERDE! 🟢</b>\n\n¡Arranca ahora mismo el evento!\n<i>${event.title}</i>\n\n${hashtags}`);
-        eventNotifications.push('0m');
       }
 
       if (eventNotifications.length > 0) {
@@ -88,34 +108,21 @@ const checkEventsAndNotify = async () => {
     }
 
   } catch (error) {
-    console.error(`❌ Error al obtener o procesar los eventos: ${error.message}`);
+    console.error(`❌ Error al obtener o procesar los eventos MotoGP: ${error.message}`);
   }
 };
 
-// 5. Función de Arranque (la que se exporta y se llama desde app.js)
-
-/**
- * Inicia el sistema de notificaciones de MotoGP, PERO SOLO EN PRODUCCIÓN.
- * Se encarga de crear el bot y programar la tarea cron.
- */
 export const startMotoGPNotifier = () => {
-  // --- ¡AQUÍ ESTÁ EL CAMBIO FINAL! ---
-  // Condición de salida si no estamos en el entorno de producción.
   if (process.env.NODE_ENV !== 'production') {
-    console.log('ℹ️ El notificador de MotoGP está deshabilitado en el entorno de desarrollo (NODE_ENV no es "production").');
-    return; // Detiene la ejecución de esta función.
+    console.log('ℹ️ El notificador de MotoGP está deshabilitado en desarrollo.');
+    return;
   }
 
-  // El resto del código solo se ejecutará si la condición anterior es falsa.
   if (!token || !chatId || !apiUrl) {
-    console.warn('⚠️ El notificador de MotoGP (en producción) no se iniciará por falta de configuración.');
+    console.warn('⚠️ Falta configuración para iniciar el bot de MotoGP.');
     return;
   }
 
   bot = new TelegramBot(token);
-  cron.schedule('* * * * *', checkEventsAndNotify);
-  
-  console.log('🚀 Notificador de eventos de motor para Telegram iniciado en modo PRODUCCIÓN.');
-  
-  checkEventsAndNotify();
+  console.log('🤖 Bot de MotoGP inicializado (sin cron interno).');
 };

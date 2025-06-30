@@ -26,13 +26,24 @@ useEffect(() => {
           <h2 className="pack-title">
             {pack}
             {imagenes[0]?.packId && (
-              <a
-                href={`/biblioteca/pack/${imagenes[0].packId}`}
-                className="ver-pack-link"
-                title="Ver todas las imágenes del pack"
-              >
-                🔍 Ver todas
-              </a>
+              <span className="pack-links">
+                <a
+                  href={`/biblioteca/pack/${imagenes[0].packId}`}
+                  className="pack-link"
+                  title="Ver todas las imágenes del pack"
+                >
+                  🔍 Ver todas
+                </a>
+                <a
+                  href={`/prompts/${imagenes[0].packId}`}
+                  className="pack-link"
+                  title="Ir al generador de prompts del pack"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  🎨 Generar
+                </a>
+              </span>
             )}
           </h2>
           <div className="image-grid">

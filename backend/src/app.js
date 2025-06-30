@@ -84,6 +84,8 @@ import { startComfySocketWatcher } from './services/comfySocketWatcher.js';
 import tokenRoutes from './routes/tokenRoutes.js';
 import imagenesPublicasRoutes from './routes/imagenesPublicasRoutes.js';
 import devTestRoutes from './keikoprompts/routes/devTestRoutes.js';
+import sportsRoutes from './routes/sportsRoutes.js';
+import { startDailyEventScheduler } from './notifier/coreScheduler.js';
 
 
 
@@ -196,7 +198,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 fetchNasaImageDaily();
 startMotoGPNotifier();
-
+startDailyEventScheduler(); // activa cron diario
 //fetchTodayImage();
 
 // Rutas
@@ -260,6 +262,7 @@ app.use('/api/tokens', tokenRoutes);
 app.use('/api/flux', fluxRoutes);
 app.use('/api/public-images', imagenesPublicasRoutes);
 app.use('/api/dev', devTestRoutes);
+app.use('/api/sports', sportsRoutes);
 
 
 

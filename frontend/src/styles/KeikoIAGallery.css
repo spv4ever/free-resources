@@ -139,3 +139,20 @@
 .ver-pack-link:hover {
   text-decoration: underline;
 }
+
+.pack-links {
+  margin-left: 12px;
+}
+
+.pack-link {
+  margin-left: 10px;
+  color: #1DA1F2; /* Azul del branding */
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.pack-link:hover {
+  text-decoration: none;
+  color: #0d8ddb;
+}

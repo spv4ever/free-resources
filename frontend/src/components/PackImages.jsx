@@ -23,8 +23,23 @@ const PackImages = () => {
   return (
     <div className="packimages-container">
         <div className="packimages-header">
-            <button onClick={() => window.history.back()} className="packimages-back-btn">← Volver a la galería</button>
-            <h2 className="packimages-title">Imágenes del Pack</h2>
+          <button onClick={() => window.history.back()} className="packimages-back-btn">
+            ← Volver a la galería
+          </button>
+
+          <h2 className="packimages-title">Imágenes del Pack</h2>
+
+          <div className="generador-center">
+            <a
+              href={`/prompts/${packId}`}
+              className="generador-link-button"
+              title="Ir al generador de prompts del pack"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              🎨 Ir al generador
+            </a>
+          </div>
         </div>
         <div className="packimages-grid">
             {imagenes.map(img => (
