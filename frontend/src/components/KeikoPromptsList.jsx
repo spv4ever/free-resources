@@ -51,6 +51,24 @@ export default function KeikoPromptsList() {
   const [removeBackground, setRemoveBackground] = useState(true);
   const isProUser = useMemo(() => ['admin', 'pro'].includes(user?.role), [user]);
   
+useEffect(() => {
+    if (document.querySelector('script[data-name="BMC-Widget"]')) return;
+
+    const script = document.createElement("script");
+    script.setAttribute("data-name", "BMC-Widget");
+    script.setAttribute("data-cfasync", "false");
+    script.src = "https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js";
+    script.setAttribute("data-id", "keikodev");
+    script.setAttribute("data-description", "Support me on Buy me a coffee!");
+    script.setAttribute("data-message", "Gracias por tu apoyo en el proyecto, en breve recibirás tokens gratis para seguir creando.");
+    script.setAttribute("data-color", "#26B0A1");
+    script.setAttribute("data-position", "Right");
+    script.setAttribute("data-x_margin", "18");
+    script.setAttribute("data-y_margin", "18");
+
+    document.body.appendChild(script);
+  }, []);
+
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/options/used-in-pack/${packId}`)
       .then(res => setAvailableOptions(res.data))

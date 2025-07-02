@@ -53,27 +53,35 @@ export const manejarFinalizacionDeJob = async (promptId, { nickname, prompt, use
       throw new Error(`No se pudo descargar la imagen tras ${intento - 1} intentos`);
     }
 
+    // 🔍 Calcular public_id sin extensión
+    const nombreSinExtension = filename.replace(/\.[^/.]+$/, ''); // "KeikoDev_00122_"
+    const public_id = `${carpetaCloudinary}/${nombreSinExtension}`; // completo para Cloudinary
+
     // ☁️ Subir a Cloudinary
     const result = await cloudinary.uploader.upload(tempFilePath, {
-      folder: carpetaCloudinary,
+      public_id,
       width: 800,
       crop: 'limit',
       quality: 'auto',
       overwrite: true,
-      resource_type: 'image',
-      use_filename: true,
-      unique_filename: false
+      resource_type: 'image'
     });
 
-    // fs.unlinkSync(tempFilePath); // 🧹 borrar temporal
+    // 🧹 Eliminar archivo temporal
+    if (fs.existsSync(tempFilePath)) {
+        fs.unlinkSync(tempFilePath);
+      } else {
+        console.warn('⚠️ Archivo temporal no encontrado para eliminar:', tempFilePath);
+      }
 
+    // 🧠 Guardar en Mongo
     await ImagenGenerada.findOneAndUpdate(
       { prompt_id: promptId },
       {
-        filename,
-        url: result.secure_url,
-        status: 'completada',
-        finalUrl: result.secure_url, // la definitiva (cloudinary)
+        filename: result.public_id,         // ← ahora sí sirve para eliminar luego
+        url: result.secure_url,             // URL temporal si la usas
+        finalUrl: result.secure_url,        // URL de Cloudinary
+        status: 'completada'
       }
     );
 

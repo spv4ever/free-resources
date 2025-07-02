@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/PackImages.css';
 import PromptImageModal from './PromptImageModal';
+import { useUser } from '../context/UserContext'; // ajusta la ruta si es diferente
 
 const PackImages = () => {
   const { packId } = useParams();
@@ -10,6 +11,7 @@ const PackImages = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [imagenAmpliada, setImagenAmpliada] = useState(null);
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchImagenes = async () => {
@@ -61,7 +63,10 @@ const PackImages = () => {
             </div>
             )}
 
-        {imagenAmpliada && <PromptImageModal image={imagenAmpliada} onClose={() => setImagenAmpliada(null)} />
+        {imagenAmpliada && <PromptImageModal
+            image={{ ...imagenAmpliada, isAdmin: user?.role === 'admin'}}
+            onClose={() => setImagenAmpliada(null)}
+          />
 }
         </div>
   );

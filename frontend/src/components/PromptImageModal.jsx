@@ -2,9 +2,11 @@
 import React from 'react';
 import '../styles/PromptImageModal.css';
 import { FaXTwitter, FaFacebook, FaTelegram, FaRegCopy } from 'react-icons/fa6';
+import { useUser } from '../context/UserContext'; // ajusta la ruta si es diferente
 
 
 const PromptImageModal = ({ image, onClose }) => {
+  const { token } = useUser();
   if (!image) return null;
 
   return (
@@ -15,6 +17,7 @@ const PromptImageModal = ({ image, onClose }) => {
         <img src={image.finalUrl} alt="Imagen IA" className="promptmodal-img" />
 
         <div className="promptmodal-details">
+          
           <h3>{image.promptScene}</h3>
           <p><strong>Pack:</strong> {image.packTitle}</p>
           <p><strong>Autor:</strong> {image.nickname}</p>
@@ -67,6 +70,38 @@ const PromptImageModal = ({ image, onClose }) => {
                 >
                 <FaRegCopy /> Copiar imagen para X
                 </button>
+                {image.isAdmin && (
+                  <button
+                    className="promptmodal-delete-btn"
+                    onClick={async () => {
+                      if (!window.confirm('¿Estás seguro de que quieres eliminar esta imagen?')) return;
+
+                      try {
+                        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/imagenes/${image._id}`, {
+                          method: 'DELETE',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                          },
+                        });
+
+                        const data = await res.json();
+
+                        if (res.ok) {
+                          alert('✅ Imagen eliminada correctamente.');
+                          onClose();
+                        } else {
+                          alert('❌ Error al eliminar imagen: ' + data.message);
+                        }
+                      } catch (error) {
+                        alert('❌ Error inesperado al eliminar imagen.');
+                        console.error(error);
+                      }
+                    }}
+                  >
+                    🗑️ Eliminar imagen
+                  </button>
+                )}
             </div>
             </div>
         </div>

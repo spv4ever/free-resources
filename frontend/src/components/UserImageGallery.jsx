@@ -89,7 +89,10 @@ const UserImageGallery = () => {
         <p className="no-more">📦 No hay más imágenes.</p>
       )}
 
-      {imagenAmpliada && <PromptImageModal image={imagenAmpliada} onClose={() => setImagenAmpliada(null)} />}
+      {imagenAmpliada && <PromptImageModal
+            image={{ ...imagenAmpliada, isAdmin: user?.role === 'admin' }}
+            onClose={() => setImagenAmpliada(null)}
+          />}
 
 
       <ScrollToTopButton />

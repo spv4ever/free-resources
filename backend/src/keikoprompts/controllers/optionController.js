@@ -92,7 +92,7 @@ export const getUsedOptionsByPack = async (req, res) => {
       }
     }
 
-    console.log('IDs recolectados:', [...usedOptionIds]);
+    // console.log('IDs recolectados:', [...usedOptionIds]);
 
     const options = await KeikoPromptOption.find({
       _id: { $in: [...usedOptionIds] }

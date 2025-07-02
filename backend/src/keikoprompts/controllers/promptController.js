@@ -161,7 +161,7 @@ export const getPromptsByPackPaginated = async (req, res) => {
     }
   });
 
-  console.log('🧪 DEBUG QUERY - filters parsed:', filters);
+  // console.log('🧪 DEBUG QUERY - filters parsed:', filters);
 
   const query = {
     packId,
@@ -190,7 +190,7 @@ export const getPromptsByPackPaginated = async (req, res) => {
   const skip = (parseInt(page) - 1) * parseInt(limit);
 
   try {
-    console.log('🧪 Query Mongo FINAL aplicado en .find():', query);
+    // console.log('🧪 Query Mongo FINAL aplicado en .find():', query);
 
     // Sin limit ni skip para contar total filtrado
     const allFiltered = await KeikoPrompt.find(query).sort(sort).lean();

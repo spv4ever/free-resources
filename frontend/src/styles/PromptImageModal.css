@@ -132,3 +132,17 @@
 .social-button.copy:hover {
   background-color: #529ccf;
 }
+
+.promptmodal-delete-btn {
+  background-color: #d9534f;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.promptmodal-delete-btn:hover {
+  background-color: #c9302c;
+}

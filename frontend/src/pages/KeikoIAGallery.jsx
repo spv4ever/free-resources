@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/KeikoIAGallery.css';
 import PromptImageModal from '../components/PromptImageModal';
+import { useUser } from '../context/UserContext'; // ajusta la ruta si es diferente
+
 
 
 export default function KeikoIAGallery() {
   const [imagenesPorPack, setImagenesPorPack] = useState({});
   const [imagenAmpliada, setImagenAmpliada] = useState(null);
+  const { user } = useUser();
 
 useEffect(() => {
   axios.get(`${process.env.REACT_APP_API_URL}/api/public-images`)
@@ -16,10 +19,12 @@ useEffect(() => {
     })
     .catch(err => console.error('Error cargando imágenes públicas:', err));
 }, []);
-
+// console.log('🧪 user:', user);
+// console.log('🧪 user?.isAdmin:', user?.isAdmin);
   return (
     <div className="keikoia-gallery">
       <h1 className="gallery-title">🧠 KeikoIA Imágenes</h1>
+      
 
       {Object.entries(imagenesPorPack).map(([pack, imagenes]) => (
         <div key={pack} className="pack-section">
@@ -60,7 +65,10 @@ useEffect(() => {
         </div>
       ))}
 
-      {imagenAmpliada && <PromptImageModal image={imagenAmpliada} onClose={() => setImagenAmpliada(null)} />}
+      {imagenAmpliada && <PromptImageModal
+            image={{ ...imagenAmpliada, isAdmin: user?.role === 'admin' }}
+            onClose={() => setImagenAmpliada(null)}
+          />}
     </div>
   );
 }

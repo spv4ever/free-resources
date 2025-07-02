@@ -80,7 +80,7 @@ export const fetchIgraalCoupons = async () => {
       }).filter(c => c.title && c.code);
     });
 
-    console.log('🧪 Ejemplo de cupones extraídos:', coupons.slice(0, 3));
+    // console.log('🧪 Ejemplo de cupones extraídos:', coupons.slice(0, 3));
 
     await browser.close();
 

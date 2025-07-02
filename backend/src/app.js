@@ -86,6 +86,8 @@ import imagenesPublicasRoutes from './routes/imagenesPublicasRoutes.js';
 import devTestRoutes from './keikoprompts/routes/devTestRoutes.js';
 import sportsRoutes from './routes/sportsRoutes.js';
 import { startDailyEventScheduler } from './notifier/coreScheduler.js';
+import imagenesRoutes from './routes/imagenes.route.js';
+
 
 
 
@@ -263,6 +265,7 @@ app.use('/api/flux', fluxRoutes);
 app.use('/api/public-images', imagenesPublicasRoutes);
 app.use('/api/dev', devTestRoutes);
 app.use('/api/sports', sportsRoutes);
+app.use('/api/imagenes', imagenesRoutes);
 
 
 
