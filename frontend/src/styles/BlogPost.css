@@ -1,0 +1,367 @@
+/* --- Base Styles --- */
+/* Importa tu fuente personalizada si usas una de Google Fonts u otra */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0d0d0d; /* Fondo muy oscuro */
+    color: #e5e5e5; /* Texto principal claro */
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* El estilo de la etiqueta <a> global sigue siendo válido */
+a {
+    color: #3b82f6; /* Un azul de enlace */
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+    color: #60a5fa; /* Azul un poco más claro al pasar el ratón */
+}
+
+/* --- Global Animations --- */
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* --- Loading and Error States --- */
+.loading-container,
+.error-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ocupa toda la altura de la ventana */
+    padding: 1rem;
+    text-align: center;
+}
+
+.loading-message {
+    font-size: 1.25rem; /* text-xl */
+    color: #e5e5e5;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.error-message {
+    font-size: 1.25rem; /* text-xl */
+    color: #ef4444; /* red-500 */
+    margin-bottom: 1.5rem;
+}
+
+.not-available-message {
+    font-size: 1.125rem; /* text-lg */
+    color: #9ca3af; /* gray-400 */
+}
+
+/* --- Blog Post Container --- */
+.blog-post-container {
+    max-width: 960px; /* max-w-4xl (aprox) */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2rem; /* p-4 */
+    padding-top: 3rem; /* py-8 */
+    padding-bottom: 3rem; /* py-8 */
+    background-color: #1a1a1a; /* gray-900 */
+    border-radius: 0.75rem; /* rounded-lg */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+    color: #e5e5e5; /* text-gray-100 */
+}
+
+@media (min-width: 768px) { /* md: */
+    .blog-post-container {
+        padding-top: 4rem; /* md:py-12 */
+        padding-bottom: 4rem; /* md:py-12 */
+    }
+}
+
+/* --- Back to Blog Link --- */
+.back-to-blog-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.875rem; /* text-sm */
+    margin-bottom: 2rem; /* mb-8 */
+    color: #60a5fa; /* blue-400 */
+    transition: color 0.2s ease-in-out;
+}
+
+.back-to-blog-link:hover {
+    color: #93c5fd; /* blue-300 */
+    text-decoration: underline;
+}
+
+.back-to-blog-icon {
+    width: 1rem; /* w-4 */
+    height: 1rem; /* h-4 */
+    margin-right: 0.5rem; /* mr-2 */
+}
+
+@media (min-width: 768px) { /* md: */
+    .back-to-blog-link {
+        font-size: 1rem; /* md:text-base */
+        margin-bottom: 2.5rem; /* md:mb-10 */
+    }
+}
+
+/* --- Hero Section --- */
+.hero-section {
+    position: relative;
+    margin-bottom: 2.5rem; /* mb-10 */
+}
+
+.cover-image {
+    width: 100%;
+    height: 18rem; /* h-72 */
+    object-fit: cover;
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-lg */
+    margin-bottom: 1.5rem; /* mb-6 */
+    transition: transform 0.3s ease-in-out;
+}
+
+.cover-image:hover {
+    transform: scale(1.01); /* hover:scale-101 */
+}
+
+@media (min-width: 768px) { /* md: */
+    .cover-image {
+        height: 24rem; /* md:h-96 */
+    }
+}
+
+.post-header {
+    padding-left: 1rem; /* px-4 */
+    padding-right: 1rem; /* px-4 */
+}
+
+.post-header-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem; /* p-6 */
+    background: linear-gradient(to top, rgba(26, 26, 26, 1) 0%, rgba(26, 26, 26, 0.7) 70%, transparent 100%); /* bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent */
+    border-bottom-left-radius: 0.75rem; /* rounded-b-xl */
+    border-bottom-right-radius: 0.75rem; /* rounded-b-xl */
+}
+
+@media (min-width: 768px) { /* md: */
+    .post-header-overlay {
+        padding: 2rem; /* md:p-8 */
+    }
+}
+
+.post-title {
+    font-size: 2.25rem; /* text-4xl */
+    font-weight: 800; /* font-extrabold */
+    margin-bottom: 0.75rem; /* mb-3 */
+    line-height: 1.25; /* leading-tight */
+    color: #ffffff; /* text-white */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* drop-shadow-md */
+}
+
+@media (min-width: 768px) { /* md: */
+    .post-title {
+        font-size: 3.75rem; /* md:text-6xl */
+    }
+}
+
+.post-meta {
+    color: #9ca3af; /* gray-400 */
+    font-size: 0.875rem; /* text-sm */
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* space-x-4 */
+}
+
+@media (min-width: 768px) { /* md: */
+    .post-meta {
+        font-size: 1rem; /* md:text-base */
+    }
+}
+
+.post-meta-separator {
+    color: #4b5563; /* gray-600 */
+}
+
+/* --- Post Content (Adapted for manual split) --- */
+.post-content {
+    max-width: 100%; /* max-w-none */
+    line-height: 1.8; /* leading-relaxed, slightly more */
+    font-size: 1.125rem; /* text-lg */
+    color: #e5e5e5; /* Default text color within content */
+    padding-left: 1rem; /* px-4 */
+    padding-right: 1rem; /* px-4 */
+}
+
+.post-content .content-paragraph {
+    margin-top: 1.25em; /* Spacing for paragraphs */
+    margin-bottom: 1.25em;
+}
+
+.post-content .content-link {
+    color: #60a5fa; /* blue-400 */
+    text-decoration: underline;
+    transition: color 0.2s ease-in-out;
+    display: inline-flex; /* Para alinear el icono con el texto */
+    align-items: center;
+    gap: 0.25rem; /* Espacio entre icono y texto */
+}
+
+.post-content .content-link:hover {
+    color: #93c5fd; /* blue-300 */
+}
+
+/* Nota: Para estilos de h1, h2, ul, ol, blockquote, code, etc.
+   Si tu `post.content` no viene pre-formateado (ej. de un editor Markdown)
+   y solo usas texto plano con auto-detección de URLs,
+   estas reglas ya no son tan relevantes para el CONTENIDO.
+   Pero si en el futuro decides que el `post.content`
+   sí puede contener HTML pre-renderizado (ej. con `dangerouslySetInnerHTML`),
+   estas reglas serían útiles.
+   Por ahora, las he quitado para evitar confusión,
+   ya que tu lógica actual solo genera <p> y <a>.
+*/
+/* Si necesitas estilizar elementos HTML si los inyectas con dangerouslySetInnerHTML:
+.post-content h1, .post-content h2, ... { color: white; }
+.post-content p { margin-bottom: 1.25em; }
+.post-content a { color: blue; text-decoration: underline; }
+.post-content ul, .post-content ol { margin-left: 20px; }
+.post-content blockquote { border-left: 4px solid blue; padding-left: 1em; }
+.post-content code { background-color: #333; color: yellow; padding: 0.2em 0.4em; }
+*/
+
+
+/* --- Image Gallery Section --- */
+.image-gallery-section {
+    margin-top: 4rem; /* mt-16 */
+    padding-left: 1rem; /* px-4 */
+    padding-right: 1rem; /* px-4 */
+}
+
+.image-gallery-title {
+    font-size: 1.5rem; /* text-2xl */
+    font-weight: 700; /* font-bold */
+    margin-bottom: 2rem; /* mb-8 */
+    color: #ffffff; /* text-white */
+    text-align: center;
+}
+
+@media (min-width: 768px) { /* md: */
+    .image-gallery-title {
+        font-size: 1.875rem; /* md:text-3xl */
+    }
+}
+
+.image-gallery-grid {
+    display: grid;
+    gap: 2rem; /* gap-8 */
+}
+
+@media (min-width: 768px) { /* md: */
+    .image-gallery-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)); /* md:grid-cols-2 */
+    }
+}
+
+@media (min-width: 1024px) { /* lg: */
+    .image-gallery-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)); /* lg:grid-cols-3 */
+    }
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-lg */
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+.gallery-item:hover {
+    transform: scale(1.05); /* hover:scale-105 */
+}
+
+.gallery-image {
+    width: 100%;
+    height: 16rem; /* h-64 */
+    object-fit: cover;
+}
+
+.gallery-overlay {
+    position: absolute;
+    inset: 0; /* top: 0, right: 0, bottom: 0, left: 0 */
+    background-color: rgba(0, 0, 0, 0.4); /* bg-black bg-opacity-40 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}
+
+.gallery-overlay-text {
+    color: #ffffff;
+    font-size: 1.125rem; /* text-lg */
+    font-weight: 600; /* font-semibold */
+}
+
+/* --- Post Source Info --- */
+.post-source-info {
+    font-size: 0.875rem; /* text-sm */
+    color: #9ca3af; /* gray-500 */
+    margin-top: 4rem; /* mt-16 */
+    padding-top: 2rem; /* pt-8 */
+    border-top: 1px solid #4b5563; /* border-t border-gray-700 */
+    text-align: center;
+    padding-left: 1rem; /* px-4 */
+    padding-right: 1rem; /* px-4 */
+}
+
+@media (min-width: 768px) { /* md: */
+    .post-source-info {
+        font-size: 1rem; /* md:text-base */
+    }
+}
+
+.source-author {
+    margin-bottom: 0.5rem; /* mb-2 */
+}
+
+.source-link-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem; /* space-x-1 */
+}
+
+.source-link {
+    color: #60a5fa; /* blue-400 */
+    text-decoration: underline;
+    transition: color 0.2s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.source-link:hover {
+    color: #93c5fd; /* blue-300 */
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { UserProvider } from './context/UserContext';
 import HomePage from './pages/HomePage';
 import ResourcesPage from './pages/ResourcesPage';
@@ -83,7 +84,12 @@ import AuthCallback from './components/AuthCallback';
 import PrivateRoute from './components/PrivateRoute';
 
 
+import BlogList from "./pages/BlogList";
+import BlogPost from "./pages/BlogPost";
 
+import BlogAdmin from "./pages/admin/BlogAdmin";
+import BlogCreate from "./pages/admin/BlogCreate";
+import BlogEdit from "./pages/admin/BlogEdit";
 
 
 function App() {
@@ -175,6 +181,12 @@ function App() {
             <Route path="/info/tokens" element={<TokenInfoPage />} />
             <Route path="/multimedia/keikoia" element={<KeikoIAGallery />} />
             <Route path="/biblioteca/pack/:packId" element={<PackImages />} />
+            <Route path="/blog" element={<BlogList />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            
+            <Route path="/admin/blog" element={<AdminRoute><BlogAdmin /></AdminRoute>} />
+            <Route path="/admin/blog/create" element={<AdminRoute><BlogCreate /></AdminRoute>} />
+            <Route path="/admin/blog/edit/:id" element={<AdminRoute><BlogEdit /></AdminRoute>} />
             
 // ...
 

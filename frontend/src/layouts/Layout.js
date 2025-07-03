@@ -10,6 +10,7 @@ import AnalyticsLoader from '../components/AnalyticsLoader';
 import { useLocation } from 'react-router-dom';
 import AffiliatePopup from '../components/AffiliatePopup';
 import AffiliateBannerAndSidebar from '../components/AffiliateBannerAndSidebar';
+import BlogCarousel from "../components/BlogCarousel";
 // import { useUser } from '../context/UserContext';
 
 function Layout() {
@@ -43,7 +44,8 @@ function Layout() {
   { title: 'Cupones iGraal', description: 'Códigos descuento + cashback real', path: '/cupones', icon: <FaTicketAlt /> },
   { title: 'Chollos iGraal', description: 'Ofertas con cashback actualizadas a diario', path: '/chollos', icon: <FaGift /> },
 
-  { title: 'MotoGP', description: 'Calendario completo de MotoGP por circuito', path: '/motogp-calendar', icon: <FaRocket /> }  // Puedes cambiar el icono
+  { title: 'MotoGP', description: 'Calendario completo de MotoGP por circuito', path: '/motogp-calendar', icon: <FaRocket /> },  // Puedes cambiar el icono
+  { title: 'Blog Keiko', description: 'Entradas destacadas y novedades IA', path: '/blog', icon: <FaBook /> },
 
 ];
 
@@ -63,7 +65,8 @@ function Layout() {
       <AffiliatePopup currentPath={location.pathname} />
       
       <Navbar />
-
+      
+      
       {/* SOLO visible en móvil */}
       <div className="mobile-only mobile-menu-toggle">
         <button onClick={() => setMenuOpen(!menuOpen)} className="menu-toggle-btn">
@@ -100,7 +103,9 @@ function Layout() {
       </div>
 
       <main className="layout-content">
+        
         <Outlet />
+        
         <AffiliateBannerAndSidebar />
       </main>
 

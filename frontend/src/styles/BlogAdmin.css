@@ -1,0 +1,73 @@
+.blog-admin-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.blog-admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.blog-admin-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.blog-admin-create-btn {
+  background-color: #000;
+  color: #fff;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.blog-admin-create-btn:hover {
+  background-color: #222;
+}
+
+.blog-admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+.blog-admin-table th,
+.blog-admin-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.blog-admin-table th {
+  background-color: #f7f7f7;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.blog-admin-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.blog-admin-actions a,
+.blog-admin-actions button {
+  font-size: 0.9rem;
+  color: #0077cc;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.blog-admin-actions button:hover,
+.blog-admin-actions a:hover {
+  color: #005fa3;
+}

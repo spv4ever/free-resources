@@ -87,32 +87,11 @@ import devTestRoutes from './keikoprompts/routes/devTestRoutes.js';
 import sportsRoutes from './routes/sportsRoutes.js';
 import { startDailyEventScheduler } from './notifier/coreScheduler.js';
 import imagenesRoutes from './routes/imagenes.route.js';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import blogRoutes from "./routes/blogRoutes.js";
 
 // Otras rutas...
 
-
-
  // 👈 Importa las rutas de autenticación
-
-
-
-
 
 // 🔍 Diagnóstico de variables peligrosas en entorno Render
 console.log('🔍 Verificando variables de entorno cargadas:');
@@ -266,6 +245,9 @@ app.use('/api/public-images', imagenesPublicasRoutes);
 app.use('/api/dev', devTestRoutes);
 app.use('/api/sports', sportsRoutes);
 app.use('/api/imagenes', imagenesRoutes);
+
+app.use("/api/blog", blogRoutes);
+
 
 
 

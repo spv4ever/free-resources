@@ -19,6 +19,8 @@ function Navbar() {
   const [enrichCount, setEnrichCount] = useState(0);
   const [submenuKeikoOpen, setSubmenuKeikoOpen] = useState(false);
   const { balance } = useToken();
+  const [submenuBlogOpen, setSubmenuBlogOpen] = useState(false);
+
 
 
   useEffect(() => {
@@ -180,7 +182,17 @@ function Navbar() {
                 <li><Link to="/admin/social-posts" onClick={toggleSidebar}>📢 Social Posts</Link></li>
               </>
             )}
-
+            <li>
+              <button onClick={() => setSubmenuBlogOpen(!submenuBlogOpen)}>
+                📝 Blog {submenuBlogOpen ? '▲' : '▼'}
+              </button>
+            </li>
+            {submenuBlogOpen && (
+              <>
+                <li><Link to="/admin/blog" onClick={toggleSidebar}>📄 Entradas del blog</Link></li>
+                <li><Link to="/admin/blog/create" onClick={toggleSidebar}>🆕 Nueva entrada</Link></li>
+              </>
+            )}
             <li>
               <button onClick={() => setSubmenuEmailOpen(!submenuEmailOpen)}>
                 📬 Correos y Artículos {submenuEmailOpen ? '▲' : '▼'}
