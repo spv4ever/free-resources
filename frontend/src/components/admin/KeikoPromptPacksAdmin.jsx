@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../../styles/KeikoPromptPacksAdmin.css';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
+
 
 const KeikoPromptPacksAdmin = () => {
   const [packs, setPacks] = useState([]);
@@ -18,6 +22,24 @@ const KeikoPromptPacksAdmin = () => {
   });
   const [deleteMessage, setDeleteMessage] = useState('');
   const [deleteType, setDeleteType] = useState('');
+
+  const exportToExcel = () => {
+      const data = filteredPacks.map(pack => ({
+        Título: pack.title,
+        Categoría: pack.category,
+        Descripción: pack.description,
+        Imagen: pack.image,
+        'Total Prompts': pack.totalPrompts
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Packs');
+
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+      saveAs(blob, 'keiko_prompt_packs.xlsx');
+    };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -157,8 +179,11 @@ const KeikoPromptPacksAdmin = () => {
         <button className="kpks-add-btn" onClick={handleAddNewClick}>
           ➕ Añadir nuevo pack
         </button>
+        <button onClick={exportToExcel} className="kpks-add-btn" style={{ marginBottom: '1rem' }}>
+          📤 Exportar a Excel
+        </button>
       </div>
-
+      
       <table className="kpks-table">
         <colgroup>
           <col style={{ width: '15%' }} />

@@ -145,9 +145,14 @@ export const generarImagen = async ({
   category = ''
 }) => {
   const esSticker = ['Stickers', 'T-Shirt'].includes(category);
+  const esAnime = category === 'Anime';
 
   if (esSticker) {
     return generarImagenStickers({ prompt, ratio, seed, steps, filename_prefix });
+  }
+
+  if (esAnime) {
+    return generarImagenAnime({ prompt, ratio, seed, steps, filename_prefix });
   }
 
   if (advancedMode) {
@@ -155,4 +160,48 @@ export const generarImagen = async ({
   }
 
   return generarImagenOptimizada({ prompt, ratio, seed, steps, filename_prefix });
+};
+
+export const generarImagenAnime = async ({
+  prompt,
+  ratio = '3:4',
+  seed = null,
+  steps = 30,
+  filename_prefix = 'keiko'
+}) => {
+  if (!prompt) throw new Error('El prompt es obligatorio');
+
+  const modificado = clonarFlujo(flujosCargados.anime);
+  const [width, height] = resolucionesOptimizadas[ratio] || resolucionesOptimizadas['3:4'];
+
+  // 1. Asignar dimensiones al nodo 6 (EmptyLatentImage)
+  if (modificado['6']) {
+    modificado['6'].inputs.width = width;
+    modificado['6'].inputs.height = height;
+  }
+
+  // 2. Asignar prompt positivo al nodo 3 (CLIPTextEncode)
+  if (modificado['3']) {
+    modificado['3'].inputs.text = prompt;
+  }
+
+  // 3. Asignar semilla y pasos al nodo 5 (KSampler)
+  if (modificado['5']) {
+    modificado['5'].inputs.seed = seed || Math.floor(Math.random() * 1e16);
+    modificado['5'].inputs.steps = Math.min(steps, 30);
+  }
+
+  // 4. Asignar nombre del archivo al nodo 17 (SaveImage)
+  if (modificado['17']) {
+    modificado['17'].inputs.filename_prefix = filename_prefix;
+  }
+
+  const comfyUrl = await getComfyUrl('flux');
+  const { data } = await axios.post(`${comfyUrl}/prompt`, { prompt: modificado }, getComfyAuth());
+
+  if (data?.prompt_id) {
+    trackPendingJob(data.prompt_id);
+  }
+
+  return data;
 };

@@ -273,7 +273,7 @@ useEffect(() => {
         {
           prompt: finalPrompt,
           ratio: selectedRatio,
-          steps: 15,
+          steps: pack?.category === 'Anime' ? 30 : 15,
           seed: (isProUser && !useRandomSeed) ? parseInt(customSeed) : undefined,
           promptRef: promptId,
           advancedMode: advancedMode[promptId] || false,
@@ -305,7 +305,7 @@ useEffect(() => {
           }
           return p;
         });
-      }, 30000);
+      }, 20000);
     } catch (err) {
       console.error('Error al generar con Flux:', err.message);
       if (err.response && err.response.status === 403) {
