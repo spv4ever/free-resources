@@ -1,9 +1,7 @@
-// coreScheduler.js
-
 import cron from 'node-cron';
 import axios from 'axios';
 import { checkEventsAndNotify as checkMotoGP } from '../services/motogp-notifier.js';
-// En el futuro podrías importar más deportes: checkF1, checkFutbol, etc.
+import { checkEventsAndNotify as checkF1 } from '../services/f1-notifier.js';  // IMPORTA F1
 
 let dynamicCronTask = null;
 
@@ -41,7 +39,7 @@ const checkIfTodayHasEvents = async () => {
       dynamicCronTask = cron.schedule('* * * * *', () => {
         console.log(`[${new Date().toLocaleTimeString()}] 🔁 Notificando eventos activos...`);
         checkMotoGP();
-        // checkF1(); // checkFutbol(); etc.
+        checkF1();  // AÑADE LA LLAMADA A F1
       });
 
       console.log(`🟢 Cron dinámico activado desde ${startCronTime.toLocaleTimeString()}`);

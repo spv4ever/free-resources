@@ -16,6 +16,7 @@
   import IgraalDiscountHighlight from '../components/IgraalDiscountHighlight';
   import { useCountdown } from '../hooks/useCountdown';
   import MotoGPCircuitCard from '../components/MotoGPCircuitCard';
+  import F1CircuitCard from '../components/F1CircuitCard';
   import { useUser } from '../context/UserContext';
   // import { useUser } from '../context/UserContext';
 
@@ -197,6 +198,7 @@
           <IgraalDealHighlight />
           <IgraalDiscountHighlight />
           <MotoGPCircuitCard />
+          <F1CircuitCard />
 
           {/* TARJETA MOVIDA AL FINAL */}
           <div className="card-home" onClick={() => navigate('/resources')}>
