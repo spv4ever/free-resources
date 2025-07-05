@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';  // <--- importar useState
 import Select from 'react-select';
+import PromptImageModal from './PromptImageModal'; // ajusta la ruta si hace falta
 
 const PromptCard = React.memo(({
   prompt,
@@ -25,6 +26,8 @@ const PromptCard = React.memo(({
     ? Object.fromEntries(prompt.fixedOptions)
     : prompt.fixedOptions;
 
+  const [modalImage, setModalImage] = useState(null);
+
   return (
     <div className="prompt-card-wrapper" key={promptId}>
       <div className="prompt-row two-column">
@@ -34,31 +37,26 @@ const PromptCard = React.memo(({
             <pre className="prompt-box">{prompt.prompt}</pre>
             <div className="prompt-actions">
               {prompt.platform.toLowerCase() === 'flux' && (
-                <>
-                  <div className="aux-options toggles-ia">
-                    <div className="toggle-row">
-                      <span>Modo avanzado</span>
-                      <button
-                        className={`toggle-button ${advancedMode ? 'on' : 'off'}`}
-                        onClick={() => isProUser && setAdvancedMode(!advancedMode)}
-                      >
-                        {advancedMode ? 'Activado' : 'Desactivado'}
-                      </button>
-                    </div>
-
-                    <div className="toggle-row">
-                      <span>Eliminar fondo</span>
-                      <button
-                        className={`toggle-button ${removeBackground ? 'on' : 'off'}`}
-                        onClick={() => isProUser && advancedMode && setRemoveBackground(!removeBackground)}
-                        disabled={!advancedMode}
-                      >
-                        {removeBackground ? 'Sí' : 'No'}
-                      </button>
-                    </div>
-                  </div>
-
-                </>
+                imagenes[promptId] ? (
+                  <img
+                    src={imagenes[promptId]}
+                    alt="Imagen generada"
+                    className="flux-thumbnail"
+                    onClick={() => {
+                      setModalImage({
+                        ...prompt,
+                        finalUrl: imagenes[promptId],
+                        url: imagenes[promptId],
+                        isAdmin: isProUser, // o alguna lógica que indique si es admin
+                        nickname: prompt.nickname || 'Autor Desconocido',
+                        packTitle: prompt.packTitle || 'Pack Desconocido',
+                        createdAt: prompt.createdAt
+                      });
+                    }}
+                  />
+                ) : (
+                  <div className="image-placeholder">🖼 Esperando imagen...</div>
+                )
               )}
               <button className="copy-btn" onClick={() => copyToClipboard(prompt.prompt)}>📋 Copiar</button>
               <button
@@ -66,10 +64,17 @@ const PromptCard = React.memo(({
                 onClick={() => handleCopyAndOpen(prompt.prompt, prompt.platform, promptId)}
                 disabled={generando === promptId}
               >
-                🚀 {prompt.platform.toLowerCase() === 'flux' ? 'Generar en Flux' : 'Copiar y Abrir IA'}
+                🚀 {prompt.platform.toLowerCase() === 'flux' ? 'Generar en KeikoIA' : 'Copiar y Abrir IA'}
               </button>
             </div>
           </div>
+
+          {modalImage && (
+            <PromptImageModal
+              image={modalImage}
+              onClose={() => setModalImage(null)}
+            />
+          )}
 
           {fixedOptionsObj && (
             <div className="prompt-tags-dark">
@@ -118,11 +123,12 @@ const PromptCard = React.memo(({
         <div className="prompt-status-image">
           {prompt.platform.toLowerCase() === 'flux' && (
             imagenes[promptId] ? (
+              // Aquí mejor eliminar o comentar para evitar duplicar el onClick distinto
               <img
                 src={imagenes[promptId]}
                 alt="Imagen generada"
                 className="flux-thumbnail"
-                onClick={() => window.open(imagenes[promptId], '_blank')}
+                // onClick={() => window.open(imagenes[promptId], '_blank')}
               />
             ) : (
               <div className="image-placeholder">🖼 Esperando imagen...</div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import MetaTags from '../components/MetaTags';
 import { Link } from "react-router-dom";
 import "../styles/BlogList.css";
 
@@ -28,6 +29,10 @@ const BlogList = () => {
 
   return (
     <section className="blog-container">
+      <MetaTags 
+        title="Blog de Keikodev - Tutoriales, IA y Desarrollo Web"
+        description="Encuentra los últimos artículos y tutoriales sobre desarrollo web, inteligencia artificial, programación y tecnología en el blog de Keikodev."
+      />
       <h1 className="blog-title">📝 Blog Keiko</h1>
 
       <div className="blog-grid">

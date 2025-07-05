@@ -1,5 +1,6 @@
-import React from 'react';
 
+import React from 'react';
+import MetaTags from '../components/MetaTags';
 const PrivacyPolicy = () => {
   const containerStyle = {
     padding: '2rem',
@@ -22,6 +23,10 @@ const PrivacyPolicy = () => {
 
   return (
     <div style={containerStyle}>
+      <MetaTags 
+        title="Política de Privacidad - Keikodev"
+        description="Conoce la política de privacidad de Keikodev, cómo se tratan tus datos personales, la finalidad del tratamiento y tus derechos como usuario."
+      />
       <h1 style={titleStyle}>Política de Privacidad</h1>
 
       <p>

@@ -1,4 +1,5 @@
 import React from 'react';
+import MetaTags from '../components/MetaTags';
 
 const LegalNotice = () => {
   const containerStyle = {
@@ -26,6 +27,10 @@ const LegalNotice = () => {
 
   return (
     <div style={containerStyle}>
+      <MetaTags 
+        title="Aviso Legal - Keikodev"
+        description="Consulta el aviso legal de Keikodev, incluyendo información sobre el titular de la web, finalidad, condiciones de uso y propiedad intelectual."
+      />
       <h1 style={titleStyle}>Aviso Legal</h1>
 
       <p><strong>Titular de la web:</strong> Alberto García Sabadell</p>

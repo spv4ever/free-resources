@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import MetaTags from "../components/MetaTags";
 // Ya no necesitamos importar ReactMarkdown, rehypeRaw ni remarkAutolinkLiteral
 // import ReactMarkdown from "react-markdown";
 // import rehypeRaw from "rehype-raw";
