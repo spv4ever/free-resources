@@ -1,5 +1,4 @@
 import React, { useState } from 'react';  // <--- importar useState
-import Select from 'react-select';
 import PromptImageModal from './PromptImageModal'; // ajusta la ruta si hace falta
 
 const PromptCard = React.memo(({

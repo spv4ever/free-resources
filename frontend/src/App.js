@@ -91,6 +91,8 @@ import BlogAdmin from "./pages/admin/BlogAdmin";
 import BlogCreate from "./pages/admin/BlogCreate";
 import BlogEdit from "./pages/admin/BlogEdit";
 
+import KeikoRemoveBG from './pages/KeikoRemoveBG';
+
 
 function App() {
   return (
@@ -165,6 +167,7 @@ function App() {
             <Route path="/pro/link-analysis/:id" element={<UserLinkDetail />} />
             <Route path="/panel/pro/historial" element={<UserLinkHistory />} />
             <Route path="/youtube-uploader" element={<YouTubeLandingPage />} />
+            <Route path="/keiko-remove-bg" element={<KeikoRemoveBG />} />
             
             {/* <Route path="/keikoprompts" element={<KeikoPromptPacks />} /> */}
             <Route path="/prompts/:packId" element={<KeikoPromptsList />} />
@@ -188,9 +191,6 @@ function App() {
             <Route path="/admin/blog/create" element={<AdminRoute><BlogCreate /></AdminRoute>} />
             <Route path="/admin/blog/edit/:id" element={<AdminRoute><BlogEdit /></AdminRoute>} />
             
-// ...
-
-
           </Route>
           <Route path="/motogp-live" element={<MotoGPCircuitMobileView />} />
           <Route path="/login" element={<LoginPage />} />

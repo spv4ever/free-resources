@@ -292,7 +292,7 @@ function Navbar() {
           </ul>
         </div>
       )}
-      <a href="https://www.buymeacoffee.com/keikodev"><img src="https://img.buymeacoffee.com/button-api/?text=Apoyar el proyecto&emoji=🔔&slug=keikodev&button_colour=FFDD00&font_colour=000000&font_family=Poppins&outline_colour=000000&coffee_colour=ffffff" /></a>
+      <a href="https://www.buymeacoffee.com/keikodev"><img src="https://img.buymeacoffee.com/button-api/?text=Apoyar el proyecto&emoji=🔔&slug=keikodev&button_colour=FFDD00&font_colour=000000&font_family=Poppins&outline_colour=000000&coffee_colour=ffffff" alt="Apoya la web"/></a>
     </nav>
   );
 }

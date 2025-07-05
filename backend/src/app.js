@@ -90,6 +90,8 @@ import imagenesRoutes from './routes/imagenes.route.js';
 import blogRoutes from "./routes/blogRoutes.js";
 import formula1Routes from './routes/formula1Routes.js';
 import { startF1Notifier } from './services/f1-notifier.js';
+import keikoRemoveBGRoutes from './routes/keikoRemoveBGRoutes.js';
+
 
 // Otras rutas...
 
@@ -262,6 +264,7 @@ app.use('/api/dev', devTestRoutes);
 app.use('/api/sports', sportsRoutes);
 app.use('/api/imagenes', imagenesRoutes);
 app.use('/api', formula1Routes);
+app.use('/api/keiko-remove-bg', keikoRemoveBGRoutes); 
 
 app.use("/api/blog", blogRoutes);
 

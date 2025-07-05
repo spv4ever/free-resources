@@ -39,6 +39,8 @@ router.get('/callback', async (req, res) => {
     }
 
     const expiryDate = new Date(Date.now() + (tokens.expires_in * 1000));
+    console.log('Query params recibidos:', req.query);
+    console.log('Tokens devueltos por Google:', tokens);
 
     // Guardamos los tokens en nuestro modelo dedicado.
     // 'upsert: true' crea el documento si no existe, o lo actualiza si ya existe.
@@ -51,6 +53,9 @@ router.get('/callback', async (req, res) => {
       },
       { upsert: true, new: true }
     );
+
+    console.log('Tokens recibidos de Google:', tokens);
+    // console.log('Documento actualizado en DB:', updatedTokenDoc);
 
     res.send('✅ ¡Autorización completada y tokens guardados! Ya puedes cerrar esta ventana.');
   } catch (err) {

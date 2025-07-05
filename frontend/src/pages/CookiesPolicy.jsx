@@ -1,5 +1,5 @@
 import React from 'react';
-
+import MetaTags from '../components/MetaTags';
 const CookiesPolicy = () => {
   const containerStyle = {
     padding: '2rem',

@@ -1,0 +1,75 @@
+.keiko-remove-bg-container {
+  max-width: 900px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+input[type="file"] {
+  display: block;
+  margin: 0 auto 15px auto;
+}
+
+button {
+  display: block;
+  margin: 0 auto 25px auto;
+  padding: 10px 25px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.images-wrapper {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.image-slot {
+  flex: 1 1 45%;
+  min-height: 300px;
+  border: 2px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent; /* Cambia de #fafafa o blanco a transparente */
+  position: relative;
+}
+
+.image-slot img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.placeholder {
+  color: #aaa;
+  font-style: italic;
+  font-size: 16px;
+  text-align: center;
+}
+
+.image-container {
+  position: relative;
+  background-color: transparent; /* Asegura fondo transparente */
+  width: 400px; /* o el tamaño que quieras */
+  height: auto;
+  user-select: none;
+}
+
+.image-container img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  background-color: transparent; /* No rellena fondo */
+}

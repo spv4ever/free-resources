@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select';
 import PromptImageModal from './PromptImageModal';
 import '../styles/PromptCard.css';
@@ -52,9 +52,7 @@ const PromptCardRedesigned = React.memo(({
   const proFeatureTooltip = !isProUser ? "Función solo para usuarios PRO" : "";
   const removeBgTooltipText = !isProUser
     ? "Función solo para usuarios PRO"
-    : !(advancedMode[promptId] || false)
-      ? "Debes activar el 'Modo Avanzado' primero"
-      : "";
+    : "";
 
   const renderStatusContent = () => {
     if (isPending) {
@@ -143,7 +141,6 @@ const PromptCardRedesigned = React.memo(({
                   label="Eliminar Fondo"
                   checked={removeBackground[promptId] || false}
                   onChange={() => setRemoveBackground(prev => ({ ...prev, [promptId]: !prev[promptId] }))}
-                  disabled={!(advancedMode[promptId] || false)}
                   isProUser={isProUser}
                   tooltipText={removeBgTooltipText}
                 />

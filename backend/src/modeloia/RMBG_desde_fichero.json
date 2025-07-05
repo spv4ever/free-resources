@@ -1,0 +1,44 @@
+{
+  "1": {
+    "inputs": {
+      "image": "DSC_2457.JPG"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image"
+    }
+  },
+  "2": {
+    "inputs": {
+      "model": "RMBG-2.0",
+      "sensitivity": 1,
+      "process_res": 1024,
+      "mask_blur": 0,
+      "mask_offset": 0,
+      "invert_output": false,
+      "refine_foreground": true,
+      "background": "Alpha",
+      "image": [
+        "1",
+        0
+      ]
+    },
+    "class_type": "RMBG",
+    "_meta": {
+      "title": "Remove Background (RMBG)"
+    }
+  },
+  "8": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "2",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  }
+}

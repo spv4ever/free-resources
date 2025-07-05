@@ -1,0 +1,44 @@
+{
+  "2": {
+    "inputs": {
+      "model": "RMBG-2.0",
+      "sensitivity": 1,
+      "process_res": 1024,
+      "mask_blur": 0,
+      "mask_offset": 0,
+      "invert_output": false,
+      "refine_foreground": true,
+      "background": "Alpha",
+      "image": [
+        "16",
+        0
+      ]
+    },
+    "class_type": "RMBG",
+    "_meta": {
+      "title": "Remove Background (RMBG)"
+    }
+  },
+  "8": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "2",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  },
+  "16": {
+    "inputs": {
+      "url": "https://res.cloudinary.com/dhoaeyjpt/image/upload/v1751737138/keikoprompts/KeikoDev/2025-07-05/KeikoDev_00738_.png"
+    },
+    "class_type": "ImageFromURLNode",
+    "_meta": {
+      "title": "Download Image from URL"
+    }
+  }
+}

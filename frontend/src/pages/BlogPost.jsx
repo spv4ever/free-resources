@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import MetaTags from "../components/MetaTags";
 import ShareFloatingBar from '../components/ShareFloatingBar';
 // Ya no necesitamos importar ReactMarkdown, rehypeRaw ni remarkAutolinkLiteral
 // import ReactMarkdown from "react-markdown";

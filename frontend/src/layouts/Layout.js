@@ -3,14 +3,14 @@ import { useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { FaBook, FaRobot, FaYoutube, FaFileAlt, FaImage, FaGraduationCap, FaRocket, FaShieldVirus, FaMagic, FaGift, FaTicketAlt, FaTv, FaBoxes  } from 'react-icons/fa';
+import { FaBook, FaRobot, FaYoutube, FaFileAlt, FaImage, FaGraduationCap, FaRocket, FaShieldVirus, FaMagic, FaGift, FaTicketAlt, FaTv, FaBoxes, FaCut  } from 'react-icons/fa';
 import '../styles/HomePage.css';
 import CookieConsentBanner from '../components/CookieConsentBanner';
 import AnalyticsLoader from '../components/AnalyticsLoader';
 import { useLocation } from 'react-router-dom';
 import AffiliatePopup from '../components/AffiliatePopup';
 import AffiliateBannerAndSidebar from '../components/AffiliateBannerAndSidebar';
-import BlogCarousel from "../components/BlogCarousel";
+
 // import { useUser } from '../context/UserContext';
 
 function Layout() {
@@ -24,6 +24,12 @@ function Layout() {
   };
   const sections = [
   // 🔥 Inicio atractivo (alto interés / engagement)
+  {
+    title: 'Keiko Remove BG',
+    description: 'Elimina el fondo de tus imágenes fácilmente',
+    path: '/keiko-remove-bg',
+    icon: <FaCut />,
+  },
   { title: 'MultiMedia', description: 'Imágenes del universo, los mejores vídeos, todo Multimedia', path: '/media', icon: <FaImage /> },
   { title: 'Videos Virales', description: 'Los mejores Shorts organizados por categoría', path: '/viral-shorts', icon: <FaFileAlt /> },
   { title: 'YouTube Uploader', description: 'Sube y programa tus creaciones! Verán la luz cuando tu decidas', path: '/youtube-uploader', icon: <FaYoutube /> },

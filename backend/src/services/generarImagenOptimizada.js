@@ -1,11 +1,15 @@
 // src/services/generarImagenOptimizada.js
-import fs from 'fs';
+
+import fs from 'fs/promises';
 import path from 'path';
+import os from 'os';
 import axios from 'axios';
 import { getComfyUrl } from './comfyService.js';
 import { getComfyAuth } from '../utils/comfyAuth.js';
 import { trackPendingJob } from '../services/comfySocketWatcher.js'; // ajusta la ruta si es necesario
 import { flujosCargados } from '../config/flujosCargados.js';
+import crypto from 'crypto';
+import { uploadBufferToCloudinary } from './cloudinary.js'; // o la ruta correcta
 
 const clonarFlujo = (flujoBase) => JSON.parse(JSON.stringify(flujoBase));
 
@@ -99,7 +103,8 @@ export const generarImagenStickers = async ({
   ratio = '3:4',
   seed = null,
   steps = 30,
-  filename_prefix = 'keiko'
+  filename_prefix = 'keiko',
+  removeBackground = false
 }) => {
   if (!prompt) throw new Error('El prompt es obligatorio');
 
@@ -122,6 +127,22 @@ export const generarImagenStickers = async ({
 
   if (modificado['28']) {
     modificado['28'].inputs.filename_prefix = filename_prefix;
+  }
+
+  if (!removeBackground) {
+    // Si no queremos borrar el fondo:
+    // 1. Eliminamos el nodo 19 (Remove Background)
+    delete modificado['19'];
+
+    // 2. Cambiamos la entrada del nodo 28 para que tome la imagen del nodo 7 directamente
+    if (modificado['28']) {
+      modificado['28'].inputs.images = ["7", 0];
+    }
+  } else {
+    // Si queremos borrar fondo, dejamos la imagen que viene de 19 en el nodo 28
+    if (modificado['28']) {
+      modificado['28'].inputs.images = ["19", 0];
+    }
   }
 
   const comfyUrl = await getComfyUrl('flux');
@@ -148,7 +169,7 @@ export const generarImagen = async ({
   const esAnime = category === 'Anime';
 
   if (esSticker) {
-    return generarImagenStickers({ prompt, ratio, seed, steps, filename_prefix });
+    return generarImagenStickers({ prompt, ratio, seed, steps, filename_prefix, removeBackground });
   }
 
   if (esAnime) {
@@ -204,4 +225,28 @@ export const generarImagenAnime = async ({
   }
 
   return data;
+};
+
+export const generarImagenRMBG = async ({ imageBuffer, filenameRMBG  }) => {
+  if (!imageBuffer) throw new Error('Image buffer es obligatorio');
+
+  // 1. Subir la imagen a Cloudinary (en carpeta keiko/remove-bg)
+  const publicId = `keiko/remove-bg/input_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`;
+  const uploadResult = await uploadBufferToCloudinary(imageBuffer, publicId);
+  console.log({filenameRMBG});
+  // 2. Clonar el flujo RMBG y reemplazar la URL en el nodo 16
+  const modificado = clonarFlujo(flujosCargados.rmbg);
+  modificado["16"].inputs.url = uploadResult.secure_url;
+  modificado['8'].inputs.filename_prefix = "keiko_remove_bg";
+
+  // 3. Enviar flujo a ComfyUI
+  const comfyUrl = await getComfyUrl('flux');
+  const { data } = await axios.post(`${comfyUrl}/prompt`, { prompt: modificado }, getComfyAuth());
+
+  // 4. Trackear job pendiente para polling
+  if (data?.prompt_id) {
+    trackPendingJob(data.prompt_id);
+  }
+
+  return { prompt_id: data.prompt_id, inputUrl: uploadResult.secure_url };
 };
