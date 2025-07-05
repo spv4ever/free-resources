@@ -155,6 +155,7 @@ app.use(cors({
       }
     }
   },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], // <-- Agrega PATCH aquí
   credentials: true,
 }));
 
