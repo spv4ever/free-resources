@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import MetaTags from "../components/MetaTags";
+import ShareFloatingBar from '../components/ShareFloatingBar';
 // Ya no necesitamos importar ReactMarkdown, rehypeRaw ni remarkAutolinkLiteral
 // import ReactMarkdown from "react-markdown";
 // import rehypeRaw from "rehype-raw";
@@ -185,6 +186,12 @@ const BlogPost = () => {
           </p>
         </div>
       )}
+      <ShareFloatingBar
+      title={post.title}
+      description={post.summary || post.content.slice(0, 150)}
+      imageUrl={post.coverImage}
+      shareUrl={`https://keikodev.es/blog/${slug}`}
+    />
     </article>
   );
 };

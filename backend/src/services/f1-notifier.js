@@ -1,8 +1,7 @@
-// f1-notifier.js
-
 import dotenv from 'dotenv';
 import axios from 'axios';
 import TelegramBot from 'node-telegram-bot-api';
+import * as dateFnsTz from 'date-fns-tz';
 
 dotenv.config();
 
@@ -18,6 +17,8 @@ const createHashtag = (text) => {
 let bot;
 const notifiedEvents = new Map();
 let dailySummarySentDate = null;
+
+const timeZone = 'Europe/Madrid'; // Ajusta a tu zona horaria preferida
 
 const sendMessage = (message) => {
   if (!bot) return;
@@ -43,7 +44,8 @@ const maybeSendDailySummary = (events) => {
 
   if (diffMinutes <= 30 && diffMinutes >= 29) {
     const resumen = todayEvents.map(e => {
-      const hour = new Date(e.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const zonedDate = dateFnsTz.utcToZonedTime(new Date(e.start), timeZone);
+      const hour = dateFnsTz.format(zonedDate, 'HH:mm');
       return `🕒 <b>${hour}</b> — <i>${e.title}</i>`;
     }).join('\n');
 

@@ -6,4 +6,4 @@ gmail-token.json
 *.bat
 *.mp4
 data/
-.log
+*.log
