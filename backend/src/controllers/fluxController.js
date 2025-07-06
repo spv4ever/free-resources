@@ -35,16 +35,19 @@ export const generarImagen = async (req, res) => {
       category = promptDoc?.packId?.category || '';
     }
     console.log('📦 Categoría detectada para promptRef:', category);
+
     await consumirToken({
       userId: req.user._id,
       type: 'generation',
       tool: 'comfyui',
       description: `Generación de imagen con prompt: ${prompt}`
     });
-    const categoriasAltaCalidad = ['stickers', 'tshirts', 't-shirts'];
+
+    const categoriasAltaCalidad = ['stickers', 'tshirts', 't-shirts', 't-shirt'];
     const stepsFinal = categoriasAltaCalidad.includes(category.toLowerCase())
       ? 30
       : steps || 15;
+
     const resultado = await generarImagenServicio({
       prompt,
       ratio,

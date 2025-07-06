@@ -1,5 +1,5 @@
   import React, { useEffect, useState } from 'react';
-  import MetaTags from '../components/MetaTags';
+  // import MetaTags from '../components/MetaTags';
   import '../styles/HomePage.css';
   import { useNavigate, useLocation } from 'react-router-dom';
   import { FaCircleInfo } from 'react-icons/fa6';
@@ -80,10 +80,10 @@
 
     return (
       <div className="homepage-content">
-        <MetaTags 
+        {/* <MetaTags 
           title="Keikodev - Desarrollo Web, IA y Tecnología" 
           description="Explora proyectos, tutoriales y artículos sobre desarrollo web, inteligencia artificial y las últimas tendencias en tecnología."
-        />
+        /> */}
         <div className="cards-container">
           
           <div className="card-home card-keikoprompts" onClick={() => navigate('/keikoprompts')}>

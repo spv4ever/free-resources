@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import MetaTags from '../components/MetaTags';
+// import MetaTags from '../components/MetaTags';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/SeriesCategoryList.css';
@@ -64,10 +64,10 @@ const SeriesCategoryList = () => {
 
   return (
     <div className="series-category-list">
-      <MetaTags 
+      {/* <MetaTags 
         title="Series - Descubre y Gestiona tus Series Favoritas - Keikodev"
         description="Explora un amplio catálogo de series, gestiona tus favoritas y descubre nuevas recomendaciones en Keikodev."
-      />
+      /> */}
       <SeriesCategoryMenu categories={categories} />
       {user && <h1>Mis Series Favoritas</h1>}
 

@@ -187,11 +187,12 @@ export default function AdminImport() {
         </select>
 
         <input
-          type="file"
-          accept="application/json"
-          onChange={handleFileChange}
-          disabled={isImporting}
-        />
+            type="file"
+            accept="application/json"
+            onChange={handleFileChange}
+            disabled={isImporting}
+            style={{ display: 'inline-block', opacity: 1, position: 'static', width: 'auto', height: 'auto' }}
+          />
 
         <button
           className="button-primary"

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import MetaTags from '../components/MetaTags';
+// import MetaTags from '../components/MetaTags';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useUser } from '../context/UserContext';
@@ -187,10 +187,10 @@ const SerieDetalle = () => {
 
   return (
     <div className={`serie-detalle-wrapper${serieVistaCompleta ? ' serie-completa' : ''}`}>
-      <MetaTags 
+      {/* <MetaTags 
         title={`${serie.title} - Detalles de la Serie - Keikodev`}
         description={serie.overview || `Descubre todo sobre la serie ${serie.title}, incluyendo sinopsis, temporadas, episodios y dónde verla.`}
-      />
+      /> */}
       <ShareFloatingBar
           title={`📺 ${serie.title} en KeikoDev`}
           description={serie.overview}

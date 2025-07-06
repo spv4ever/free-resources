@@ -39,21 +39,8 @@ export async function removeBackground(req, res) {
         filename: filenameRMBG,
         });
 
-    // Espera 10 segundos para que ComfyUI genere la imagen
-    await esperar(10000);
-
-    // Consulta el estado / history en ComfyUI para obtener filename
     const comfyUrl = await getComfyUrl('flux');
-    const { data } = await axios.get(`${comfyUrl}/history/${resultado.prompt_id}`, getComfyAuth());
-
-    const entry = data[resultado.prompt_id] || data;
-    const nodoSalida = Object.values(entry.outputs || {}).find(n => n?.images?.length > 0);
-
-    if (!nodoSalida || nodoSalida.images.length === 0) {
-      throw new Error('No se encontró imagen generada en ComfyUI');
-    }
-
-    const filename = nodoSalida.images[0].filename;
+    const filename = await esperarHastaObtenerImagen(resultado.prompt_id, comfyUrl);
 
     // Descarga la imagen generada desde ComfyUI
     const auth = {
@@ -99,3 +86,30 @@ export async function removeBackground(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
+
+
+const esperarHastaObtenerImagen = async (promptId, comfyUrl, intervalo = 5000) => {
+  const auth = getComfyAuth();
+  let intentos = 0;
+
+  while (true) {
+    try {
+      const { data } = await axios.get(`${comfyUrl}/history/${promptId}`, auth);
+      const entry = data[promptId] || data;
+      const nodoSalida = Object.values(entry.outputs || {}).find(n => n?.images?.length > 0);
+
+      if (nodoSalida && nodoSalida.images.length > 0) {
+        console.log(`Imagen encontrada tras ${intentos} intentos.`);
+        return nodoSalida.images[0].filename;
+      }
+
+      intentos++;
+      console.log(`Intento ${intentos}: imagen aún no disponible, esperando ${intervalo}ms...`);
+      await esperar(intervalo);
+
+    } catch (error) {
+      console.warn(`Error consultando el historial de ComfyUI (intento ${intentos}):`, error.message);
+      await esperar(intervalo);
+    }
+  }
+};

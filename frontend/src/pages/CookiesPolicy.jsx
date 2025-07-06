@@ -1,5 +1,5 @@
 import React from 'react';
-import MetaTags from '../components/MetaTags';
+// import MetaTags from '../components/MetaTags';
 const CookiesPolicy = () => {
   const containerStyle = {
     padding: '2rem',
@@ -22,10 +22,10 @@ const CookiesPolicy = () => {
 
   return (
     <div style={containerStyle}>
-      <MetaTags 
+      {/* <MetaTags 
         title="Política de Cookies - Keikodev"
         description="Información sobre la política de cookies de Keikodev, los tipos de cookies utilizadas, cómo gestionarlas y el consentimiento del usuario."
-      />
+      /> */}
       <h1 style={titleStyle}>Política de Cookies</h1>
 
       <p>

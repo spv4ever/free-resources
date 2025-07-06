@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import MetaTags from '../components/MetaTags';
+// import MetaTags from '../components/MetaTags';
 import { Link } from 'react-router-dom';
 import '../styles/ResourcesPage.css';
 // import AdBanner from '../components/AdBanner';
@@ -42,10 +42,10 @@ const RecursosPage = () => {
 
   return (
     <div>
-      <MetaTags 
+      {/* <MetaTags 
         title="Recursos de Desarrollo y Tecnología - Keikodev"
         description="Explora una colección de recursos, herramientas y enlaces útiles para desarrolladores y entusiastas de la tecnología, organizados por categorías."
-      />
+      /> */}
        {/* <AdBanner /> */}
       <h1>Categorías de Recursos</h1>
       

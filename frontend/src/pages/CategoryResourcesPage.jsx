@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import MetaTags from '../components/MetaTags';
+// import MetaTags from '../components/MetaTags';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useUser } from '../context/UserContext';
@@ -213,10 +213,10 @@ function CategoryResourcesPage() {
   
   return (
     <div className="resource-wrapper">
-      <MetaTags 
+      {/* <MetaTags 
         title={`Recursos de ${decodeURIComponent(categoryName)} - Keikodev`}
         description={`Encuentra recursos y herramientas sobre ${decodeURIComponent(categoryName)} en Keikodev.`}
-      />
+      /> */}
       {/* <AdBanner /> */}
       <h2 className="resource-title">Categoría: {decodeURIComponent(categoryName)}</h2>
       <div className="resource-filters">
