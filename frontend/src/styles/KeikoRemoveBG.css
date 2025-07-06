@@ -1,75 +1,505 @@
+/* --- Variables CSS para coherencia y fácil mantenimiento --- */
+:root {
+  /* Colores */
+  --bg-dark: #1e1e2f; /* Fondo principal del componente */
+  --bg-darker: #1a1a2a; /* Fondo del body */
+  --bg-medium: #2a2a3d; /* Fondo de las ranuras de imagen */
+  --text-primary: #f5f5f7; /* Títulos y texto principal */
+  --text-secondary: #eee; /* Texto general */
+  --text-placeholder: #9999aa; /* Texto de marcador de posición */
+  --blue-primary: #007bff; /* Azul principal de botones */
+  --blue-hover: #0056b3; /* Azul al pasar el ratón */
+  --blue-active: #003d80; /* Azul al hacer clic/activo */
+  --red-error: #ff6b6b; /* Color para mensajes de error */
+
+  /* Sombras */
+  --shadow-base: 0 8px 20px rgb(0 0 0 / 0.8);
+  --shadow-button-primary: 0 4px 15px rgb(0 123 255 / 0.7);
+  --shadow-button-primary-hover: 0 6px 20px rgb(0 86 179 / 0.9);
+  --shadow-button-secondary: 0 3px 10px rgb(0 86 179 / 0.8);
+  --shadow-button-secondary-hover: 0 5px 16px rgb(0 61 128 / 0.95);
+  --shadow-image-slot: 0 0 18px rgb(0 0 0 / 0.9);
+  --shadow-image-slot-hover: 0 0 25px rgb(0 123 255 / 0.9);
+  --shadow-modal: 0 8px 24px rgb(0 0 0 / 0.85);
+
+  /* Bordes */
+  --border-radius-base: 14px;
+  --border-radius-small: 8px;
+  --border-radius-image: 10px;
+}
+
+/* --- Estilos Generales del Body --- */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-darker);
+  color: var(--text-secondary);
+  font-family: 'Inter', Arial, sans-serif;
+  min-height: 100vh; /* Asegura que el body ocupe al menos toda la altura de la ventana */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Alinea el contenido al inicio verticalmente */
+}
+
+/* --- Contenedor Principal del Componente --- */
 .keiko-remove-bg-container {
-  max-width: 900px;
-  margin: 20px auto;
-  font-family: Arial, sans-serif;
+  max-width: 960px;
+  margin: 30px auto;
+  font-family: 'Inter', Arial, sans-serif;
+  padding: 30px 35px;
+  background-color: var(--bg-dark);
+  border-radius: var(--border-radius-base);
+  box-shadow: var(--shadow-base);
+  color: var(--text-secondary);
+  width: 100%; /* Asegura que ocupe el ancho disponible dentro de su max-width */
+  box-sizing: border-box; /* Incluye padding y border en el width/height */
+}
+
+.section-title {
+  font-weight: 700;
+  font-size: 1.9rem;
+  margin-bottom: 30px;
+  text-align: center;
+  color: var(--text-primary);
+  user-select: none;
+}
+
+/* --- Área de Selección/Arrastre de Archivos (Drag & Drop) --- */
+.file-input-area {
+  position: relative;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: var(--border-radius-base);
   padding: 20px;
-}
-
-input[type="file"] {
-  display: block;
-  margin: 0 auto 15px auto;
-}
-
-button {
-  display: block;
   margin: 0 auto 25px auto;
-  padding: 10px 25px;
-  font-size: 16px;
-  cursor: pointer;
+  max-width: 500px;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  display: flex;
+  flex-direction: column; /* Apila el wrapper y el overlay */
+  align-items: center;
+  justify-content: center;
+  min-height: 120px; /* Asegura un área mínima para el drag/drop */
 }
 
-button:disabled {
+.file-input-area.drag-active {
+  border-color: var(--blue-primary);
+  background-color: rgba(0, 123, 255, 0.08); /* Ligero azulado */
+}
+
+.file-input-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centrar elementos horizontalmente */
+  gap: 20px;
+  flex-wrap: wrap; /* Permite que los elementos envuelvan a la siguiente línea */
+  width: 100%; /* Ocupar el 100% del contenedor padre */
+}
+
+/* --- Contenedores y Texto del Nombre de Archivo / Placeholder --- */
+.file-name-container { /* Este es el contenedor que contendrá el nombre o el placeholder */
+  flex-grow: 1; /* Permite que este contenedor tome el espacio disponible */
+  min-width: 0; /* Importante para que el elemento flex se encoja correctamente */
+  color: var(--text-secondary);
+  font-weight: 600;
+  user-select: text;
+  
+  /* Hacemos de este un contenedor flex para centrar su contenido */
+  display: flex; 
+  justify-content: center; /* Centra horizontalmente el texto dentro de este contenedor */
+  align-items: center; /* Centra verticalmente */
+}
+
+.actual-file-name { /* Estilos para cuando se ha subido un archivo (truncado) */
+  white-space: nowrap; /* Mantiene el nombre del archivo en una sola línea */
+  overflow: hidden; /* Oculta el texto que desborda */
+  text-overflow: ellipsis; /* Añade puntos suspensivos (...) al final */
+  max-width: 100%; /* Asegura que no se desborde de su contenedor padre */
+  display: block; /* Para que text-overflow funcione correctamente */
+  text-align: left; /* Alinea a la izquierda por defecto */
+  padding: 0 5px; /* Un poco de padding para que el ellipsis no toque el borde */
+}
+
+.placeholder-text { /* Estilos para el texto "Arrastra una imagen aquí..." (envuelve texto) */
+  white-space: normal; /* ¡Permite que el texto envuelva a la siguiente línea! */
+  overflow: visible; /* Asegura que todo el texto sea visible */
+  text-overflow: clip; /* No añade puntos suspensivos */
+  max-width: 100%; /* Asegura que el texto respete el ancho de su contenedor padre */
+  display: block;
+  text-align: center; /* Centra el texto del placeholder */
+  padding: 0 5px; /* Pequeño padding para que el texto no toque los bordes */
+}
+
+/* --- Botón de Cargar Imagen --- */
+.btn-upload {
+  padding: 10px 28px;
+  font-size: 1rem;
+  font-weight: 700;
+  background-color: var(--blue-primary);
+  border-radius: var(--border-radius-small);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-button-primary);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0; /* Evita que se encoja */
+}
+
+.btn-upload:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-upload:hover:not(:disabled) {
+  background-color: var(--blue-hover);
+  box-shadow: var(--shadow-button-primary-hover);
+}
+
+/* --- Botón de Limpiar ('x') --- */
+.btn-clear {
+  background: none;
+  border: none;
+  color: var(--text-placeholder);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 8px;
+  transition: color 0.3s ease;
+  line-height: 1; /* Alinea el icono 'x' */
+  flex-shrink: 0; /* Evita que se encoja */
+}
+
+.btn-clear:hover:not(:disabled) {
+  color: var(--red-error);
+}
+
+.btn-clear:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.error-message {
-  color: red;
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.images-wrapper {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-}
-
-.image-slot {
-  flex: 1 1 45%;
-  min-height: 300px;
-  border: 2px solid #ddd;
+/* --- Overlay de Arrastre --- */
+.drop-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 123, 255, 0.15); /* Color de fondo más claro */
+  border-radius: var(--border-radius-base);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent; /* Cambia de #fafafa o blanco a transparente */
-  position: relative;
+  color: var(--blue-primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  pointer-events: none; /* Permite que los eventos de ratón pasen a los elementos debajo */
+  z-index: 10; /* Asegura que esté por encima de otros elementos */
+  backdrop-filter: blur(2px); /* Efecto de desenfoque */
+}
+
+/* Ocultar input de archivo nativo */
+input[type="file"] {
+  display: none;
+}
+
+/* --- Botón Principal (Quitar Fondo) --- */
+button.btn-primary {
+  display: block;
+  margin: 0 auto 35px auto;
+  padding: 12px 35px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  background-color: var(--blue-primary);
+  border: none;
+  border-radius: var(--border-radius-small);
+  cursor: pointer;
+  box-shadow: var(--shadow-button-primary);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+button.btn-primary:hover:not(:disabled) {
+  background-color: var(--blue-hover);
+  box-shadow: var(--shadow-button-primary-hover);
+}
+
+button.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Botón "Quitar Fondo" Sticky en la parte inferior */
+.sticky-btn {
+  position: sticky;
+  bottom: 15px;
+  z-index: 999;
+  width: max-content; /* Se ajusta al contenido */
+  padding-left: 40px;
+  padding-right: 40px;
+  margin-bottom: 20px; /* Espacio para que no toque el borde inferior de la pantalla */
+}
+
+/* Mensajes de Error */
+.error-message {
+  color: var(--red-error);
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 15px;
+  user-select: none;
+}
+
+/* --- Contenedor de Imágenes (Original y Procesada) --- */
+.images-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  justify-content: center;
+  flex-wrap: nowrap; /* Evita que las imágenes se apilen en pantallas más grandes */
+  max-width: 900px;
+  margin: 0 auto 40px auto;
+}
+
+/* Ranura Individual para Cada Imagen */
+.image-slot {
+  flex: 1 1 45%; /* Crece y encoge pero con base de 45% del espacio */
+  min-height: 320px; /* Mantiene un tamaño consistente para el placeholder */
+  max-width: 400px; /* Limita el tamaño individual */
+  border-radius: var(--border-radius-base);
+  box-shadow: var(--shadow-image-slot);
+  background-color: var(--bg-medium);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Alinea el contenido arriba */
+  padding: 18px;
+  box-sizing: border-box;
+  position: relative; /* Para el overlay de carga */
+  transition: box-shadow 0.3s ease;
+}
+
+.image-slot:hover {
+  box-shadow: var(--shadow-image-slot-hover);
 }
 
 .image-slot img {
   max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  max-height: 260px; /* Limita la altura de la imagen para que quepa en la ranura */
+  object-fit: contain; /* Ajusta la imagen sin recortar */
+  border-radius: var(--border-radius-image);
+  user-select: none;
+  background-color: transparent;
+  flex-shrink: 0; /* Evita que la imagen se encoja si el texto es muy largo */
 }
 
-.placeholder {
-  color: #aaa;
-  font-style: italic;
-  font-size: 16px;
+.image-slot figcaption {
+  margin-top: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  user-select: none;
   text-align: center;
 }
 
-.image-container {
-  position: relative;
-  background-color: transparent; /* Asegura fondo transparente */
-  width: 400px; /* o el tamaño que quieras */
-  height: auto;
+/* Estilos para el Texto de Marcador de Posición de Imagen */
+.placeholder {
+  color: var(--text-placeholder);
+  font-style: italic;
+  font-size: 16px;
+  text-align: center;
+  align-self: center;
   user-select: none;
+  flex-grow: 1; /* Permite que el placeholder ocupe el espacio completo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: transparent;
 }
 
-.image-container img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  background-color: transparent; /* No rellena fondo */
+/* Botón de Descargar Imagen */
+button.btn-secondary {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 9px 22px;
+  background-color: var(--blue-hover);
+  color: #fff;
+  font-weight: 700;
+  border-radius: var(--border-radius-small);
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  box-shadow: var(--shadow-button-secondary);
+}
+
+button.btn-secondary:hover {
+  background-color: var(--blue-active);
+  box-shadow: var(--shadow-button-secondary-hover);
+}
+
+/* --- Spinner de Carga y Overlay --- */
+.processing-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* Oscurece el fondo */
+  border-radius: var(--border-radius-base);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 5; /* Asegura que esté sobre la imagen */
+  color: #fff;
+  font-size: 1rem;
+  gap: 10px; /* Espacio entre spinner y texto */
+}
+
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid var(--blue-primary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* --- Modal de Vista Previa de Imagen --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0; /* Cubre toda la ventana */
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  cursor: zoom-out; /* Indica que al hacer clic se cierra */
+}
+
+.modal-content {
+  background: var(--bg-dark);
+  border-radius: var(--border-radius-base);
+  box-shadow: var(--shadow-modal);
+  cursor: auto;
+  overflow: hidden;
+  position: relative; /* Para posicionar el botón de cerrar */
+  padding: 10px; /* Pequeño padding interno para la imagen */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1; /* Asegura que el 'x' esté centrado verticalmente */
+  transition: background-color 0.3s ease;
+  z-index: 10; /* Asegura que esté por encima de la imagen */
+}
+
+.modal-close-btn:hover {
+  background: var(--red-error);
+}
+
+/* --- Responsive Design (Media Queries) --- */
+@media (max-width: 768px) {
+  .keiko-remove-bg-container {
+    padding: 20px;
+    margin: 20px auto;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+    margin-bottom: 25px;
+  }
+
+  .images-wrapper {
+    flex-direction: column; /* Apila las ranuras de imagen */
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  .image-slot {
+    max-width: 100%; /* Ocupar todo el ancho disponible */
+    min-height: 280px;
+  }
+  .image-slot img {
+    max-height: 200px; /* Ajustar altura para móviles */
+  }
+
+  .sticky-btn {
+    bottom: 10px;
+    font-size: 1rem;
+    padding: 10px 30px;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .file-input-area {
+    padding: 15px;
+    min-height: 100px; /* Menor altura en pantallas muy pequeñas */
+  }
+  .file-input-wrapper {
+    flex-direction: column; /* Apila el botón y el texto verticalmente */
+    gap: 10px;
+  }
+  .btn-upload {
+    width: 100%; /* El botón ocupa todo el ancho */
+    order: 1; /* Mueve el botón a la primera posición */
+  }
+  .file-name-container { /* Apunta al nuevo contenedor */
+    max-width: 100%; /* Ocupa todo el ancho disponible en móviles */
+    font-size: 0.9rem;
+    order: 2; /* Mueve el texto a la segunda posición, debajo del botón */
+    justify-content: center; /* Asegura que el texto se centre */
+  }
+  .actual-file-name,
+  .placeholder-text {
+    text-align: center; /* Fuerza la alineación central para ambos */
+  }
+
+  /* Ajuste para el botón de limpiar en móviles */
+  .btn-clear {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 1.2rem;
+    padding: 2px 6px;
+    border-radius: 50%;
+    background-color: rgba(0,0,0,0.3);
+  }
+  .drop-overlay {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .section-title {
+    font-size: 1.4rem;
+  }
 }
