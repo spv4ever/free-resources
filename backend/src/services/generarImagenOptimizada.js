@@ -237,7 +237,7 @@ export const generarImagenRMBG = async ({ imageBuffer, filenameRMBG  }) => {
   // 2. Clonar el flujo RMBG y reemplazar la URL en el nodo 16
   const modificado = clonarFlujo(flujosCargados.rmbg);
   modificado["16"].inputs.url = uploadResult.secure_url;
-  modificado['8'].inputs.filename_prefix = "keiko_remove_bg";
+  modificado['8'].inputs.filename_prefix = filenameRMBG;
 
   // 3. Enviar flujo a ComfyUI
   const comfyUrl = await getComfyUrl('flux');

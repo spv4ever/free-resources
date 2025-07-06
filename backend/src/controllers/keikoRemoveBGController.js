@@ -20,9 +20,10 @@ export async function removeBackground(req, res) {
     const userId = req.user._id;
     const nickname = req.user.nickname;
     
+    console.log(filenameRMBG)
 
     // Lanza el job
-    const resultado = await generarImagenRMBG({ imageBuffer: inputBuffer, filename: filenameRMBG });
+    const resultado = await generarImagenRMBG({ imageBuffer: inputBuffer, filenameRMBG  });
 
     if (!resultado.prompt_id) {
       throw new Error('No se recibió prompt_id desde ComfyUI');
