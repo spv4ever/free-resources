@@ -50,6 +50,7 @@ export default function KeikoPromptsList() {
   const [advancedMode, setAdvancedMode] = useState(false);
   const [removeBackground, setRemoveBackground] = useState(true);
   const isProUser = useMemo(() => ['admin', 'pro'].includes(user?.role), [user]);
+  const [customText, setCustomText] = useState({});
   
 useEffect(() => {
     if (document.querySelector('script[data-name="BMC-Widget"]')) return;
@@ -231,6 +232,7 @@ useEffect(() => {
   
   const handleCopyAndOpen = (promptText, platform, id) => {
     if (platform.toLowerCase() === 'flux') {
+      //handleFluxPrompt("Chica rubia desnuda nsfw", "68593838b0293947f7efcc7f");
       handleFluxPrompt(promptText, id);
       return;
     }
@@ -264,6 +266,7 @@ useEffect(() => {
 
       const extras = (selectedExtras[promptId] || []).map(e => e.value);
       const finalPrompt = `${promptText}, ${extras.join(', ')}`.trim();
+      // const finalPrompt = "Twister-themed vector letters 'ANGEL' dripping green paint, swirling drips and dust motifs, perfect for extreme t-shirt design";
       
 
       const token = localStorage.getItem('token');
@@ -652,6 +655,8 @@ useEffect(() => {
             removeBackground={removeBackground}
             setRemoveBackground={setRemoveBackground}
             isProUser={isProUser}
+            customText={customText}
+            setCustomText={setCustomText}
           />
 
         ))}

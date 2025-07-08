@@ -36,6 +36,8 @@ const PromptCardRedesigned = React.memo(({
   removeBackground,
   setRemoveBackground,
   isProUser,
+  customText,             // 👈 AÑADE ESTO
+  setCustomText 
 }) => {
   const { user } = useUser();
 
@@ -147,7 +149,16 @@ const PromptCardRedesigned = React.memo(({
               </div>
             </div>
           )}
-
+          {isFlux && user?.role === 'admin' && (
+            <div className="keiko-prompt-card__custom-text">
+              <input
+                type="text"
+                placeholder="Usar otro texto personalizado..."
+                value={customText[promptId] || ''}
+                onChange={(e) => setCustomText(prev => ({ ...prev, [promptId]: e.target.value }))}
+              />
+            </div>
+          )}
           <div className="keiko-prompt-card__actions">
             <button className="keiko-prompt-card__btn keiko-prompt-card__btn--secondary" onClick={() => copyToClipboard(prompt.prompt)}>
               📋 Copiar Prompt
@@ -162,7 +173,8 @@ const PromptCardRedesigned = React.memo(({
                     return;
                   }
                 }
-                handleCopyAndOpen(prompt.prompt, prompt.platform, promptId);
+                const promptText = customText[promptId]?.trim() || prompt.prompt;
+                handleCopyAndOpen(promptText, prompt.platform, promptId);
               }}
               disabled={isGenerating || isPending}
             >

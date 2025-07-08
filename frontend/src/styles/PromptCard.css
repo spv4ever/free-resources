@@ -47,6 +47,29 @@
   gap: 1rem;
 }
 
+.keiko-prompt-card__custom-text {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.keiko-prompt-card__custom-text input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: inherit;
+  background-color: #f9f9f9;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.keiko-prompt-card__custom-text input:focus {
+  border-color: #5e9cff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(94, 156, 255, 0.2);
+}
+
+
 .keiko-prompt-card__header h3 {
   margin: 0;
   font-size: 1.25rem;
