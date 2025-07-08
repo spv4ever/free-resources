@@ -4,6 +4,41 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './KeikoPromptsAdmin.css';
 
+function exportToCSV(data, filename = 'prompts_export.csv') {
+  const csvRows = [];
+
+  // Cabecera
+  const headers = ['Título del Prompt', 'Texto del Prompt', 'Platform', 'Access', 'Título del Pack', 'Categoría del Pack'];
+  csvRows.push(headers.join(','));
+
+  // Contenido
+  for (const item of data) {
+    const row = [
+      `"${item.scene}"`,
+      `"${item.prompt.replace(/"/g, '""')}"`,
+      item.platform,
+      item.access,
+      `"${item.packTitle}"`,
+      `"${item.packCategory}"`
+    ];
+    csvRows.push(row.join(','));
+  }
+
+  // UTF-8 BOM para Excel
+  const csvContent = '\uFEFF' + csvRows.join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+
+
 export default function KeikoPromptsAdmin() {
   const [packs, setPacks] = useState([]);
   const [selectedPack, setSelectedPack] = useState('');
@@ -101,7 +136,21 @@ export default function KeikoPromptsAdmin() {
       console.error(err);
     }
   };
+  const exportPrompts = () => {
+    if (!selectedPack) {
+      alert('Selecciona un pack primero.');
+      return;
+    }
 
+    const selectedPackObj = packs.find(p => p._id === selectedPack);
+    const enrichedData = displayed.map(p => ({
+      ...p,
+      packTitle: selectedPackObj?.title || '',
+      packCategory: selectedPackObj?.category || ''
+    }));
+
+    exportToCSV(enrichedData);
+  };
   return (
     <div className="keiko-admin-container">
       <h1>📋 Keiko Prompts</h1>
@@ -111,6 +160,9 @@ export default function KeikoPromptsAdmin() {
         </button>
         <button onClick={() => window.location.href = '/admin/imports'}>
           ⬆️ Importar Prompts
+        </button>
+        <button onClick={() => exportPrompts()}>
+          📤 Exportar Seleccionados
         </button>
       </div>
 
@@ -169,7 +221,7 @@ export default function KeikoPromptsAdmin() {
 
       {showModal && (
         <div className="modal-overlay">
-          <div className="modal">
+          <div className="modal prompt-modal">
             <h2>{editingPrompt ? 'Editar Prompt' : 'Nuevo Prompt'}</h2>
 
             <div className="form-row">
@@ -188,6 +240,7 @@ export default function KeikoPromptsAdmin() {
             <div className="form-row">
               <label>Título:</label>
               <input
+                type="text"
                 value={form.scene}
                 onChange={e => setForm({ ...form, scene: e.target.value })}
               />
@@ -196,8 +249,8 @@ export default function KeikoPromptsAdmin() {
             <div className="form-row">
               <label>Prompt:</label>
               <textarea
-                rows="6"
                 value={form.prompt}
+                rows="10"
                 onChange={e => setForm({ ...form, prompt: e.target.value })}
               />
             </div>
@@ -205,6 +258,7 @@ export default function KeikoPromptsAdmin() {
             <div className="form-row">
               <label>Platform:</label>
               <input
+                type="text"
                 value={form.platform}
                 onChange={e => setForm({ ...form, platform: e.target.value })}
               />
@@ -228,6 +282,7 @@ export default function KeikoPromptsAdmin() {
           </div>
         </div>
       )}
+
     </div>
   );
 }

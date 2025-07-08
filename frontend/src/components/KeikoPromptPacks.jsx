@@ -1,10 +1,14 @@
   // src/pages/KeikoPromptPacks.jsx
-  import React, { useEffect, useState } from 'react';
+  import React, { useEffect, useState, useMemo  } from 'react';
   import axios from 'axios';
   import '../styles/KeikoPromptPacks.css';
   import { useNavigate } from 'react-router-dom';
   import BotonBiblioteca from '../components/BotonBiblioteca';
   import ScrollToTopButton from '../components/ScrollToTopButton';
+  import PromptLibreCard from './PromptLibreCard';
+  import useFluxPromptManager from '../hooks/useFluxPromptManager';
+  import { useUser } from '../context/UserContext';
+
 
   export default function KeikoPromptPacks() {
     const [packs, setPacks] = useState([]);
@@ -13,9 +17,58 @@
     const [categoryFilter, setCategoryFilter] = useState('');
     const [search, setSearch] = useState('');
     const navigate = useNavigate();
+    const { user } = useUser();
+    const [pack, setPack] = useState(null);
+    const [selectedRatio, setSelectedRatio] = useState('3:4');
+    const isProUser = useMemo(() => ['admin', 'pro'].includes(user?.role), [user]);
+    const [customText, setCustomText] = useState({});
+
 
     // --- 1. NUEVO ESTADO PARA EL ORDEN ---
     const [sortOrder, setSortOrder] = useState('prompts-desc');
+
+    const {
+      generando,
+      imagenes,
+      pendientes,
+      tiempoTranscurrido,
+      progresoGeneracion,
+      errorModal,
+      setErrorModal,
+      handleFluxPrompt,
+      verificarImagen
+    } = useFluxPromptManager({ pack, isProUser, selectedRatio });
+
+    const handleCopyAndOpen = (promptText, platform, id) => {
+      if (platform.toLowerCase() === 'flux') {
+        handleFluxPrompt({
+          promptText,
+          promptId: id,
+          selectedExtras: [],
+          advancedMode: false,
+          removeBackground: false,
+          seed: undefined,
+          useRandomSeed: true
+        });
+        return;
+      }
+
+      navigator.clipboard.writeText(promptText);
+
+      const urls = {
+        chatgpt: 'https://chat.openai.com/',
+        leonardo: 'https://app.leonardo.ai/',
+        pixai: 'https://pixai.art/',
+        midjourney: 'https://discord.com/invite/midjourney'
+      };
+
+      const url = urls[platform.toLowerCase()];
+      if (url) window.open(url, '_blank');
+      else alert('Plataforma no reconocida');
+    };
+
+
+
 
     useEffect(() => {
       async function fetchData() {
@@ -98,10 +151,25 @@
           <p>Encuentra la inspiración que necesitas para tus proyectos de IA.</p>
           <BotonBiblioteca />
         </header>
+        {user?.role === 'admin' && (
+              <PromptLibreCard
+                handleFluxPrompt={handleFluxPrompt}
+                handleCopyAndOpen={handleCopyAndOpen}
+                imagenes={imagenes}
+                pendientes={pendientes}
+                tiempoTranscurrido={tiempoTranscurrido}
+                progresoGeneracion={progresoGeneracion}
+                generando={generando}
+                verificarImagen={verificarImagen}
+                customText={customText}
+                setCustomText={setCustomText}
+              />
+            )}
 
         <div className="filters-container">
           {/* --- 3. NUEVO CONTENEDOR PARA AGRUPAR BÚSQUEDA Y ORDEN --- */}
           <div className="top-filter-controls">
+            
             <div className="search-bar">
               <input
                 type="text"
@@ -110,6 +178,7 @@
                 onChange={e => setSearch(e.target.value)}
               />
             </div>
+            
 
             <div className="sort-controls">
               <label htmlFor="sort-order">Ordenar por:</label>
@@ -128,6 +197,8 @@
               onClick={() => setCategoryFilter('')}>
                 <span className="chip-category-name">Todas las categorías</span>
             </button>
+            
+
             {categoryCounts.map(cat => (
               <button
                 key={cat.name}

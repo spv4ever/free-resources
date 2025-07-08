@@ -52,6 +52,7 @@ export default function KeikoPromptsList() {
   const isProUser = useMemo(() => ['admin', 'pro'].includes(user?.role), [user]);
   const [customText, setCustomText] = useState({});
   
+  
 useEffect(() => {
     if (document.querySelector('script[data-name="BMC-Widget"]')) return;
 

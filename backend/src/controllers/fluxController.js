@@ -70,7 +70,9 @@ export const generarImagen = async (req, res) => {
       prompt_id: resultado.prompt_id,
       prompt,
       promptRef,
-      public: req.user.permiteImagenesPublicas === true
+      public: typeof req.body.esPublica !== 'undefined'
+        ? req.body.esPublica === true || req.body.esPublica === 'true'
+        : req.user.permiteImagenesPublicas === true,
     });
 
     trackPendingJob(resultado.prompt_id, {
