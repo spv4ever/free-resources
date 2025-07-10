@@ -1,20 +1,17 @@
 .top-weekly-card {
-  position: relative;
   background: #121212;
   color: #e0e0e0;
   padding: 1.5rem 1rem;
   border-radius: 12px;
   margin-bottom: 2rem;
-}
-
-.top-weekly-card h2 {
-  margin-bottom: 1rem;
-  font-size: 1.4rem;
-  color: #ff9800;
+  position: relative;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .top-weekly-carousel-wrapper {
   position: relative;
+  overflow: hidden;
 }
 
 .top-weekly-carousel {
@@ -22,44 +19,35 @@
   gap: 1rem;
   overflow-x: auto;
   scroll-behavior: smooth;
-  padding-bottom: 8px;
-  scrollbar-width: thin;
-  scrollbar-color: #2a2a2a transparent;
+  scroll-snap-type: x mandatory;
+  padding: 1rem 2rem;
 }
 
 .top-weekly-carousel::-webkit-scrollbar {
   height: 4px;
 }
-
-.top-weekly-carousel::-webkit-scrollbar-track {
-  background: transparent;
-}
-
 .top-weekly-carousel::-webkit-scrollbar-thumb {
-  background-color: #2a2a2a;
-  border-radius: 3px;
+  background-color: #444;
+  border-radius: 2px;
 }
 
-/* Serie individual */
 .top-weekly-item {
   flex: 0 0 250px;
-  min-height: 480px;
   background: #1e1e1e;
   padding: 1rem;
   border-radius: 10px;
+  color: white;
   text-align: center;
   text-decoration: none;
-  color: white;
-  transition: transform 0.2s ease;
+  scroll-snap-align: start;
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  scroll-snap-align: start;
-  position: relative;
+  transition: transform 0.2s ease;
 }
-
 .top-weekly-item:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
 }
 
 .top-weekly-poster {
@@ -71,134 +59,43 @@
 }
 
 .top-weekly-title {
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #ffffff;
+  font-size: 1rem;
   margin-top: 0.8rem;
+  color: #fff;
+  font-weight: bold;
   line-height: 1.2;
-  height: 2.6em; /* para 2 líneas */
+  max-height: 2.6em;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
-/* Logos de plataformas */
 .top-weekly-platforms {
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.5rem;
   margin-top: 0.5rem;
 }
 
 .top-weekly-logo {
-  height: 54px;
+  height: 48px;
   max-width: 60px;
   object-fit: contain;
-  opacity: 0.9;
-}
-
-/* Botón "Ver más" */
-.top-weekly-ver-mas-container {
-  text-align: center;
-  margin-top: 1rem;
-}
-
-.top-weekly-ver-mas-btn {
-  background-color: #0077cc;
-  color: white;
-  padding: 0.6rem 1.2rem;
-  font-size: 0.9rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.top-weekly-ver-mas-btn:hover {
-  background-color: #005fa3;
 }
 
 .top-weekly-rank {
   position: absolute;
   top: 8px;
   left: 8px;
-  background-color: rgba(255, 152, 0, 0.9); /* color ámbar */
+  background-color: rgba(255, 152, 0, 0.9);
   color: black;
   font-weight: bold;
   padding: 0.3rem 0.6rem;
   font-size: 1rem;
   border-radius: 6px;
   z-index: 2;
-}
-/* Flechas de navegación */
-.nav-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(30, 30, 30, 0.6);
-  border: none;
-  color: white;
-  font-size: 2rem;
-  padding: 0.3rem 0.6rem;
-  cursor: pointer;
-  z-index: 2;
-  border-radius: 50%;
-  transition: background-color 0.2s ease;
-}
-
-.nav-arrow:hover {
-  background-color: rgba(60, 60, 60, 0.8);
-}
-
-.nav-arrow.left {
-  left: -10px;
-}
-
-.nav-arrow.right {
-  right: -10px;
-}
-
-.top-weekly-user-info {
-  font-size: 0.75rem;
-  margin-top: 0.4rem;
-  text-align: center;
-  color: #ccc;
-}
-
-.top-weekly-user-info {
-  font-size: 0.75rem;
-  margin-top: 0.4rem;
-  text-align: center;
-  color: #ccc;
-  line-height: 1.3;
-}
-
-.followers-count {
-  display: block;
-  margin-top: 4px;
-  color: #aaa;
-  font-size: 0.7rem;
-}
-
-.top-weekly-item.popular-favorite {
-  border: 2px solid gold;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
-  position: relative;
-}
-
-.top-weekly-item.popular-favorite::before {
-  content: "⭐ Popular";
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  background: gold;
-  color: #000;
-  font-size: 0.6rem;
-  padding: 2px 5px;
-  border-radius: 5px;
-  font-weight: bold;
 }
 
 .card-fav-toggle {
@@ -210,17 +107,33 @@
   z-index: 2;
 }
 
-.heart-icon {
-  display: inline-block;
-  transition: transform 0.2s ease;
-}
-
 .heart-icon.active {
   animation: beat 0.3s ease;
 }
 
 @keyframes beat {
-  0%   { transform: scale(1); }
-  50%  { transform: scale(1.3); }
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
   100% { transform: scale(1); }
+}
+
+/* Flechas */
+.nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 2rem;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 50%;
+  z-index: 3;
+  cursor: pointer;
+}
+.nav-arrow.left {
+  left: 0;
+}
+.nav-arrow.right {
+  right: 0;
 }

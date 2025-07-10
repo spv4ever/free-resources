@@ -1,12 +1,15 @@
 /* === Estilos generales para la barra de navegación === */
 .navbar {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   background-color: #1a1a1a;
   padding: 1rem 2rem;
   color: white;
-  flex-wrap: wrap;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .navbar-logo a,
@@ -30,6 +33,10 @@
 .navbar-links {
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;         /* No permitas que salte de línea aquí */
+  overflow-x: auto;          /* Si se pasa, aparece scroll interno */
+  gap: 1rem;
+  max-width: 100%;
 }
 
 .navbar-links a,
@@ -104,8 +111,8 @@
   color: #ffcc00;
   font-size: 1rem;
   font-weight: bold;
-  padding-left: 50px;
-  padding-right: 50px;
+  padding: 0 15px; /* ✅ en lugar de 50px */
+  word-break: break-word;
 }
 
 /* === Sidebar === */

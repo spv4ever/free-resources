@@ -1,0 +1,150 @@
+.top-series-grid-container {
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: white;
+}
+
+.top-series-title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.top-series-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Fijas */
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.top-series-card {
+  background-color: #1e1e1e;
+  padding: 1rem;
+  border-radius: 10px;
+  position: relative;
+  text-decoration: none;
+  color: white;
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.top-series-card {
+  width: 100%;
+  max-width: 200px; /* límite visual */
+  margin: 0 auto;
+}
+.top-series-card:hover {
+  transform: translateY(-5px);
+}
+
+.top-series-rank {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: #ff9800;
+  color: black;
+  font-weight: bold;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  z-index: 2;
+}
+
+.top-series-poster {
+  width: 100%;
+  height: 300px;
+  object-fit: contain;
+  border-radius: 6px;
+  margin-bottom: 0.8rem;
+}
+
+.top-series-title-text {
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.top-series-platforms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.top-series-logo {
+  height: 42px;
+  max-width: 60px;
+  object-fit: contain;
+}
+
+.card-fav-toggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.heart-icon.active {
+  animation: beat 0.3s ease;
+}
+
+.top-series-toggle-btn-container {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.top-series-toggle-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+}
+
+.top-series-toggle-btn:hover {
+  background-color: #0056b3;
+}
+
+.top-series-user-info {
+  font-size: 0.75rem;
+  color: #ccc;
+  margin-top: 0.5rem;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.followers-count {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.7rem;
+  color: #aaa;
+}
+@keyframes beat {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+@media (max-width: 480px) {
+  .top-series-poster {
+    height: 220px; /* reduce altura en móviles */
+  }
+
+  .top-series-title-text {
+    font-size: 0.9rem;
+  }
+
+  .top-series-logo {
+    height: 36px;
+  }
+}

@@ -1,5 +1,28 @@
+* {
+  outline: 1px solid red !important;
+  box-sizing: border-box;
+}
+
 .App {
   text-align: center;
+}
+
+/* Evita que cualquier contenido se salga horizontalmente del viewport */
+html, body, #root, .layout-container, .layout-content {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Asegura que imágenes y elementos incrustados no causen desbordamiento */
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Opcional: ayuda visual para detectar qué elemento se está saliendo */
+* {
+  box-sizing: border-box;
 }
 
 body {

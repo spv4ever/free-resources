@@ -30,6 +30,7 @@ setInterval(() => {
 
 export const startComfySocketWatcher = async () => {
   const comfyUrl = await getComfyUrl('flux');
+  console.log('🧪 Conectando a', comfyUrl);
   const wsUrl = comfyUrl.replace(/^http/, 'ws') + '/ws';
   const { auth } = getComfyAuth();
 

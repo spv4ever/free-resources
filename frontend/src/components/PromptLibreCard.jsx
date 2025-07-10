@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { useUser } from '../context/UserContext';
 import PromptImageModal from './PromptImageModal';
 import '../styles/PromptCard.css';
@@ -36,7 +36,21 @@ const PromptLibreCard = ({
   const [modalImage, setModalImage] = useState(null);
   const [esPublica, setEsPublica] = useState(false);
   
+  const [steps, setSteps] = useState(() => {
+    const stored = localStorage.getItem('keiko_steps');
+    return stored ? parseInt(stored) : 20;
+  });
+  const [localRatio, setLocalRatio] = useState(() => {
+    return localStorage.getItem('keiko_ratio') || '3:4';
+  });
   
+  useEffect(() => {
+      localStorage.setItem('keiko_steps', steps);
+    }, [steps]);
+
+useEffect(() => {
+  localStorage.setItem('keiko_ratio', localRatio);
+}, [localRatio]);
 
     const aspectRatios = [
     { key: '1:1', label: '1:1', width: 100, height: 100 },
@@ -49,7 +63,7 @@ const PromptLibreCard = ({
     { key: '21:9', label: '21:9', width: 100, height: 43 }
     ];
 
-    const [localRatio, setLocalRatio] = useState('1:1');
+
 
   if (user?.role !== 'admin') return null;
 
@@ -66,7 +80,7 @@ const PromptLibreCard = ({
         seed: undefined,
         useRandomSeed: true,
         ratio: localRatio,
-        steps: 20,
+        steps,
         esPublica              // 👈 AQUÍ SE AÑADE
     });
     };
@@ -103,6 +117,8 @@ const PromptLibreCard = ({
     return <p className="keiko-prompt-card__image-placeholder-text">🖼️</p>;
   };
 
+  
+
   return (
     <div className="keiko-prompt-card keiko-prompt-card--admin">
       <div className="keiko-prompt-card__header">
@@ -133,20 +149,33 @@ const PromptLibreCard = ({
                 ))}
             </select>
             </div>
-            <div className="aspect-ratio-selector">
-                <label htmlFor="ratio-select">Proporción:</label>
-                <select
-                    id="ratio-select"
-                    value={localRatio}
-                    onChange={(e) => setLocalRatio(e.target.value)}
-                >
-                    {aspectRatios.map((ratio) => (
-                    <option key={ratio.value} value={ratio.value}>
-                        {ratio.label}
-                    </option>
-                    ))}
-                </select>
-                </div>
+            <div className="keiko-prompt-card__options-row">
+              <label htmlFor="ratio-select">Proporción:</label>
+              <select
+                id="ratio-select"
+                value={localRatio}
+                onChange={(e) => setLocalRatio(e.target.value)}
+              >
+                {aspectRatios.map((ratio) => (
+                  <option key={ratio.key} value={ratio.key}>
+                    {ratio.label}
+                  </option>
+                ))}
+              </select>
+
+              <label htmlFor="steps-select" style={{ marginLeft: '1rem' }}>Pasos:</label>
+              <select
+                id="steps-select"
+                value={steps}
+                onChange={(e) => setSteps(parseInt(e.target.value))}
+              >
+                {[15, 20, 25, 30].map((s) => (
+                  <option key={s} value={s}>
+                    {s} pasos
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="public-toggle">
                 <label>
                     <input
