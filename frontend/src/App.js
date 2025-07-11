@@ -92,6 +92,7 @@ import BlogCreate from "./pages/admin/BlogCreate";
 import BlogEdit from "./pages/admin/BlogEdit";
 
 import KeikoRemoveBG from './pages/KeikoRemoveBG';
+import SportsEventsAdminPage from './pages/admin/SportsEventsAdminPage';
 
 
 function App() {
@@ -118,6 +119,9 @@ function App() {
             <Route path="/admin/email-contexts" element={<AdminRoute><EmailContextAdmin /></AdminRoute>} />
             <Route path="/admin/email-review" element={<AdminRoute><EmailReviewPage /></AdminRoute>} />
             <Route path="/admin/email-articles" element={<AdminRoute><ArticleReviewPage /></AdminRoute>} />
+            <Route path="/admin/sports-events" element={<AdminRoute><SportsEventsAdminPage /></AdminRoute>} />
+            {/* <Route path="/admin/sports-events" element={<SportsEventsAdminPage />} /> */}
+
             <Route path="/admin/users" element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
             <Route path="/admin/anime-options" element={<AnimePromptOptionsPage />} />
             <Route path="/admin/affiliate-links" element={<AffiliateLinksAdmin />} />

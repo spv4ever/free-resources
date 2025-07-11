@@ -10,6 +10,12 @@
   max-width: 100%;
   box-sizing: border-box;
   overflow-x: hidden;
+  overflow: visible;
+}
+
+.navbar {
+  position: relative;
+  z-index: 10;
 }
 
 .navbar-logo a,
@@ -117,22 +123,28 @@
 
 /* === Sidebar === */
 .sidebar {
+  width: 700px; /* o más si lo necesitas */
+  background-color: #1c1c1c;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   position: fixed;
-  top: 0;
+  top: 60px; /* o lo que mida tu navbar superior */
   right: 0;
-  width: 250px;
-  height: 100%;
-  background-color: rgba(51, 51, 51, 0.95);
-  color: white;
-  padding: 20px;
+  bottom: 0;
+  color: #f1f1f1;
+  overflow-y: auto;
   z-index: 1000;
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease-in-out;
+  padding: 1rem;
 }
 
 .sidebar.open {
   transform: translateX(0);
+}
+
+.sidebar-col {
+  flex: 1;
+  min-width: 300px; /* fuerza un mínimo visual */
+  padding-right: 12px;
 }
 
 .sidebar ul {
@@ -148,7 +160,7 @@
 .sidebar ul li strong {
   display: block;
   font-size: 1.1rem;
-  color: #fff;
+  color: #facc15;
   margin-top: 1rem;
 }
 
@@ -168,7 +180,9 @@
 
 .sidebar ul li a:hover,
 .sidebar ul li button:hover {
-  color: white;
+    color: #fff;
+  background-color: #2c2c2c;
+  border-radius: 6px;
 }
 
 /* Botón cerrar sidebar */
@@ -187,9 +201,9 @@
 }
 
 .sidebar-close-btn:hover {
-  background-color: #ffcc00;
-  border-color: #ffcc00;
-  color: #333;
+  background-color: #facc15;
+  border-color: #facc15;
+  color: #1a1a1a;
 }
 
 /* Capa overlay para cerrar sidebar al hacer clic fuera */
@@ -208,7 +222,7 @@
 .admin-link-button {
   background: none;
   border: none;
-  color: #fff;
+  color: #f1f1f1;
   padding: 0.4rem 1rem;
   cursor: pointer;
   text-align: left;
@@ -217,7 +231,7 @@
 }
 
 .admin-link-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #2c2c2c;
 }
 
 /* === Botón hamburguesa (responsive) === */
@@ -234,46 +248,6 @@
   outline: none;
 }
 
-.navbar-dropdown {
-  position: relative;
-  display: inline-block;
-  margin-left: 15px;
-}
-
-.navbar-link {
-  color: #e0e0e0;
-  cursor: pointer;
-  padding: 8px;
-  font-weight: bold;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #1a1a1a;
-  min-width: 180px;
-  z-index: 1;
-  border: 1px solid #333;
-  border-radius: 6px;
-  box-shadow: 0px 2px 6px rgba(0,0,0,0.4);
-  flex-direction: column;
-}
-
-.navbar-dropdown:hover .dropdown-content {
-  display: flex;
-}
-
-.dropdown-content a {
-  color: #e0e0e0;
-  padding: 10px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-content a:hover {
-  background-color: #333;
-  color: #90caf9; /* ✅ Color claro al hacer hover */
-}
 
 .navbar-links a.admin-btn,
 .navbar-links button.admin-btn {
@@ -289,6 +263,18 @@
   border-radius: 16px;
   font-weight: 600;
   font-size: 14px;
+}
+
+.sidebar-columns {
+  display: flex;
+  flex-direction: row;
+  gap: 40px; /* más separación */
+}
+
+.sidebar-col {
+  flex: 1;
+  list-style: none;
+  padding: 0;
 }
 
 /* === Media Queries === */

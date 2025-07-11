@@ -5,8 +5,8 @@ import * as dateFnsTz from 'date-fns-tz';
 
 dotenv.config();
 
-const token = process.env.TELEGRAM_BOT_TOKEN;
-const chatId = process.env.TELEGRAM_CHAT_ID;
+const token = process.env.F1_BOT_TOKEN;
+const chatId = process.env.F1_CHANNEL_ID;
 const apiUrl = `${process.env.API_URL}/api/f1/next-race`;
 
 const createHashtag = (text) => {

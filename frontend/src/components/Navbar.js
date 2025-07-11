@@ -20,6 +20,7 @@ function Navbar() {
   const [submenuKeikoOpen, setSubmenuKeikoOpen] = useState(false);
   const { balance } = useToken();
   const [submenuBlogOpen, setSubmenuBlogOpen] = useState(false);
+  const [submenuEventsOpen, setSubmenuEventsOpen] = useState(false);
 
 
 
@@ -121,15 +122,6 @@ function Navbar() {
 
       <div className="navbar-links">
         <Link to="/">Home</Link>
-        {(user?.role === 'pro' || user?.role === 'admin') && (
-          <div className="navbar-dropdown">
-            <span className="navbar-link">🏆 PRO ▾</span>
-            <div className="dropdown-content">
-              <Link to="/panel/pro/historial">📑 Mi historial</Link>
-              {/* Puedes añadir más opciones aquí en el futuro */}
-            </div>
-          </div>
-        )}
         {user ? (
             <div className="navbar-actions">
               <span className="navbar-user">
@@ -166,131 +158,146 @@ function Navbar() {
 
       {sidebarOpen && user?.role === 'admin' && (
         <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
-          <ul>
-            <li>
-              <button onClick={() => setSubmenuContentOpen(!submenuContentOpen)}>
-                📁 Gestión de contenido {submenuContentOpen ? '▲' : '▼'}
-              </button>
-            </li>
-            {submenuContentOpen && (
-              <>
-                <li><Link to="/admin/categories" onClick={toggleSidebar}>📂 Gestionar Categorías</Link></li>
-                <li><Link to="/admin/ai-tools" onClick={toggleSidebar}>🤖 Gestionar IA Links</Link></li>
-                <li><Link to="/admin/training" onClick={toggleSidebar}>📘 Recursos de Formación</Link></li>
-                <li><Link to="/admin/short-categories" onClick={toggleSidebar}>🎬 Categorías de Shorts</Link></li>
-                <li><Link to="/admin/sync-shorts" onClick={toggleSidebar}>🔁 Sincronizar Shorts Virales</Link></li>
-                <li><Link to="/admin/social-posts" onClick={toggleSidebar}>📢 Social Posts</Link></li>
-              </>
-            )}
-            <li>
-              <button onClick={() => setSubmenuBlogOpen(!submenuBlogOpen)}>
-                📝 Blog {submenuBlogOpen ? '▲' : '▼'}
-              </button>
-            </li>
-            {submenuBlogOpen && (
-              <>
-                <li><Link to="/admin/blog" onClick={toggleSidebar}>📄 Entradas del blog</Link></li>
-                <li><Link to="/admin/blog/create" onClick={toggleSidebar}>🆕 Nueva entrada</Link></li>
-              </>
-            )}
-            <li>
-              <button onClick={() => setSubmenuEmailOpen(!submenuEmailOpen)}>
-                📬 Correos y Artículos {submenuEmailOpen ? '▲' : '▼'}
-              </button>
-            </li>
-            {submenuEmailOpen && (
-              <>
-                <li><Link to="/admin/email-contexts" onClick={toggleSidebar}>📩 Email Contexts</Link></li>
-                <li><Link to="/admin/email-review" onClick={toggleSidebar}>📥 Revisar Emails</Link></li>
-                <li><Link to="/admin/email-articles" onClick={toggleSidebar}>📰 Revisar Artículos</Link></li>
-              </>
-            )}
-            <li>
-              <button onClick={() => setSubmenuKeikoOpen(!submenuKeikoOpen)}>
-                🧠 KeikoPrompts {submenuKeikoOpen ? '▲' : '▼'}
-              </button>
-            </li>
-            {submenuKeikoOpen && (
-              <>
+  <div className="sidebar-columns">
+    {/* 📁 Columna 1: Contenido */}
+    <ul className="sidebar-col">
+      <li>
+        <button onClick={() => setSubmenuContentOpen(!submenuContentOpen)}>
+          📁 Gestión de contenido {submenuContentOpen ? '▲' : '▼'}
+        </button>
+      </li>
+      {submenuContentOpen && (
+        <>
+          <li><Link to="/admin/categories" onClick={toggleSidebar}>📂 Gestionar Categorías</Link></li>
+          <li><Link to="/admin/ai-tools" onClick={toggleSidebar}>🤖 Gestionar IA Links</Link></li>
+          <li><Link to="/admin/training" onClick={toggleSidebar}>📘 Recursos de Formación</Link></li>
+          <li><Link to="/admin/short-categories" onClick={toggleSidebar}>🎬 Categorías de Shorts</Link></li>
+          <li><Link to="/admin/sync-shorts" onClick={toggleSidebar}>🔁 Sincronizar Shorts Virales</Link></li>
+          <li><Link to="/admin/social-posts" onClick={toggleSidebar}>📢 Social Posts</Link></li>
+        </>
+      )}
 
-                <li><Link to="/admin/keiko-packs" onClick={toggleSidebar}>🧩 Packs KeikoPrompts</Link></li>
-                <li><Link to="/admin/keiko-prompts" onClick={toggleSidebar}>📋 Prompts KeikoPrompts</Link></li>
-                <li><Link to="/admin/imports" onClick={toggleSidebar}>📥 Import KeikoPrompts</Link></li>
-                <li><Link to="/admin/DuplicateCleanup" onClick={toggleSidebar}>🧹 DuplicateCleanup</Link></li>
-             
+      <li>
+        <button onClick={() => setSubmenuBlogOpen(!submenuBlogOpen)}>
+          📝 Blog {submenuBlogOpen ? '▲' : '▼'}
+        </button>
+      </li>
+      {submenuBlogOpen && (
+        <>
+          <li><Link to="/admin/blog" onClick={toggleSidebar}>📄 Entradas del blog</Link></li>
+          <li><Link to="/admin/blog/create" onClick={toggleSidebar}>🆕 Nueva entrada</Link></li>
+        </>
+      )}
 
+      <li>
+        <button onClick={() => setSubmenuKeikoOpen(!submenuKeikoOpen)}>
+          🧠 KeikoPrompts {submenuKeikoOpen ? '▲' : '▼'}
+        </button>
+      </li>
+      {submenuKeikoOpen && (
+        <>
+          <li><Link to="/admin/keiko-packs" onClick={toggleSidebar}>🧩 Packs KeikoPrompts</Link></li>
+          <li><Link to="/admin/keiko-prompts" onClick={toggleSidebar}>📋 Prompts KeikoPrompts</Link></li>
+          <li><Link to="/admin/imports" onClick={toggleSidebar}>📥 Import KeikoPrompts</Link></li>
+          <li><Link to="/admin/DuplicateCleanup" onClick={toggleSidebar}>🧹 DuplicateCleanup</Link></li>
+        </>
+      )}
 
-              </>
-            )}
-            <li>
-              <button onClick={() => setSubmenuAnimeOpen(!submenuAnimeOpen)}>
-                🎨 Anime Prompts {submenuAnimeOpen ? '▲' : '▼'}
-              </button>
-            </li>
-            {submenuAnimeOpen && (
-              <li><Link to="/admin/anime-options" onClick={toggleSidebar}>🎨 Opciones Anime Prompts</Link></li>
-            )}
+      <li>
+        <button onClick={() => setSubmenuAnimeOpen(!submenuAnimeOpen)}>
+          🎨 Anime Prompts {submenuAnimeOpen ? '▲' : '▼'}
+        </button>
+      </li>
+      {submenuAnimeOpen && (
+        <li><Link to="/admin/anime-options" onClick={toggleSidebar}>🎨 Opciones Anime Prompts</Link></li>
+      )}
 
-            <li>
-              <button onClick={() => setSubmenuSeriesOpen(!submenuSeriesOpen)}>
-                📺 Series {submenuSeriesOpen ? '▲' : '▼'}
-              </button>
-            </li>
-            {submenuSeriesOpen && (
-              <>
-                <li><Link to="/admin/top-series-sync" onClick={toggleSidebar}>🔄 Sincronizar Top Series</Link></li>
-                <li><Link to="/admin/top-series-history" onClick={toggleSidebar}>📅 Historial Top Series</Link></li>
-              </>
-            )}
+      <li>
+        <button onClick={() => setSubmenuEventsOpen(!submenuEventsOpen)}>
+          📅 Eventos Deportivos {submenuEventsOpen ? '▲' : '▼'}
+        </button>
+      </li>
+      {submenuEventsOpen && (
+        <li><Link to="/admin/sports-events" onClick={toggleSidebar}>🏁 Gestionar Eventos</Link></li>
+      )}
+    
+    <li>
+      <button onClick={() => setSubmenuEmailOpen(!submenuEmailOpen)}>
+        📬 Correos y Artículos {submenuEmailOpen ? '▲' : '▼'}
+      </button>
+    </li>
+    {submenuEmailOpen && (
+      <>
+        <li><Link to="/admin/email-contexts" onClick={toggleSidebar}>📩 Email Contexts</Link></li>
+        <li><Link to="/admin/email-review" onClick={toggleSidebar}>📥 Revisar Emails</Link></li>
+        <li><Link to="/admin/email-articles" onClick={toggleSidebar}>📰 Revisar Artículos</Link></li>
+      </>
+    )}
+    </ul>
 
-            <li>
-              <button onClick={() => setSubmenuSpacexOpen(!submenuSpacexOpen)}>
-                🚀 SpaceX {submenuSpacexOpen ? '▲' : '▼'}
-              </button>
-            </li>
-            {submenuSpacexOpen && (
-              <>
-                <li>
-                  <button onClick={handleEnrich} className="admin-link-button">
-                    📥 Enriquecer 1 Lanzamiento {enrichCount > 0 && <span style={{ color: '#00bfff' }}>({enrichCount})</span>}
-                  </button>
-                </li>
-                <li><Link to="/admin/spacex" onClick={toggleSidebar}>🧩 Gestión de Lanzamientos</Link></li>
-              </>
-            )}
+    {/* 📦 Columna 2: Herramientas / Administración */}
+    <ul className="sidebar-col">
+      <li>
+        <button onClick={() => setSubmenuSeriesOpen(!submenuSeriesOpen)}>
+          📺 Series {submenuSeriesOpen ? '▲' : '▼'}
+        </button>
+      </li>
+      {submenuSeriesOpen && (
+        <>
+          <li><Link to="/admin/top-series-sync" onClick={toggleSidebar}>🔄 Sincronizar Top Series</Link></li>
+          <li><Link to="/admin/top-series-history" onClick={toggleSidebar}>📅 Historial Top Series</Link></li>
+        </>
+      )}
 
-            <li>
-              <button onClick={() => setSubmenuAffiliateOpen(!submenuAffiliateOpen)}>
-                💰 Afiliados y Chollos {submenuAffiliateOpen ? '▲' : '▼'}
-              </button>
-            </li>
-            {submenuAffiliateOpen && (
-              <>
-                <li><Link to="/admin/affiliate-links" onClick={toggleSidebar}>🔗 Enlaces de Afiliados</Link></li>
-                <li><Link to="/admin/affiliate-clicks" onClick={toggleSidebar}>📊 Clics Afiliados</Link></li>
-                <li><Link to="/admin/igraal-deals" onClick={toggleSidebar}>🛒 Chollos iGraal</Link></li>
-                <li><Link to="/admin/igraal-coupons" onClick={toggleSidebar}>🧾 Cupones Igraal</Link></li>
-              </>
-            )}
+      <li>
+        <button onClick={() => setSubmenuSpacexOpen(!submenuSpacexOpen)}>
+          🚀 SpaceX {submenuSpacexOpen ? '▲' : '▼'}
+        </button>
+      </li>
+      {submenuSpacexOpen && (
+        <>
+          <li>
+            <button onClick={handleEnrich} className="admin-link-button">
+              📥 Enriquecer 1 Lanzamiento {enrichCount > 0 && <span style={{ color: '#00bfff' }}>({enrichCount})</span>}
+            </button>
+          </li>
+          <li><Link to="/admin/spacex" onClick={toggleSidebar}>🧩 Gestión de Lanzamientos</Link></li>
+        </>
+      )}
 
-            <li><strong>🛰 NASA</strong></li>
-            <li>
-              <button onClick={handleTriggerNasa} className="admin-link-button">📸 Forzar imagen NASA</button>
-            </li>
-            <li><Link to="/admin/nasa-fechas" onClick={toggleSidebar}>📅 Buscar imágenes faltantes</Link></li>
+      <li>
+        <button onClick={() => setSubmenuAffiliateOpen(!submenuAffiliateOpen)}>
+          💰 Afiliados y Chollos {submenuAffiliateOpen ? '▲' : '▼'}
+        </button>
+      </li>
+      {submenuAffiliateOpen && (
+        <>
+          <li><Link to="/admin/affiliate-links" onClick={toggleSidebar}>🔗 Enlaces de Afiliados</Link></li>
+          <li><Link to="/admin/affiliate-clicks" onClick={toggleSidebar}>📊 Clics Afiliados</Link></li>
+          <li><Link to="/admin/igraal-deals" onClick={toggleSidebar}>🛒 Chollos iGraal</Link></li>
+          <li><Link to="/admin/igraal-coupons" onClick={toggleSidebar}>🧾 Cupones Igraal</Link></li>
+        </>
+      )}
 
-            <li><strong>🔐 Seguridad</strong></li>
-            <li><Link to="/admin/suspicious-access" onClick={toggleSidebar}>🚨 Accesos sospechosos</Link></li>
-            <li><Link to="/admin/link-analysis" onClick={toggleSidebar}>🔗 Análisis de enlaces</Link></li>
+      <li><strong>🛰 NASA</strong></li>
+      <li>
+        <button onClick={handleTriggerNasa} className="admin-link-button">📸 Forzar imagen NASA</button>
+      </li>
+      <li><Link to="/admin/nasa-fechas" onClick={toggleSidebar}>📅 Buscar imágenes faltantes</Link></li>
 
+      <li><strong>🔐 Seguridad</strong></li>
+      <li><Link to="/admin/suspicious-access" onClick={toggleSidebar}>🚨 Accesos sospechosos</Link></li>
+      <li><Link to="/admin/link-analysis" onClick={toggleSidebar}>🔗 Análisis de enlaces</Link></li>
 
-            <li><strong>👥 Usuarios</strong></li>
-            <li><Link to="/admin/users" onClick={toggleSidebar}>👤 Gestionar usuarios</Link></li>
-            <li><Link to="/admin/register-logs" onClick={toggleSidebar}>👤 Intentos de registro</Link></li>
+      <li><strong>👥 Usuarios</strong></li>
+      <li><Link to="/admin/users" onClick={toggleSidebar}>👤 Gestionar usuarios</Link></li>
+      <li><Link to="/admin/register-logs" onClick={toggleSidebar}>👤 Intentos de registro</Link></li>
 
-            <li><button className="sidebar-close-btn" onClick={toggleSidebar}>❌ Cerrar</button></li>
-          </ul>
-        </div>
+      <li><button className="sidebar-close-btn" onClick={toggleSidebar}>❌ Cerrar</button></li>
+    </ul>
+  </div>
+</div>
+
       )}
       <a href="https://www.buymeacoffee.com/keikodev"><img src="https://img.buymeacoffee.com/button-api/?text=Apoyar el proyecto&emoji=🔔&slug=keikodev&button_colour=FFDD00&font_colour=000000&font_family=Poppins&outline_colour=000000&coffee_colour=ffffff" alt="Apoya la web"/></a>
     </nav>
