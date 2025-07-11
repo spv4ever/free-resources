@@ -11,10 +11,10 @@ import { useLocation } from 'react-router-dom';
 import AffiliatePopup from '../components/AffiliatePopup';
 import AffiliateBannerAndSidebar from '../components/AffiliateBannerAndSidebar';
 
-// import { useUser } from '../context/UserContext';
+import { useUser } from '../context/UserContext';
 
 function Layout() {
-  // const { user } = useUser();
+  const { user } = useUser();
   const location = useLocation();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -39,7 +39,7 @@ function Layout() {
   { title: 'MultiMedia', description: 'Imágenes del universo, los mejores vídeos, todo Multimedia', path: '/media', icon: <FaImage /> },
   { title: 'Videos Virales', description: 'Los mejores Shorts organizados por categoría', path: '/viral-shorts', icon: <FaFileAlt /> },
   { title: 'YouTube Uploader', description: 'Sube y programa tus creaciones! Verán la luz cuando tu decidas', path: '/youtube-uploader', icon: <FaYoutube /> },
-  { title: 'Anime Prompts', description: 'Generador de prompts IA con personajes anime', path: '/generador-anime-prompts', icon: <FaMagic /> },
+  // { title: 'Anime Prompts', description: 'Generador de prompts IA con personajes anime', path: '/generador-anime-prompts', icon: <FaMagic /> },
   { title: 'KeikoPrompts', description: 'Explora nuestros packs de prompts para IA, listos para usar.', path: '/keikoprompts', icon: <FaBoxes /> },
   { title: 'AI Links', description: 'Lista de herramientas de inteligencia artificial.', path: '/ai-links', icon: <FaRobot /> },
 
@@ -58,9 +58,17 @@ function Layout() {
 
   { title: 'MotoGP', description: 'Calendario completo de MotoGP por circuito', path: '/motogp-calendar', icon: <FaRocket /> },  // Puedes cambiar el icono
   { title: 'Blog Keiko', description: 'Entradas destacadas y novedades IA', path: '/blog', icon: <FaBook /> },
+  
 
 ];
-
+if (user?.role === 'admin') {
+  sections.push({
+    title: 'Anime Prompts',
+    description: 'Generador de prompts IA con personajes anime',
+    path: '/generador-anime-prompts',
+    icon: <FaMagic />
+  });
+}
 
   // // 🔐 Añadir solo si es usuario PRO
   

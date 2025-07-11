@@ -41,7 +41,7 @@ export async function upscaleImage(req, res) {
 
     const imageResponse = await axios.get(`${comfyUrl}/view?filename=output/${filename}`, {
       responseType: 'stream',
-      auth: getComfyAuth()
+      auth: getComfyAuth().auth
     });
 
     const publicId = `upscale/${nickname}/${Date.now()}_${filename.replace(/\.[^/.]+$/, '')}`;
