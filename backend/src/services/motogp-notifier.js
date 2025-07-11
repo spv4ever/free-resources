@@ -152,9 +152,13 @@ export const enviarResumenDiario = async () => {
     const res = await axios.get(apiUrl);
     const eventos = res.data.events || [];
 
-    const hoy = new Date().toISOString().split('T')[0];
+    const hoy = getMadridDateString();
     const eventosHoy = eventos
-      .filter(e => e.start.startsWith(hoy))
+      .filter(e =>
+        new Date(new Date(e.start).toLocaleString('en-US', { timeZone: TIMEZONE }))
+          .toISOString()
+          .startsWith(hoy)
+      )
       .sort((a, b) => new Date(a.start) - new Date(b.start));
 
     if (eventosHoy.length === 0) {
@@ -163,7 +167,7 @@ export const enviarResumenDiario = async () => {
     }
 
     const resumen = eventosHoy.map(e => {
-      const hour = new Date(e.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const hour = formatHourMadrid(e.start);
       return `🕒 <b>${hour}</b> — <i>${e.title}</i>`;
     }).join('\n');
 
