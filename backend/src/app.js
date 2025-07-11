@@ -92,6 +92,7 @@ import formula1Routes from './routes/formula1Routes.js';
 import { startF1Notifier } from './services/f1-notifier.js';
 import keikoRemoveBGRoutes from './routes/keikoRemoveBGRoutes.js';
 import sportsEventsRoutes from './routes/sportsEvents.routes.js';
+import telegramRoutes from './routes/telegram.js';
 
 
 // Otras rutas...
@@ -270,6 +271,9 @@ app.use('/api/sports-events', sportsEventsRoutes);
 
 
 app.use("/api/blog", blogRoutes);
+
+
+app.use('/api/telegram', telegramRoutes);
 
 
 

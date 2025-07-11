@@ -115,10 +115,10 @@ export const checkEventsAndNotify = async () => {
 };
 
 export const startF1Notifier = () => {
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('ℹ️ El notificador de Fórmula 1 está deshabilitado en desarrollo.');
-    return;
-  }
+  // if (process.env.NODE_ENV !== 'production') {
+  //   console.log('ℹ️ El notificador de Fórmula 1 está deshabilitado en desarrollo.');
+  //   return;
+  // }
 
   if (!token || !chatId || !apiUrl) {
     console.warn('⚠️ Falta configuración para iniciar el bot de Fórmula 1.');
