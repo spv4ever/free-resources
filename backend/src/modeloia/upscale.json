@@ -5,7 +5,8 @@
       "images": [
         "18",
         0
-      ]
+      ],
+      "extension": "jpeg"
     },
     "class_type": "SaveImage",
     "_meta": {

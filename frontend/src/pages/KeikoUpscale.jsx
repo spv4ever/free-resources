@@ -14,6 +14,8 @@ export default function KeikoUpscale() {
   const [aspectRatio, setAspectRatio] = useState(1);
   const [isDragActive, setIsDragActive] = useState(false);
   const [upscaleFactor, setUpscaleFactor] = useState('x2');
+  const [originalSize, setOriginalSize] = useState(null);
+  const [upscaledSize, setUpscaledSize] = useState(null);
 
   const MAX_FILE_SIZE_BYTES = 5 * 1000 * 1000;
 
@@ -46,7 +48,11 @@ export default function KeikoUpscale() {
 
     const img = new Image();
     img.src = preview;
-    img.onload = () => setAspectRatio(img.width / img.height);
+    img.onload = () => {
+        setAspectRatio(img.width / img.height);         // sigue funcionando igual
+        setOriginalSize(`${img.width}×${img.height}`);  // 👈 aquí capturamos el tamaño real
+        };
+    
   };
 
   const handleUpscale = async () => {
@@ -183,14 +189,29 @@ export default function KeikoUpscale() {
       <div className="images-wrapper">
         <figure className="image-slot">
           {originalUrl ? <img src={originalUrl} alt="Imagen original" /> : <div className="placeholder">Imagen original</div>}
+          {originalSize && (
+            <p className="image-size-label">Tamaño: {originalSize}</p>
+            )}
           {loading && <div className="processing-overlay"><div className="spinner" />Cargando...</div>}
         </figure>
 
         <figure className="image-slot">
           {resultUrl ? (
             <>
-              <img src={resultUrl} alt="Imagen mejorada" onClick={() => setPreviewOpen(true)} style={{ cursor: 'zoom-in' }} />
+              <img
+                src={resultUrl}
+                alt="Imagen mejorada"
+                onClick={() => setPreviewOpen(true)}
+                onLoad={(e) => {
+                    const img = e.target;
+                    setUpscaledSize(`${img.naturalWidth}×${img.naturalHeight}`);
+                }}
+                style={{ cursor: 'zoom-in' }}
+                />
               <figcaption>Imagen Mejorada (clic para ampliar)</figcaption>
+              {upscaledSize && (
+                <p className="image-size-label">Tamaño: {upscaledSize}</p>
+                )}
               <button className="btn-secondary" onClick={downloadImage}>Descargar Imagen</button>
             </>
           ) : (
