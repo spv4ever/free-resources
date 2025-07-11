@@ -250,3 +250,30 @@ export const generarImagenRMBG = async ({ imageBuffer, filenameRMBG  }) => {
 
   return { prompt_id: data.prompt_id, inputUrl: uploadResult.secure_url };
 };
+
+export const generarImagenUpscale = async ({ imageBuffer, filenameUpscale, upscaleFactor = 'x2' }) => {
+  if (!imageBuffer) throw new Error('Image buffer es obligatorio');
+
+  const publicId = `keiko/upscale/input_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`;
+  const uploadResult = await uploadBufferToCloudinary(imageBuffer, publicId);
+
+  const modificado = clonarFlujo(flujosCargados.upscale);
+  modificado["16"].inputs.url = uploadResult.secure_url;
+  modificado["8"].inputs.filename_prefix = filenameUpscale;
+
+  // Seleccionar modelo de upscale
+  const modelos = {
+    x2: "RealESRGAN_x2.pth",
+    x4: "RealESRGAN_x4.pth"
+  };
+  modificado["17"].inputs.model_name = modelos[upscaleFactor] || modelos.x2;
+
+  const comfyUrl = await getComfyUrl('flux');
+  const { data } = await axios.post(`${comfyUrl}/prompt`, { prompt: modificado }, getComfyAuth());
+
+  if (data?.prompt_id) {
+    trackPendingJob(data.prompt_id);
+  }
+
+  return { prompt_id: data.prompt_id, inputUrl: uploadResult.secure_url };
+};

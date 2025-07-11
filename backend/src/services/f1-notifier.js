@@ -4,6 +4,20 @@ import TelegramBot from 'node-telegram-bot-api';
 import * as dateFnsTz from 'date-fns-tz';
 
 dotenv.config();
+const TIMEZONE = 'Europe/Madrid';
+
+const getMadridDate = (date = new Date()) => {
+  return new Date(date.toLocaleString('en-US', { timeZone: TIMEZONE }));
+};
+
+const getMadridDateString = (date = new Date()) => {
+  return getMadridDate(date).toISOString().split('T')[0];
+};
+
+const formatHourMadrid = (dateStr) => {
+  return new Date(new Date(dateStr).toLocaleString('en-US', { timeZone: TIMEZONE }))
+    .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
 
 const token = process.env.F1_BOT_TOKEN;
 const chatId = process.env.F1_CHANNEL_ID;
@@ -31,21 +45,25 @@ const sendMessage = (message) => {
 };
 
 const maybeSendDailySummary = (events) => {
-  const now = new Date();
-  const today = now.toISOString().split('T')[0];
+  const now = getMadridDate();
+  const today = getMadridDateString(now);
 
   if (dailySummarySentDate === today) return;
 
-  const todayEvents = events.filter(e => e.start.startsWith(today));
+  const todayEvents = events.filter(e =>
+    new Date(new Date(e.start).toLocaleString('en-US', { timeZone: TIMEZONE }))
+      .toISOString()
+      .startsWith(today)
+  );
+
   if (todayEvents.length === 0) return;
 
-  const firstEventTime = new Date(todayEvents[0].start);
+  const firstEventTime = getMadridDate(new Date(todayEvents[0].start));
   const diffMinutes = Math.floor((firstEventTime - now) / (1000 * 60));
 
   if (diffMinutes <= 30 && diffMinutes >= 29) {
     const resumen = todayEvents.map(e => {
-      const zonedDate = dateFnsTz.utcToZonedTime(new Date(e.start), timeZone);
-      const hour = dateFnsTz.format(zonedDate, 'HH:mm');
+      const hour = formatHourMadrid(e.start);
       return `🕒 <b>${hour}</b> — <i>${e.title}</i>`;
     }).join('\n');
 
@@ -55,6 +73,7 @@ const maybeSendDailySummary = (events) => {
     dailySummarySentDate = today;
   }
 };
+
 
 export const checkEventsAndNotify = async () => {
   console.log(`\n[${new Date().toLocaleString()}] 🔄 Comprobando eventos Fórmula 1...`);
@@ -127,4 +146,35 @@ export const startF1Notifier = () => {
 
   bot = new TelegramBot(token);
   console.log('🤖 Bot de Fórmula 1 inicializado (sin cron interno).');
+};
+
+export const enviarResumenDiario = async () => {
+  try {
+    const res = await axios.get(apiUrl);
+    const eventos = res.data.events || [];
+
+    const hoy = getMadridDateString();
+    const eventosHoy = eventos
+      .filter(e =>
+        new Date(new Date(e.start).toLocaleString('en-US', { timeZone: TIMEZONE }))
+          .toISOString()
+          .startsWith(hoy)
+      )
+      .sort((a, b) => new Date(a.start) - new Date(b.start));
+
+    if (eventosHoy.length === 0) {
+      console.log('ℹ️ No hay eventos hoy de F1.');
+      return;
+    }
+
+    const resumen = eventosHoy.map(e => {
+      const hour = formatHourMadrid(e.start);
+      return `🕒 <b>${hour}</b> — <i>${e.title}</i>`;
+    }).join('\n');
+
+    const circuito = createHashtag(eventosHoy[0].location);
+    sendMessage(`<b>📅 Día de Carreras - Fórmula 1</b>\n\nEventos para hoy:\n\n${resumen}\n\n${circuito}`);
+  } catch (error) {
+    console.error('❌ Error al enviar resumen diario F1:', error.message);
+  }
 };

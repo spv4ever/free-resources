@@ -93,6 +93,8 @@ import { startF1Notifier } from './services/f1-notifier.js';
 import keikoRemoveBGRoutes from './routes/keikoRemoveBGRoutes.js';
 import sportsEventsRoutes from './routes/sportsEvents.routes.js';
 import telegramRoutes from './routes/telegram.js';
+import f1Routes from './routes/telegram-f1.js';
+import upscale from './routes/keikoUpscaleRoutes.js';
 
 
 // Otras rutas...
@@ -268,12 +270,14 @@ app.use('/api/imagenes', imagenesRoutes);
 app.use('/api', formula1Routes);
 app.use('/api/keiko-remove-bg', keikoRemoveBGRoutes); 
 app.use('/api/sports-events', sportsEventsRoutes);
+app.use('/api', upscale); // 👈 nueva ruta para upscale
 
 
 app.use("/api/blog", blogRoutes);
 
 
 app.use('/api/telegram', telegramRoutes);
+app.use('/api/telegram-f1', f1Routes);
 
 
 

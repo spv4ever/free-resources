@@ -133,10 +133,10 @@ export const checkEventsAndNotify = async () => {
 };
 
 export const startMotoGPNotifier = () => {
-  // if (process.env.NODE_ENV !== 'production') {
-  //   console.log('ℹ️ El notificador de MotoGP está deshabilitado en desarrollo.');
-  //   return;
-  // }
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('ℹ️ El notificador de MotoGP está deshabilitado en desarrollo.');
+    return;
+  }
 
   if (!token || !chatId || !apiUrl) {
     console.warn('⚠️ Falta configuración para iniciar el bot de MotoGP.');

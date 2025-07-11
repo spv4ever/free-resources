@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { FaBook, FaRobot, FaYoutube, FaFileAlt, FaImage, FaGraduationCap, FaRocket, FaShieldVirus, FaMagic, FaGift, FaTicketAlt, FaTv, FaBoxes, FaCut  } from 'react-icons/fa';
+import { FaBook, FaRobot, FaYoutube, FaFileAlt, FaImage, FaGraduationCap, FaRocket, FaShieldVirus, FaMagic, FaGift, FaTicketAlt, FaTv, FaBoxes, FaCut, FaEye  } from 'react-icons/fa';
 import '../styles/HomePage.css';
 import CookieConsentBanner from '../components/CookieConsentBanner';
 import AnalyticsLoader from '../components/AnalyticsLoader';
@@ -29,6 +29,12 @@ function Layout() {
     description: 'Elimina el fondo de tus imágenes fácilmente',
     path: '/keiko-remove-bg',
     icon: <FaCut />,
+  },
+  {
+    title: 'Keiko Upscale',
+    description: 'Mejora la resolución de tus imágenes con IA',
+    path: '/upscale',
+    icon: <FaEye />,
   },
   { title: 'MultiMedia', description: 'Imágenes del universo, los mejores vídeos, todo Multimedia', path: '/media', icon: <FaImage /> },
   { title: 'Videos Virales', description: 'Los mejores Shorts organizados por categoría', path: '/viral-shorts', icon: <FaFileAlt /> },

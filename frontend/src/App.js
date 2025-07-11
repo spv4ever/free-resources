@@ -93,6 +93,9 @@ import BlogEdit from "./pages/admin/BlogEdit";
 
 import KeikoRemoveBG from './pages/KeikoRemoveBG';
 import SportsEventsAdminPage from './pages/admin/SportsEventsAdminPage';
+import KeikoUpscale from './pages/KeikoUpscale'; // Ajusta ruta si es distinta
+
+
 
 
 function App() {
@@ -190,6 +193,7 @@ function App() {
             <Route path="/biblioteca/pack/:packId" element={<PackImages />} />
             <Route path="/blog" element={<BlogList />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/upscale" element={<KeikoUpscale />} />
             
             <Route path="/admin/blog" element={<AdminRoute><BlogAdmin /></AdminRoute>} />
             <Route path="/admin/blog/create" element={<AdminRoute><BlogCreate /></AdminRoute>} />

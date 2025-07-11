@@ -1,0 +1,49 @@
+{
+  "8": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "18",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  },
+  "16": {
+    "inputs": {
+      "url": "https://res.cloudinary.com/dhoaeyjpt/image/upload/v1751737138/keikoprompts/KeikoDev/2025-07-05/KeikoDev_00738_.png"
+    },
+    "class_type": "ImageFromURLNode",
+    "_meta": {
+      "title": "Download Image from URL"
+    }
+  },
+  "17": {
+    "inputs": {
+      "model_name": "RealESRGAN_x2.pth"
+    },
+    "class_type": "UpscaleModelLoader",
+    "_meta": {
+      "title": "Load Upscale Model"
+    }
+  },
+  "18": {
+    "inputs": {
+      "upscale_model": [
+        "17",
+        0
+      ],
+      "image": [
+        "16",
+        0
+      ]
+    },
+    "class_type": "ImageUpscaleWithModel",
+    "_meta": {
+      "title": "Upscale Image (using Model)"
+    }
+  }
+}
