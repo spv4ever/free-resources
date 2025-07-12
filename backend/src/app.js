@@ -92,9 +92,10 @@ import formula1Routes from './routes/formula1Routes.js';
 import { startF1Notifier } from './services/f1-notifier.js';
 import keikoRemoveBGRoutes from './routes/keikoRemoveBGRoutes.js';
 import sportsEventsRoutes from './routes/sportsEvents.routes.js';
-import telegramRoutes from './routes/telegram.js';
+import summaryRoutes from './routes/telegram.js';
 import f1Routes from './routes/telegram-f1.js';
 import upscaler from './routes/keikoUpscaleRoutes.js';
+import telegramRoutes from './routes/telegram.routes.js';
 
 
 
@@ -208,7 +209,7 @@ startDailyEventScheduler(); // activa cron diario
 
 // Rutas
 app.use('/api', upscaler); // 👈 nueva ruta para upscale
-
+app.use('/api/telegram', telegramRoutes);
 app.use('/api/resources', resourceLibraryRoutes);
 app.use('/api/anime-characters', animeCharacterRoutes)
 app.use('/api/auth', authRoutes);
@@ -280,7 +281,8 @@ app.use('/api/sports-events', sportsEventsRoutes);
 app.use("/api/blog", blogRoutes);
 
 
-app.use('/api/telegram', telegramRoutes);
+app.use('/api/summaryRoutes', summaryRoutes);
+
 app.use('/api/telegram-f1', f1Routes);
 
 

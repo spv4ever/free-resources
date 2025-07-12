@@ -8,7 +8,7 @@ const imagenGeneradaSchema = new mongoose.Schema({
   filename: { type: String }, // se rellena al consultar /imagen/:id
   url: { type: String },      // se rellena al consultar /imagen/:id
   finalUrl: { type: String },         // ✅ URL definitiva tras subida a Cloudinary
-  status: { type: String, enum: ['pendiente', 'completada'], default: 'pendiente' },
+  status: { type: String, enum: ['pendiente', 'procesando', 'completada', 'oversize', 'fallida', 'entregada_telegram'],  default: 'pendiente' },
   createdAt: { type: Date, default: Date.now },
   public: { type: Boolean, default: false },      // 🆕 ¿es pública?
   visible: { type: Boolean, default: true } 

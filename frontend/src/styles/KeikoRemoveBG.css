@@ -207,7 +207,7 @@ input[type="file"] {
 /* --- Botón Principal (Quitar Fondo) --- */
 button.btn-primary {
   display: block;
-  margin: 0 auto 35px auto;
+  margin: 0 auto 0px auto;
   padding: 12px 35px;
   font-size: 1.1rem;
   font-weight: 700;
@@ -324,7 +324,7 @@ button.btn-primary:disabled {
 /* Botón de Descargar Imagen */
 button.btn-secondary {
   display: inline-block;
-  margin-top: 16px;
+  margin-top: 0px;
   padding: 9px 22px;
   background-color: var(--blue-hover);
   color: #fff;
@@ -505,7 +505,19 @@ button.btn-secondary:hover {
 .telegram-link:hover {
   text-decoration: underline;
 }
+.btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem; /* espacio entre botones */
+  margin-top: 1.5rem;
+  flex-wrap: wrap; /* por si hay poco espacio */
+}
 
+.btn-group .btn-primary,
+.btn-group .btn-secondary {
+  min-width: 180px;
+  text-align: center;
+}
 /* --- Responsive Design (Media Queries) --- */
 @media (max-width: 768px) {
   .keiko-remove-bg-container {

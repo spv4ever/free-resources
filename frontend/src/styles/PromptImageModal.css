@@ -146,3 +146,28 @@
 .promptmodal-delete-btn:hover {
   background-color: #c9302c;
 }
+
+.social-button.telegram.no-conflict {
+  background-color: #229ED9;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.social-button.telegram.no-conflict:hover {
+  background-color: #1c8dc7;
+}
+
+.social-button.telegram.no-conflict:disabled {
+  background-color: #b6dff0;
+  color: white;
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -4,6 +4,7 @@ import '../styles/PromptImageModal.css';
 import { FaXTwitter, FaFacebook, FaTelegram, FaRegCopy } from 'react-icons/fa6';
 import { useUser } from '../context/UserContext'; // ajusta la ruta si es diferente
 
+const API_URL = process.env.REACT_APP_API_URL; // ✅ Añadido aquí
 
 const PromptImageModal = ({ image, onClose }) => {
   const { token } = useUser();
@@ -102,6 +103,37 @@ const PromptImageModal = ({ image, onClose }) => {
                     🗑️ Eliminar imagen
                   </button>
                 )}
+                <button
+                  className="social-button telegram no-conflict"
+                  onClick={async () => {
+                    const confirmed = window.confirm('¿Compartir esta imagen en Telegram?');
+                    if (!confirmed) return;
+
+                    const res = await fetch(`${API_URL}/api/telegram/to-telegram-from-db`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                      },
+                      body: JSON.stringify({
+                        prompt_id: image.prompt_id || image._id,
+                        finalUrl: image.finalUrl || image.url,
+                        nickname: image.nickname,
+                        prompt: image.prompt, 
+                        createdAt: image.createdAt
+                      }),
+                    });
+
+                    const data = await res.json();
+                    if (res.ok && data.success) {
+                      alert('✅ Imagen compartida en Telegram.');
+                    } else {
+                      alert('❌ Error: ' + data.message);
+                    }
+                  }}
+                >
+                  <FaTelegram /> Compartir en Telegram
+                </button>
             </div>
             </div>
         </div>
