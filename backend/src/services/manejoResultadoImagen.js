@@ -6,6 +6,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import ImagenGenerada from '../models/ImagenGenerada.js';
 import { getComfyUrl } from './comfyService.js';
 
+
 const esperar = (ms) => new Promise((res) => setTimeout(res, ms));
 
 export const manejarFinalizacionDeJob = async (promptId, { nickname, prompt, userId, filename }) => {

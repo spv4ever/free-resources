@@ -219,7 +219,7 @@
           {/* CANAL DE TELEGRAM */}
           <div className="card-home telegram-card" onClick={(e) => {
               if (e.target.tagName !== 'IMG') {
-                window.open('https://t.me/+DO4DQPYGyJRiN2Nk', '_blank');
+                window.open('https://t.me/keikodevrecursos', '_blank');
               }
             }}>
               <div className="telegram-content">

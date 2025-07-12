@@ -5,6 +5,7 @@ import { getComfyAuth } from '../utils/comfyAuth.js';
 import { manejarFinalizacionDeJob } from '../services/manejoResultadoImagen.js';
 import { verificarImagen } from '../controllers/fluxController.js';
 
+
 const jobStatusMap = new Map();
 
 export const getJobStatus = (promptId) => {
@@ -95,6 +96,7 @@ const connect = async () => {
           case 'execution_end':
             if (jobStatusMap.has(promptId)) {
               const previous = jobStatusMap.get(promptId);
+                
 
               jobStatusMap.set(promptId, {
                 ...previous,
@@ -195,3 +197,5 @@ export const esperarYVerificarImagen = async (promptId, intentos = 10, delay = 1
     await new Promise(r => setTimeout(r, delay));
   }
 };
+
+export { jobStatusMap };

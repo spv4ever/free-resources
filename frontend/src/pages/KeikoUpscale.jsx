@@ -16,6 +16,11 @@ export default function KeikoUpscale() {
   const [upscaleFactor, setUpscaleFactor] = useState('x2');
   const [originalSize, setOriginalSize] = useState(null);
   const [upscaledSize, setUpscaledSize] = useState(null);
+  const [telegramOffer, setTelegramOffer] = useState(null);
+  const [imageStatus, setImageStatus] = useState(null);
+  const promptIdRef = useRef(null);
+  const [telegramConfirm, setTelegramConfirm] = useState(null);
+
 
   const MAX_FILE_SIZE_BYTES = 5 * 1000 * 1000;
 
@@ -54,7 +59,7 @@ export default function KeikoUpscale() {
         };
     
   };
-
+  const API_URL = process.env.REACT_APP_API_URL || '';
   const handleUpscale = async () => {
     if (!file) return setError('Selecciona una imagen primero.');
     setLoading(true);
@@ -68,8 +73,8 @@ export default function KeikoUpscale() {
     formData.append('upscaleFactor', upscaleFactor);
 
     try {
-      const API_URL = process.env.REACT_APP_API_URL || '';
-      console.log(API_URL);
+      
+      
       const token = localStorage.getItem('token');
 
       const res = await fetch(`${API_URL}/api/upscale`, {
@@ -78,7 +83,26 @@ export default function KeikoUpscale() {
         body: formData
       });
 
+      if (res.status === 413) {
+        const data = await res.json();
+        if (data.telegramOption) {
+        setTelegramOffer({
+            message: data.message,
+            promptId: data.prompt_id, // o como guardes el prompt ID
+            image: file,
+            joinUrl: data.telegramJoinUrl
+        });
+        } else {
+        setError(data.message || 'La imagen no pudo procesarse.');
+        }
+        return;
+    }
+
       const data = await res.json();
+      if (res.ok && data?.outputUrl) {
+        promptIdRef.current = data.prompt_id; // 👈 si tu backend lo envía
+        setResultUrl(data.outputUrl);
+        }
 
       if (res.ok && data?.outputUrl) {
         setResultUrl(data.outputUrl);
@@ -134,6 +158,43 @@ export default function KeikoUpscale() {
       })
       .catch(() => alert('Error al descargar. Intenta de nuevo.'));
   };
+
+
+  const handleEnviarATelegram = async (telegramData) => {
+    setLoading(true);
+    setTelegramOffer(null); // Cierra el popup
+
+    const formData = new FormData();
+    formData.append('image', telegramData.image);
+    formData.append('prompt_id', telegramData.promptId);
+
+    try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_URL}/api/to-telegram`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+        setResultUrl(null); // No usamos resultUrl
+        setImageStatus('enviada_telegram');
+
+        // Muestra instrucciones para ir al canal
+        setTelegramConfirm({
+            joinUrl: telegramData.joinUrl
+            });
+        } else {
+        setError(data.message || 'Error al enviar a Telegram.');
+        }
+    } catch (error) {
+        setError('Error al contactar con Telegram.');
+    } finally {
+        setLoading(false);
+    }
+    };
 
   return (
     <section className="keiko-remove-bg-container" aria-label="Upscale de imágenes">
@@ -224,6 +285,50 @@ export default function KeikoUpscale() {
       <button className="btn-primary sticky-btn" onClick={handleUpscale} disabled={!file || loading}>
         {loading ? `Procesando... ${formatTime(timer)}` : 'Mejorar Imagen'}
       </button>
+        {telegramOffer && (
+            <div className="modal-overlay" role="dialog" aria-modal="true">
+                <div className="modal-content">
+                <h2>📦 Imagen demasiado grande</h2>
+                <p>{telegramOffer.message}</p>
+                <p>¿Quieres recibirla a través de nuestro canal de Telegram?</p>
+                <div className="btn-group">
+                    <button
+                    className="btn-primary"
+                    onClick={() => handleEnviarATelegram(telegramOffer)}
+                    >
+                    Sí, enviarla a Telegram
+                    </button>
+                    <button
+                    className="btn-secondary"
+                    onClick={() => setTelegramOffer(null)}
+                    >
+                    Cancelar
+                    </button>
+                </div>
+                </div>
+            </div>
+            )}
+        {telegramConfirm && (
+            <div className="modal-overlay" role="dialog" aria-modal="true">
+                <div className="modal-content">
+                <h2>✅ Imagen enviada a Telegram</h2>
+                <p>Tu imagen se ha enviado correctamente a nuestro canal.</p>
+                <p>
+                    Puedes unirte al canal y descargarla cuando quieras:<br />
+                    <a href={telegramConfirm.joinUrl} target="_blank" rel="noopener noreferrer" className="telegram-link">
+                    👉 Ir al canal de Telegram
+                    </a>
+                </p>
+                <button
+                    className="btn-primary"
+                    onClick={() => setTelegramConfirm(null)}
+                    style={{ marginTop: '1rem' }}
+                >
+                    Cerrar
+                </button>
+                </div>
+            </div>
+            )}
 
       {previewOpen && (
         <div className="modal-overlay" onClick={() => setPreviewOpen(false)} role="dialog" aria-modal="true">

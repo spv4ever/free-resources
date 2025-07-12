@@ -494,6 +494,18 @@ button.btn-secondary:hover {
   margin-top: 0.25rem;
 }
 
+.telegram-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: #229ED9; /* color azul Telegram */
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.telegram-link:hover {
+  text-decoration: underline;
+}
+
 /* --- Responsive Design (Media Queries) --- */
 @media (max-width: 768px) {
   .keiko-remove-bg-container {

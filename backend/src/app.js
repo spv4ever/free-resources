@@ -94,7 +94,8 @@ import keikoRemoveBGRoutes from './routes/keikoRemoveBGRoutes.js';
 import sportsEventsRoutes from './routes/sportsEvents.routes.js';
 import telegramRoutes from './routes/telegram.js';
 import f1Routes from './routes/telegram-f1.js';
-import upscale from './routes/keikoUpscaleRoutes.js';
+import upscaler from './routes/keikoUpscaleRoutes.js';
+
 
 
 // Otras rutas...
@@ -110,6 +111,7 @@ Object.entries(process.env).forEach(([key, value]) => {
 });
 
 const app = express();
+
 // Inicializar passport (👈 necesario para estrategias como Google)
 app.use(passport.initialize());
 console.log(`🌍 Entorno de ejecución: ${process.env.NODE_ENV || 'no definido'}`);
@@ -205,6 +207,8 @@ startDailyEventScheduler(); // activa cron diario
 //fetchTodayImage();
 
 // Rutas
+app.use('/api', upscaler); // 👈 nueva ruta para upscale
+
 app.use('/api/resources', resourceLibraryRoutes);
 app.use('/api/anime-characters', animeCharacterRoutes)
 app.use('/api/auth', authRoutes);
@@ -270,7 +274,7 @@ app.use('/api/imagenes', imagenesRoutes);
 app.use('/api', formula1Routes);
 app.use('/api/keiko-remove-bg', keikoRemoveBGRoutes); 
 app.use('/api/sports-events', sportsEventsRoutes);
-app.use('/api', upscale); // 👈 nueva ruta para upscale
+
 
 
 app.use("/api/blog", blogRoutes);
