@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { FaBook, FaRobot, FaYoutube, FaFileAlt, FaImage, FaGraduationCap, FaRocket, FaShieldVirus, FaMagic, FaGift, FaTicketAlt, FaTv, FaBoxes, FaCut, FaEye  } from 'react-icons/fa';
+import { FaBook, FaRobot, FaYoutube, FaFileAlt, FaImage, FaGraduationCap, FaRocket, FaShieldVirus, FaMagic, FaGift, FaTicketAlt, FaTv, FaBoxes, FaCut  } from 'react-icons/fa';
 import '../styles/HomePage.css';
 import CookieConsentBanner from '../components/CookieConsentBanner';
 import AnalyticsLoader from '../components/AnalyticsLoader';
@@ -117,10 +117,10 @@ if (user?.role === 'admin') {
       </div>
 
       <main className="layout-content">
-        
+        <AffiliateBannerAndSidebar />
         <Outlet />
         
-        <AffiliateBannerAndSidebar />
+        
       </main>
 
       <Footer />

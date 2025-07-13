@@ -7,7 +7,6 @@ import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -96,6 +95,7 @@ import summaryRoutes from './routes/telegram.js';
 import f1Routes from './routes/telegram-f1.js';
 import upscaler from './routes/keikoUpscaleRoutes.js';
 import telegramRoutes from './routes/telegram.routes.js';
+import compressRoutes from "./routes/compressRoutes.js";
 
 
 
@@ -275,6 +275,16 @@ app.use('/api/imagenes', imagenesRoutes);
 app.use('/api', formula1Routes);
 app.use('/api/keiko-remove-bg', keikoRemoveBGRoutes); 
 app.use('/api/sports-events', sportsEventsRoutes);
+// Rutas API
+app.use("/api", compressRoutes);
+
+// Servir y eliminar ZIP tras descarga
+app.get("/zip/:filename", (req, res) => {
+  const filePath = path.join(__dirname, "public", "zip", req.params.filename);
+  res.download(filePath, () => {
+    fs.unlink(filePath, () => {});
+  });
+});
 
 
 

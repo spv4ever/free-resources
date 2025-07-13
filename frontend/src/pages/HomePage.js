@@ -19,7 +19,7 @@
   import MotoGPCircuitCard from '../components/MotoGPCircuitCard';
   import F1CircuitCard from '../components/F1CircuitCard';
   import { useUser } from '../context/UserContext';
-  import AffiliateBannerAndSidebar from '../components/AffiliateBannerAndSidebar';
+  // import AffiliateBannerAndSidebar from '../components/AffiliateBannerAndSidebar';
   // import { useUser } from '../context/UserContext';
 
   dayjs.extend(utc);

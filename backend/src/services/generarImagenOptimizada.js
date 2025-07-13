@@ -80,7 +80,11 @@ export const generarImagenAvanzada = async ({
 
   modificado['1'].inputs.width = width;
   modificado['1'].inputs.height = height;
-  modificado['13'].inputs.string = prompt;
+    if (!prompt.includes('aidmaHyperrealism')) {
+    modificado['13'].inputs.string = `${prompt} + aidmaHyperrealism, `;
+  } else {
+    modificado['13'].inputs.string = prompt;
+  }
   modificado['12'].inputs.noise_seed = seed || Math.floor(Math.random() * 1e16);
   modificado['10'].inputs.steps = Math.min(steps, 30);
   modificado['30'].inputs.filename_prefix = filename_prefix;

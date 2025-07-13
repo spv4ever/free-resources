@@ -75,7 +75,7 @@ useEffect(() => {
         promptText: text,
         promptId,
         selectedExtras: [],
-        advancedMode: false,
+        advancedMode: true,
         removeBackground: false,
         seed: undefined,
         useRandomSeed: true,
@@ -169,7 +169,7 @@ useEffect(() => {
                 value={steps}
                 onChange={(e) => setSteps(parseInt(e.target.value))}
               >
-                {[15, 20, 25, 30].map((s) => (
+                {[5, 10, 15, 20, 25, 30].map((s) => (
                   <option key={s} value={s}>
                     {s} pasos
                   </option>

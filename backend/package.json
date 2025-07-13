@@ -15,6 +15,7 @@
   "dependencies": {
     "@google-cloud/local-auth": "^3.0.1",
     "ajv": "^8.17.1",
+    "archiver": "^7.0.1",
     "aws-sdk": "^2.1692.0",
     "axios": "^1.10.0",
     "bcrypt": "^5.1.1",
@@ -48,7 +49,8 @@
     "puppeteer": "^24.8.2",
     "qs": "^6.14.0",
     "react-select": "^5.10.1",
-    "sharp": "^0.34.3"
+    "sharp": "^0.34.3",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

@@ -92,6 +92,56 @@ const connect = async () => {
               }
             }
             break;
+          case 'progress_state':
+            if (!event.data?.nodes) return;
+
+            // 🛡️ Si el job aún no existe, lo inicializamos como si lo hubiera hecho trackPendingJob
+            if (!jobStatusMap.has(promptId)) {
+              const colaIndex = calcularPosicionEnCola(promptId);
+              jobStatusMap.set(promptId, {
+                status: 'running',
+                progress: 0,
+                inQueue: false,
+                createdAt: Date.now(),
+                startedAt: Date.now(),
+                colaIndex
+              });
+            }
+
+            const previous = jobStatusMap.get(promptId);
+            const nodes = event.data.nodes;
+
+            // ✅ Solo contar nodos con max > 1 (los que realmente consumen tiempo, como denoise)
+            const progressNodes = Object.values(nodes).filter(n => n.max > 1);
+            const totalValue = progressNodes.reduce((sum, n) => sum + (n.value || 0), 0);
+            const totalMax = progressNodes.reduce((sum, n) => sum + (n.max || 1), 0);
+            const progress = totalMax > 0 ? totalValue / totalMax : 0;
+
+            const updated = {
+              ...previous,
+              progress,
+              status: 'running',
+              inQueue: false,
+              startedAt: previous?.startedAt || Date.now()
+            };
+
+            jobStatusMap.set(promptId, updated);
+
+            // ✅ Si todos los nodos están en estado "finished", marcamos el job como terminado
+            const allFinished = Object.values(nodes).every(n => n.state === 'finished');
+            if (allFinished && updated.status !== 'finished') {
+              console.log(`✅ Job completado por progress_state (${promptId})`);
+              jobStatusMap.set(promptId, {
+                ...updated,
+                status: 'finished',
+                progress: 1,
+                inQueue: false,
+                finishedAt: Date.now()
+              });
+
+              esperarYVerificarImagen(promptId);
+            }
+            break;
 
           case 'execution_end':
             if (jobStatusMap.has(promptId)) {

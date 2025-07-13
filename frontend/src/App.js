@@ -82,6 +82,7 @@ import PackImages from './components/PackImages';
 import Imagenes from './pages/EdicionImagenes';
 import AuthCallback from './components/AuthCallback';
 import PrivateRoute from './components/PrivateRoute';
+import CompresorImagenes from './pages/CompresorImagenes';
 
 
 import BlogList from "./pages/BlogList";
@@ -199,6 +200,7 @@ function App() {
             <Route path="/admin/blog" element={<AdminRoute><BlogAdmin /></AdminRoute>} />
             <Route path="/admin/blog/create" element={<AdminRoute><BlogCreate /></AdminRoute>} />
             <Route path="/admin/blog/edit/:id" element={<AdminRoute><BlogEdit /></AdminRoute>} />
+            <Route path="/compresor-imagenes" element={<CompresorImagenes />} />
             
           </Route>
           <Route path="/motogp-live" element={<MotoGPCircuitMobileView />} />

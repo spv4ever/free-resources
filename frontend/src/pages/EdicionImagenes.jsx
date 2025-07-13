@@ -34,9 +34,9 @@ const tools = [
     title: "Comprimir imagen",
     desc: "Reduce el peso de imágenes JPG y PNG sin pérdida de calidad visible. Optimiza para web o redes sociales.",
     icon: <FontAwesomeIcon icon={faBoxOpen} />,
-    link: "/compress",
+    link: "/compresor-imagenes",
     access: "Free",
-    status: "proximamente",
+    status: "activo",
   },
   {
     title: "Redimensionar imagen",

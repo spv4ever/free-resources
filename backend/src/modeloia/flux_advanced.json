@@ -163,7 +163,7 @@
     "inputs": {
       "lora_name": "aidmaHyperrealism-FLUX-v0.3.safetensors",
       "strength_model": 0.7000000000000002,
-      "strength_clip": 1.0000000000000002,
+      "strength_clip": 0.6000000000000002,
       "model": [
         "7",
         0
