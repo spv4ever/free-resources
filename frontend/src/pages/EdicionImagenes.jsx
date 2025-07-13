@@ -58,9 +58,9 @@ const tools = [
     title: "Convertir formato",
     desc: "Convierte imágenes entre formatos JPG, PNG, WebP y más. Compatible con la mayoría de estándares.",
     icon: <FontAwesomeIcon icon={faBorderNone} />,
-    link: "/convert",
+    link: "/convertir-imagenes",
     access: "Free",
-    status: "proximamente",
+    status: "activo",
   },
   {
     title: "Girar imagen",
@@ -74,17 +74,17 @@ const tools = [
     title: "Pixelar zona",
     desc: "Oculta zonas sensibles, como rostros o matrículas, aplicando desenfoque o pixelado automático.",
     icon: <FontAwesomeIcon icon={faEyeSlash} />,
-    link: "/pixelate",
+    link: "/pixelar-zona",
     access: "Premium",
-    status: "proximamente",
+    status: "activo",
   },
   {
     title: "Marca de agua",
     desc: "Protege tus imágenes añadiendo una marca de agua personalizable con texto o logotipo.",
     icon: <FontAwesomeIcon icon={faWater} />,
-    link: "/watermark",
+    link: "/marca-de-agua",
     access: "Premium",
-    status: "proximamente",
+    status: "activo",
   }
 ];
 

@@ -97,6 +97,11 @@ import upscaler from './routes/keikoUpscaleRoutes.js';
 import telegramRoutes from './routes/telegram.routes.js';
 import compressRoutes from "./routes/compressRoutes.js";
 import resizeRoutes from "./routes/resizeRoutes.js";
+import convertRoutes from "./routes/convertRoutes.js";
+import watermarkRoutes from "./routes/watermarkRoutes.js";
+import pixelateRoutes from "./routes/pixelateRoutes.js";
+
+
 
 
 
@@ -276,11 +281,20 @@ app.use('/api/imagenes', imagenesRoutes);
 app.use('/api', formula1Routes);
 app.use('/api/keiko-remove-bg', keikoRemoveBGRoutes); 
 app.use('/api/sports-events', sportsEventsRoutes);
+app.use("/api", convertRoutes);
 // Rutas API
 app.use("/api", compressRoutes);
 
 app.use("/api", resizeRoutes);
 
+app.use("/api", watermarkRoutes);
+app.use("/api", pixelateRoutes);
+
+app.use("/pixelated", express.static(path.join(__dirname, "public/pixelated"), {
+  setHeaders: (res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+}));
 // Servir y eliminar ZIP tras descarga
 app.get("/zip/:filename", (req, res) => {
   const filePath = path.join(__dirname, "public", "zip", req.params.filename);

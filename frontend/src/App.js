@@ -84,8 +84,12 @@ import AuthCallback from './components/AuthCallback';
 import PrivateRoute from './components/PrivateRoute';
 import CompresorImagenes from './pages/CompresorImagenes';
 import RedimensionadorImagenes from "./pages/RedimensionadorImagenes";
+import ConvertidorImagenes from "./pages/ConvertidorImagenes";
+            
 
 
+
+import MarcaDeAgua from "./pages/MarcaDeAgua";
 import BlogList from "./pages/BlogList";
 import BlogPost from "./pages/BlogPost";
 
@@ -96,6 +100,9 @@ import BlogEdit from "./pages/admin/BlogEdit";
 import KeikoRemoveBG from './pages/KeikoRemoveBG';
 import SportsEventsAdminPage from './pages/admin/SportsEventsAdminPage';
 import KeikoUpscale from './pages/KeikoUpscale'; // Ajusta ruta si es distinta
+import PixeladorImagen from "./pages/PixeladorImagen";
+
+
 
 
 
@@ -179,6 +186,12 @@ function App() {
             <Route path="/keiko-remove-bg" element={<KeikoRemoveBG />} />
             <Route path="/edicion-imagenes" element={<Imagenes />} />
             <Route path="/redimensionar-imagenes" element={<RedimensionadorImagenes />} />
+            <Route path="/pixelar-zona" element={<PixeladorImagen />} />
+            
+
+            <Route path="/convertir-imagenes" element={<ConvertidorImagenes />} />
+
+            <Route path="/marca-de-agua" element={<MarcaDeAgua />} />
             
             {/* <Route path="/keikoprompts" element={<KeikoPromptPacks />} /> */}
             <Route path="/prompts/:packId" element={<KeikoPromptsList />} />
