@@ -65,7 +65,7 @@ useEffect(() => {
             <h3>{banner.title}</h3>
             <p>{banner.cta}</p>
             <button className="cta-button" onClick={() => handleClick(banner)}>
-              Ver en Amazon
+              Quiero más
             </button>
           </div>
         </div>

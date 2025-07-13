@@ -79,7 +79,7 @@ import RegisterLogsTable from './components/admin/RegisterLogsTable';
 import TokenInfoPage from './pages/TokenInfoPage';
 import KeikoIAGallery from './pages/KeikoIAGallery';
 import PackImages from './components/PackImages';
-
+import Imagenes from './pages/EdicionImagenes';
 import AuthCallback from './components/AuthCallback';
 import PrivateRoute from './components/PrivateRoute';
 
@@ -175,6 +175,7 @@ function App() {
             <Route path="/panel/pro/historial" element={<UserLinkHistory />} />
             <Route path="/youtube-uploader" element={<YouTubeLandingPage />} />
             <Route path="/keiko-remove-bg" element={<KeikoRemoveBG />} />
+            <Route path="/edicion-imagenes" element={<Imagenes />} />
             
             {/* <Route path="/keikoprompts" element={<KeikoPromptPacks />} /> */}
             <Route path="/prompts/:packId" element={<KeikoPromptsList />} />

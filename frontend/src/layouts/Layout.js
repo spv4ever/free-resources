@@ -25,16 +25,10 @@ function Layout() {
   const sections = [
   // 🔥 Inicio atractivo (alto interés / engagement)
   {
-    title: 'Keiko Remove BG',
-    description: 'Elimina el fondo de tus imágenes fácilmente',
-    path: '/keiko-remove-bg',
+    title: 'Edición de Imágenes',
+    description: 'Herramientas para editar y mejorar tus imágenes con IA',
+    path: '/edicion-imagenes',
     icon: <FaCut />,
-  },
-  {
-    title: 'Keiko Upscale',
-    description: 'Mejora la resolución de tus imágenes con IA',
-    path: '/upscale',
-    icon: <FaEye />,
   },
   { title: 'MultiMedia', description: 'Imágenes del universo, los mejores vídeos, todo Multimedia', path: '/media', icon: <FaImage /> },
   { title: 'Videos Virales', description: 'Los mejores Shorts organizados por categoría', path: '/viral-shorts', icon: <FaFileAlt /> },
