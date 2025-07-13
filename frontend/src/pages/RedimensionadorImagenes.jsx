@@ -1,7 +1,8 @@
 import { useState, useRef } from "react";
 
-export default function CompresorImagenes() {
+export default function RedimensionadorImagenes() {
   const [imagenes, setImagenes] = useState([]);
+  const [porcentaje, setPorcentaje] = useState("100");
   const [enviando, setEnviando] = useState(false);
   const [zipUrl, setZipUrl] = useState("");
   const [mensaje, setMensaje] = useState("");
@@ -16,7 +17,7 @@ export default function CompresorImagenes() {
 
     const nuevas = validas.map(file => ({
       file,
-      preview: URL.createObjectURL(file),
+      preview: URL.createObjectURL(file)
     }));
 
     setImagenes(prev => [...prev, ...nuevas].slice(0, 10));
@@ -36,17 +37,18 @@ export default function CompresorImagenes() {
     handleSeleccion(e.dataTransfer.files);
   };
 
-  const handleComprimir = async () => {
-    if (imagenes.length === 0) return;
+  const handleRedimensionar = async () => {
+    if (imagenes.length === 0 || !porcentaje) return;
     setEnviando(true);
     setZipUrl("");
     setMensaje("");
 
     const formData = new FormData();
-    imagenes.forEach((img) => formData.append("images", img.file));
+    formData.append("percent", porcentaje);
+    imagenes.forEach(img => formData.append("images", img.file));
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/compress-images`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/resize-images`, {
         method: "POST",
         body: formData,
       });
@@ -56,7 +58,7 @@ export default function CompresorImagenes() {
         const fullUrl = `${process.env.REACT_APP_API_URL}${data.downloadUrl}`;
         setZipUrl(fullUrl);
       } else {
-        alert("Error al comprimir imágenes.");
+        alert("Error al redimensionar imágenes.");
       }
     } catch (err) {
       alert("Error al conectar con el servidor.");
@@ -70,14 +72,14 @@ export default function CompresorImagenes() {
     setZipUrl("");
     setImagenes([]);
     setEnviando(false);
-    setMensaje("Imágenes descargadas correctamente.");
+    setMensaje("Imágenes redimensionadas correctamente.");
     if (inputRef.current) inputRef.current.value = "";
     window.scrollTo(0, 0);
   };
 
   return (
     <div style={estilos.contenedor}>
-      <h1 style={estilos.titulo}>Compresor de Imágenes</h1>
+      <h1 style={estilos.titulo}>Redimensionador de Imágenes</h1>
 
       {mensaje && <div style={estilos.mensaje}>{mensaje}</div>}
 
@@ -89,11 +91,6 @@ export default function CompresorImagenes() {
       >
         <p style={estilos.dropText}>Arrastra tus imágenes aquí o haz clic para seleccionar</p>
         <p style={estilos.contador}>{imagenes.length} / 10 imágenes cargadas</p>
-        {imagenes.some(img => img.file.type === "image/png") && (
-          <p style={estilos.aviso}>
-            Las imágenes PNG se convertirán automáticamente a JPG para una mejor compresión.
-          </p>
-        )}
         <input
           ref={inputRef}
           type="file"
@@ -104,14 +101,31 @@ export default function CompresorImagenes() {
         />
       </div>
 
+      <div style={estilos.selector}>
+        <label style={estilos.label}>Tamaño:</label>
+        <select
+            value={porcentaje}
+            onChange={(e) => setPorcentaje(e.target.value)}
+            style={estilos.select}
+        >
+            <option value="25">25%</option>
+            <option value="50">50%</option>
+            <option value="75">75%</option>
+            <option value="100">100%</option>
+            <option value="125">125%</option>
+            <option value="175">175%</option>
+            <option value="200">200%</option>
+        </select>
+        </div>
+
+        <p style={estilos.aviso}>
+        Puedes reducir o aumentar el tamaño original de tus imágenes.
+        </p>
+
       <div style={estilos.grid}>
         {imagenes.map((img, i) => (
           <div key={i} style={estilos.card}>
-            <img
-              src={img.preview}
-              alt={`preview-${i}`}
-              style={estilos.img}
-            />
+            <img src={img.preview} alt={`preview-${i}`} style={estilos.img} />
             <div style={estilos.info}>
               <span style={estilos.nombre}>{img.file.name}</span>
               <button onClick={() => eliminarImagen(i)} style={estilos.borrar}>❌</button>
@@ -121,14 +135,14 @@ export default function CompresorImagenes() {
       </div>
 
       <button
-        onClick={handleComprimir}
+        onClick={handleRedimensionar}
         disabled={enviando || imagenes.length === 0}
         style={{
           ...estilos.boton,
           opacity: enviando || imagenes.length === 0 ? 0.5 : 1,
         }}
       >
-        {enviando ? "Procesando..." : "Comprimir imágenes"}
+        {enviando ? "Procesando..." : "Redimensionar imágenes"}
       </button>
 
       {zipUrl && (
@@ -157,6 +171,12 @@ const estilos = {
     textAlign: "center",
     marginBottom: "30px",
   },
+  aviso: {
+    color: "#ffaa00",
+    fontSize: "13px",
+    marginBottom: "16px",
+    textAlign: "center",
+    },
   mensaje: {
     backgroundColor: "#1f1f1f",
     color: "#00ff90",
@@ -184,10 +204,23 @@ const estilos = {
     color: "#6bc5ff",
     fontSize: "14px",
   },
-  aviso: {
-    color: "#ffaa00",
-    fontSize: "13px",
-    marginTop: "8px",
+  selector: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: "24px",
+    gap: "10px",
+  },
+  label: {
+    color: "#ccc",
+    fontSize: "14px",
+  },
+  select: {
+    padding: "6px 12px",
+    borderRadius: "6px",
+    border: "1px solid #444",
+    backgroundColor: "#1f1f1f",
+    color: "#fff",
   },
   grid: {
     display: "flex",

@@ -42,9 +42,9 @@ const tools = [
     title: "Redimensionar imagen",
     desc: "Cambia el tamaño de tus imágenes por porcentaje o píxeles. Ajusta al formato que necesites.",
     icon: <FontAwesomeIcon icon={faRulerCombined} />,
-    link: "/resize",
+    link: "/redimensionar-imagenes",
     access: "Free",
-    status: "proximamente",
+    status: "activo",
   },
   {
     title: "Recortar imagen",

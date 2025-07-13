@@ -83,6 +83,7 @@ import Imagenes from './pages/EdicionImagenes';
 import AuthCallback from './components/AuthCallback';
 import PrivateRoute from './components/PrivateRoute';
 import CompresorImagenes from './pages/CompresorImagenes';
+import RedimensionadorImagenes from "./pages/RedimensionadorImagenes";
 
 
 import BlogList from "./pages/BlogList";
@@ -177,6 +178,7 @@ function App() {
             <Route path="/youtube-uploader" element={<YouTubeLandingPage />} />
             <Route path="/keiko-remove-bg" element={<KeikoRemoveBG />} />
             <Route path="/edicion-imagenes" element={<Imagenes />} />
+            <Route path="/redimensionar-imagenes" element={<RedimensionadorImagenes />} />
             
             {/* <Route path="/keikoprompts" element={<KeikoPromptPacks />} /> */}
             <Route path="/prompts/:packId" element={<KeikoPromptsList />} />

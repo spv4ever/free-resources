@@ -96,6 +96,7 @@ import f1Routes from './routes/telegram-f1.js';
 import upscaler from './routes/keikoUpscaleRoutes.js';
 import telegramRoutes from './routes/telegram.routes.js';
 import compressRoutes from "./routes/compressRoutes.js";
+import resizeRoutes from "./routes/resizeRoutes.js";
 
 
 
@@ -277,6 +278,8 @@ app.use('/api/keiko-remove-bg', keikoRemoveBGRoutes);
 app.use('/api/sports-events', sportsEventsRoutes);
 // Rutas API
 app.use("/api", compressRoutes);
+
+app.use("/api", resizeRoutes);
 
 // Servir y eliminar ZIP tras descarga
 app.get("/zip/:filename", (req, res) => {
