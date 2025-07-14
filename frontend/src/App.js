@@ -101,7 +101,8 @@ import KeikoRemoveBG from './pages/KeikoRemoveBG';
 import SportsEventsAdminPage from './pages/admin/SportsEventsAdminPage';
 import KeikoUpscale from './pages/KeikoUpscale'; // Ajusta ruta si es distinta
 import PixeladorImagen from "./pages/PixeladorImagen";
-
+import GiradorImagenes from "./pages/GiradorImagenes";
+import RecortadorImagen from "./pages/RecortadorImagen"; // o el nombre que le hayas dado
 
 
 
@@ -187,6 +188,8 @@ function App() {
             <Route path="/edicion-imagenes" element={<Imagenes />} />
             <Route path="/redimensionar-imagenes" element={<RedimensionadorImagenes />} />
             <Route path="/pixelar-zona" element={<PixeladorImagen />} />
+            <Route path="/rotate" element={<GiradorImagenes />} />
+            <Route path="/crop" element={<RecortadorImagen />} />
             
 
             <Route path="/convertir-imagenes" element={<ConvertidorImagenes />} />
@@ -216,6 +219,7 @@ function App() {
             <Route path="/admin/blog/create" element={<AdminRoute><BlogCreate /></AdminRoute>} />
             <Route path="/admin/blog/edit/:id" element={<AdminRoute><BlogEdit /></AdminRoute>} />
             <Route path="/compresor-imagenes" element={<CompresorImagenes />} />
+            
             
           </Route>
           <Route path="/motogp-live" element={<MotoGPCircuitMobileView />} />

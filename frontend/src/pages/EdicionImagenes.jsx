@@ -52,7 +52,7 @@ const tools = [
     icon: <FontAwesomeIcon icon={faScissors} />,
     link: "/crop",
     access: "Free",
-    status: "proximamente",
+    status: "activo",
   },
   {
     title: "Convertir formato",
@@ -68,7 +68,7 @@ const tools = [
     icon: <FontAwesomeIcon icon={faRotate} />,
     link: "/rotate",
     access: "Free",
-    status: "proximamente",
+    status: "activo",
   },
   {
     title: "Pixelar zona",

@@ -100,6 +100,8 @@ import resizeRoutes from "./routes/resizeRoutes.js";
 import convertRoutes from "./routes/convertRoutes.js";
 import watermarkRoutes from "./routes/watermarkRoutes.js";
 import pixelateRoutes from "./routes/pixelateRoutes.js";
+import cropRoutes from "./routes/cropRoutes.js";
+import rotateRoutes from "./routes/rotateRoutes.js";
 
 
 
@@ -289,6 +291,10 @@ app.use("/api", resizeRoutes);
 
 app.use("/api", watermarkRoutes);
 app.use("/api", pixelateRoutes);
+app.use("/api", cropRoutes);
+app.use("/api", rotateRoutes);
+
+app.use("/cropped", express.static(path.join(__dirname, "public/cropped")));
 
 app.use("/pixelated", express.static(path.join(__dirname, "public/pixelated"), {
   setHeaders: (res) => {
