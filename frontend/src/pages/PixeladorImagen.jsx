@@ -8,17 +8,23 @@ export default function PixeladorImagen() {
   const [arrastrando, setArrastrando] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [procesando, setProcesando] = useState(false);
+  const [escala, setEscala] = useState(1);
+  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
+  const [formaSeleccion, setFormaSeleccion] = useState("cuadrado");
+  const [nivelPixelado, setNivelPixelado] = useState(10);
+  const [selecciones, setSelecciones] = useState([]);
+
   const canvasRef = useRef(null);
 
   const handleSeleccion = (file) => {
     if (!file || !["image/jpeg", "image/png"].includes(file.type)) return;
-
     const url = URL.createObjectURL(file);
     setImagen(file);
     setPreviewUrl(url);
     setResultadoUrl("");
     setSeleccion(null);
     setMensaje("");
+    setSelecciones([]);
   };
 
   const handleFileInput = (e) => handleSeleccion(e.target.files[0]);
@@ -33,66 +39,78 @@ export default function PixeladorImagen() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const img = new Image();
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
-      if (seleccion) {
-        ctx.strokeStyle = "#00ffff";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(seleccion.x, seleccion.y, seleccion.w, seleccion.h);
-      }
-    };
-    img.src = previewUrl;
-  }, [previewUrl, seleccion]);
 
-  useEffect(() => {
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
+    img.onload = () => {
+      const maxSize = 800;
+      let factor = 1;
+      if (img.width > maxSize || img.height > maxSize) {
+        factor = Math.min(maxSize / img.width, maxSize / img.height);
       }
+      setEscala(factor);
+
+      const scaledWidth = img.width * factor;
+      const scaledHeight = img.height * factor;
+      setCanvasSize({ width: scaledWidth, height: scaledHeight });
+
+      canvas.width = scaledWidth;
+      canvas.height = scaledHeight;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
     };
+
+    img.src = previewUrl;
   }, [previewUrl]);
 
-  const iniciarSeleccion = (e) => {
+  const obtenerCoords = (e) => {
     const rect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    };
+  };
+
+  const iniciarSeleccion = (e) => {
+    const { x, y } = obtenerCoords(e);
     setSeleccion({ x, y, w: 0, h: 0 });
     setArrastrando(true);
   };
 
   const actualizarSeleccion = (e) => {
     if (!arrastrando) return;
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x2 = e.clientX - rect.left;
-    const y2 = e.clientY - rect.top;
-    setSeleccion((prev) => ({
-      ...prev,
-      w: x2 - prev.x,
-      h: y2 - prev.y,
-    }));
+    const { x, y } = obtenerCoords(e);
+    setSeleccion((prev) => {
+      if (!prev) return null;
+      return { ...prev, w: x - prev.x, h: y - prev.y };
+    });
   };
 
-  const finalizarSeleccion = () => setArrastrando(false);
+  const finalizarSeleccion = () => {
+    setArrastrando(false);
+    if (seleccion && Math.abs(seleccion.w) > 3 && Math.abs(seleccion.h) > 3) {
+      setSelecciones((prev) => [...prev, { ...seleccion, shape: formaSeleccion }]);
+    }
+    setSeleccion(null);
+  };
 
   const aplicarPixelado = async () => {
-    if (!imagen || !seleccion) return;
-
-    const w = Math.abs(Math.round(seleccion.w));
-    const h = Math.abs(Math.round(seleccion.h));
-    if (w === 0 || h === 0) {
-    setMensaje("Selecciona un área válida para pixelar.");
-    return;
+    if (!imagen || selecciones.length === 0) {
+      setMensaje("Selecciona al menos una zona para pixelar.");
+      return;
     }
+
+    const zonasBackend = selecciones.map((sel) => ({
+      x: Math.round(Math.min(sel.x, sel.x + sel.w) / escala),
+      y: Math.round(Math.min(sel.y, sel.y + sel.h) / escala),
+      width: Math.round(Math.abs(sel.w) / escala),
+      height: Math.round(Math.abs(sel.h) / escala),
+      shape: sel.shape || "cuadrado",
+    }));
 
     const formData = new FormData();
     formData.append("image", imagen);
-    formData.append("x", Math.round(seleccion.x));
-    formData.append("y", Math.round(seleccion.y));
-    formData.append("width", Math.abs(Math.round(seleccion.w)));
-    formData.append("height", Math.abs(Math.round(seleccion.h)));
+    formData.append("zonas", JSON.stringify(zonasBackend));
+    formData.append("blur", nivelPixelado);
 
     try {
       setProcesando(true);
@@ -101,14 +119,12 @@ export default function PixeladorImagen() {
         body: formData,
       });
 
-      const data = await res.json();
-      if (data.success) {
-        const fullUrl = `${process.env.REACT_APP_API_URL}${data.downloadUrl}`;
-        setResultadoUrl(fullUrl);
-        setMensaje("Zona pixelada correctamente.");
-      } else {
-        setMensaje("Error: No se pudo aplicar el pixelado.");
-      }
+      if (!res.ok) throw new Error("Error al procesar imagen");
+
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      setResultadoUrl(blobUrl);
+      setMensaje("Zonas pixeladas correctamente.");
     } catch (err) {
       setMensaje("Error al conectar con el servidor.");
     } finally {
@@ -122,7 +138,6 @@ export default function PixeladorImagen() {
 
       {mensaje && <div style={estilos.mensaje}>{mensaje}</div>}
 
-      {/* Zona 1: carga */}
       <div
         style={estilos.dropzone}
         onDrop={handleDrop}
@@ -140,42 +155,166 @@ export default function PixeladorImagen() {
       </div>
 
       {previewUrl && (
-        <div style={estilos.canvasBox}>
-          <canvas
-            ref={canvasRef}
-            style={estilos.canvas}
-            onMouseDown={iniciarSeleccion}
-            onMouseMove={actualizarSeleccion}
-            onMouseUp={finalizarSeleccion}
-            onMouseLeave={finalizarSeleccion}
-          />
-          <button
-            onClick={aplicarPixelado}
-            style={{
-              ...estilos.boton,
-              opacity: procesando ? 0.6 : 1,
-              cursor: procesando ? "not-allowed" : "pointer",
-            }}
-            disabled={procesando}
-          >
-            {procesando ? "Procesando..." : "Aplicar pixelado"}
-          </button>
+        <div style={estilos.canvasWrapper}>
+          <div style={estilos.canvasContainer}>
+            <canvas
+              ref={canvasRef}
+              style={estilos.canvas}
+              onMouseDown={iniciarSeleccion}
+              onMouseMove={actualizarSeleccion}
+              onMouseUp={finalizarSeleccion}
+              onMouseLeave={finalizarSeleccion}
+            />
+            {selecciones.map((sel, idx) => {
+              const x = Math.min(sel.x, sel.x + sel.w);
+              const y = Math.min(sel.y, sel.y + sel.h);
+              const w = Math.abs(sel.w);
+              const h = Math.abs(sel.h);
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    position: "absolute",
+                    left: `${x}px`,
+                    top: `${y}px`,
+                    width: `${w}px`,
+                    height: `${h}px`,
+                    border: "2px dashed #00ffff",
+                    backgroundColor: "rgba(0,255,255,0.2)",
+                    borderRadius:
+                      sel.shape === "redondo" ? "50%" : sel.shape === "redondeado" ? "16px" : "0",
+                  }} className="zona-pixelada"
+                >
+                  <button
+                    className="boton-eliminar-zona"
+                    onClick={() =>
+                      setSelecciones((prev) => prev.filter((_, i) => i !== idx))
+                    }
+                    style={{
+                      position: "absolute",
+                      top: "-10px",
+                      right: "-10px",
+                      width: "22px",
+                      height: "22px",
+                      backgroundColor: "#222",
+                      color: "#fff",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      borderRadius: "50%",
+                      border: "1px solid #aaa",
+                      cursor: "pointer",
+                      opacity: 0,
+                      transition: "opacity 0.2s ease-in-out",
+                      pointerEvents: "auto",
+                      zIndex: 10,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    title="Eliminar zona"
+                  >
+                    🗑️
+                  </button>
+
+                </div>
+              );
+            })}
+
+            {seleccion && (
+              <div
+                style={{
+                  position: "absolute",
+                  left: `${Math.min(seleccion.x, seleccion.x + seleccion.w)}px`,
+                  top: `${Math.min(seleccion.y, seleccion.y + seleccion.h)}px`,
+                  width: `${Math.abs(seleccion.w)}px`,
+                  height: `${Math.abs(seleccion.h)}px`,
+                  border: "2px dashed #ffaa00",
+                  backgroundColor: "rgba(255,165,0,0.2)",
+                  borderRadius:
+                    formaSeleccion === "redondo"
+                      ? "50%"
+                      : formaSeleccion === "redondeado"
+                      ? "16px"
+                      : "0px",
+                  pointerEvents: "none",
+                }}
+              />
+            )}
+          </div>
+
+          {selecciones.length > 0 && (
+            <div style={{ marginTop: "16px" }}>
+              <button
+                onClick={aplicarPixelado}
+                style={{
+                  ...estilos.boton,
+                  opacity: procesando ? 0.6 : 1,
+                  cursor: procesando ? "not-allowed" : "pointer",
+                }}
+                disabled={procesando}
+              >
+                {procesando ? "Procesando..." : "Aplicar pixelado"}
+              </button>
+              <button
+                onClick={() => setSelecciones([])}
+                style={{ ...estilos.botonSecundario, marginLeft: "10px" }}
+                className="boton-eliminar"
+              >
+                Borrar zonas
+              </button>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Zona 2: resultado */}
-     {resultadoUrl && (
-        <div style={estilos.resultado}>
-            <h3 style={{ color: "#fff", marginBottom: "16px" }}>Zona aplicada correctamente</h3>
+      <div style={{ marginBottom: "16px", marginTop: "24px" }}>
+        <label style={{ color: "#fff", marginRight: "12px" }}>Forma de selección:</label>
+        {["cuadrado", "redondeado", "redondo"].map((f) => (
+          <button
+            key={f}
+            onClick={() => setFormaSeleccion(f)}
+            style={{
+              padding: "8px 12px",
+              margin: "0 4px",
+              borderRadius: "6px",
+              border: formaSeleccion === f ? "2px solid #00e0ff" : "1px solid #888",
+              backgroundColor: formaSeleccion === f ? "#00e0ff22" : "#1f1f1f",
+              color: "#fff",
+              cursor: "pointer",
+            }}
+          >
+            {f.charAt(0).toUpperCase() + f.slice(1)}
+          </button>
+        ))}
+      </div>
 
-            <button
-            style={estilos.botonSecundario}
-            onClick={() => window.open(resultadoUrl, "_blank")}
-            >
-            Ver en nueva pestaña
-            </button>
+      <div style={{ marginBottom: "20px" }}>
+        <label style={{ color: "#fff", marginRight: "10px" }}>Intensidad:</label>
+        <input
+          type="range"
+          min="2"
+          max="50"
+          step="1"
+          value={nivelPixelado}
+          onChange={(e) => setNivelPixelado(parseInt(e.target.value))}
+        />
+        <span style={{ color: "#fff", marginLeft: "8px" }}>{nivelPixelado}</span>
+      </div>
+
+      {resultadoUrl && (
+        <div style={estilos.resultado}>
+          <h3 style={{ color: "#fff", marginBottom: "10px" }}>Resultado de la pixelación:</h3>
+          <img
+            src={resultadoUrl}
+            alt="Pixelado"
+            style={{
+              width: canvasSize.width,
+              height: canvasSize.height,
+              objectFit: "cover",
+            }}
+          />
         </div>
-        )}
+      )}
     </div>
   );
 }
@@ -213,61 +352,53 @@ const estilos = {
     color: "#bbb",
     fontSize: "16px",
   },
-  canvasBox: {
-    marginBottom: "30px",
+  canvasWrapper: {
+    position: "relative",
+    display: "inline-block",
   },
-  canvas: {
+  canvasContainer: {
+    position: "relative",
+    display: "inline-block",
     border: "2px dashed #4a90e2",
     borderRadius: "12px",
+    overflow: "hidden",
     maxWidth: "100%",
-    cursor: "crosshair",
     marginBottom: "20px",
   },
-  descarga: {
-    display: "inline-block",
-    color: "#00e0ff",
-    textDecoration: "underline",
-    fontSize: "16px",
-    marginBottom: "10px",
+  
+  canvas: {
+    display: "block",
+    maxWidth: "100%",
+    height: "auto",
+    cursor: "crosshair",
+  },
+  zonaConHover: {
+    position: "absolute",
+    transition: "opacity 0.2s ease-in-out",
+    ":hover .botonEliminar": {
+      opacity: 1,
     },
+  },
   boton: {
-  backgroundColor: "#1e90ff",
-  color: "#fff",
-  border: "none",
-  padding: "12px 20px",
-  borderRadius: "8px",
-  cursor: "pointer",
-  fontSize: "16px",
-  margin: "8px",
-  transition: "all 0.3s ease",
-},
-
-botonSecundario: {
-  backgroundColor: "#333",
-  color: "#00e0ff",
-  border: "1px solid #00e0ff",
-  padding: "12px 20px",
-  borderRadius: "8px",
-  cursor: "pointer",
-  fontSize: "16px",
-  margin: "8px",
-  transition: "all 0.3s ease",
-},
+    backgroundColor: "#1e90ff",
+    color: "#fff",
+    border: "none",
+    padding: "12px 20px",
+    borderRadius: "8px",
+    fontSize: "16px",
+  },
+  botonSecundario: {
+    backgroundColor: "#333",
+    color: "#00e0ff",
+    border: "1px solid #00e0ff",
+    padding: "12px 20px",
+    borderRadius: "8px",
+    fontSize: "16px",
+  },
   resultado: {
-    marginTop: "40px",
+    marginTop: "20px",
     backgroundColor: "#1f1f1f",
     padding: "20px",
     borderRadius: "12px",
-  },
-  resultImg: {
-    maxWidth: "100%",
-    borderRadius: "8px",
-    marginBottom: "12px",
-  },
-  descarga: {
-    display: "inline-block",
-    color: "#00e0ff",
-    textDecoration: "underline",
-    fontSize: "16px",
   },
 };

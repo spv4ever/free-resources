@@ -1,11 +1,4 @@
 import sharp from "sharp";
-import path from "path";
-import fs from "fs";
-import { v4 as uuidv4 } from "uuid";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 export const cropImage = async (req, res) => {
   try {
@@ -21,26 +14,16 @@ export const cropImage = async (req, res) => {
     const w = parseInt(width);
     const h = parseInt(height);
 
-    const ext = path.extname(file.originalname).toLowerCase() || ".jpg";
-    const name = path.basename(file.originalname, ext).replace(/\s+/g, "_");
-    const uniqueId = Date.now() + "_" + uuidv4().slice(0, 8);
-    const filename = `${name}_${uniqueId}__cropped${ext}`;
-    const outputDir = path.join(__dirname, "../public/cropped");
-    const filepath = path.join(outputDir, filename);
+    const ext = file.mimetype === "image/png" ? "png" : "jpeg";
 
-    if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+    const buffer = await sharp(file.buffer)
+      .extract({ left, top, width: w, height: h })
+      .toFormat(ext)
+      .toBuffer();
 
-    const image = sharp(file.buffer).extract({ left, top, width: w, height: h });
-
-    const finalBuffer = ext === ".png" ? await image.png().toBuffer() : await image.jpeg().toBuffer();
-    fs.writeFileSync(filepath, finalBuffer);
-
-    // Borrar después de 5 minutos
-    setTimeout(() => {
-      if (fs.existsSync(filepath)) fs.unlink(filepath, () => {});
-    }, 5 * 60 * 1000);
-
-    res.json({ success: true, downloadUrl: `/cropped/${filename}` });
+    res.set("Content-Type", `image/${ext}`);
+    res.set("Cache-Control", "no-store");
+    res.send(buffer);
   } catch (err) {
     console.error("❌ Error al recortar imagen:", err);
     res.status(500).json({ error: "Error interno al recortar imagen." });

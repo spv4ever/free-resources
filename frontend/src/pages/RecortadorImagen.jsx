@@ -7,8 +7,10 @@ export default function RecortadorImagen() {
   const [seleccion, setSeleccion] = useState(null);
   const [arrastrando, setArrastrando] = useState(false);
   const [mensaje, setMensaje] = useState("");
-  const [procesando, setProcesando] = useState(false);
+  // const [procesando, setProcesando] = useState(false);
+  const [escala, setEscala] = useState(1);
   const canvasRef = useRef(null);
+  const overlayRef = useRef(null);
 
   const handleSeleccion = (file) => {
     if (!file || !["image/jpeg", "image/png"].includes(file.type)) return;
@@ -32,80 +34,106 @@ export default function RecortadorImagen() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const img = new Image();
+
     img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
-      if (seleccion) {
-        ctx.strokeStyle = "#00ffff";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(seleccion.x, seleccion.y, seleccion.w, seleccion.h);
+      const maxSize = 800;
+      let factor = 1;
+      if (img.width > maxSize || img.height > maxSize) {
+        factor = Math.min(maxSize / img.width, maxSize / img.height);
       }
+      setEscala(factor);
+      const scaledWidth = img.width * factor;
+      const scaledHeight = img.height * factor;
+      canvas.width = scaledWidth;
+      canvas.height = scaledHeight;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
     };
+
     img.src = previewUrl;
-  }, [previewUrl, seleccion]);
+  }, [previewUrl]);
+
+  const obtenerCoords = (e) => {
+    const rect = canvasRef.current.getBoundingClientRect();
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    };
+  };
 
   const iniciarSeleccion = (e) => {
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const { x, y } = obtenerCoords(e);
     setSeleccion({ x, y, w: 0, h: 0 });
     setArrastrando(true);
   };
 
   const actualizarSeleccion = (e) => {
     if (!arrastrando) return;
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x2 = e.clientX - rect.left;
-    const y2 = e.clientY - rect.top;
-    setSeleccion((prev) => ({
-      ...prev,
-      w: x2 - prev.x,
-      h: y2 - prev.y,
-    }));
+    const { x, y } = obtenerCoords(e);
+    setSeleccion((prev) => {
+      const nueva = { ...prev, w: x - prev.x, h: y - prev.y };
+      actualizarOverlay(nueva);
+      return nueva;
+    });
   };
 
-  const finalizarSeleccion = () => setArrastrando(false);
+  const finalizarSeleccion = () => {
+    setArrastrando(false);
+    aplicarRecorte();
+  };
+
+  const actualizarOverlay = (sel) => {
+    if (!overlayRef.current) return;
+    overlayRef.current.style.left = `${Math.min(sel.x, sel.x + sel.w)}px`;
+    overlayRef.current.style.top = `${Math.min(sel.y, sel.y + sel.h)}px`;
+    overlayRef.current.style.width = `${Math.abs(sel.w)}px`;
+    overlayRef.current.style.height = `${Math.abs(sel.h)}px`;
+    overlayRef.current.style.display = "block";
+  };
 
   const aplicarRecorte = async () => {
     if (!imagen || !seleccion) return;
 
-    const w = Math.abs(Math.round(seleccion.w));
-    const h = Math.abs(Math.round(seleccion.h));
+    const w = Math.abs(seleccion.w / escala);
+    const h = Math.abs(seleccion.h / escala);
+    const x = Math.min(seleccion.x, seleccion.x + seleccion.w) / escala;
+    const y = Math.min(seleccion.y, seleccion.y + seleccion.h) / escala;
+
     if (w === 0 || h === 0) {
-      setMensaje("Selecciona un área válida para recortar.");
-      return;
+        setMensaje("Selecciona un área válida para recortar.");
+        return;
     }
 
     const formData = new FormData();
     formData.append("image", imagen);
-    formData.append("x", Math.round(seleccion.x));
-    formData.append("y", Math.round(seleccion.y));
-    formData.append("width", w);
-    formData.append("height", h);
+    formData.append("x", Math.round(x));
+    formData.append("y", Math.round(y));
+    formData.append("width", Math.round(w));
+    formData.append("height", Math.round(h));
 
     try {
-      setProcesando(true);
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/crop-image`, {
+        // setProcesando(true);
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/crop-image`, {
         method: "POST",
         body: formData,
-      });
+        });
 
-      const data = await res.json();
-      if (data.success) {
-        const fullUrl = `${process.env.REACT_APP_API_URL}${data.downloadUrl}`;
-        setResultadoUrl(fullUrl);
+        if (!res.ok) {
+        throw new Error("Error en el servidor");
+        }
+
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        setResultadoUrl(blobUrl);
         setMensaje("Imagen recortada correctamente.");
-      } else {
-        setMensaje("Error al recortar imagen.");
-      }
     } catch (err) {
-      setMensaje("Error al conectar con el servidor.");
+        setMensaje("Error al conectar con el servidor.");
     } finally {
-      setProcesando(false);
+        // setProcesando(false);
     }
-  };
+    };
+
 
   return (
     <div style={estilos.contenedor}>
@@ -130,51 +158,25 @@ export default function RecortadorImagen() {
       </div>
 
       {previewUrl && (
-        <div style={estilos.canvasBox}>
-          <canvas
-            ref={canvasRef}
-            style={estilos.canvas}
-            onMouseDown={iniciarSeleccion}
-            onMouseMove={actualizarSeleccion}
-            onMouseUp={finalizarSeleccion}
-            onMouseLeave={finalizarSeleccion}
-          />
-          <button
-            onClick={aplicarRecorte}
-            style={{
-              ...estilos.boton,
-              opacity: procesando ? 0.6 : 1,
-              cursor: procesando ? "not-allowed" : "pointer",
-            }}
-            disabled={procesando}
-          >
-            {procesando ? "Procesando..." : "Recortar imagen"}
-          </button>
+        <div style={estilos.canvasWrapper}>
+          <div style={estilos.canvasContainer}>
+            <canvas
+              ref={canvasRef}
+              style={estilos.canvas}
+              onMouseDown={iniciarSeleccion}
+              onMouseMove={actualizarSeleccion}
+              onMouseUp={finalizarSeleccion}
+              onMouseLeave={finalizarSeleccion}
+            />
+            <div ref={overlayRef} style={estilos.overlay}></div>
+          </div>
         </div>
       )}
 
       {resultadoUrl && (
         <div style={estilos.resultado}>
-          <h3 style={{ color: "#fff" }}>Imagen recortada:</h3>
-          <button
-            style={estilos.botonSecundario}
-            onClick={() => window.open(resultadoUrl, "_blank")}
-          >
-            Ver en nueva pestaña
-          </button>
-          <button
-            style={estilos.boton}
-            onClick={() => {
-              const link = document.createElement("a");
-              link.href = resultadoUrl;
-              link.download = resultadoUrl.split("/").pop();
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-            }}
-          >
-            Descargar imagen
-          </button>
+          <h3 style={{ color: "#fff", marginBottom: "10px" }}>Resultado del recorte:</h3>
+          <img src={resultadoUrl} alt="Recorte" style={{ maxWidth: "100%", borderRadius: "8px" }} />
         </div>
       )}
     </div>
@@ -214,32 +216,31 @@ const estilos = {
     color: "#bbb",
     fontSize: "16px",
   },
-  canvasBox: {
-    marginBottom: "30px",
+  canvasWrapper: {
+    position: "relative",
+    display: "inline-block",
   },
-  canvas: {
+  canvasContainer: {
+    position: "relative",
+    display: "inline-block",
     border: "2px dashed #4a90e2",
     borderRadius: "12px",
+    overflow: "hidden",
     maxWidth: "100%",
-    cursor: "crosshair",
     marginBottom: "20px",
   },
-  boton: {
-    backgroundColor: "#1e90ff",
-    color: "#fff",
-    border: "none",
-    padding: "12px 20px",
-    borderRadius: "8px",
-    fontSize: "16px",
+  canvas: {
+    display: "block",
+    maxWidth: "100%",
+    height: "auto",
+    cursor: "crosshair",
   },
-  botonSecundario: {
-    backgroundColor: "#333",
-    color: "#00e0ff",
-    border: "1px solid #00e0ff",
-    padding: "12px 20px",
-    borderRadius: "8px",
-    fontSize: "16px",
-    marginRight: "10px",
+  overlay: {
+    position: "absolute",
+    border: "2px dashed #00ffff",
+    backgroundColor: "rgba(0,255,255,0.2)",
+    pointerEvents: "none",
+    display: "none",
   },
   resultado: {
     marginTop: "40px",
