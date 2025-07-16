@@ -102,6 +102,9 @@ import watermarkRoutes from "./routes/watermarkRoutes.js";
 import pixelateRoutes from "./routes/pixelateRoutes.js";
 import cropRoutes from "./routes/cropRoutes.js";
 import rotateRoutes from "./routes/rotateRoutes.js";
+import capturaDesdeUrlRoutes from './routes/capturaDesdeUrlRoutes.js';
+
+
 
 
 
@@ -293,6 +296,7 @@ app.use("/api", watermarkRoutes);
 app.use("/api", pixelateRoutes);
 app.use("/api", cropRoutes);
 app.use("/api", rotateRoutes);
+app.use('/api/captura-url', capturaDesdeUrlRoutes);
 
 app.use("/cropped", express.static(path.join(__dirname, "public/cropped")));
 

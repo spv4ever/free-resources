@@ -85,6 +85,7 @@ import PrivateRoute from './components/PrivateRoute';
 import CompresorImagenes from './pages/CompresorImagenes';
 import RedimensionadorImagenes from "./pages/RedimensionadorImagenes";
 import ConvertidorImagenes from "./pages/ConvertidorImagenes";
+import CapturaDesdeURL from "./pages/CapturaDesdeURL";
             
 
 
@@ -190,6 +191,7 @@ function App() {
             <Route path="/pixelar-zona" element={<PixeladorImagen />} />
             <Route path="/rotate" element={<GiradorImagenes />} />
             <Route path="/crop" element={<RecortadorImagen />} />
+            <Route path="/captura-url" element={<CapturaDesdeURL />} />
             
 
             <Route path="/convertir-imagenes" element={<ConvertidorImagenes />} />

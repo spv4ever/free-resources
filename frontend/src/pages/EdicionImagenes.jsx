@@ -13,6 +13,8 @@ import {
   faEyeSlash
 } from "@fortawesome/free-solid-svg-icons";
 
+import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+
 const tools = [
   {
     title: "Eliminar fondo",
@@ -85,7 +87,15 @@ const tools = [
     link: "/marca-de-agua",
     access: "Premium",
     status: "activo",
-  }
+  },
+  {
+    title: "Captura desde URL",
+    desc: "Genera una imagen del contenido visible de cualquier página web pública.",
+    icon: <FontAwesomeIcon icon={faGlobe} />,
+    link: "/captura-url",
+    access: "Free",
+    status: "activo",
+  },
 ];
 
 export default function EdicionImagenes() {
