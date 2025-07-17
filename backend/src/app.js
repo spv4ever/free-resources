@@ -4,6 +4,7 @@ import passport from 'passport';
 import './config/passport.js'; // 👈 registra las estrategias (como google-free-resources)
 import express from 'express';
 import rateLimit from 'express-rate-limit';
+import session from 'express-session';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -103,6 +104,11 @@ import pixelateRoutes from "./routes/pixelateRoutes.js";
 import cropRoutes from "./routes/cropRoutes.js";
 import rotateRoutes from "./routes/rotateRoutes.js";
 import capturaDesdeUrlRoutes from './routes/capturaDesdeUrlRoutes.js';
+import downloadRoutes from './routes/downloadRoutes.js';
+import zipRoutes from './routes/zipRoutes.js';
+import { limpiarDescargasTemporales } from './jobs/cleanupDownloads.js';
+
+
 
 
 
@@ -123,6 +129,18 @@ Object.entries(process.env).forEach(([key, value]) => {
 });
 
 const app = express();
+app.set('trust proxy', 1); // necesario si usas proxy inverso como NGINX
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'keikosecret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // requiere HTTPS en prod
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 // 1 día
+  }
+}));
 
 // Inicializar passport (👈 necesario para estrategias como Google)
 app.use(passport.initialize());
@@ -219,6 +237,8 @@ startDailyEventScheduler(); // activa cron diario
 //fetchTodayImage();
 
 // Rutas
+app.use('/zip', zipRoutes);
+app.use('/api/download', downloadRoutes);
 app.use('/api', upscaler); // 👈 nueva ruta para upscale
 app.use('/api/telegram', telegramRoutes);
 app.use('/api/resources', resourceLibraryRoutes);
@@ -349,6 +369,17 @@ import './jobs/syncWeeklyTop.js'; // activa el cronjob semanal
 startEnrichSpacexJob();
 startComfySocketWatcher();
 // import './jobs/index.js';
+// // Ejecutar cada 6 horas
+// setInterval(() => {
+//   console.log('🧹 Ejecutando limpieza de descargas temporales...');
+//   limpiarDescargasTemporales();
+// }, 1000 * 60 * 60 * 6); // cada 6 horas
+
+// // Primera ejecución al inicio
+// setTimeout(() => {
+//   console.log('🧹 Limpieza inicial de descargas temporales...');
+//   limpiarDescargasTemporales();
+// }, 10000); // 10s después de arrancar
 
 
 // Intervalo de ejecución: cada 6h (puedes cambiarlo)

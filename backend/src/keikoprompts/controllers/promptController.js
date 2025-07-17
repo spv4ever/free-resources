@@ -107,6 +107,26 @@ export const countPromptsByPack = async (req, res) => {
   }
 };
 
+export const updateMultiplePlatforms = async (req, res) => {
+  const { ids, platform } = req.body;
+
+  if (!Array.isArray(ids) || ids.length === 0 || !platform) {
+    return res.status(400).json({ error: 'Debes proporcionar IDs y un nuevo platform' });
+  }
+
+  try {
+    const result = await KeikoPrompt.updateMany(
+      { _id: { $in: ids.map(id => new mongoose.Types.ObjectId(id)) } },
+      { $set: { platform } }
+    );
+
+    res.json({ message: 'Actualización masiva completada', modified: result.modifiedCount });
+  } catch (err) {
+    console.error('Error en actualización masiva de platforms:', err);
+    res.status(500).json({ error: 'Error interno al actualizar platforms' });
+  }
+};
+
 
 /**
  * GET /api/keiko/prompts/count/by-pack/:packId

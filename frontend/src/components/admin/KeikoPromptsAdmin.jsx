@@ -1,17 +1,12 @@
-// src/components/admin/KeikoPromptsAdmin.jsx
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './KeikoPromptsAdmin.css';
 
 function exportToCSV(data, filename = 'prompts_export.csv') {
   const csvRows = [];
-
-  // Cabecera
   const headers = ['Título del Prompt', 'Texto del Prompt', 'Platform', 'Access', 'Título del Pack', 'Categoría del Pack'];
   csvRows.push(headers.join(','));
 
-  // Contenido
   for (const item of data) {
     const row = [
       `"${item.scene}"`,
@@ -24,9 +19,7 @@ function exportToCSV(data, filename = 'prompts_export.csv') {
     csvRows.push(row.join(','));
   }
 
-  // UTF-8 BOM para Excel
   const csvContent = '\uFEFF' + csvRows.join('\n');
-
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
@@ -37,20 +30,19 @@ function exportToCSV(data, filename = 'prompts_export.csv') {
   document.body.removeChild(link);
 }
 
-
-
 export default function KeikoPromptsAdmin() {
   const [packs, setPacks] = useState([]);
   const [selectedPack, setSelectedPack] = useState('');
   const [prompts, setPrompts] = useState([]);
 
-  // filtros
   const [filterPlatform, setFilterPlatform] = useState('');
   const [filterAccess, setFilterAccess] = useState('');
 
-  // modal
   const [showModal, setShowModal] = useState(false);
   const [editingPrompt, setEditingPrompt] = useState(null);
+
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [massPlatform, setMassPlatform] = useState('');
 
   const emptyForm = {
     packId: '',
@@ -62,17 +54,16 @@ export default function KeikoPromptsAdmin() {
   };
   const [form, setForm] = useState(emptyForm);
 
-  // cargar packs
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/packs`)
       .then(({ data }) => setPacks(data))
       .catch(console.error);
   }, []);
 
-  // cargar prompts y reset filtros al cambiar de pack
   useEffect(() => {
     setFilterPlatform('');
     setFilterAccess('');
+    setSelectedIds([]);
     if (!selectedPack) {
       setPrompts([]);
       return;
@@ -82,16 +73,13 @@ export default function KeikoPromptsAdmin() {
       .catch(console.error);
   }, [selectedPack]);
 
-  // opciones de filtro únicas
   const platforms = Array.from(new Set(prompts.map(p => p.platform))).sort();
   const accesses = ['free', 'pro'];
 
-  // aplicar filtros
   const displayed = prompts
     .filter(p => !filterPlatform || p.platform === filterPlatform)
-    .filter(p => !filterAccess   || p.access   === filterAccess);
+    .filter(p => !filterAccess || p.access === filterAccess);
 
-  // modal
   const openModal = p => {
     if (p) {
       setEditingPrompt(p._id);
@@ -102,9 +90,9 @@ export default function KeikoPromptsAdmin() {
     }
     setShowModal(true);
   };
+
   const closeModal = () => setShowModal(false);
 
-  // save/create
   const handleSave = async () => {
     try {
       if (editingPrompt) {
@@ -126,16 +114,35 @@ export default function KeikoPromptsAdmin() {
     }
   };
 
-  // delete
   const handleDelete = async id => {
     if (!window.confirm('¿Eliminar este prompt?')) return;
     try {
       await axios.delete(`${process.env.REACT_APP_API_URL}/api/keiko/prompts/${id}`);
       setPrompts(prompts.filter(p => p._id !== id));
+      setSelectedIds(selectedIds.filter(sel => sel !== id));
     } catch (err) {
       console.error(err);
     }
   };
+
+  const handleMassUpdatePlatform = async () => {
+    if (!massPlatform || selectedIds.length === 0) return;
+    try {
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/keiko/prompts/mass-update`, {
+        ids: selectedIds,
+        platform: massPlatform
+      });
+      const updated = prompts.map(p =>
+        selectedIds.includes(p._id) ? { ...p, platform: massPlatform } : p
+      );
+      setPrompts(updated);
+      setSelectedIds([]);
+      setMassPlatform('');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const exportPrompts = () => {
     if (!selectedPack) {
       alert('Selecciona un pack primero.');
@@ -151,19 +158,21 @@ export default function KeikoPromptsAdmin() {
 
     exportToCSV(enrichedData);
   };
+
+  const toggleAll = e => {
+    const checked = e.target.checked;
+    setSelectedIds(checked ? displayed.map(p => p._id) : []);
+  };
+
+  const isAllSelected = selectedIds.length === displayed.length && displayed.length > 0;
+
   return (
     <div className="keiko-admin-container">
       <h1>📋 Keiko Prompts</h1>
       <div className="keiko-nav-buttons">
-        <button onClick={() => window.location.href = '/admin/keiko-packs'}>
-          🧩 Ir a Packs
-        </button>
-        <button onClick={() => window.location.href = '/admin/imports'}>
-          ⬆️ Importar Prompts
-        </button>
-        <button onClick={() => exportPrompts()}>
-          📤 Exportar Seleccionados
-        </button>
+        <button onClick={() => window.location.href = '/admin/keiko-packs'}>🧩 Ir a Packs</button>
+        <button onClick={() => window.location.href = '/admin/imports'}>⬆️ Importar Prompts</button>
+        <button onClick={() => exportPrompts()}>📤 Exportar Seleccionados</button>
       </div>
 
       <div className="filters-bar">
@@ -188,14 +197,28 @@ export default function KeikoPromptsAdmin() {
           ))}
         </select>
 
-        <button className="keiko-admin-add-btn" onClick={() => openModal(null)}>
-          ➕ Nuevo Prompt
-        </button>
+        <button className="keiko-admin-add-btn" onClick={() => openModal(null)}>➕ Nuevo Prompt</button>
       </div>
+
+      {selectedIds.length > 0 && (
+        <div className="mass-edit-bar">
+          <span>{selectedIds.length} seleccionados</span>
+          <input
+            type="text"
+            placeholder="Nuevo Platform"
+            value={massPlatform}
+            onChange={e => setMassPlatform(e.target.value)}
+          />
+          <button onClick={handleMassUpdatePlatform}>✏️ Actualizar Platform</button>
+        </div>
+      )}
 
       <table className="keiko-admin-table">
         <thead>
           <tr>
+            <th>
+              <input type="checkbox" onChange={toggleAll} checked={isAllSelected} />
+            </th>
             <th>Título</th>
             <th>Prompt</th>
             <th className="center-col">Platform</th>
@@ -206,6 +229,19 @@ export default function KeikoPromptsAdmin() {
         <tbody>
           {displayed.map(p => (
             <tr key={p._id}>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={selectedIds.includes(p._id)}
+                  onChange={e => {
+                    const checked = e.target.checked;
+                    setSelectedIds(checked
+                      ? [...selectedIds, p._id]
+                      : selectedIds.filter(id => id !== p._id)
+                    );
+                  }}
+                />
+              </td>
               <td>{p.scene}</td>
               <td className="prompt-cell">{p.prompt}</td>
               <td className="center-col">{p.platform}</td>
@@ -282,7 +318,6 @@ export default function KeikoPromptsAdmin() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

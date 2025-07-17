@@ -9,6 +9,8 @@ import {
   getPromptsByPackPaginated
 } from '../controllers/promptController.js';
 
+import { updateMultiplePlatforms } from '../controllers/promptController.js';
+
 const router = express.Router();
 
 
@@ -23,7 +25,7 @@ router.get('/count/by-pack', countPromptsByPack);
 
 // Conteo de un pack concreto
 router.get('/count/by-pack/:packId', countPromptsForOnePack);
-
+router.put('/mass-update', updateMultiplePlatforms);
 // CRUD de prompts
 router.post('/', createPrompt);
 router.put('/:id', updatePrompt);

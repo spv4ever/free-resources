@@ -36,6 +36,14 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+    descargasHoy: {
+    type: Number,
+    default: 0
+  },
+  ultimoUsoDescargas: {
+    type: Date,
+    default: null
+  },
   verificationToken: String,
   resetToken: String,
   resetTokenExpires: Date

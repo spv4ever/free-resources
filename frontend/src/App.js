@@ -86,6 +86,8 @@ import CompresorImagenes from './pages/CompresorImagenes';
 import RedimensionadorImagenes from "./pages/RedimensionadorImagenes";
 import ConvertidorImagenes from "./pages/ConvertidorImagenes";
 import CapturaDesdeURL from "./pages/CapturaDesdeURL";
+import DescargasPage from './pages/DescargasPage';
+import AdminTempFiles from './components/AdminTempFiles';
             
 
 
@@ -119,6 +121,7 @@ function App() {
           {/* Rutas que comparten el layout */}
           <Route path="/" element={<Layout />}>
             <Route index element={<HomePage />} />
+            <Route path="/herramientas/descargas" element={<DescargasPage />} />
             <Route path="resources" element={<ResourcesPage />} />
             <Route path="ai-links" element={<AiLinksPage />} />
             <Route path="/aviso-legal" element={<LegalNotice />} />
@@ -134,6 +137,7 @@ function App() {
             <Route path="/admin/email-review" element={<AdminRoute><EmailReviewPage /></AdminRoute>} />
             <Route path="/admin/email-articles" element={<AdminRoute><ArticleReviewPage /></AdminRoute>} />
             <Route path="/admin/sports-events" element={<AdminRoute><SportsEventsAdminPage /></AdminRoute>} />
+            <Route path="/admin/temp-files" element={<AdminRoute><AdminTempFiles /></AdminRoute>} />
             {/* <Route path="/admin/sports-events" element={<SportsEventsAdminPage />} /> */}
 
             <Route path="/admin/users" element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
