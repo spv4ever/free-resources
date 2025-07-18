@@ -14,15 +14,12 @@ export const handleDescarga = async (req, res) => {
   }
 
   try {
-    // console.log('📥 Descarga solicitada por:', req.user?.email || 'anónimo');
+    const resultados = await procesarDescarga(url, formato);
 
-    const resultado = await procesarDescarga(url, formato);
-
-    if (!resultado || !resultado.filename) {
+    if (!resultados || !resultados.length) {
       return res.status(500).json({ message: 'Error al procesar el enlace' });
     }
 
-    // Si está logueado, procesar límites e historial
     if (req.user) {
       const user = await User.findById(req.user._id);
 
@@ -32,25 +29,34 @@ export const handleDescarga = async (req, res) => {
         await user.save();
       }
 
-    //   console.log(`🧾 Guardando historial para: ${user.email} (${user.role})`);
-      await guardarHistorial(user._id, {
-        platform: resultado.platform,
-        title: resultado.metadata.title,
-        webpage_url: resultado.metadata.webpage_url,
-        filename: resultado.filename,
-        format: formato, // ✅ aquí está el fix
-        thumbnail: resultado.metadata.thumbnail,
-        duration: resultado.metadata.duration
-      });
+      // Guardar en historial cada archivo
+      for (const resultado of resultados) {
+        await guardarHistorial(user._id, {
+          platform: resultado.platform,
+          title: resultado.metadata.title,
+          webpage_url: resultado.metadata.webpage_url,
+          filename: resultado.filename,
+          format: formato,
+          thumbnail: resultado.metadata.thumbnail,
+          duration: resultado.metadata.duration
+        });
+      }
+
+      console.log(`🧾 Historial guardado (${resultados.length}) para ${user.email}`);
+    } else {
+      console.log(`🧾 Descarga anónima de ${resultados.length} archivo(s)`);
     }
 
     return res.json({
-      filename: resultado.filename,
-      platform: resultado.platform,
-      info: resultado.metadata
+      archivos: resultados.map(r => ({
+        filename: r.filename,
+        platform: r.platform,
+        info: r.metadata
+      }))
     });
+
   } catch (error) {
-    console.error('❌ Error al descargar:', error);
+    console.error('Error al descargar:', error);
     return res.status(500).json({ message: 'Ocurrió un error al descargar el contenido' });
   }
 };

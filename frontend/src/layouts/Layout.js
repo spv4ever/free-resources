@@ -52,17 +52,19 @@ function Layout() {
 
   { title: 'MotoGP', description: 'Calendario completo de MotoGP por circuito', path: '/motogp-calendar', icon: <FaRocket /> },  // Puedes cambiar el icono
   { title: 'Blog Keiko', description: 'Entradas destacadas y novedades IA', path: '/blog', icon: <FaBook /> },
-  {
-    title: 'Descargador de Videos',
-    description: 'Extrae videos y audios desde YouTube, Instagram, TikTok y más',
-    path: '/herramientas/descargas',
-    icon: <FaDownload />
-  },
+  
   
 
 ];
 if (user?.role === 'admin') {
-  sections.push({
+  sections.push(
+    {
+      title: 'Descargador de Videos',
+      description: 'Extrae videos y audios desde YouTube, Instagram, TikTok y más',
+      path: '/herramientas/descargas',
+      icon: <FaDownload />
+    },
+    {
     title: 'Anime Prompts',
     description: 'Generador de prompts IA con personajes anime',
     path: '/generador-anime-prompts',

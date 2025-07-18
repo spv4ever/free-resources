@@ -9,7 +9,7 @@ const DescargasPage = () => {
   const { token } = useUser();
   const [url, setUrl] = useState('');
   const [formato, setFormato] = useState('mp4');
-  const [resultado, setResultado] = useState(null);
+  const [resultados, setResultados] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -29,7 +29,7 @@ const DescargasPage = () => {
   const handleDescargar = async () => {
     setLoading(true);
     setError('');
-    setResultado(null);
+    setResultados([]);
 
     try {
       const config = token
@@ -37,7 +37,12 @@ const DescargasPage = () => {
         : { withCredentials: true };
 
       const { data } = await axios.post(`${API_BASE}/api/download`, { url, formato }, config);
-      setResultado(data);
+
+      if (data.archivos?.length) {
+        setResultados(data.archivos);
+      } else {
+        setError('No se encontraron archivos para descargar.');
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Error al procesar el enlace.');
     } finally {
@@ -45,18 +50,9 @@ const DescargasPage = () => {
     }
   };
 
-  const handleDownload = () => {
-    if (resultado?.filename) {
-      window.open(`${API_BASE.replace('/api', '')}/zip/${resultado.filename}`, '_blank');
-    }
+  const handleDownload = (filename) => {
+    window.open(`${API_BASE.replace('/api', '')}/zip/${filename}`, '_blank');
   };
-
-  const isInstagram = resultado?.platform === 'Instagram';
-  const isValidThumbnail =
-    resultado?.info?.thumbnail?.startsWith('https://') &&
-    !isInstagram;
-
-  const fallbackImage = 'https://keikodev.es/static/img/preview-instagram.jpg';
 
   const styles = {
     container: {
@@ -141,29 +137,29 @@ const DescargasPage = () => {
 
       {error && <p style={styles.error}>{error}</p>}
 
-      {resultado && (
-        <div style={styles.resultado}>
-          <h4>{resultado.info?.title}</h4>
+      {resultados.length > 0 && (
+        <div style={{ marginTop: '2rem' }}>
+          <h3>✅ Archivos disponibles ({resultados.length}):</h3>
+          {resultados.map((item, index) => {
+            const isInstagram = item.platform === 'Instagram';
+            const isValidThumbnail = item.info?.thumbnail?.startsWith('https://') && !isInstagram;
+            const fallbackImage = 'https://keikodev.es/static/img/preview-instagram.jpg';
 
-          {isValidThumbnail ? (
-            <img
-              src={resultado.info.thumbnail}
-              alt="thumbnail"
-              style={styles.img}
-              onError={(e) => (e.target.style.display = 'none')}
-            />
-          ) : isInstagram ? (
-            <img
-              src={fallbackImage}
-              alt="preview instagram"
-              style={styles.img}
-            />
-          ) : null}
-
-          <p><strong>Plataforma:</strong> {resultado.platform}</p>
-          <button onClick={handleDownload} style={{ ...styles.button, marginTop: '1rem' }}>
-            Descargar archivo
-          </button>
+            return (
+              <div key={index} style={styles.resultado}>
+                <h4>{item.info?.title}</h4>
+                {isValidThumbnail ? (
+                  <img src={item.info.thumbnail} alt="thumbnail" style={styles.img} />
+                ) : isInstagram ? (
+                  <img src={fallbackImage} alt="preview instagram" style={styles.img} />
+                ) : null}
+                <p><strong>Plataforma:</strong> {item.platform}</p>
+                <button onClick={() => handleDownload(item.filename)} style={styles.button}>
+                  Descargar archivo
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
 
