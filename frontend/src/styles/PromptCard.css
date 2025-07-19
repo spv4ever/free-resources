@@ -54,12 +54,13 @@
 
 .keiko-prompt-card__custom-text input {
   width: 100%;
-  padding: 10px 12px;
-  font-size: 0.95rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-family: inherit;
-  background-color: #f9f9f9;
+  padding: 1rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  font-family: var(--font-family-code);
+  background-color: var(--code-bg);
+  color: var(--text-primary);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -370,11 +371,12 @@ input:checked + .slider:before {
 
 /* Y el resto de estilos para react-select, etc. */
 .keiko-prompt-card__custom-textarea {
-  width: 100%;
+  width: 95%;
   min-height: 100px;
   padding: 12px;
   font-size: 1rem;
-  font-family: inherit;
+  /* font-family: inherit; */
+  font-family: var(--font-family-code);
   border: 1px solid #444;
   border-radius: 8px;
   background-color: #1e1e1e; /* Fondo oscuro */

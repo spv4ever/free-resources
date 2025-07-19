@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Select from 'react-select';
 import PromptImageModal from './PromptImageModal';
 import '../styles/PromptCard.css';
@@ -55,6 +55,8 @@ const PromptCardRedesigned = React.memo(({
   const removeBgTooltipText = !isProUser
     ? "Función solo para usuarios PRO"
     : "";
+  const inputRef = useRef(null)
+  const [showCustomInput, setShowCustomInput] = useState(false);
 
   const renderStatusContent = () => {
     if (isPending) {
@@ -149,18 +151,44 @@ const PromptCardRedesigned = React.memo(({
               </div>
             </div>
           )}
-          {isFlux && user?.role === 'admin' && (
+          {isFlux && (user?.role === 'admin' || user?.role === 'pro') && showCustomInput && (
             <div className="keiko-prompt-card__custom-text">
-              <input
-                type="text"
+              <textarea
+                ref={inputRef}
+                className="keiko-prompt-card__custom-textarea"
                 placeholder="Usar otro texto personalizado..."
                 value={customText[promptId] || ''}
                 onChange={(e) => setCustomText(prev => ({ ...prev, [promptId]: e.target.value }))}
               />
             </div>
           )}
+          {isFlux && (user?.role === 'admin' || user?.role === 'pro') && (
+            <button
+              className="keiko-prompt-card__btn keiko-prompt-card__btn--secondary"
+              onClick={() => setShowCustomInput(prev => !prev)}
+              style={{ width: 'fit-content', marginTop: '0.5rem' }}
+            >
+              ✏️ {showCustomInput ? 'Ocultar Personalización' : 'Personalizar Prompt'}
+            </button>
+          )}
           <div className="keiko-prompt-card__actions">
-            <button className="keiko-prompt-card__btn keiko-prompt-card__btn--secondary" onClick={() => copyToClipboard(prompt.prompt)}>
+            <button
+              className="keiko-prompt-card__btn keiko-prompt-card__btn--secondary"
+              onClick={() => {
+                navigator.clipboard.writeText(prompt.prompt)
+                  .then(() => {
+                    if (user?.role === 'admin' || user?.role === 'pro') {
+                      setCustomText(prev => ({ ...prev, [promptId]: prompt.prompt }));
+                      setTimeout(() => {
+                        inputRef.current?.focus();
+                      }, 100); // pequeño retardo para asegurar renderizado
+                    }
+                  })
+                  .catch(err => {
+                    console.error('Error al copiar:', err);
+                  });
+              }}
+            >
               📋 Copiar Prompt
             </button>
             <button
