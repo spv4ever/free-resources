@@ -89,6 +89,7 @@ import CapturaDesdeURL from "./pages/CapturaDesdeURL";
 import DescargasPage from './pages/DescargasPage';
 import AdminTempFiles from './components/AdminTempFiles';
 import GifsPage from './pages/GifsPage';
+import MisFavoritos from './components/MisFavoritos';
             
 
 
@@ -227,6 +228,7 @@ function App() {
             <Route path="/admin/blog/edit/:id" element={<AdminRoute><BlogEdit /></AdminRoute>} />
             <Route path="/compresor-imagenes" element={<CompresorImagenes />} />
             <Route path="/gifs" element={<GifsPage />} />
+            <Route path="/mis-favoritos" element={<MisFavoritos />} />
             
             
           </Route>

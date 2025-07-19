@@ -54,7 +54,7 @@ export default function useFluxPromptManager({ pack, isProUser, selectedRatio })
         {
           prompt: finalPrompt,
           ratio: ratio || selectedRatio || '3:4',  // 👈 Aplica el ratio recibido
-          steps: pack?.category === 'Anime' ? 30 : 15,
+          // steps: pack?.category === 'Anime' ? 30 : 15,
           seed: (!useRandomSeed && seed) ? parseInt(seed) : undefined,
           promptRef: promptId,
           advancedMode,

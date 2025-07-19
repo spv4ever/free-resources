@@ -18,8 +18,8 @@
     const [search, setSearch] = useState('');
     const navigate = useNavigate();
     const { user } = useUser();
-    const [pack, setPack] = useState(null);
-    const [selectedRatio, setSelectedRatio] = useState('3:4');
+    const pack = null;
+    const selectedRatio = '3:4';
     const isProUser = useMemo(() => ['admin', 'pro'].includes(user?.role), [user]);
     const [customText, setCustomText] = useState({});
 
@@ -33,8 +33,6 @@
       pendientes,
       tiempoTranscurrido,
       progresoGeneracion,
-      errorModal,
-      setErrorModal,
       handleFluxPrompt,
       verificarImagen
     } = useFluxPromptManager({ pack, isProUser, selectedRatio });

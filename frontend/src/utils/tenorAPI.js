@@ -22,3 +22,10 @@ export async function getCategories() {
   const data = await res.json();
   return data.tags || [];
 }
+
+export async function getAutocomplete(query) {
+  const url = `${BASE_URL}autocomplete?q=${encodeURIComponent(query)}&key=${TENOR_API_KEY}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.results || [];
+}

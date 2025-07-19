@@ -107,6 +107,7 @@ import capturaDesdeUrlRoutes from './routes/capturaDesdeUrlRoutes.js';
 import downloadRoutes from './routes/downloadRoutes.js';
 import zipRoutes from './routes/zipRoutes.js';
 import { limpiarDescargasTemporales } from './jobs/cleanupDownloads.js';
+import favoritoRoutes from './routes/favoritoRoutes.js';
 
 
 
@@ -237,6 +238,7 @@ startDailyEventScheduler(); // activa cron diario
 //fetchTodayImage();
 
 // Rutas
+app.use('/api/favoritos', favoritoRoutes);
 app.use('/zip', zipRoutes);
 app.use('/api/download', downloadRoutes);
 app.use('/api', upscaler); // 👈 nueva ruta para upscale

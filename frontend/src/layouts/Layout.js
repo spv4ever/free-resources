@@ -10,7 +10,7 @@ import AnalyticsLoader from '../components/AnalyticsLoader';
 import { useLocation } from 'react-router-dom';
 import AffiliatePopup from '../components/AffiliatePopup';
 import AffiliateBannerAndSidebar from '../components/AffiliateBannerAndSidebar';
-import { FaDownload } from 'react-icons/fa';
+import { FaDownload, FaSmileBeam } from 'react-icons/fa';
 import { useUser } from '../context/UserContext';
 
 function Layout() {
@@ -52,6 +52,7 @@ function Layout() {
 
   { title: 'MotoGP', description: 'Calendario completo de MotoGP por circuito', path: '/motogp-calendar', icon: <FaRocket /> },  // Puedes cambiar el icono
   { title: 'Blog Keiko', description: 'Entradas destacadas y novedades IA', path: '/blog', icon: <FaBook /> },
+  { title: 'Keiko Gifs', description: 'Los mejores Gifs por gentileza de Tenor', path: '/gifs', icon: <FaSmileBeam /> },
   
   
 

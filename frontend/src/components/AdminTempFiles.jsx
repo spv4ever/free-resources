@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useCallback  } from 'react';
 import axios from 'axios';
 import { useUser } from '../context/UserContext';
 
@@ -11,7 +11,8 @@ const AdminTempFiles = () => {
   const [mensaje, setMensaje] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const fetchArchivos = async () => {
+  
+  const fetchArchivos = useCallback(async () => {
     setError('');
     setMensaje('');
     setLoading(true);
@@ -26,7 +27,7 @@ const AdminTempFiles = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   const handleBorrarTodos = async () => {
     if (!window.confirm('¿Seguro que quieres eliminar todos los archivos temporales?')) return;
@@ -46,7 +47,7 @@ const AdminTempFiles = () => {
     if (user?.role === 'admin') {
       fetchArchivos();
     }
-  }, [user]);
+  }, [user, fetchArchivos]);
 
   if (!token || user?.role !== 'admin') return null;
 

@@ -17,7 +17,7 @@ export default function KeikoUpscale() {
   const [originalSize, setOriginalSize] = useState(null);
   const [upscaledSize, setUpscaledSize] = useState(null);
   const [telegramOffer, setTelegramOffer] = useState(null);
-  const [imageStatus, setImageStatus] = useState(null);
+  
   const promptIdRef = useRef(null);
   const [telegramConfirm, setTelegramConfirm] = useState(null);
 
@@ -180,7 +180,7 @@ export default function KeikoUpscale() {
 
         if (res.ok && data.success) {
         setResultUrl(null); // No usamos resultUrl
-        setImageStatus('enviada_telegram');
+        // setImageStatus('enviada_telegram');
 
         // Muestra instrucciones para ir al canal
         setTelegramConfirm({
