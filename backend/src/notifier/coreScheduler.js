@@ -8,7 +8,7 @@ let dynamicCronTask = null;
 const EVENTS_API_URL = `${process.env.API_URL}/api/sports/events/today`;
 
 export const startDailyEventScheduler = () => {
-  cron.schedule('5 6 * * *', checkIfTodayHasEvents);
+  cron.schedule('* * * * *', checkIfTodayHasEvents);
   console.log('📅 Cron diario configurado: revisará eventos a las 00:05 cada día');
 };
 

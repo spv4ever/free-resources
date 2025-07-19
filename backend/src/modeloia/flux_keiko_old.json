@@ -112,8 +112,8 @@
   },
   "10": {
     "inputs": {
-      "scheduler": "beta",
-      "steps": 15,
+      "scheduler": "simple",
+      "steps": 20,
       "denoise": 1,
       "model": [
         "25",
@@ -143,7 +143,7 @@
   },
   "12": {
     "inputs": {
-      "noise_seed": 618130765777035
+      "noise_seed": 987896281727007
     },
     "class_type": "RandomNoise",
     "_meta": {
@@ -152,7 +152,7 @@
   },
   "13": {
     "inputs": {
-      "string": "aidmaHyperrealism, Hyperrealistic underwater or action shot of a female athlete solo ride with mountains in background, wearing a green and grey wetsuit, natural proportions, realistic facial expression if visible, clear lighting, forest-backed shore environment, cinematic rendering, not first-person, \n"
+      "string": "Hera reina de los dioses, sentada en un trono de mármol blanco y oro, pavo real desplegando plumas tras ella, cielo crepuscular con nubes púrpuras y doradas, columnas corintias y relieves de granadas, iluminación lateral dramática resaltando joyas y texturas, cámara 50mm, fotorealista, 8K\t"
     },
     "class_type": "String Literal",
     "_meta": {
@@ -162,8 +162,8 @@
   "25": {
     "inputs": {
       "lora_name": "aidmaHyperrealism-FLUX-v0.3.safetensors",
-      "strength_model": 0.7500000000000001,
-      "strength_clip": 1.0000000000000002,
+      "strength_model": 0.7,
+      "strength_clip": 1,
       "model": [
         "7",
         0

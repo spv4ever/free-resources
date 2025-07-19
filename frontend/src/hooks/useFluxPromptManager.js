@@ -46,7 +46,7 @@ export default function useFluxPromptManager({ pack, isProUser, selectedRatio })
       setGenerando(promptId);
 
       const extras = selectedExtras.map(e => e.value);
-      const finalPrompt = `${promptText}, ${extras.join(', ')}`.trim();
+      const finalPrompt = `${extras.join(', ')}, ${promptText}`.trim();
       const token = localStorage.getItem('token');
 
       const { data } = await axios.post(
