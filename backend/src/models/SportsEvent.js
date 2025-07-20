@@ -1,5 +1,9 @@
-// models/SportsEvent.js
 import mongoose from 'mongoose';
+
+const scoreSchema = new mongoose.Schema({
+  home: Number,
+  away: Number
+}, { _id: false });
 
 const sportsEventSchema = new mongoose.Schema({
   uid:         { type: String, unique: true },
@@ -17,7 +21,17 @@ const sportsEventSchema = new mongoose.Schema({
 
   eventSlug:   String,           // ej. 'gp-catalunya-2025', 'madrid-vs-barcelona-2025'
 
-  metadata:    { type: mongoose.Schema.Types.Mixed }, // datos extra (opcional)
+  // Nuevos campos explícitos para fútbol
+  homeTeam:    String,
+  awayTeam:    String,
+  status:      String,           // SCHEDULED, FINISHED, etc.
+  score: {
+    fullTime:  scoreSchema,
+    halfTime:  scoreSchema,
+  },
+
+  // Otros datos opcionales
+  metadata:    { type: mongoose.Schema.Types.Mixed },
 }, { timestamps: true });
 
 export default mongoose.model('SportsEvent', sportsEventSchema);

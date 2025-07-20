@@ -90,6 +90,7 @@ import DescargasPage from './pages/DescargasPage';
 import AdminTempFiles from './components/AdminTempFiles';
 import GifsPage from './pages/GifsPage';
 import MisFavoritos from './components/MisFavoritos';
+import FutbolPage from './pages/FutbolPage';
             
 
 
@@ -229,6 +230,7 @@ function App() {
             <Route path="/compresor-imagenes" element={<CompresorImagenes />} />
             <Route path="/gifs" element={<GifsPage />} />
             <Route path="/mis-favoritos" element={<MisFavoritos />} />
+            <Route path="/futbol" element={<FutbolPage />} />
             
             
           </Route>

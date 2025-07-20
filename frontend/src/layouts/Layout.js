@@ -53,6 +53,12 @@ function Layout() {
   { title: 'MotoGP', description: 'Calendario completo de MotoGP por circuito', path: '/motogp-calendar', icon: <FaRocket /> },  // Puedes cambiar el icono
   { title: 'Blog Keiko', description: 'Entradas destacadas y novedades IA', path: '/blog', icon: <FaBook /> },
   { title: 'Keiko Gifs', description: 'Los mejores Gifs por gentileza de Tenor', path: '/gifs', icon: <FaSmileBeam /> },
+  {
+    title: 'Fútbol',
+    description: 'Partidos, goleadores y estadísticas actualizadas',
+    path: '/futbol',
+    icon: <FaRocket /> // Puedes cambiarlo por otro como FaFutbol si lo tienes
+  },
   
   
 

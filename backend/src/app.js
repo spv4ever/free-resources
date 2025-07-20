@@ -108,6 +108,9 @@ import downloadRoutes from './routes/downloadRoutes.js';
 import zipRoutes from './routes/zipRoutes.js';
 import { limpiarDescargasTemporales } from './jobs/cleanupDownloads.js';
 import favoritoRoutes from './routes/favoritoRoutes.js';
+import eventsRoutes from './routes/events.routes.js';
+import { iniciarSchedulerFutbol } from './jobs/futbolScheduler.js';
+
 
 
 
@@ -235,9 +238,11 @@ fetchNasaImageDaily();
 startMotoGPNotifier();
 startF1Notifier();
 startDailyEventScheduler(); // activa cron diario
+iniciarSchedulerFutbol(process.env.MONGO_URI);
 //fetchTodayImage();
 
 // Rutas
+app.use('/api', eventsRoutes);
 app.use('/api/favoritos', favoritoRoutes);
 app.use('/zip', zipRoutes);
 app.use('/api/download', downloadRoutes);
