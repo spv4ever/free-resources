@@ -135,7 +135,9 @@ Object.entries(process.env).forEach(([key, value]) => {
 });
 
 const app = express();
+app.use(express.static(path.join(__dirname, "public")));
 app.set('trust proxy', 1); // necesario si usas proxy inverso como NGINX
+
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'keikosecret',
