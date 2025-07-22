@@ -110,6 +110,8 @@ import { limpiarDescargasTemporales } from './jobs/cleanupDownloads.js';
 import favoritoRoutes from './routes/favoritoRoutes.js';
 import eventsRoutes from './routes/events.routes.js';
 import { iniciarSchedulerFutbol } from './jobs/futbolScheduler.js';
+import futbolRoutes from './routes/futbolRoutes.js';
+
 
 
 
@@ -348,6 +350,7 @@ app.use("/api/blog", blogRoutes);
 app.use('/api/summaryRoutes', summaryRoutes);
 
 app.use('/api/telegram-f1', f1Routes);
+app.use('/api/futbol', futbolRoutes);
 
 
 

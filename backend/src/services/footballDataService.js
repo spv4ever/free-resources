@@ -15,3 +15,21 @@ export async function getTopScorers(competitionCode, season) {
   const { data } = await axiosInstance.get(`/competitions/${competitionCode}/scorers?season=${season}`);
   return data.scorers;
 }
+
+export async function getTeamsByCompetition(competitionCode, season) {
+  try {
+    const { data } = await axiosInstance.get(`/competitions/${competitionCode}/teams?season=${season}`);
+    return data.teams;
+  } catch (error) {
+    if (error.response?.status === 404) {
+      console.warn(`Equipos no disponibles para ${competitionCode} ${season}`);
+      return [];
+    }
+    throw error;
+  }
+}
+
+export async function getStandingsByCompetition(competitionCode, season) {
+  const { data } = await axiosInstance.get(`/competitions/${competitionCode}/standings?season=${season}`);
+  return data.standings; // Es un array
+}

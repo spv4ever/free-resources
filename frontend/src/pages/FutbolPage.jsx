@@ -95,7 +95,7 @@ export default function FutbolPage() {
             <Link to="/futbol/laliga" style={estilos.enlace}>LaLiga</Link>
             <Link to="/futbol/champions" style={estilos.enlace}>Champions League</Link>
           </div>
-        </motion.div>
+        </motion.div>       
 
         {/* Próximos partidos */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} style={estilos.seccion}>

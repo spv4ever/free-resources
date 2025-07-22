@@ -4,7 +4,7 @@ import './KeikoPromptsAdmin.css';
 
 function exportToCSV(data, filename = 'prompts_export.csv') {
   const csvRows = [];
-  const headers = ['Título del Prompt', 'Texto del Prompt', 'Platform', 'Access', 'Título del Pack', 'Categoría del Pack'];
+  const headers = ['Título del Prompt', 'Texto del Prompt', 'Platform', 'Access', 'Título del Pack', 'Categoría del Pack', 'Estilo', 'Temática'];
   csvRows.push(headers.join(','));
 
   for (const item of data) {
@@ -14,7 +14,9 @@ function exportToCSV(data, filename = 'prompts_export.csv') {
       item.platform,
       item.access,
       `"${item.packTitle}"`,
-      `"${item.packCategory}"`
+      `"${item.packCategory}"`,
+      item.fixedOptions?.estilo?.map(e => e.label).join(' / ') || '',
+      item.fixedOptions?.["temática"]?.map(t => t.label).join(' / ') || ''
     ];
     csvRows.push(row.join(','));
   }
@@ -37,6 +39,8 @@ export default function KeikoPromptsAdmin() {
 
   const [filterPlatform, setFilterPlatform] = useState('');
   const [filterAccess, setFilterAccess] = useState('');
+  const [filterEstilo, setFilterEstilo] = useState('');
+  const [filterTematica, setFilterTematica] = useState('');
 
   const [showModal, setShowModal] = useState(false);
   const [editingPrompt, setEditingPrompt] = useState(null);
@@ -63,6 +67,8 @@ export default function KeikoPromptsAdmin() {
   useEffect(() => {
     setFilterPlatform('');
     setFilterAccess('');
+    setFilterEstilo('');
+    setFilterTematica('');
     setSelectedIds([]);
     if (!selectedPack) {
       setPrompts([]);
@@ -73,12 +79,27 @@ export default function KeikoPromptsAdmin() {
       .catch(console.error);
   }, [selectedPack]);
 
+  const getUniqueValuesFromFixedOptions = (key) =>
+    Array.from(new Set(
+      prompts.flatMap(p => p.fixedOptions?.[key]?.map(opt => opt.label) || [])
+    )).sort();
+
   const platforms = Array.from(new Set(prompts.map(p => p.platform))).sort();
   const accesses = ['free', 'pro'];
+  const estilos = getUniqueValuesFromFixedOptions('estilo');
+  const tematicas = getUniqueValuesFromFixedOptions('temática');
 
   const displayed = prompts
     .filter(p => !filterPlatform || p.platform === filterPlatform)
-    .filter(p => !filterAccess || p.access === filterAccess);
+    .filter(p => !filterAccess || p.access === filterAccess)
+    .filter(p =>
+      !filterEstilo ||
+      (p.fixedOptions?.estilo?.some(opt => opt.label === filterEstilo))
+    )
+    .filter(p =>
+      !filterTematica ||
+      (p.fixedOptions?.["temática"]?.some(opt => opt.label === filterTematica))
+    );
 
   const openModal = p => {
     if (p) {
@@ -172,7 +193,7 @@ export default function KeikoPromptsAdmin() {
       <div className="keiko-nav-buttons">
         <button onClick={() => window.location.href = '/admin/keiko-packs'}>🧩 Ir a Packs</button>
         <button onClick={() => window.location.href = '/admin/imports'}>⬆️ Importar Prompts</button>
-        <button onClick={() => exportPrompts()}>📤 Exportar Seleccionados</button>
+        <button onClick={exportPrompts}>📤 Exportar Seleccionados</button>
       </div>
 
       <div className="filters-bar">
@@ -197,6 +218,20 @@ export default function KeikoPromptsAdmin() {
           ))}
         </select>
 
+        <select value={filterEstilo} onChange={e => setFilterEstilo(e.target.value)}>
+          <option value="">Estilo: Todos</option>
+          {estilos.map(est => (
+            <option key={est} value={est}>{est}</option>
+          ))}
+        </select>
+
+        <select value={filterTematica} onChange={e => setFilterTematica(e.target.value)}>
+          <option value="">Temática: Todas</option>
+          {tematicas.map(t => (
+            <option key={t} value={t}>{t}</option>
+          ))}
+        </select>
+
         <button className="keiko-admin-add-btn" onClick={() => openModal(null)}>➕ Nuevo Prompt</button>
       </div>
 
@@ -216,13 +251,13 @@ export default function KeikoPromptsAdmin() {
       <table className="keiko-admin-table">
         <thead>
           <tr>
-            <th>
-              <input type="checkbox" onChange={toggleAll} checked={isAllSelected} />
-            </th>
+            <th><input type="checkbox" onChange={toggleAll} checked={isAllSelected} /></th>
             <th>Título</th>
             <th>Prompt</th>
             <th className="center-col">Platform</th>
             <th className="center-col">Access</th>
+            <th className="center-col">Estilo</th>
+            <th className="center-col">Temática</th>
             <th className="center-col">Acciones</th>
           </tr>
         </thead>
@@ -246,6 +281,8 @@ export default function KeikoPromptsAdmin() {
               <td className="prompt-cell">{p.prompt}</td>
               <td className="center-col">{p.platform}</td>
               <td className="center-col">{p.access}</td>
+              <td className="center-col">{(p.fixedOptions?.estilo || []).map(e => e.label).join(', ')}</td>
+              <td className="center-col">{(p.fixedOptions?.["temática"] || []).map(t => t.label).join(', ')}</td>
               <td className="center-col">
                 <button onClick={() => openModal(p)}>✏️</button>
                 <button onClick={() => handleDelete(p._id)}>🗑️</button>

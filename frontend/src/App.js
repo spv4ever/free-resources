@@ -91,6 +91,7 @@ import AdminTempFiles from './components/AdminTempFiles';
 import GifsPage from './pages/GifsPage';
 import MisFavoritos from './components/MisFavoritos';
 import FutbolPage from './pages/FutbolPage';
+import LaLigaPage from './pages/futbol/LaLigaPage';
             
 
 
@@ -231,6 +232,7 @@ function App() {
             <Route path="/gifs" element={<GifsPage />} />
             <Route path="/mis-favoritos" element={<MisFavoritos />} />
             <Route path="/futbol" element={<FutbolPage />} />
+            <Route path="/futbol/laliga" element={<LaLigaPage />} /> 
             
             
           </Route>

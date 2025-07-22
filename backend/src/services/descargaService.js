@@ -40,6 +40,7 @@ export const procesarDescarga = async (url, formato = 'mp4') => {
       '--print-json',
       '--no-geo-bypass',
       '--geo-bypass-country', 'ES',
+      '--playlist-items', '1', // ⬅️ nuevo
     ];
 
     // Añadir cookies si el archivo existe
