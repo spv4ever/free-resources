@@ -201,11 +201,15 @@ export const getPromptsByPackPaginated = async (req, res) => {
 
     // Intentar usar _id si la opción existe en la colección
     const option = await KeikoPromptOption.findOne({ name: optionName }).lean();
-    if (option) {
-      query[`fixedOptions.${realGroupKey}`] = option._id;
+    query.$and = query.$and || [];
+
+    const matchById = option ? { [`fixedOptions.${realGroupKey}`]: option._id } : null;
+    const matchByName = { [`fixedOptions.${realGroupKey}.name`]: optionName };
+
+    if (matchById) {
+      query.$and.push({ $or: [matchById, matchByName] });
     } else {
-      // Filtrar por name si no se encuentra en la colección
-      query[`fixedOptions.${realGroupKey}.name`] = optionName;
+      query.$and.push(matchByName);
     }
   }
   const sort = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
