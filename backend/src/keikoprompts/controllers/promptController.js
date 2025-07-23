@@ -197,15 +197,17 @@ export const getPromptsByPackPaginated = async (req, res) => {
 
   // 🎯 Aplicar filtros por opciones fijas (tematica, estilo, etc.)
   for (const [groupKey, optionName] of Object.entries(filters)) {
-    const realGroupKey = groupKeyMap[groupKey] || groupKey; // usa mapeo si existe
+    const realGroupKey = groupKeyMap[groupKey] || groupKey;
+
+    // Intentar usar _id si la opción existe en la colección
     const option = await KeikoPromptOption.findOne({ name: optionName }).lean();
     if (option) {
       query[`fixedOptions.${realGroupKey}`] = option._id;
     } else {
-      query[`fixedOptions.${realGroupKey}`] = '000000000000000000000000';
+      // Filtrar por name si no se encuentra en la colección
+      query[`fixedOptions.${realGroupKey}.name`] = optionName;
     }
   }
-
   const sort = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
   const skip = (parseInt(page) - 1) * parseInt(limit);
 

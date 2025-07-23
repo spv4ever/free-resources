@@ -187,6 +187,32 @@ export default function KeikoPromptsAdmin() {
 
   const isAllSelected = selectedIds.length === displayed.length && displayed.length > 0;
 
+  const getGroupLabels = (key) =>
+  Array.from(new Set(
+    prompts.flatMap(p => p.fixedOptions?.[key]?.map(opt => opt.label) || [])
+  )).sort();
+
+  const allEstilos = getGroupLabels('estilo');
+  const allTematicas = getGroupLabels('temática');
+
+  const updateFixedOptions = (key, values) => {
+    const groupName = key;
+    const updated = {
+      ...form.fixedOptions,
+      [groupName]: values.map(label => ({
+        name: label.toLowerCase().replace(/\s+/g, '-'),
+        label,
+        group: {
+          name: groupName,
+          label: groupName.charAt(0).toUpperCase() + groupName.slice(1),
+          multiple: true
+        }
+      }))
+    };
+    setForm({ ...form, fixedOptions: updated });
+  };
+
+
   return (
     <div className="keiko-admin-container">
       <h1>📋 Keiko Prompts</h1>
@@ -347,6 +373,36 @@ export default function KeikoPromptsAdmin() {
                 <option value="pro">pro</option>
               </select>
             </div>
+
+            <div className="form-row">
+            <label>Estilo:</label>
+            <select
+              multiple
+              value={form.fixedOptions?.estilo?.map(e => e.label) || []}
+              onChange={e =>
+                updateFixedOptions('estilo', Array.from(e.target.selectedOptions).map(opt => opt.value))
+              }
+            >
+              {allEstilos.map(est => (
+                <option key={est} value={est}>{est}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-row">
+            <label>Temática:</label>
+            <select
+              multiple
+              value={form.fixedOptions?.["temática"]?.map(t => t.label) || []}
+              onChange={e =>
+                updateFixedOptions('temática', Array.from(e.target.selectedOptions).map(opt => opt.value))
+              }
+            >
+              {allTematicas.map(t => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+          </div>
 
             <div className="modal-actions">
               <button onClick={handleSave}>💾 Guardar</button>

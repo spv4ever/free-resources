@@ -78,35 +78,45 @@ export const getUsedOptionsByPack = async (req, res) => {
       return res.json({});
     }
 
+    const result = {};
     const usedOptionIds = new Set();
+
     for (const prompt of prompts) {
       const fixed = prompt.fixedOptions || {};
-      for (const values of Object.values(fixed)) {
+
+      for (const [key, values] of Object.entries(fixed)) {
         for (const opt of values) {
-          if (typeof opt === 'string' || opt instanceof mongoose.Types.ObjectId) {
-            usedOptionIds.add(opt.toString());
-          } else if (opt && opt._id) {
+          if (opt && typeof opt === 'object' && opt._id) {
             usedOptionIds.add(opt._id.toString());
+          } else if (opt && typeof opt === 'object' && opt.name && opt.label) {
+            // ⚠️ fallback si no hay _id
+            const groupName = opt.group?.name || key; // usa clave si no viene el group
+            if (!result[groupName]) result[groupName] = [];
+            if (!result[groupName].some(o => o.name === opt.name)) {
+              result[groupName].push({ name: opt.name, label: opt.label });
+            }
           }
         }
       }
     }
 
-    // console.log('IDs recolectados:', [...usedOptionIds]);
+    // Cargar desde DB solo los que tienen _id
+    if (usedOptionIds.size > 0) {
+      const options = await KeikoPromptOption.find({
+        _id: { $in: [...usedOptionIds] }
+      }).populate('group').lean();
 
-    const options = await KeikoPromptOption.find({
-      _id: { $in: [...usedOptionIds] }
-    }).populate('group').lean();
-
-    const result = {};
-    for (const opt of options) {
-      const groupName = opt.group?.name;
-      if (!groupName) continue;
-      if (!result[groupName]) result[groupName] = [];
-      result[groupName].push({
-        name: opt.name,
-        label: opt.label
-      });
+      for (const opt of options) {
+        const groupName = opt.group?.name;
+        if (!groupName) continue;
+        if (!result[groupName]) result[groupName] = [];
+        if (!result[groupName].some(o => o.name === opt.name)) {
+          result[groupName].push({
+            name: opt.name,
+            label: opt.label
+          });
+        }
+      }
     }
 
     res.json(result);

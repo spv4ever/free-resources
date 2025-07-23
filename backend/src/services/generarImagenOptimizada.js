@@ -173,17 +173,20 @@ export const generarImagen = async ({
   const esAnime = category === 'Anime';
 
   if (esSticker) {
+    console.log(`[FLUJO] Usando flujo "stickers" para categoría "${category}"`);
     return generarImagenStickers({ prompt, ratio, seed, steps, filename_prefix, removeBackground });
   }
 
   if (esAnime) {
+    console.log(`[FLUJO] Usando flujo "anime" para categoría "${category}"`);
     return generarImagenAnime({ prompt, ratio, seed, steps, filename_prefix });
   }
 
   if (advancedMode) {
+    console.log(`[FLUJO] Usando flujo "pro" (modo avanzado activado)`);
     return generarImagenAvanzada({ prompt, ratio, seed, steps, filename_prefix, removeBackground });
   }
-
+  console.log(`[FLUJO] Usando flujo "normal" por defecto`);
   return generarImagenOptimizada({ prompt, ratio, seed, steps, filename_prefix });
 };
 
