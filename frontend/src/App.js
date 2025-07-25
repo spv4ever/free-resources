@@ -92,6 +92,7 @@ import GifsPage from './pages/GifsPage';
 import MisFavoritos from './components/MisFavoritos';
 import FutbolPage from './pages/FutbolPage';
 import LaLigaPage from './pages/futbol/LaLigaPage';
+import EntrenaGenerador from './pages/EntrenaGenerador.jsx';
             
 
 
@@ -200,6 +201,7 @@ function App() {
             <Route path="/rotate" element={<GiradorImagenes />} />
             <Route path="/crop" element={<RecortadorImagen />} />
             <Route path="/captura-url" element={<CapturaDesdeURL />} />
+            <Route path="/entrena-generador" element={<EntrenaGenerador />} />
             
 
             <Route path="/convertir-imagenes" element={<ConvertidorImagenes />} />

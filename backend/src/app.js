@@ -111,6 +111,8 @@ import favoritoRoutes from './routes/favoritoRoutes.js';
 import eventsRoutes from './routes/events.routes.js';
 import { iniciarSchedulerFutbol } from './jobs/futbolScheduler.js';
 import futbolRoutes from './routes/futbolRoutes.js';
+import generadorIARoutes from './routes/generadorIARoutes.js'; // ✅
+import cpxRoutes from './routes/cpxRoutes.js';
 
 
 
@@ -328,6 +330,8 @@ app.use("/api", pixelateRoutes);
 app.use("/api", cropRoutes);
 app.use("/api", rotateRoutes);
 app.use('/api/captura-url', capturaDesdeUrlRoutes);
+app.use('/api/generador', generadorIARoutes);
+app.use('/api/recompensas', cpxRoutes);
 
 app.use("/cropped", express.static(path.join(__dirname, "public/cropped")));
 
