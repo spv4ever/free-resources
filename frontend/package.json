@@ -21,6 +21,7 @@
     "framer-motion": "^12.23.6",
     "googleapis": "^148.0.0",
     "lucide-react": "^0.511.0",
+    "md5": "^2.3.0",
     "react": "^19.1.0",
     "react-datepicker": "^8.4.0",
     "react-dom": "^19.1.0",

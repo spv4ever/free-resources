@@ -13,12 +13,12 @@ export const recibirPostbackCpx = async (req, res) => {
     hash
   } = req.query;
 
-  // 🧪 LOGS de depuración
-  console.log('🔐 Clave en ejecución:', CPX_SECRET);
-  console.log('📥 trans_id:', trans_id);
-  console.log('📥 user_id:', user_id);
-  console.log('📥 amount_usd:', amount_usd);
-  console.log('📥 hash recibido:', hash);
+//   // 🧪 LOGS de depuración
+//   console.log('🔐 Clave en ejecución:', CPX_SECRET);
+//   console.log('📥 trans_id:', trans_id);
+//   console.log('📥 user_id:', user_id);
+//   console.log('📥 amount_usd:', amount_usd);
+//   console.log('📥 hash recibido:', hash);
 
   if (!CPX_SECRET) {
     return res.status(500).json({ error: 'CPX_SECRET_KEY not defined' });

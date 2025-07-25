@@ -93,6 +93,7 @@ import MisFavoritos from './components/MisFavoritos';
 import FutbolPage from './pages/FutbolPage';
 import LaLigaPage from './pages/futbol/LaLigaPage';
 import EntrenaGenerador from './pages/EntrenaGenerador.jsx';
+import Apoyar from './components/Apoyar'
             
 
 
@@ -158,6 +159,7 @@ function App() {
             <Route path="/series" element={<SeriesCategoryList />} />
             <Route path="/admin/spacex" element={<SpacexLaunchAdmin />} />
             <Route path="/perfil" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
+            <Route path="/apoyar" element={<Apoyar />} />
 
             <Route path="/admin/top-series-sync" element={<TopSeriesSyncPage />} />
             {/* <Route path="/admin/social-posts" element={<AdminRoute><div>Hola soy admin</div></AdminRoute>} /> */}
