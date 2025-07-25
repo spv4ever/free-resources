@@ -3,7 +3,7 @@ import User from '../models/User.js';
 import CpxRecompensa from '../models/CpxRecompensa.js';
 
 const CPX_SECRET = process.env.CPX_SECRET_KEY;
-console.log('💡 CPX_SECRET_KEY:', process.env.CPX_SECRET_KEY);
+// console.log('💡 CPX_SECRET_KEY:', process.env.CPX_SECRET_KEY);
 
 export const recibirPostbackCpx = async (req, res) => {
   const {
