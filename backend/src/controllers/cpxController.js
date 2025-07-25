@@ -3,7 +3,7 @@ import User from '../models/User.js';
 import CpxRecompensa from '../models/CpxRecompensa.js';
 
 const CPX_SECRET = process.env.CPX_SECRET_KEY;
-// console.log('💡 CPX_SECRET_KEY:', process.env.CPX_SECRET_KEY);
+
 
 export const recibirPostbackCpx = async (req, res) => {
   const {
@@ -17,7 +17,7 @@ export const recibirPostbackCpx = async (req, res) => {
   if (!status || !trans_id || !user_id || !amount_usd || !hash) {
     return res.status(400).json({ error: 'Missing parameters' });
   }
-
+  console.log('💡 CPX_SECRET_KEY:', process.env.CPX_SECRET_KEY);
   // Validar la firma
   const expectedHash = crypto
     .createHash('md5')
