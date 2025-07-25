@@ -13,21 +13,27 @@ export const recibirPostbackCpx = async (req, res) => {
     hash
   } = req.query;
 
-  // Verificación defensiva
+  // 🧪 LOGS de depuración
+  console.log('🔐 Clave en ejecución:', CPX_SECRET);
+  console.log('📥 trans_id:', trans_id);
+  console.log('📥 user_id:', user_id);
+  console.log('📥 amount_usd:', amount_usd);
+  console.log('📥 hash recibido:', hash);
+
   if (!CPX_SECRET) {
-    console.error('❌ CPX_SECRET_KEY is missing');
-    return res.status(500).json({ error: 'Secret key not defined' });
+    return res.status(500).json({ error: 'CPX_SECRET_KEY not defined' });
   }
 
   if (!status || !trans_id || !user_id || !amount_usd || !hash) {
-    return res.status(400).json({ error: 'Missing required parameters' });
+    return res.status(400).json({ error: 'Missing parameters' });
   }
 
-  // Validar firma
   const expectedHash = crypto
     .createHash('md5')
     .update(trans_id + CPX_SECRET)
     .digest('hex');
+
+  console.log('🔁 Hash esperado:', expectedHash);
 
   if (hash !== expectedHash) {
     console.warn('⛔ Invalid hash', {
@@ -43,7 +49,6 @@ export const recibirPostbackCpx = async (req, res) => {
     const creditos = Math.floor(parseFloat(amount_usd) * 100); // 1 USD = 100 créditos
 
     if (parseInt(status) === 1) {
-      // Procesar recompensa nueva
       if (!recompensa) {
         const user = await User.findById(user_id);
         if (!user) return res.status(404).json({ error: 'User not found' });
@@ -67,7 +72,6 @@ export const recibirPostbackCpx = async (req, res) => {
     }
 
     if (parseInt(status) === 2 && recompensa?.status === 1) {
-      // Reversión
       const user = await User.findById(user_id);
       if (user) {
         user.credits = Math.max(0, (user.credits || 0) - recompensa.creditos_dados);
