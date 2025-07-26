@@ -9,6 +9,9 @@ import { manejarFinalizacionDeJob } from '../services/manejoResultadoImagen.js';
 import { consumirToken } from '../services/tokenService.js';
 import Prompt from '../keikoprompts/models/KeikoPrompt.js';
 import Pack from '../keikoprompts/models/KeikoPromptPack.js';
+import { uploadImageBufferToImageKit } from '../services/imagekit.js';
+import sharp from 'sharp'; // instala si no lo tienes: npm i sharp
+import https from 'https';
 
 
 

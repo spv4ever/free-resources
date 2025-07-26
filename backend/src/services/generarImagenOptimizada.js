@@ -172,6 +172,11 @@ export const generarImagen = async ({
   const esSticker = ['Stickers', 'T-Shirt'].includes(category);
   const esAnime = category === 'Anime';
 
+  if (category === 'UltraWall') {
+    console.log(`[FLUJO] Usando flujo "wallpaper" para categoría "UltraWall"`);
+    return generarImagenWallpaper({ prompt, seed, steps, filename_prefix });
+  }
+
   if (esSticker) {
     console.log(`[FLUJO] Usando flujo "stickers" para categoría "${category}"`);
     return generarImagenStickers({ prompt, ratio, seed, steps, filename_prefix, removeBackground });
@@ -283,4 +288,37 @@ export const generarImagenUpscale = async ({ imageBuffer, filenameUpscale, upsca
   }
 
   return { prompt_id: data.prompt_id, inputUrl: uploadResult.secure_url };
+};
+
+
+export const generarImagenWallpaper = async ({
+  prompt,
+  ratio = '16:9',
+  seed = null,
+  steps = 18,
+  filename_prefix = 'keiko'
+}) => {
+  if (!prompt) throw new Error('El prompt es obligatorio');
+
+  const modificado = clonarFlujo(flujosCargados.wallpaper);
+  const [width, height] = resolucionesOptimizadas[ratio] || resolucionesOptimizadas['16:9'];
+
+  modificado['1'].inputs.width = width;
+  modificado['1'].inputs.height = height;
+  modificado['13'].inputs.string = prompt;
+  modificado['12'].inputs.noise_seed = seed || Math.floor(Math.random() * 1e16);
+  modificado['10'].inputs.steps = Math.min(steps, 30);
+  modificado['30'].inputs.filename_prefix = filename_prefix;
+
+  // Guardar imagen después del upscale
+  modificado['30'].inputs.images = ['29', 0];
+
+  const comfyUrl = await getComfyUrl('flux');
+  const { data } = await axios.post(`${comfyUrl}/prompt`, { prompt: modificado }, getComfyAuth());
+
+  if (data?.prompt_id) {
+    trackPendingJob(data.prompt_id);
+  }
+
+  return data;
 };
