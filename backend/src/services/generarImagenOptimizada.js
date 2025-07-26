@@ -174,7 +174,7 @@ export const generarImagen = async ({
 
   if (category === 'UltraWall') {
     console.log(`[FLUJO] Usando flujo "wallpaper" para categoría "UltraWall"`);
-    return generarImagenWallpaper({ prompt, seed, steps, filename_prefix });
+    return generarImagenWallpaper({ prompt, ratio, seed, steps, filename_prefix });
   }
 
   if (esSticker) {

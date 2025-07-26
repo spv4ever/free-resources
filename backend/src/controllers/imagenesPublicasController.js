@@ -5,7 +5,7 @@ export const obtenerImagenesPublicas = async (req, res) => {
   try {
     const imagenes = await ImagenGenerada.find({
       public: true,
-      status: 'completada'
+      status: { $in: ['completada', 'entregada_telegram'] }
     })
       .sort({ createdAt: -1 })
       .populate({
@@ -56,7 +56,7 @@ export const obtenerImagenesPorPack = async (req, res) => {
 
     const imagenes = await ImagenGenerada.find({
       public: true,
-      status: 'completada'
+      status: { $in: ['completada', 'entregada_telegram'] }
     })
       .populate({
         path: 'promptRef',
