@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: process.env.REACT_APP_API_URLlan
+  baseURL: process.env.REACT_APP_API_URL
 });
 
 // Añadir token a cada petición si existe

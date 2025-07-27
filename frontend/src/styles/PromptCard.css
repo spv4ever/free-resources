@@ -21,6 +21,39 @@
   --font-family-code: 'monospace';
 }
 
+.keiko-prompt-card__preview-thumbnail {
+  float: left;
+  margin-right: 1rem;
+  max-width: 100px;
+  text-align: center;
+}
+
+.keiko-prompt-card__preview-thumbnail img {
+  width: 100%;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.keiko-prompt-card__preview-label {
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 4px;
+}
+.keiko-prompt-card__btn--tiny {
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  margin-top: 6px;
+  display: inline-block;
+  background-color: #f0f0f0;
+  color: #333;
+  border-radius: 4px;
+  text-decoration: none;
+}
+.keiko-prompt-card__btn--tiny:hover {
+  background-color: #e0e0e0;
+}
+
 /* --- Estructura Principal de la Tarjeta --- */
 .keiko-prompt-card {
   font-family: var(--font-family-ui);

@@ -1,6 +1,10 @@
 import React from 'react';
 import md5 from 'md5';
 import { useUser } from '../context/UserContext';
+// import AdsterraSocialBar from '../components/AdsterraSocialBar';
+import AdsterraNativeAd from '../components/AdsterraNativeAd';
+import AdClickRewardButton from '../components/AdClickRewardButton';
+
 
 const Apoyar = () => {
   const { user, loading } = useUser();
@@ -16,10 +20,12 @@ const Apoyar = () => {
 
   return (
     <div style={styles.container}>
+      
       <h1 style={styles.heading}>🎁 Apoya el proyecto</h1>
       <p style={styles.paragraph}>
         Ayúdanos completando encuestas voluntarias. A cambio recibirás <strong>créditos</strong> que puedes usar para generar imágenes o acceder a funciones avanzadas.
       </p>
+      
 
       <div style={styles.card}>
         <p style={styles.subheading}>🧠 CPX Research</p>
@@ -28,10 +34,14 @@ const Apoyar = () => {
           <button style={styles.button}>Ir al muro de encuestas</button>
         </a>
       </div>
-
+      <AdClickRewardButton />
       <p style={{ marginTop: '2rem', fontSize: '0.9rem', color: '#777' }}>
         Los créditos se suman a tu cuenta cuando completas una tarea. ¡Gracias por tu apoyo!
       </p>
+      {/* <AdsterraSocialBar /> */}
+      <AdsterraNativeAd />
+
+
     </div>
   );
 };

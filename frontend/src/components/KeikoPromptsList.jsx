@@ -51,6 +51,7 @@ export default function KeikoPromptsList() {
   const [removeBackground, setRemoveBackground] = useState(true);
   const isProUser = useMemo(() => ['admin', 'pro'].includes(user?.role), [user]);
   const [customText, setCustomText] = useState({});
+  const [imagePreviews, setImagePreviews] = useState({});
   
   
 useEffect(() => {
@@ -184,6 +185,32 @@ useEffect(() => {
   promptsPerPage,
   extraFilters // ✅ aquí lo añades
 ]);
+
+useEffect(() => {
+  const cargarPreviews = async () => {
+    const nuevasPreviews = {};
+
+    for (const prompt of prompts) {
+      if (prompt.platform?.toLowerCase() === 'flux') {
+        try {
+          const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/keiko/prompts/ultima-imagen/${prompt._id}`);
+          if (res.data?.url) {
+            nuevasPreviews[prompt._id] = res.data.url;
+          }
+        } catch (err) {
+          console.warn(`⚠️ No se pudo cargar preview para prompt ${prompt._id}:`, err.message);
+        }
+      }
+    }
+
+    setImagePreviews(nuevasPreviews);
+  };
+
+  if (prompts?.length > 0) {
+    cargarPreviews();
+  }
+}, [prompts]);
+
 
   // useEffect(() => {
   //     if (loading || !user) return;
@@ -640,6 +667,7 @@ useEffect(() => {
           <PromptCardRedesigned 
             key={p._id}
             prompt={p}
+            imagenPreviewUrl={imagePreviews[p._id] || null} // 👈 nueva prop
             imagenes={imagenes}
             pendientes={pendientes}
             tiempoTranscurrido={tiempoTranscurrido}

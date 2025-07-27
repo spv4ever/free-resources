@@ -3,6 +3,7 @@ import KeikoPrompt from '../models/KeikoPrompt.js';
 import KeikoPromptOption from '../models/KeikoPromptOption.js';
 import KeikoPromptOptionGroup from '../models/KeikoPromptOptionGroup.js';
 import { enrichFixedOptions } from '../../middlewares/enrichFixedOptions.js';
+import ImagenGenerada from '../../models/ImagenGenerada.js';
 /**
  * GET  /api/keiko/prompts/by-pack/:packId
  * Obtiene todos los prompts del pack indicado
@@ -237,6 +238,46 @@ export const getPromptsByPackPaginated = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener prompts paginados' });
   }
 };
+
+export const obtenerUltimaImagenGenerada = async (req, res) => {
+  const { promptId } = req.params;
+
+  try {
+    const imagen = await ImagenGenerada.findOne({
+      promptRef: promptId,
+      status: { $in: ['completada', 'enviada_telegram'] }
+    }).sort({ createdAt: -1 });
+
+    if (!imagen) return res.json(null);
+    res.json({ url: imagen.finalUrl || imagen.url });
+  } catch (error) {
+    console.error('Error al buscar imagen generada:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+export const obtenerImagenesDePrompt = async (req, res) => {
+  const { promptId } = req.params;
+
+  try {
+    const imagenes = await ImagenGenerada.find({
+      promptRef: promptId,
+      status: { $in: ['completada', 'enviada_telegram'] }
+    })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'promptRef',
+        populate: { path: 'packId' } // para acceder a promptRef.packId.title
+      })
+      .populate('user', 'nickname');
+
+    res.json(imagenes);
+  } catch (error) {
+    console.error('Error al buscar imágenes del prompt:', error);
+    res.status(500).json({ error: 'Error al obtener imágenes' });
+  }
+};
+
 // const enrichFixedOptions = async prompts => {
 //   const allOptionIds = new Set();
 

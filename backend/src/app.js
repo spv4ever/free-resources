@@ -113,6 +113,8 @@ import { iniciarSchedulerFutbol } from './jobs/futbolScheduler.js';
 import futbolRoutes from './routes/futbolRoutes.js';
 import generadorIARoutes from './routes/generadorIARoutes.js'; // ✅
 import cpxRoutes from './routes/cpxRoutes.js';
+import trackingRoutes from './routes/trackingRoutes.js';
+
 
 
 
@@ -248,6 +250,7 @@ iniciarSchedulerFutbol(process.env.MONGO_URI);
 //fetchTodayImage();
 
 // Rutas
+app.use('/api/tracking', trackingRoutes);
 app.use('/api', eventsRoutes);
 app.use('/api/favoritos', favoritoRoutes);
 app.use('/zip', zipRoutes);

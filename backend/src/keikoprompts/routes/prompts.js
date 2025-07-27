@@ -6,7 +6,9 @@ import {
   deletePrompt,
   countPromptsByPack,
   countPromptsForOnePack,
-  getPromptsByPackPaginated
+  obtenerUltimaImagenGenerada,
+  getPromptsByPackPaginated,
+  obtenerImagenesDePrompt
 } from '../controllers/promptController.js';
 
 import { updateMultiplePlatforms } from '../controllers/promptController.js';
@@ -32,5 +34,9 @@ router.put('/:id', updatePrompt);
 router.delete('/:id', deletePrompt);
 
 router.get('/by-pack-paginated/:packId', getPromptsByPackPaginated);
+
+router.get('/ultima-imagen/:promptId', obtenerUltimaImagenGenerada);
+
+router.get('/historial-imagenes/:promptId', obtenerImagenesDePrompt);
 
 export default router;

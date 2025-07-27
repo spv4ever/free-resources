@@ -1,3 +1,4 @@
+// src/hooks/useFluxPromptManager.js
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import imgSinTokens from '../assets/sin_tokens.png';
@@ -30,7 +31,7 @@ export default function useFluxPromptManager({ pack, isProUser, selectedRatio })
     selectedExtras = [],
     advancedMode = false,
     removeBackground = false,
-    seed, 
+    seed,
     ratio,
     steps,
     esPublica = false,
@@ -53,14 +54,13 @@ export default function useFluxPromptManager({ pack, isProUser, selectedRatio })
         `${process.env.REACT_APP_API_URL}/api/flux/generate`,
         {
           prompt: finalPrompt,
-          ratio: ratio || selectedRatio || '3:4',  // 👈 Aplica el ratio recibido
-          // steps: pack?.category === 'Anime' ? 30 : 15,
+          ratio: ratio || selectedRatio || '3:4',
           seed: (!useRandomSeed && seed) ? parseInt(seed) : undefined,
           promptRef: promptId,
           advancedMode,
           removeBackground,
           steps: typeof steps === 'number' ? steps : (pack?.category === 'Anime' ? 30 : 15),
-          esPublica 
+          esPublica
         },
         {
           headers: { Authorization: `Bearer ${token}` }
@@ -76,10 +76,7 @@ export default function useFluxPromptManager({ pack, isProUser, selectedRatio })
 
       setPendientesTimestamps(prev => ({ ...prev, [promptId]: Date.now() }));
 
-      // ✅ Verificación programada
-      setTimeout(() => {
-        verificarImagenConRetry(promptId, prompt_id);
-      }, 5000);
+      // ❌ Ya no se lanza verificación desde aquí (se hace al detectar progreso 100%)
 
     } catch (err) {
       console.error('Error al generar con Flux:', err.message);
@@ -103,47 +100,61 @@ export default function useFluxPromptManager({ pack, isProUser, selectedRatio })
   const verificarImagenConRetry = (promptId, prompt_id, intentos = 0) => {
     const token = localStorage.getItem('token');
 
+    if (intentos >= 10) {
+      console.warn(`🛑 Se detuvo la verificación de ${prompt_id} tras 10 intentos.`);
+      return;
+    }
+
     axios.get(`${process.env.REACT_APP_API_URL}/api/flux/verificar/${prompt_id}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
-    .then(({ data }) => {
-      if (!data?.found) {
-        setTimeout(() => {
-          verificarImagenConRetry(promptId, prompt_id, intentos + 1);
-        }, 5000);
-        return;
-      }
+      .then(({ data }) => {
+        if (!data?.found) {
+          setTimeout(() => {
+            verificarImagenConRetry(promptId, prompt_id, intentos + 1);
+          }, 15000); // más espaciamiento
+          return;
+        }
 
-      if (data.finalUrl) {
-        setImagenes(prev => ({ ...prev, [promptId]: data.finalUrl }));
-        limpiarPendiente(promptId);
-        return;
-      }
+        if (data.finalUrl) {
+          setImagenes(prev => ({ ...prev, [promptId]: data.finalUrl }));
+          limpiarPendiente(promptId);
+          return;
+        }
 
-      // Fallback a blob si no hay finalUrl
-      axios.get(`${process.env.REACT_APP_API_URL}/api/flux/image/${data.filename}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        responseType: 'blob'
-      })
-      .then(res => {
-        const imageUrl = URL.createObjectURL(res.data);
-        setImagenes(prev => ({ ...prev, [promptId]: imageUrl }));
-        limpiarPendiente(promptId);
+        // fallback a imagen temporal (blob)
+        axios.get(`${process.env.REACT_APP_API_URL}/api/flux/image/${data.filename}`, {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: 'blob'
+        })
+          .then(res => {
+            const imageUrl = URL.createObjectURL(res.data);
+            setImagenes(prev => ({ ...prev, [promptId]: imageUrl }));
+            limpiarPendiente(promptId);
+          })
+          .catch(err => {
+            console.error('❌ Error al descargar imagen local:', err.message);
+            limpiarPendiente(promptId); // aunque falle, limpiar
+          });
       })
       .catch(err => {
-        console.error('❌ Error al descargar imagen local:', err.message);
-        limpiarPendiente(promptId); // aún así limpiar
+        console.warn(`⚠️ Verificación fallida (${intentos}):`, err.message);
+        setTimeout(() => {
+          verificarImagenConRetry(promptId, prompt_id, intentos + 1);
+        }, 15000);
       });
-
-    })
-    .catch(err => {
-      console.warn(`Verificación ${intentos} fallida:`, err.message);
-      setTimeout(() => {
-        verificarImagenConRetry(promptId, prompt_id, intentos + 1);
-      }, 5000);
-    });
   };
 
+  const verificarImagen = async (promptId, prompt_id) => {
+    const createdAt = pendientesTimestamps[promptId];
+    if (createdAt && Date.now() - createdAt < 60000) {
+      alert('⌛ Aún es muy pronto para verificar. Espera unos segundos más.');
+      return;
+    }
+    verificarImagenConRetry(promptId, prompt_id);
+  };
+
+  // ⏱ Tiempo transcurrido desde que se lanzó la imagen
   useEffect(() => {
     if (Object.keys(pendientes).length === 0) return;
 
@@ -165,6 +176,7 @@ export default function useFluxPromptManager({ pack, isProUser, selectedRatio })
     return () => clearInterval(interval);
   }, [pendientes]);
 
+  // 🔄 Consulta periódica de progreso de jobs activos
   useEffect(() => {
     if (Object.keys(pendientes).length === 0) return;
 
@@ -179,7 +191,6 @@ export default function useFluxPromptManager({ pack, isProUser, selectedRatio })
         const cola = data.filter(j => j.status === 'queued').sort((a, b) => a.createdAt - b.createdAt);
 
         for (let { promptId, progress, status } of data) {
-          // ✅ Saltar si ya tenemos imagen cargada
           if (imagenes[promptId]) continue;
 
           if (status === 'running' || status === 'queued') {
@@ -197,21 +208,32 @@ export default function useFluxPromptManager({ pack, isProUser, selectedRatio })
         });
 
       } catch (err) {
-        console.warn('Error consultando progreso:', err.message);
+        console.warn('⚠️ Error consultando progreso:', err.message);
       }
     }, 3000);
 
     return () => clearInterval(interval);
   }, [pendientes, imagenes]);
 
-  const verificarImagen = async (promptId, prompt_id) => {
-    const createdAt = pendientesTimestamps[promptId];
-    if (createdAt && Date.now() - createdAt < 60000) {
-      alert('⌛ Aún es muy pronto para verificar. Espera unos segundos más.');
-      return;
-    }
-    verificarImagenConRetry(promptId, prompt_id);
-  };
+  // 🔁 Lanzar verificación cuando una imagen alcance 100%
+  useEffect(() => {
+    Object.entries(progresoGeneracion).forEach(([prompt_id, { progress }]) => {
+      if (progress !== 100) return;
+
+      const promptEntry = Object.entries(pendientes).find(
+        ([_, info]) => info?.id === prompt_id
+      );
+
+      if (!promptEntry) return;
+
+      const [promptId] = promptEntry;
+
+      if (!imagenes[promptId]) {
+        console.log(`📸 Progreso completo para ${promptId}, iniciando verificación`);
+        verificarImagenConRetry(promptId, prompt_id);
+      }
+    });
+  }, [progresoGeneracion]);
 
   return {
     generando,

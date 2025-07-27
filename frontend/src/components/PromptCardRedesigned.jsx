@@ -37,7 +37,8 @@ const PromptCardRedesigned = React.memo(({
   setRemoveBackground,
   isProUser,
   customText,             // 👈 AÑADE ESTO
-  setCustomText 
+  setCustomText,
+  imagenPreviewUrl 
 }) => {
   const { user } = useUser();
 
@@ -99,6 +100,48 @@ const PromptCardRedesigned = React.memo(({
       </div>
 
       <div className="keiko-prompt-card__body">
+        {isFlux && imagenPreviewUrl && (
+          <div className="keiko-prompt-card__preview-thumbnail">
+            <img
+              src={imagenPreviewUrl}
+              alt="Imagen generada previamente"
+              onClick={() =>
+                setModalImage({
+                  ...prompt,
+                  finalUrl: imagenPreviewUrl,
+                  url: imagenPreviewUrl,
+                  isAdmin: user?.role === 'admin',
+                  nickname: prompt.nickname || 'Autor Desconocido',
+                  packTitle: prompt.packTitle || 'Pack Desconocido',
+                  createdAt: prompt.createdAt,
+                })
+              }
+            />
+            <p className="keiko-prompt-card__preview-label">🖼️ Imagen de ejemplo</p>
+            <a
+              href={`/keikoprompts/historial/${prompt._id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="keiko-prompt-card__btn keiko-prompt-card__btn--secondary"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                fontSize: '0.9rem',
+                padding: '6px 12px',
+                marginTop: '0.5rem',
+                backgroundColor: '#2e2e2e',
+                color: '#fff',
+                border: '1px solid #444',
+                borderRadius: '6px',
+                textDecoration: 'none'
+              }}
+            >
+              <span role="img" aria-label="historial">📁</span> Ver historial
+            </a>
+          </div>
+        )}
+
         <div className="keiko-prompt-card__content">
           <div className="keiko-prompt-card__prompt-text-container">
             <code>{prompt.prompt}</code>

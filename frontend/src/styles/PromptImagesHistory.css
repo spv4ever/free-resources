@@ -1,0 +1,41 @@
+.historial-container {
+  padding: 2rem;
+  max-width: 1080px;
+  margin: 0 auto;
+  color: #eee;
+}
+
+.historial-container h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.historial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.historial-item {
+  background: #222;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  text-align: center;
+}
+
+.historial-item:hover {
+  transform: scale(1.03);
+}
+
+.historial-item img {
+  width: 100%;
+  border-radius: 4px;
+}
+
+.historial-item .fecha {
+  font-size: 0.75rem;
+  color: #aaa;
+  margin-top: 0.3rem;
+}

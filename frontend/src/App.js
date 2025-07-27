@@ -94,7 +94,7 @@ import FutbolPage from './pages/FutbolPage';
 import LaLigaPage from './pages/futbol/LaLigaPage';
 import EntrenaGenerador from './pages/EntrenaGenerador.jsx';
 import Apoyar from './components/Apoyar'
-            
+import PromptImagesHistory from './components/PromptImagesHistory';
 
 
 
@@ -145,6 +145,7 @@ function App() {
             <Route path="/admin/sports-events" element={<AdminRoute><SportsEventsAdminPage /></AdminRoute>} />
             <Route path="/admin/temp-files" element={<AdminRoute><AdminTempFiles /></AdminRoute>} />
             {/* <Route path="/admin/sports-events" element={<SportsEventsAdminPage />} /> */}
+            <Route path="/keikoprompts/historial/:promptId" element={<PromptImagesHistory />} />
 
             <Route path="/admin/users" element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
             <Route path="/admin/anime-options" element={<AnimePromptOptionsPage />} />
