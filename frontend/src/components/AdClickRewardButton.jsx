@@ -13,7 +13,7 @@ export default function AdClickRewardButton({ className = '', style = {} }) {
       setClicks(res.data.clicks);
 
       if (res.data.rewardGiven) {
-        setMensaje('🎉 ¡Has ganado 5 tokens!');
+        setMensaje('🎉 ¡Has ganado 1 token!');
         setTimeout(() => setMensaje(''), 4000);
       }
 
@@ -47,7 +47,7 @@ export default function AdClickRewardButton({ className = '', style = {} }) {
           ...style
         }}
       >
-        💸 Apoyar (clics: {clicks}/5) = 5 tokens
+        💸 Apoyar (clics: {clicks}/5) = 1 tokens
       </button>
       {mensaje && <p style={{ marginTop: '0.5rem', color: 'limegreen' }}>{mensaje}</p>}
     </div>

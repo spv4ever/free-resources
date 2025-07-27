@@ -13,7 +13,7 @@ export const registerClick = async (req, res) => {
     );
 
     if (data.clicks >= 5) {
-      const amount = 5;
+      const amount = 1;
 
       // 1. Sumar tokens al balance
       const balanceDoc = await UserTokenBalance.findOneAndUpdate(
