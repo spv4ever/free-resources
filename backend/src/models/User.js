@@ -36,6 +36,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+    blocked: {
+    type: Boolean,
+    default: false
+  },
     descargasHoy: {
     type: Number,
     default: 0

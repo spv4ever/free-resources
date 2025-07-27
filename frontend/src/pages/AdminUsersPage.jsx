@@ -82,6 +82,7 @@ const AdminUsersPage = () => {
             <th>Verificado</th>
             <th>Fecha de registro</th>
             <th>Imágenes públicas</th>
+            <th>Bloqueado</th>
           </tr>
         </thead>
         <tbody>
@@ -116,6 +117,13 @@ const AdminUsersPage = () => {
                     type="checkbox"
                     checked={user.permiteImagenesPublicas}
                     onChange={(e) => updateUser(user._id, { permiteImagenesPublicas: e.target.checked })}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={user.blocked || false}
+                    onChange={(e) => updateUser(user._id, { blocked: e.target.checked })}
                   />
                 </td>
 

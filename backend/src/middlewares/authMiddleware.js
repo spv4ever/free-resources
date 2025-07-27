@@ -27,6 +27,10 @@ export const protect = async (req, res, next) => {
         return res.status(403).json({ message: 'Debes verificar tu correo electrónico antes de acceder.' });
       }
 
+      if (user.blocked) {
+        return res.status(403).json({ message: 'Tu cuenta ha sido bloqueada.' });
+      }
+
       req.user = user;
 
       if (typeof otorgarTokensDiarios === 'function') {

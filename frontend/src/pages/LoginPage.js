@@ -29,6 +29,8 @@ const { user, loading } = useUser();
       setErrorMessage('No tienes acceso. Tu cuenta no está registrada.');
     } else if (queryError === 'unverified') {
       setErrorMessage('Debes verificar tu correo electrónico antes de acceder.');
+    } else if (queryError === 'blocked') {
+      setErrorMessage('❌ Tu cuenta ha sido bloqueada.');
     } else if (!queryError && verified === 'true') {
       setErrorMessage('✅ Cuenta verificada. Ya puedes iniciar sesión.');
     }

@@ -42,7 +42,10 @@ passport.use('google-free-resources', new GoogleStrategy({
 
     return done(null, newUser);
     }
-
+    // ✅ Validar si está bloqueado
+    if (existingUser.blocked) {
+      return done(null, false, { message: 'Cuenta bloqueada' });
+    }
 
         return done(null, existingUser);
   } catch (error) {

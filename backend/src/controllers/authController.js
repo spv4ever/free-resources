@@ -83,15 +83,18 @@ export const loginUser = async (req, res) => {
     try {
       const user = await User.findOne({ email });
 
-      // 🚫 Validar si la cuenta fue creada por Google
-      if (user && user.provider === 'google') {
-        return res.status(403).json({ message: 'Esta cuenta solo puede iniciar sesión con Google.' });
-      }
-  
       if (!user || !(await user.matchPassword(password))) {
         return res.status(400).json({ message: 'Credenciales no válidas' });
       }
-  
+
+      if (user.blocked) {
+        return res.status(403).json({ message: 'Tu cuenta ha sido bloqueada.' });
+      }
+
+      if (user.provider === 'google') {
+        return res.status(403).json({ message: 'Esta cuenta solo puede iniciar sesión con Google.' });
+      }
+
       if (!user.isVerified) {
         return res.status(403).json({ message: 'Debes verificar tu correo antes de iniciar sesión.' });
       }
@@ -234,7 +237,7 @@ export const getAllUsers = async (req, res) => {
 
 export const updateUserByAdmin = async (req, res) => {
   const { id } = req.params;
-  const { role, isVerified, nickname, permiteImagenesPublicas } = req.body;
+  const { role, isVerified, nickname, permiteImagenesPublicas, blocked } = req.body;
 
   try {
     const user = await User.findById(id);
@@ -244,6 +247,7 @@ export const updateUserByAdmin = async (req, res) => {
     if (typeof isVerified === 'boolean') user.isVerified = isVerified;
     if (nickname) user.nickname = nickname.trim().slice(0, 50);
     if (typeof permiteImagenesPublicas === 'boolean') user.permiteImagenesPublicas = permiteImagenesPublicas;
+    if (typeof blocked === 'boolean') user.blocked = blocked;
 
     await user.save();
 

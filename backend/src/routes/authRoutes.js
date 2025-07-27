@@ -43,10 +43,14 @@ router.get(
   '/google/callback',
   passport.authenticate('google-free-resources', {
     session: false,
-    failureRedirect: '/login?error=unauthorized'
+    failureRedirect: `${process.env.FRONTEND_BASE_URL}/login?error=blocked`
   }),
   (req, res) => {
     const user = req.user;
+    if (!user) {
+      // Caso típico: cuenta bloqueada u otro error
+      return res.redirect(`${process.env.FRONTEND_BASE_URL}/login?error=blocked`);
+    }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: '30d'
