@@ -49,7 +49,7 @@
   },
   "5": {
     "inputs": {
-      "seed": 637620450720623,
+      "seed": 704454215714114,
       "steps": 30,
       "cfg": 7,
       "sampler_name": "euler",
@@ -79,8 +79,8 @@
   },
   "6": {
     "inputs": {
-      "width": 512,
-      "height": 896,
+      "width": 1024,
+      "height": 1408,
       "batch_size": 1
     },
     "class_type": "EmptyLatentImage",
@@ -117,38 +117,13 @@
     "inputs": {
       "filename_prefix": "anime_low",
       "images": [
-        "18",
+        "16",
         0
       ]
     },
     "class_type": "SaveImage",
     "_meta": {
       "title": "Save Image"
-    }
-  },
-  "18": {
-    "inputs": {
-      "upscale_model": [
-        "19",
-        0
-      ],
-      "image": [
-        "16",
-        0
-      ]
-    },
-    "class_type": "ImageUpscaleWithModel",
-    "_meta": {
-      "title": "Upscale Image (using Model)"
-    }
-  },
-  "19": {
-    "inputs": {
-      "model_name": "4x-AnimeSharp.pth"
-    },
-    "class_type": "Upscale Model Loader",
-    "_meta": {
-      "title": "Upscale Model Loader"
     }
   }
 }
