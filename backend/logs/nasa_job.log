@@ -2776,3 +2776,9 @@
 [2025-07-27T16:31:45.485Z] 🛰️ Job iniciado y programado correctamente
 [2025-07-27T16:35:55.891Z] 🛰️ Job iniciado y programado correctamente
 [2025-07-27T16:37:42.338Z] 🛰️ Job iniciado y programado correctamente
+[2025-07-28T05:05:01.491Z] ❌ Error al obtener imagen NASA: NasaImage validation failed: url: Path `url` is required.
+[2025-07-29T05:05:01.010Z] ✅ Imagen del día guardada: 2025-07-29
+[2025-07-29T17:51:28.758Z] 🛰️ Job iniciado y programado correctamente
+[2025-07-29T20:29:43.705Z] 🛰️ Job iniciado y programado correctamente
+[2025-07-29T20:34:10.286Z] 🛰️ Job iniciado y programado correctamente
+[2025-07-29T20:36:08.681Z] 🛰️ Job iniciado y programado correctamente

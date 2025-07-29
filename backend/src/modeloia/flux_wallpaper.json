@@ -180,7 +180,7 @@
   },
   "28": {
     "inputs": {
-      "model_name": "8xNMKDSuperscale_150000G.pt"
+      "model_name": "4x_NMKD-Superscale-SP_178000_G.pth"
     },
     "class_type": "UpscaleModelLoader",
     "_meta": {

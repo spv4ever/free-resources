@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 
 export async function sendEmail({ to, subject, html }) {
     const transporter = nodemailer.createTransport({
-        host: 'mail.keikodev.es',
+        host: 'smtp.hostinger.com',
         port: 465, // o 465 si usas SSL
         secure: true, // true para 465
         auth: {
@@ -12,7 +12,7 @@ export async function sendEmail({ to, subject, html }) {
       });
 
   const mailOptions = {
-    from: `"Free Resources" <${process.env.EMAIL_SENDER}>`,
+    from: `"Keiko Soporte" <no-reply@keikodev.es>`,
     to,
     subject,
     html
