@@ -52,6 +52,7 @@ export default function KeikoPromptsList() {
   const isProUser = useMemo(() => ['admin', 'pro'].includes(user?.role), [user]);
   const [customText, setCustomText] = useState({});
   const [imagePreviews, setImagePreviews] = useState({});
+  const [customReplacement, setCustomReplacement] = useState({});
   
   
 useEffect(() => {
@@ -663,32 +664,41 @@ useEffect(() => {
         {displayed.length === 0 && (
           <p className="no-results">No hay prompts que coincidan.</p>
         )}
-        {displayed.map(p => (
-          <PromptCardRedesigned 
-            key={p._id}
-            prompt={p}
-            imagenPreviewUrl={imagePreviews[p._id] || null} // 👈 nueva prop
-            imagenes={imagenes}
-            pendientes={pendientes}
-            tiempoTranscurrido={tiempoTranscurrido}
-            progresoGeneracion={progresoGeneracion}
-            generando={generando}
-            selectedExtras={selectedExtras}
-            setSelectedExtras={setSelectedExtras}
-            handleCopyAndOpen={handleCopyAndOpen}
-            copyToClipboard={copyToClipboard}
-            verificarImagen={verificarImagen}
-            opcionesAuxiliares={opcionesAuxiliares}
-            advancedMode={advancedMode}
-            setAdvancedMode={setAdvancedMode}
-            removeBackground={removeBackground}
-            setRemoveBackground={setRemoveBackground}
-            isProUser={isProUser}
-            customText={customText}
-            setCustomText={setCustomText}
-          />
+        {displayed.map(p => {
+          const promptWithCategory = {
+            ...p,
+            category: pack?.category // ✅ Añade la categoría del pack
+          };
 
-        ))}
+          return (
+            <PromptCardRedesigned 
+              key={promptWithCategory._id}
+              prompt={promptWithCategory}
+              imagenPreviewUrl={imagePreviews[promptWithCategory._id] || null}
+              imagenes={imagenes}
+              pendientes={pendientes}
+              tiempoTranscurrido={tiempoTranscurrido}
+              progresoGeneracion={progresoGeneracion}
+              generando={generando}
+              selectedExtras={selectedExtras}
+              setSelectedExtras={setSelectedExtras}
+              handleCopyAndOpen={handleCopyAndOpen}
+              copyToClipboard={copyToClipboard}
+              verificarImagen={verificarImagen}
+              opcionesAuxiliares={opcionesAuxiliares}
+              advancedMode={advancedMode}
+              setAdvancedMode={setAdvancedMode}
+              removeBackground={removeBackground}
+              setRemoveBackground={setRemoveBackground}
+              isProUser={isProUser}
+              customText={customText}
+              setCustomText={setCustomText}
+              customReplacement={customReplacement}
+              setCustomReplacement={setCustomReplacement}
+            />
+          );
+        })}
+
         {totalPages > 1 && (
           <div className="pagination-controls">
             <button

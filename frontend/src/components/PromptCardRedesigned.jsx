@@ -38,6 +38,8 @@ const PromptCardRedesigned = React.memo(({
   isProUser,
   customText,             // 👈 AÑADE ESTO
   setCustomText,
+  customReplacement,       // ✅ añadido
+  setCustomReplacement,    // ✅ añadido
   imagenPreviewUrl 
 }) => {
   const { user } = useUser();
@@ -87,7 +89,7 @@ const PromptCardRedesigned = React.memo(({
     }
     return <p className="keiko-prompt-card__image-placeholder-text">🖼️</p>;
   };
-
+  console.log("Categoría:", prompt.category);
   return (
     <div className="keiko-prompt-card">
       <div className="keiko-prompt-card__header">
@@ -194,6 +196,27 @@ const PromptCardRedesigned = React.memo(({
               </div>
             </div>
           )}
+          
+          {isFlux && prompt.category === 'Carteles' && (
+            <div className="keiko-prompt-card__custom-replacement-wrapper">
+              <label className="keiko-prompt-card__custom-label">
+                Introduce tu texto personalizado
+              </label>
+              <input
+                type="text"
+                className="keiko-prompt-card__custom-replacement-input"
+                placeholder='Ejemplo: YOU ARE NOT ALONE'
+                value={customReplacement[promptId] || ''}
+                onChange={(e) =>
+                  setCustomReplacement((prev) => ({
+                    ...prev,
+                    [promptId]: e.target.value
+                  }))
+                }
+              />
+            </div>
+          )}
+
           {isFlux && (user?.role === 'admin' || user?.role === 'pro') && showCustomInput && (
             <div className="keiko-prompt-card__custom-text">
               <textarea
@@ -244,8 +267,22 @@ const PromptCardRedesigned = React.memo(({
                     return;
                   }
                 }
-                const promptText = customText[promptId]?.trim() || prompt.prompt;
-                handleCopyAndOpen(promptText, prompt.platform, promptId);
+                let promptText = prompt.prompt;
+
+                // Si el usuario ha activado la edición completa del prompt, usar eso
+                if (showCustomInput && customText[promptId]?.trim()) {
+                  promptText = customText[promptId].trim();
+                }
+                // Si es un cartel y se introdujo texto, hacer reemplazo de 'KEIKODEV'
+                else if (prompt.category === 'Carteles' && customReplacement[promptId]?.trim()) {
+                  promptText = promptText.replace(/(["'])KEIKODEV\1/g, (match, quote) => {
+                    return `${quote}${customReplacement[promptId].trim()}${quote}`;
+                  });
+                }
+
+                  console.log('📤 Prompt final enviado:', promptText);
+
+                  handleCopyAndOpen(promptText, prompt.platform, promptId);
               }}
               disabled={isGenerating || isPending}
             >
