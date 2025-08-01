@@ -19,6 +19,7 @@
   import MotoGPCircuitCard from '../components/MotoGPCircuitCard';
   import F1CircuitCard from '../components/F1CircuitCard';
   import { useUser } from '../context/UserContext';
+  import ProjectInfoPopup from '../components/ProjectInfoPopup';
   // import AffiliateBannerAndSidebar from '../components/AffiliateBannerAndSidebar';
   // import { useUser } from '../context/UserContext';
 
@@ -202,7 +203,7 @@
           <NasaCard />
           <NasaCardVideo />
           <IgraalDealHighlight />
-          
+          <ProjectInfoPopup />
           <IgraalDiscountHighlight />
           <MotoGPCircuitCard />
           <F1CircuitCard />
