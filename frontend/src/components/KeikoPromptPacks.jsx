@@ -220,7 +220,7 @@
             >
               <div className="pack-card-image-container">
                 <img 
-                  src={pack.image || `https://via.placeholder.com/400x225/2c2c3a/ffffff?text=${encodeURIComponent(pack.category)}`} 
+                  src={pack.image || `https://placehold.co/400x225/2c2c3a/ffffff?text=${encodeURIComponent(pack.category)}`}
                   alt={pack.title} 
                 />
               </div>
