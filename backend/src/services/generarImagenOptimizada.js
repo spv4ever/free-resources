@@ -34,73 +34,89 @@ const resolucionesOptimizadas = {
 
 
 export const generarImagenOptimizada = async ({
-  prompt,
-  ratio = '16:9',
-  seed = null,
-  steps = 18,
-  filename_prefix = 'keiko',
-}) => {
-  if (!prompt) throw new Error('El prompt es obligatorio');
+    prompt,
+    ratio = '16:9',
+    seed = null,
+    steps = 18,
+    filename_prefix = 'keiko',
+    category = ''
+  }) => {
+    if (!prompt) throw new Error('El prompt es obligatorio');
 
-  const modificado = clonarFlujo(flujosCargados.normal);
-  const [width, height] = resolucionesOptimizadas[ratio] || resolucionesOptimizadas['4:3'];
+    const modificado = clonarFlujo(flujosCargados.normal);
+    const [width, height] = resolucionesOptimizadas[ratio] || resolucionesOptimizadas['4:3'];
 
-  modificado['1'].inputs.width = width;
-  modificado['1'].inputs.height = height;
-  modificado['13'].inputs.string = prompt;
-  modificado['12'].inputs.noise_seed = seed || Math.floor(Math.random() * 1e16);
-  modificado['10'].inputs.steps = Math.min(steps, 30);
-  modificado['30'].inputs.filename_prefix = filename_prefix;
+    modificado['1'].inputs.width = width;
+    modificado['1'].inputs.height = height;
+    modificado['13'].inputs.string = prompt;
+    modificado['12'].inputs.noise_seed = seed || Math.floor(Math.random() * 1e16);
+    modificado['10'].inputs.steps = Math.min(steps, 30);
+    modificado['30'].inputs.filename_prefix = filename_prefix;
 
-  // Redirigir imagen generada directamente (sin upscale)
-  modificado['30'].inputs.images = ['3', 0];
+    // 👕 Cambiar el LoRA si categoría es "Camisetas"
+    if (category === 'Camisetas' && modificado['25']) {
+      modificado['25'].inputs.lora_name = 'tshirt\\Graphic_T-Shirts.safetensors';
+      modificado['25'].inputs.strength_model = 1.0;
+    }
 
-  const comfyUrl = await getComfyUrl('flux');
-  const { data } = await axios.post(`${comfyUrl}/prompt`, { prompt: modificado }, getComfyAuth());
+    modificado['30'].inputs.images = ['3', 0];
 
-  if (data?.prompt_id) {
-    trackPendingJob(data.prompt_id);
-  }
+    const comfyUrl = await getComfyUrl('flux');
+    const { data } = await axios.post(`${comfyUrl}/prompt`, { prompt: modificado }, getComfyAuth());
 
-  return data;
-};
+    if (data?.prompt_id) {
+      trackPendingJob(data.prompt_id);
+    }
+
+    return data;
+  };
+
 
 export const generarImagenAvanzada = async ({
-  prompt,
-  ratio = '1:1',
-  seed = null,
-  steps = 15,
-  filename_prefix = 'keiko',
-  removeBackground = false
-}) => {
-  if (!prompt) throw new Error('El prompt es obligatorio');
+    prompt,
+    ratio = '1:1',
+    seed = null,
+    steps = 15,
+    filename_prefix = 'keiko',
+    removeBackground = false,
+    category = ''
+  }) => {
+    if (!prompt) throw new Error('El prompt es obligatorio');
 
-  const modificado = clonarFlujo(flujosCargados.pro);
-  const [width, height] = resolucionesOptimizadas[ratio] || resolucionesOptimizadas['4:3'];
+    const modificado = clonarFlujo(flujosCargados.pro);
+    const [width, height] = resolucionesOptimizadas[ratio] || resolucionesOptimizadas['4:3'];
 
-  modificado['1'].inputs.width = width;
-  modificado['1'].inputs.height = height;
+    modificado['1'].inputs.width = width;
+    modificado['1'].inputs.height = height;
+
     if (!prompt.includes('aidmaHyperrealism')) {
-    modificado['13'].inputs.string = `${prompt} + aidmaHyperrealism, `;
-  } else {
-    modificado['13'].inputs.string = prompt;
-  }
-  modificado['12'].inputs.noise_seed = seed || Math.floor(Math.random() * 1e16);
-  modificado['10'].inputs.steps = Math.min(steps, 30);
-  modificado['30'].inputs.filename_prefix = filename_prefix;
+      modificado['13'].inputs.string = `${prompt} + aidmaHyperrealism, `;
+    } else {
+      modificado['13'].inputs.string = prompt;
+    }
 
-  // Redirigir según si se desea eliminar fondo
-  modificado['30'].inputs.images = removeBackground ? ['31', 0] : ['29', 0];
+    modificado['12'].inputs.noise_seed = seed || Math.floor(Math.random() * 1e16);
+    modificado['10'].inputs.steps = Math.min(steps, 30);
+    modificado['30'].inputs.filename_prefix = filename_prefix;
 
-  const comfyUrl = await getComfyUrl('flux');
-  const { data } = await axios.post(`${comfyUrl}/prompt`, { prompt: modificado }, getComfyAuth());
+    // 👕 Cambiar el LoRA si categoría es "Camisetas"
+    if (category === 'Camisetas' && modificado['25']) {
+      modificado['25'].inputs.lora_name = 'tshirt\\Graphic_T-Shirts.safetensors';
+      modificado['25'].inputs.strength_model = 1.0;
+    }
 
-  if (data?.prompt_id) {
-    trackPendingJob(data.prompt_id);
-  }
+    modificado['30'].inputs.images = removeBackground ? ['31', 0] : ['29', 0];
 
-  return data;
-};
+    const comfyUrl = await getComfyUrl('flux');
+    const { data } = await axios.post(`${comfyUrl}/prompt`, { prompt: modificado }, getComfyAuth());
+
+    if (data?.prompt_id) {
+      trackPendingJob(data.prompt_id);
+    }
+
+    return data;
+  };
+
 
 export const generarImagenStickers = async ({
   prompt,
@@ -189,10 +205,10 @@ export const generarImagen = async ({
 
   if (advancedMode) {
     console.log(`[FLUJO] Usando flujo "pro" (modo avanzado activado)`);
-    return generarImagenAvanzada({ prompt, ratio, seed, steps, filename_prefix, removeBackground });
+    return generarImagenAvanzada({ prompt, ratio, seed, steps, filename_prefix, removeBackground, category });
   }
   console.log(`[FLUJO] Usando flujo "normal" por defecto`);
-  return generarImagenOptimizada({ prompt, ratio, seed, steps, filename_prefix });
+  return generarImagenOptimizada({ prompt, ratio, seed, steps, filename_prefix, category });
 };
 
 export const generarImagenAnime = async ({

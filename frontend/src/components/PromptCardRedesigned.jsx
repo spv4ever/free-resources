@@ -89,7 +89,7 @@ const PromptCardRedesigned = React.memo(({
     }
     return <p className="keiko-prompt-card__image-placeholder-text">🖼️</p>;
   };
-  console.log("Categoría:", prompt.category);
+  // console.log("Categoría:", prompt.category);
   return (
     <div className="keiko-prompt-card">
       <div className="keiko-prompt-card__header">
@@ -282,7 +282,12 @@ const PromptCardRedesigned = React.memo(({
 
                   console.log('📤 Prompt final enviado:', promptText);
 
-                  handleCopyAndOpen(promptText, prompt.platform, promptId);
+                  handleCopyAndOpen(promptText, prompt.platform, promptId, {
+                    selectedExtras: selectedExtras[promptId] || [],
+                    advancedMode: advancedMode[promptId] || false,
+                    removeBackground: removeBackground[promptId] || false,
+                    esPublica: false
+                  });
               }}
               disabled={isGenerating || isPending}
             >

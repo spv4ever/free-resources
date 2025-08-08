@@ -259,10 +259,13 @@ useEffect(() => {
   
   const displayed = prompts;
   
-  const handleCopyAndOpen = (promptText, platform, id) => {
+  const handleCopyAndOpen = (promptText, platform, id, options = {}) => {
     if (platform.toLowerCase() === 'flux') {
-      //handleFluxPrompt("Chica rubia desnuda nsfw", "68593838b0293947f7efcc7f");
-      handleFluxPrompt(promptText, id);
+      handleFluxPrompt({
+        promptText,
+        promptId: id,
+        ...options
+      });
       return;
     }
 
@@ -284,22 +287,33 @@ useEffect(() => {
     navigator.clipboard.writeText(text);
   };
 
-  const handleFluxPrompt = async (promptText, promptId) => {
+  const handleFluxPrompt = async ({
+    promptText,
+    promptId,
+    selectedExtras = [],
+    advancedMode = false,
+    removeBackground = false,
+    esPublica = false
+  }) => {
     try {
-        setImagenes(prevImagenes => {
-          const newImagenes = { ...prevImagenes };
-          delete newImagenes[promptId]; // Usamos 'delete' para eliminar la propiedad del objeto.
-          return newImagenes;
-        });
+      setImagenes(prevImagenes => {
+        const newImagenes = { ...prevImagenes };
+        delete newImagenes[promptId];
+        return newImagenes;
+      });
+
       setGenerando(promptId);
 
-      const extras = (selectedExtras[promptId] || []).map(e => e.value);
-      const finalPrompt = `${promptText}, ${extras.join(', ')}`.trim();
-      // const finalPrompt = "Twister-themed vector letters 'ANGEL' dripping green paint, swirling drips and dust motifs, perfect for extreme t-shirt design";
-      
+      const extras = selectedExtras.map(e => (typeof e === 'string' ? e : e?.value)).filter(Boolean);
+      const finalPrompt = extras.length > 0
+        ? `${extras.join(', ')}, ${promptText}`.trim()
+        : promptText.trim();
+
+      console.log('🧪 Prompt final:', finalPrompt); // ✅ verificación
+      console.log('📦 Extras:', extras);
 
       const token = localStorage.getItem('token');
-      
+
       const { data } = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/flux/generate`,
         {
@@ -308,8 +322,9 @@ useEffect(() => {
           steps: pack?.category === 'Anime' ? 30 : 15,
           seed: (isProUser && !useRandomSeed) ? parseInt(customSeed) : undefined,
           promptRef: promptId,
-          advancedMode: advancedMode[promptId] || false,
-          removeBackground: removeBackground[promptId] || false
+          advancedMode,
+          removeBackground,
+          esPublica
         },
         {
           headers: { Authorization: `Bearer ${token}` }
@@ -327,30 +342,28 @@ useEffect(() => {
       }));
 
       setPendientesTimestamps(prev => ({ ...prev, [promptId]: Date.now() }));
-      const currentPromptId = promptId;
-      const currentPromptBackendId = prompt_id;
 
       setTimeout(() => {
         setPendientes(p => {
-          if (p[currentPromptId]) {
-            verificarImagenConRetry(currentPromptId, currentPromptBackendId);
+          if (p[promptId]) {
+            verificarImagenConRetry(promptId, prompt_id);
           }
           return p;
         });
       }, 20000);
     } catch (err) {
       console.error('Error al generar con Flux:', err.message);
-      if (err.response && err.response.status === 403) {
-          setErrorModal({
-            mensaje: 'No tienes tokens suficientes para generar imágenes.',
-            link: '/info/tokens',
-            imagen: imgSinTokens
-          });
-        } else {
-          setErrorModal({
-            mensaje: 'Ocurrió un error al generar la imagen. Inténtalo más tarde.'
-          });
-        }
+      if (err.response?.status === 403) {
+        setErrorModal({
+          mensaje: 'No tienes tokens suficientes para generar imágenes.',
+          link: '/info/tokens',
+          imagen: imgSinTokens
+        });
+      } else {
+        setErrorModal({
+          mensaje: 'Ocurrió un error al generar la imagen. Inténtalo más tarde.'
+        });
+      }
     } finally {
       setGenerando(null);
     }
@@ -417,7 +430,7 @@ useEffect(() => {
   { value: 'chromatic background', label: 'Chromatic background' }, // 🆕 para keying
   { value: 'soft lighting', label: 'Soft lighting' },
   { value: 'extra detail', label: 'Extra detail' },
-  { value: 'high contrast', label: 'High contrast' }
+  { value: 'HDR lighting', label: 'High contrast' }
 ];
 
   const verificarImagen = async (promptId, prompt_id) => {

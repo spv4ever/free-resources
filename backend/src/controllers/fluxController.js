@@ -30,6 +30,7 @@ export const generarImagen = async (req, res) => {
     } = req.body;
     // console.log('📦 Categoría detectada para promptRef:', category);
     const filename_prefix = req.user.nickname || 'keiko';
+    
 
     // 🔎 Obtener categoría del pack (si viene referencia de prompt)
     let category = '';
@@ -68,14 +69,28 @@ export const generarImagen = async (req, res) => {
       throw new Error('❌ No se recibió prompt_id desde generarImagenServicio');
     }
 
+
+
+    // Leer el usuario completo desde Mongo (por si el token no incluye ese campo)
+    const User = await import('../models/User.js').then(m => m.default);
+    const userDb = await User.findById(req.user._id);
+
+    // Verificación de valores antes de guardar
+    console.log('🔍 esPublica en body:', req.body.esPublica);
+    console.log('🔍 permiteImagenesPublicas en usuario:', userDb.permiteImagenesPublicas);
+
+    // Lógica final para determinar visibilidad pública
+    const debeSerPublica =
+      req.body.esPublica === true ||
+      req.body.esPublica === 'true' ||
+      userDb.permiteImagenesPublicas === true;
+
     await ImagenGenerada.create({
       user: req.user._id,
       prompt_id: resultado.prompt_id,
       prompt,
       promptRef,
-      public: typeof req.body.esPublica !== 'undefined'
-        ? req.body.esPublica === true || req.body.esPublica === 'true'
-        : req.user.permiteImagenesPublicas === true,
+      public: debeSerPublica,
     });
 
     trackPendingJob(resultado.prompt_id, {

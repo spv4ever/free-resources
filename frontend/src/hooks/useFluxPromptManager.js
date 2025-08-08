@@ -1,5 +1,5 @@
 // src/hooks/useFluxPromptManager.js
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback  } from 'react';
 import axios from 'axios';
 import imgSinTokens from '../assets/sin_tokens.png';
 
@@ -48,6 +48,8 @@ export default function useFluxPromptManager({ pack, isProUser, selectedRatio })
 
       const extras = selectedExtras.map(e => e.value);
       const finalPrompt = `${extras.join(', ')}, ${promptText}`.trim();
+
+      
       const token = localStorage.getItem('token');
 
       const { data } = await axios.post(
@@ -97,7 +99,7 @@ export default function useFluxPromptManager({ pack, isProUser, selectedRatio })
     }
   };
 
-  const verificarImagenConRetry = (promptId, prompt_id, intentos = 0) => {
+  const verificarImagenConRetry = useCallback((promptId, prompt_id, intentos = 0) => {
     const token = localStorage.getItem('token');
 
     if (intentos >= 10) {
@@ -143,7 +145,7 @@ export default function useFluxPromptManager({ pack, isProUser, selectedRatio })
           verificarImagenConRetry(promptId, prompt_id, intentos + 1);
         }, 15000);
       });
-  };
+  }, []);
 
   const verificarImagen = async (promptId, prompt_id) => {
     const createdAt = pendientesTimestamps[promptId];
@@ -233,7 +235,7 @@ export default function useFluxPromptManager({ pack, isProUser, selectedRatio })
         verificarImagenConRetry(promptId, prompt_id);
       }
     });
-  }, [progresoGeneracion]);
+  }, [progresoGeneracion, pendientes, imagenes, verificarImagenConRetry]);
 
   return {
     generando,
