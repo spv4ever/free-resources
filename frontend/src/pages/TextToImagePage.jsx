@@ -2,6 +2,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { startText2Image, getImageStatus } from '../services/text2imageApi';
 import { useUser } from '../context/UserContext';
+import { useNavigate } from 'react-router-dom'; // NEW
 
 // --- Constantes y Configuración ---
 const RATIOS = ['1:1', '2:3', '3:2', '3:4', '4:3', '16:9', '9:16'];
@@ -29,6 +30,41 @@ const LORA_OPTIONS = [
   },
   // 👉 añade más LoRAs aquí
 ];
+
+const InlineAlert = ({ message, onLogin }) => { // NEW - aviso compacto
+  if (!message) return null;
+  return (
+    <div
+      style={{
+        margin: '0 0 1rem',
+        padding: '0.75rem 1rem',
+        borderRadius: 8,
+        border: '1px solid #ef4444',
+        background: 'rgba(239,68,68,.08)',
+        color: '#fecaca',
+        display: 'flex',
+        gap: '0.75rem',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      }}
+    >
+      <span>⚠️ {message}</span>
+      <button
+        onClick={onLogin}
+        style={{
+          background: '#ef4444',
+          color: '#fff',
+          border: 'none',
+          borderRadius: 6,
+          padding: '0.5rem .85rem',
+          cursor: 'pointer'
+        }}
+      >
+        Iniciar sesión
+      </button>
+    </div>
+  );
+};
 
 // --- Iconos SVG para una UI más rica ---
 const IconLoader = () => (
@@ -294,9 +330,12 @@ export default function TextToImagePage() {
   const [seed, setSeed] = useState('');
   const [randomSeed, setRandomSeed] = useState(true);
   const [filenamePrefix, setFilenamePrefix] = useState('keiko');
-  const { user } = useUser() || {};
+  const { user, loading } = useUser() || {};
+  const navigate = useNavigate(); // NEW
+  const isLogged = !loading && Boolean(user);
   const role = user?.role || localStorage.getItem('role') || 'free';
   const canTuneSteps = role === 'pro' || role === 'admin';
+
 
   // LoRA
   const [useLora, setUseLora] = useState(true);
@@ -315,7 +354,10 @@ export default function TextToImagePage() {
   const [imageId, setImageId] = useState(null);
   const [status, setStatus] = useState(null);
   const [finalUrl, setFinalUrl] = useState(null);
+  const [authError, setAuthError] = useState(''); // NEW
   const pollRef = useRef(null);
+
+  const goLogin = () => navigate('/login?error=unauthorized'); // NEW
 
   // Helpers
   const seedValue = useMemo(() => {
@@ -328,7 +370,11 @@ export default function TextToImagePage() {
     [loraKey]
   );
 
-  const canSubmit = prompt.trim().length > 3 && !submitting;
+  const canSubmit = prompt.trim().length > 3 && !submitting && !loading && isLogged;
+
+  useEffect(() => {
+    if (!loading && isLogged) setAuthError('');
+  }, [loading, isLogged]);
 
   // Polling
   useEffect(() => {
@@ -356,6 +402,15 @@ export default function TextToImagePage() {
           setSubmitting(false);
         }
       } catch (e) {
+        const code = e?.response?.status;
+        if (code === 401) {
+          clearInterval(pollRef.current);
+          pollRef.current = null;
+          setSubmitting(false);
+          setStatus(null);
+          setAuthError('Debes iniciar sesión para generar imágenes.');
+          return;
+        }
         if (e?.response?.status === 404) {
           clearInterval(pollRef.current);
           pollRef.current = null;
@@ -368,7 +423,16 @@ export default function TextToImagePage() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (loading || !prompt.trim() || submitting) return;
+    if (!isLogged) {
+      setAuthError('Debes iniciar sesión para generar imágenes.');
+      setStatus(null);
+      setSubmitting(false);
+      return;
+    }
+
+    // limpiar aviso de auth si había
+    if (authError) setAuthError('');
 
     setSubmitting(true);
     setStatus('en_proceso');
@@ -406,8 +470,14 @@ export default function TextToImagePage() {
       startPolling(id);
 
     } catch (err) {
-      console.error(err);
-      setStatus('error');
+      const code = err?.response?.status;
+      if (code === 401) { // NEW: feedback claro de auth
+        setAuthError('Tu sesión no es válida o ha caducado. Inicia sesión para continuar.');
+        setStatus(null);
+      } else {
+        console.error(err);
+        setStatus('error');
+      }
       setSubmitting(false);
     }
   };
@@ -419,7 +489,18 @@ export default function TextToImagePage() {
           <h1>Generador de Imágenes con IA</h1>
           <p>Crea imágenes impactantes a partir de texto usando tecnología FLUX / ComfyUI.</p>
         </header>
-
+        {/* Aviso de autenticación (solo cuando hay error 401 o no logado) */}
+        <InlineAlert message={authError} onLogin={goLogin} />
+        {/* ⬇️ Aquí ya no hay early return; solo elegimos qué UI mostrar */}
+        {loading ? (
+          <div className="main-content">
+            <section className="control-panel" style={{ opacity: 0.6 }}>Cargando…</section>
+            <section className="preview-panel">
+              <div className="placeholder">Cargando…</div>
+            </section>
+          </div>
+        ) : (
+        <>
         <main className="main-content">
           <ControlPanel
             prompt={prompt} setPrompt={setPrompt}
@@ -439,9 +520,11 @@ export default function TextToImagePage() {
           <ImagePreview status={status} finalUrl={finalUrl} />
         </main>
         <StatusDisplay status={status} imageId={imageId} />
-      </div>
+        </>)}
+      </div> {/* ⬅️ cierre SIEMPRE fuera del ternario */}
+      
 
-      <style jsx global>{`
+      <style>{`
         /* --- ESTILOS GLOBALES Y RESET --- */
         :root {
           --color-primary: #3b82f6;

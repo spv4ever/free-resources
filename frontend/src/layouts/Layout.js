@@ -35,6 +35,7 @@
     { title: 'YouTube Uploader', description: 'Sube y programa tus creaciones! Verán la luz cuando tu decidas', path: '/youtube-uploader', icon: <FaYoutube /> },
     // { title: 'Anime Prompts', description: 'Generador de prompts IA con personajes anime', path: '/generador-anime-prompts', icon: <FaMagic /> },
     { title: 'KeikoPrompts', description: 'Explora nuestros packs de prompts para IA, listos para usar.', path: '/keikoprompts', icon: <FaBoxes /> },
+    { title: 'Texto a Imagen', description: 'Genera imágenes desde prompt con diferentes LORAs', path: '/texto-a-imagen', icon: <FaBoxes /> },
     { title: 'AI Links', description: 'Lista de herramientas de inteligencia artificial.', path: '/ai-links', icon: <FaRobot /> },
 
     // 🎓 Valor educativo / útil
