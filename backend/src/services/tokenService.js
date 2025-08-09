@@ -21,6 +21,24 @@ export const consumirToken = async ({ userId, type = 'generation', tool = 'comfy
   });
 };
 
+export const reembolsarToken = async ({ userId, reason = 'Rollback generación fallida' }) => {
+  const balance = await UserTokenBalance.findOneAndUpdate(
+    { user: userId },
+    { $inc: { balance: 1 }, $set: { lastUpdate: new Date() } },
+    { new: true, upsert: true }
+  );
+
+  await TokenTransaction.create({
+    user: userId,
+    type: 'refund',
+    amount: +1,
+    tool: 'comfyui',
+    description: reason
+  });
+
+  return { ok: true, balance: balance.balance };
+};
+
 export const otorgarTokensDiarios = async (userId) => {
   const hoy = new Date();
   hoy.setHours(0, 0, 0, 0);

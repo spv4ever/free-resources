@@ -7,15 +7,20 @@ import { getComfyUrl } from '../services/comfyService.js';
 import { getComfyAuth } from '../utils/comfyAuth.js';
 import { rollbackDebit } from '../utils/tokenRollback.js';
 import { patchFluxNormal } from '../utils/patchFluxNormal.js';
-import { resolveComfyLoraName } from '../utils/resolveComfyLora.js';
+// import { resolveComfyLoraName } from '../utils/resolveComfyLora.js';
+import { consumirToken, reembolsarToken } from '../services/tokenService.js'; // ⬅️ nuevo
 
 const proporciones = {
   '1:1': [1024, 1024],
   '2:3': [768, 1152],
   '3:4': [768, 1024],
+  '3:2': [1152, 768],
+  '4:3': [1024, 768],
   '16:9': [1280, 720],
   '9:16': [720, 1280],
 };
+
+
 
 const clonar = (obj) => JSON.parse(JSON.stringify(obj));
 
@@ -23,6 +28,8 @@ export const iniciarTextoImagen = async (req, res) => {
   const userId = req.user._id;
   const tokenCost = req.__tokenCost || 1;
   const tokenTxId = req.__tokenTxId;
+  const isPrivileged = ['pro', 'admin'].includes(req.user?.role);
+  const DEFAULT_STEPS_BACK = 10;
 
   try {
     const {
@@ -39,6 +46,10 @@ export const iniciarTextoImagen = async (req, res) => {
         loraStrengthClip,     // opcional (por defecto 1.0 en tu flujo)
         loraInsertMode        // 'prefix' | 'suffix' (default: 'prefix')
         } = req.body || {};
+    const stepsNum = Number(steps);
+    const stepsSafe = isPrivileged
+    ? (Number.isFinite(stepsNum) ? Math.max(1, Math.min(60, Math.trunc(stepsNum))) : DEFAULT_STEPS_BACK)
+    : DEFAULT_STEPS_BACK;
 
     if (!prompt?.trim()) {
       return res.status(400).json({ error: 'Prompt requerido' });
@@ -49,6 +60,14 @@ export const iniciarTextoImagen = async (req, res) => {
       return res.status(400).json({ error: 'Modo no soportado en esta versión. Usa modo="normal".' });
     }
 
+    // 1) 💳 Descontar 1 token antes de iniciar
+    await consumirToken({
+      userId,
+      type: 'generation',
+      tool: 'comfyui',
+      description: 'Texto→Imagen (FLUX normal)'
+    });
+
     const flujoBase = flujosCargados?.normal;
     if (!flujoBase) throw new Error('Flujo "normal" no cargado');
 
@@ -58,6 +77,18 @@ export const iniciarTextoImagen = async (req, res) => {
     // Normalizamos seed (puede venir string)
     const seedNum = Number(seed);
     const seedInt = Number.isFinite(seedNum) ? Math.trunc(seedNum) : undefined;
+
+    // --- semilla ---
+    // si el usuario la escribe, usamos esa; si no, generamos una nueva cada vez
+    const hasSeed =
+    seed !== undefined &&
+    seed !== null &&
+    String(seed).trim() !== '' &&
+    Number.isFinite(Number(seed));
+
+    const seedToUse = hasSeed
+    ? Math.trunc(Number(seed))
+    : crypto.randomInt(0, 2 ** 31 - 1); // nueva aleatoria cada submit
     // arriba del archivo o en un util
     const sanitizeLoraName = (s) => {
     if (!s) return s;
@@ -83,8 +114,8 @@ export const iniciarTextoImagen = async (req, res) => {
     prompt,
     width,
     height,
-    steps: Number(steps) || 20,
-    seed: Number.isInteger(seedInt) ? seedInt : undefined,
+    steps: stepsSafe,
+    seed: seedToUse,                // 👈 siempre fijamos semilla
     filename_prefix,
     forceLoraStrength: false, // ahora dejamos que lo mande el frontend
     lora: resolvedLoraName  || loraTrigger || typeof loraStrengthModel === 'number' || typeof loraStrengthClip === 'number'
@@ -105,8 +136,8 @@ export const iniciarTextoImagen = async (req, res) => {
         prompt,
         params: {
             ratio,
-            steps: Number(steps) || 20,
-            seed: Number.isInteger(seedInt) ? seedInt : null,
+            steps: stepsSafe, 
+            seed: seedToUse,              // 👈 queda registrada para auditoría
             filename_prefix,
             modo: 'normal',
             lora: loraName ? {
@@ -146,7 +177,12 @@ export const iniciarTextoImagen = async (req, res) => {
   } catch (err) {
     console.error('[iniciarTextoImagen] ERROR:', err?.message || err);
     // Rollback de tokens si el débito ya ocurrió
-    try { await rollbackDebit(userId, tokenTxId, tokenCost); } catch (e) { /* noop */ }
+    // 🔁 Rollback: si ya descontamos token en este flujo, reembolsa 1
+    try {
+        await reembolsarToken({ userId: req.user._id, reason: 'Rollback Texto→Imagen' });
+        } catch (e) {
+        console.warn('[tokens] fallo al reembolsar:', e?.message || e);
+        }
     return res.status(500).json({ error: 'No se pudo iniciar la generación', detail: err?.message || String(err) });
   }
 };

@@ -1,10 +1,11 @@
 // src/pages/TextToImagePage.jsx
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { startText2Image, getImageStatus } from '../services/text2imageApi';
+import { useUser } from '../context/UserContext';
 
 // --- Constantes y Configuración ---
-const RATIOS = ['1:1', '2:3', '3:4', '16:9', '9:16'];
-const DEFAULT_STEPS = 20;
+const RATIOS = ['1:1', '2:3', '3:2', '3:4', '4:3', '16:9', '9:16'];
+const DEFAULT_STEPS = 10;
 
 // Opciones LoRA (con soporte de carpeta/archivo)
 const LORA_OPTIONS = [
@@ -164,7 +165,7 @@ const ControlPanel = ({
   prompt, setPrompt, ratio, setRatio, steps, setSteps, seed, setSeed,
   randomSeed, setRandomSeed, filenamePrefix, setFilenamePrefix,
   useLora, setUseLora, loraKey, setLoraKey, loraConfig, setLoraConfig,
-  onSubmit, canSubmit, submitting
+  onSubmit, canSubmit, canTuneSteps, submitting
 }) => (
   <section className="control-panel">
     <FormField label="Prompt">
@@ -187,7 +188,13 @@ const ControlPanel = ({
           type="number" min={1} max={60} step={1}
           value={steps}
           onChange={(e) => setSteps(e.target.value)}
+          disabled={!canTuneSteps || submitting}   // ⬅️ bloqueo visual
         />
+        {!canTuneSteps && (
+          <small className="hint">
+            Disponible solo para cuentas PRO o ADMIN (por defecto: {DEFAULT_STEPS}).
+          </small>
+        )}
       </FormField>
     </div>
 
@@ -287,6 +294,9 @@ export default function TextToImagePage() {
   const [seed, setSeed] = useState('');
   const [randomSeed, setRandomSeed] = useState(true);
   const [filenamePrefix, setFilenamePrefix] = useState('keiko');
+  const { user } = useUser() || {};
+  const role = user?.role || localStorage.getItem('role') || 'free';
+  const canTuneSteps = role === 'pro' || role === 'admin';
 
   // LoRA
   const [useLora, setUseLora] = useState(true);
@@ -298,6 +308,7 @@ export default function TextToImagePage() {
     strengthClip: LORA_OPTIONS[0].defaultStrengthClip,
     insertMode: 'prefix',
   });
+
 
   // Estado de job
   const [submitting, setSubmitting] = useState(false);
@@ -368,7 +379,7 @@ export default function TextToImagePage() {
       const payload = {
         prompt: prompt.trim(), // el backend insertará el trigger con coma
         ratio,
-        steps: Number(steps) || DEFAULT_STEPS,
+        steps: canTuneSteps ? (Number(steps) || DEFAULT_STEPS) : DEFAULT_STEPS, // ⬅️ fuerza
         filename_prefix: filenamePrefix || 'keiko',
         modo: 'normal',
       };
@@ -423,6 +434,7 @@ export default function TextToImagePage() {
             onSubmit={onSubmit}
             canSubmit={canSubmit}
             submitting={submitting}
+            canTuneSteps={canTuneSteps}   // ⬅️ nuevo prop
           />
           <ImagePreview status={status} finalUrl={finalUrl} />
         </main>
