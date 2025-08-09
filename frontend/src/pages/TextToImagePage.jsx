@@ -21,6 +21,19 @@ const LORA_OPTIONS = [
   },
   {
     key: 'designtshirt',
+    label: 'T-Shirt Design',
+    folder: '', // carpeta
+    filename: 'Graphic_T-Shirts.safetensors', // archivo
+    trigger: 'Graphic T-Shirt',
+    defaultStrengthModel: 1.0,
+    defaultStrengthClip: 1.0,
+    examples: [
+      'A graphic t-shirt design of a sultry female tree frog wearing a bikini, red lipstick, and mirrored sunglasses that reads "You Lookin At Me?"',
+      'A graphic t-shirt design of a sloth surfing a giant wave in Costa Rica that reads "Surf Costa Rica" on a black background'
+    ],
+  },
+  {
+    key: 'designtshirt_plus',
     label: 'T-Shirt Design Marvel',
     folder: '', // carpeta
     filename: 'd3s1gntsh1rt-designtshirt-flux.safetensors', // archivo
@@ -98,7 +111,7 @@ const LoraControls = ({
   useLora, setUseLora,
   loraKey, setLoraKey,
   loraConfig, setLoraConfig,
-  submitting
+  submitting, setPrompt
 }) => {
   const [isOpen, setIsOpen] = useState(true);
   const current = useMemo(
@@ -191,6 +204,68 @@ const LoraControls = ({
               </select>
             </FormField>
           </div>
+          {/* --- Ejemplos opcionales por LoRA --- */}
+          {Array.isArray(current?.examples) && current.examples.length > 0 && (
+            <div className="examples-wrap" style={{ borderTop: '1px solid var(--color-border)', paddingTop: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '.5rem' }}>
+                <strong style={{ fontSize: '.95rem' }}>Ejemplos rápidos</strong>
+                <small className="hint">Haz clic para copiar o usar</small>
+              </div>
+
+              <ul style={{ display: 'grid', gap: '.5rem', listStyle: 'none', padding: 0, margin: 0 }}>
+                {current.examples.map((ex, i) => {
+                  const buildWithTrigger = () => {
+                    if (!useLora || !current?.trigger) return ex;
+                    return loraConfig.insertMode === 'prefix'
+                      ? `${current.trigger}, ${ex}`
+                      : `${ex}, ${current.trigger}`;
+                  };
+
+                  const handleCopy = async () => {
+                    const text = buildWithTrigger();
+                    try {
+                      if (navigator?.clipboard?.writeText) {
+                        await navigator.clipboard.writeText(text);
+                      } else {
+                        // fallback
+                        const ta = document.createElement('textarea');
+                        ta.value = text;
+                        document.body.appendChild(ta);
+                        ta.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(ta);
+                      }
+                    } catch {}
+                  };
+
+                  const handleUse = () => {
+                    // si prefieres concatenar al prompt existente, cambia la asignación
+                    setPrompt(buildWithTrigger());
+                    // setPrompt(prev => prev ? `${prev}\n${buildWithTrigger()}` : buildWithTrigger());
+                  };
+
+                  return (
+                    <li key={i} style={{ background: 'rgba(15,23,42,.5)', border: '1px solid var(--color-border)', borderRadius: 8, padding: '.75rem' }}>
+                      <div style={{ display: 'flex', gap: '.75rem', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                        <span style={{ flex: 1, color: 'var(--color-text-secondary)' }}>{ex}</span>
+                        <div style={{ display: 'flex', gap: '.5rem', whiteSpace: 'nowrap' }}>
+                          <button type="button" onClick={handleCopy} disabled={submitting}
+                            style={{ padding: '.35rem .6rem', border: '1px solid var(--color-border)', background: 'transparent', color: 'var(--color-text-primary)', borderRadius: 6, cursor: 'pointer' }}>
+                            Copiar
+                          </button>
+                          <button type="button" onClick={handleUse} disabled={submitting}
+                            style={{ padding: '.35rem .6rem', border: 'none', background: 'var(--color-primary)', color: '#fff', borderRadius: 6, cursor: 'pointer' }}>
+                            Usar
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+
         </div>
       )}
     </div>
@@ -273,6 +348,7 @@ const ControlPanel = ({
       loraConfig={loraConfig}
       setLoraConfig={setLoraConfig}
       submitting={submitting}
+      setPrompt={setPrompt}
     />
 
     <button onClick={onSubmit} disabled={!canSubmit} className="submit-button">
@@ -373,6 +449,7 @@ export default function TextToImagePage() {
   const canSubmit = prompt.trim().length > 3 && !submitting && !loading && isLogged;
 
   useEffect(() => {
+    if (!loading && !isLogged) setAuthError('Debes iniciar sesión para generar imágenes.');
     if (!loading && isLogged) setAuthError('');
   }, [loading, isLogged]);
 
