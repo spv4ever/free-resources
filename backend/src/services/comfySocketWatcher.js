@@ -4,7 +4,7 @@ import { getComfyUrl } from '../services/comfyService.js';
 import { getComfyAuth } from '../utils/comfyAuth.js';
 import { manejarFinalizacionDeJob } from '../services/manejoResultadoImagen.js';
 import { verificarImagen } from '../controllers/fluxController.js';
-
+import { finalizeText2ImageByPromptId } from '../services/text2imageFinalize.js';
 
 const jobStatusMap = new Map();
 
@@ -87,7 +87,7 @@ const connect = async () => {
                   inQueue: false,
                   finishedAt: Date.now()
                 });
-
+                finalizeText2ImageByPromptId(promptId).catch(e => console.error('❌ finalizeText2Image error:', e.message));
                 esperarYVerificarImagen(promptId);
               }
             }
@@ -138,7 +138,7 @@ const connect = async () => {
                 inQueue: false,
                 finishedAt: Date.now()
               });
-
+              finalizeText2ImageByPromptId(promptId).catch(e => console.error('❌ finalizeText2Image error:', e.message));
               esperarYVerificarImagen(promptId);
             }
             break;
@@ -157,6 +157,7 @@ const connect = async () => {
               });
 
               manejarFinalizacionDeJob(promptId, previous);
+              finalizeText2ImageByPromptId(promptId).catch(e => console.error('❌ finalizeText2Image error:', e.message));
             }
             break;
         }

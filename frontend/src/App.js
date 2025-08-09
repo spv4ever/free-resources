@@ -112,6 +112,7 @@ import KeikoUpscale from './pages/KeikoUpscale'; // Ajusta ruta si es distinta
 import PixeladorImagen from "./pages/PixeladorImagen";
 import GiradorImagenes from "./pages/GiradorImagenes";
 import RecortadorImagen from "./pages/RecortadorImagen"; // o el nombre que le hayas dado
+import TextToImagePage from './pages/TextToImagePage';
 
 
 
@@ -146,6 +147,7 @@ function App() {
             <Route path="/admin/temp-files" element={<AdminRoute><AdminTempFiles /></AdminRoute>} />
             {/* <Route path="/admin/sports-events" element={<SportsEventsAdminPage />} /> */}
             <Route path="/keikoprompts/historial/:promptId" element={<PromptImagesHistory />} />
+            <Route path="/texto-a-imagen" element={<TextToImagePage />} />
 
             <Route path="/admin/users" element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
             <Route path="/admin/anime-options" element={<AnimePromptOptionsPage />} />

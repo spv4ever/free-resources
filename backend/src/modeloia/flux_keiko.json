@@ -180,7 +180,7 @@
   },
   "28": {
     "inputs": {
-      "model_name": "4x_NMKD-Superscale-SP_178000_G.pth"
+      "model_name": "RealESRGAN_x2.pth"
     },
     "class_type": "UpscaleModelLoader",
     "_meta": {
