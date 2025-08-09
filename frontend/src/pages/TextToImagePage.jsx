@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { startText2Image, getImageStatus } from '../services/text2imageApi';
 import { useUser } from '../context/UserContext';
-import { useNavigate } from 'react-router-dom'; // NEW
+import { useNavigate } from 'react-router-dom';
 
 // --- Constantes y Configuración ---
 const RATIOS = ['1:1', '2:3', '3:2', '3:4', '4:3', '16:9', '9:16'];
@@ -13,7 +13,7 @@ const LORA_OPTIONS = [
   {
     key: 'aidmaHyperrealism',
     label: 'Aidma Hyperrealism (FLUX v0.3)',
-    folder: '', // raíz
+    folder: '',
     filename: 'aidmaHyperrealism-FLUX-v0.3.safetensors',
     trigger: 'aidmaHyperrealism',
     defaultStrengthModel: 0.7,
@@ -22,8 +22,8 @@ const LORA_OPTIONS = [
   {
     key: 'designtshirt',
     label: 'T-Shirt Design',
-    folder: '', // carpeta
-    filename: 'Graphic_T-Shirts.safetensors', // archivo
+    folder: '',
+    filename: 'Graphic_T-Shirts.safetensors',
     trigger: 'Graphic T-Shirt',
     defaultStrengthModel: 1.0,
     defaultStrengthClip: 1.0,
@@ -35,16 +35,62 @@ const LORA_OPTIONS = [
   {
     key: 'designtshirt_plus',
     label: 'T-Shirt Design Marvel',
-    folder: '', // carpeta
-    filename: 'd3s1gntsh1rt-designtshirt-flux.safetensors', // archivo
+    folder: '',
+    filename: 'd3s1gntsh1rt-designtshirt-flux.safetensors',
     trigger: 'd3s1gntsh1rt',
     defaultStrengthModel: 1.0,
     defaultStrengthClip: 1.0,
   },
-  // 👉 añade más LoRAs aquí
 ];
 
-const InlineAlert = ({ message, onLogin }) => { // NEW - aviso compacto
+// --- Helpers (antes de los componentes que los usan) ---
+const unwrapStatus = (resp) => {
+  if (!resp || typeof resp !== 'object') return resp;
+  if ('status' in resp || 'estado' in resp || 'progress' in resp) return resp;
+  if (resp.data && typeof resp.data === 'object') return resp.data;
+  if (resp.result && typeof resp.result === 'object') return resp.result;
+  if (resp.payload && typeof resp.payload === 'object') return resp.payload;
+  return resp;
+};
+
+const parseProgress = (raw) => {
+  const pick = (v) => {
+    if (v === undefined || v === null) return null;
+    if (typeof v === 'string') {
+      const m = v.match(/(\d+(?:\.\d+)?)/);
+      return m ? Number(m[1]) : null;
+    }
+    if (typeof v === 'number') return v;
+    return null;
+  };
+
+  const direct =
+    pick(raw?.progress) ??
+    pick(raw?.porcentaje) ??
+    pick(raw?.percentage) ??
+    pick(raw?.progreso) ??
+    pick(raw?.meta?.progress);
+
+  if (direct !== null && Number.isFinite(direct)) {
+    return Math.max(0, Math.min(100, Math.round(direct)));
+  }
+
+  const cur = Number(raw?.currentStep ?? raw?.step ?? raw?.stepsDone);
+  const tot = Number(raw?.totalSteps ?? raw?.stepsTotal ?? raw?.steps);
+  if (Number.isFinite(cur) && Number.isFinite(tot) && tot > 0) {
+    return Math.max(0, Math.min(100, Math.round((cur / tot) * 100)));
+  }
+  return null;
+};
+
+const fmtSeconds = (s) => {
+  const mm = Math.floor(s / 60);
+  const ss = s % 60;
+  return mm > 0 ? `${mm}m ${String(ss).padStart(2,'0')}s` : `${ss}s`;
+};
+
+// --- UI Auxiliar ---
+const InlineAlert = ({ message, onLogin }) => {
   if (!message) return null;
   return (
     <div
@@ -79,7 +125,7 @@ const InlineAlert = ({ message, onLogin }) => { // NEW - aviso compacto
   );
 };
 
-// --- Iconos SVG para una UI más rica ---
+// --- Iconos SVG ---
 const IconLoader = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
        viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -98,7 +144,7 @@ const IconSparkles = () => (
   </svg>
 );
 
-// --- Componentes de UI Modulares ---
+// --- Componentes de UI ---
 const FormField = ({ label, children, hint }) => (
   <div className="form-field">
     <label>{label}</label>
@@ -119,12 +165,10 @@ const LoraControls = ({
     [loraKey]
   );
 
-  // cuando cambia el LoRA, hidrata name/trigger/strengths por defecto
   useEffect(() => {
     if (!current) return;
     setLoraConfig(prev => ({
       ...prev,
-      // para referencia interna, guardamos el path completo que mostraremos
       name: current.folder ? `${current.folder}/${current.filename}` : current.filename,
       trigger: current.trigger,
       strengthModel: current.defaultStrengthModel,
@@ -167,12 +211,7 @@ const LoraControls = ({
             </FormField>
 
             <FormField label="Trigger (automático)">
-              <input
-                type="text"
-                value={current?.trigger || ''}
-                readOnly
-                disabled
-              />
+              <input type="text" value={current?.trigger || ''} readOnly disabled />
             </FormField>
           </div>
 
@@ -204,7 +243,7 @@ const LoraControls = ({
               </select>
             </FormField>
           </div>
-          {/* --- Ejemplos opcionales por LoRA --- */}
+
           {Array.isArray(current?.examples) && current.examples.length > 0 && (
             <div className="examples-wrap" style={{ borderTop: '1px solid var(--color-border)', paddingTop: '1rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '.5rem' }}>
@@ -227,7 +266,6 @@ const LoraControls = ({
                       if (navigator?.clipboard?.writeText) {
                         await navigator.clipboard.writeText(text);
                       } else {
-                        // fallback
                         const ta = document.createElement('textarea');
                         ta.value = text;
                         document.body.appendChild(ta);
@@ -239,9 +277,7 @@ const LoraControls = ({
                   };
 
                   const handleUse = () => {
-                    // si prefieres concatenar al prompt existente, cambia la asignación
                     setPrompt(buildWithTrigger());
-                    // setPrompt(prev => prev ? `${prev}\n${buildWithTrigger()}` : buildWithTrigger());
                   };
 
                   return (
@@ -276,7 +312,7 @@ const ControlPanel = ({
   prompt, setPrompt, ratio, setRatio, steps, setSteps, seed, setSeed,
   randomSeed, setRandomSeed, filenamePrefix, setFilenamePrefix,
   useLora, setUseLora, loraKey, setLoraKey, loraConfig, setLoraConfig,
-  onSubmit, canSubmit, canTuneSteps, submitting
+  onSubmit, canSubmit, canTuneSteps, submitting, progress
 }) => (
   <section className="control-panel">
     <FormField label="Prompt">
@@ -299,7 +335,7 @@ const ControlPanel = ({
           type="number" min={1} max={60} step={1}
           value={steps}
           onChange={(e) => setSteps(e.target.value)}
-          disabled={!canTuneSteps || submitting}   // ⬅️ bloqueo visual
+          disabled={!canTuneSteps || submitting}
         />
         {!canTuneSteps && (
           <small className="hint">
@@ -355,7 +391,7 @@ const ControlPanel = ({
       {submitting ? (
         <>
           <IconLoader />
-          Generando...
+          {typeof progress === 'number' ? `Generando… ${progress}%` : 'Generando…'}
         </>
       ) : (
         <>
@@ -367,7 +403,7 @@ const ControlPanel = ({
   </section>
 );
 
-const ImagePreview = ({ status, finalUrl }) => (
+const ImagePreview = ({ status, finalUrl, progress, elapsedSec, queueIndex }) => (
   <section className="preview-panel">
     <div className="image-container">
       {status === 'completada' && finalUrl ? (
@@ -376,6 +412,14 @@ const ImagePreview = ({ status, finalUrl }) => (
         <div className="placeholder">
           <IconLoader />
           <span>Generando imagen...</span>
+          <div className="elapsed">⏱ {fmtSeconds(elapsedSec)}</div>
+          {queueIndex !== null && <div className="elapsed">En cola (#{queueIndex})</div>}
+          <div className="progress-wrap" aria-label="Progreso">
+            <div className="progress-bar" style={{ width: `${(progress ?? 0)}%` }} />
+          </div>
+          <div className="progress-label">
+            {progress !== null ? `${progress}%` : '—'}
+          </div>
         </div>
       ) : (
         <div className="placeholder">
@@ -387,12 +431,19 @@ const ImagePreview = ({ status, finalUrl }) => (
   </section>
 );
 
-const StatusDisplay = ({ status, imageId }) => {
+const StatusDisplay = ({ status, imageId, progress, elapsedSec, queueIndex }) => {
   if (!status) return null;
   return (
     <div className={`status-display status-${status}`}>
       <strong>Estado:</strong> {status.replace('_', ' ')}
       {imageId && <> · <strong>ID:</strong> {imageId}</>}
+      {status === 'en_proceso' && (
+        <>
+          <> · <strong>Progreso:</strong> {progress !== null ? `${progress}%` : '—'}</>
+          <> · <strong>Tiempo:</strong> {fmtSeconds(elapsedSec)}</>
+          {queueIndex !== null && <> · <strong>Cola:</strong> #{queueIndex}</>}
+        </>
+      )}
     </div>
   );
 };
@@ -407,35 +458,39 @@ export default function TextToImagePage() {
   const [randomSeed, setRandomSeed] = useState(true);
   const [filenamePrefix, setFilenamePrefix] = useState('keiko');
   const { user, loading } = useUser() || {};
-  const navigate = useNavigate(); // NEW
+  const navigate = useNavigate();
   const isLogged = !loading && Boolean(user);
   const role = user?.role || localStorage.getItem('role') || 'free';
   const canTuneSteps = role === 'pro' || role === 'admin';
-
 
   // LoRA
   const [useLora, setUseLora] = useState(true);
   const [loraKey, setLoraKey] = useState(LORA_OPTIONS[0].key);
   const [loraConfig, setLoraConfig] = useState({
-    name: LORA_OPTIONS[0].filename,              // se hidrata con useEffect
+    name: LORA_OPTIONS[0].filename,
     trigger: LORA_OPTIONS[0].trigger,
     strengthModel: LORA_OPTIONS[0].defaultStrengthModel,
     strengthClip: LORA_OPTIONS[0].defaultStrengthClip,
     insertMode: 'prefix',
   });
 
-
   // Estado de job
   const [submitting, setSubmitting] = useState(false);
   const [imageId, setImageId] = useState(null);
   const [status, setStatus] = useState(null);
   const [finalUrl, setFinalUrl] = useState(null);
-  const [authError, setAuthError] = useState(''); // NEW
+  const [authError, setAuthError] = useState('');
   const pollRef = useRef(null);
 
-  const goLogin = () => navigate('/login?error=unauthorized'); // NEW
+  // Cronómetro & progreso & cola
+  const [elapsedSec, setElapsedSec] = useState(0);
+  const [progress, setProgress] = useState(null);
+  const [queueIndex, setQueueIndex] = useState(null);
+  const timerRef = useRef(null);
+  const startTimeRef = useRef(null);
 
-  // Helpers
+  const goLogin = () => navigate('/login?error=unauthorized');
+
   const seedValue = useMemo(() => {
     if (!randomSeed && String(seed).trim() !== '') return Number(seed) || 0;
     return undefined;
@@ -453,49 +508,58 @@ export default function TextToImagePage() {
     if (!loading && isLogged) setAuthError('');
   }, [loading, isLogged]);
 
-  // Polling
   useEffect(() => {
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
+      if (timerRef.current) clearInterval(timerRef.current);
     };
   }, []);
+
+  const stopTimers = () => {
+    if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+  };
 
   const startPolling = (id) => {
     if (!id) return;
     if (pollRef.current) clearInterval(pollRef.current);
 
-    pollRef.current = setInterval(async () => {
+    const tick = async () => {
       try {
-        const data = await getImageStatus(id);
-        setStatus(data.status);
-        if (data.status === 'completada') {
+        // Si tu servicio no acepta el 2º parámetro, lo ignorará sin romper.
+        const resp = await getImageStatus(id, { t: Date.now() });
+        const data = unwrapStatus(resp);
+
+        setStatus(data.status ?? data.estado ?? null);
+
+        const pct = parseProgress(data);
+        if (pct !== null) setProgress(pct);
+
+        setQueueIndex(
+          data.colaIndex ?? data.queueIndex ?? data.queuePosition ?? null
+        );
+
+        if ((data.status ?? data.estado) === 'completada') {
           setFinalUrl(data.finalUrl);
-          clearInterval(pollRef.current);
-          pollRef.current = null;
+          setProgress(p => (typeof p === 'number' && p < 100) ? 100 : 100);
+          clearInterval(pollRef.current); pollRef.current = null;
           setSubmitting(false);
-        } else if (data.status === 'error') {
-          clearInterval(pollRef.current);
-          pollRef.current = null;
+          if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+        } else if ((data.status ?? data.estado) === 'error') {
+          clearInterval(pollRef.current); pollRef.current = null;
           setSubmitting(false);
+          if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
         }
       } catch (e) {
         const code = e?.response?.status;
-        if (code === 401) {
-          clearInterval(pollRef.current);
-          pollRef.current = null;
-          setSubmitting(false);
-          setStatus(null);
-          setAuthError('Debes iniciar sesión para generar imágenes.');
-          return;
-        }
-        if (e?.response?.status === 404) {
-          clearInterval(pollRef.current);
-          pollRef.current = null;
-          setStatus('error');
-          setSubmitting(false);
-        }
+        if (code === 401) { stopTimers(); setSubmitting(false); setStatus(null); setAuthError('Debes iniciar sesión para generar imágenes.'); return; }
+        if (code === 404) { stopTimers(); setStatus('error'); setSubmitting(false); return; }
+        // errores transitorios: seguimos
       }
-    }, 2500);
+    };
+
+    tick(); // primer intento inmediato
+    pollRef.current = setInterval(tick, 2500);
   };
 
   const onSubmit = async (e) => {
@@ -508,8 +572,19 @@ export default function TextToImagePage() {
       return;
     }
 
-    // limpiar aviso de auth si había
     if (authError) setAuthError('');
+
+    // reinicio de progreso, tiempo y cola
+    setProgress(0);
+    setElapsedSec(0);
+    setQueueIndex(null);
+
+    // iniciar cronómetro
+    if (timerRef.current) clearInterval(timerRef.current);
+    startTimeRef.current = Date.now();
+    timerRef.current = setInterval(() => {
+      setElapsedSec(Math.floor((Date.now() - startTimeRef.current) / 1000));
+    }, 1000);
 
     setSubmitting(true);
     setStatus('en_proceso');
@@ -518,22 +593,21 @@ export default function TextToImagePage() {
 
     try {
       const payload = {
-        prompt: prompt.trim(), // el backend insertará el trigger con coma
+        prompt: prompt.trim(),
         ratio,
-        steps: canTuneSteps ? (Number(steps) || DEFAULT_STEPS) : DEFAULT_STEPS, // ⬅️ fuerza
+        steps: canTuneSteps ? (Number(steps) || DEFAULT_STEPS) : DEFAULT_STEPS,
         filename_prefix: filenamePrefix || 'keiko',
         modo: 'normal',
       };
       if (seedValue !== undefined) payload.seed = seedValue;
 
       if (useLora && currentLora) {
-        // Construye path para Comfy: folder/filename o solo filename
         const loraPath = currentLora.folder
           ? `${currentLora.folder}/${currentLora.filename}`
           : currentLora.filename;
 
         payload.loraName = loraPath;
-        payload.loraTrigger = currentLora.trigger; // bloqueado
+        payload.loraTrigger = currentLora.trigger;
         payload.loraStrengthModel = Number(loraConfig.strengthModel);
         payload.loraStrengthClip = Number(loraConfig.strengthClip);
         payload.loraInsertMode = loraConfig.insertMode; // 'prefix' | 'suffix'
@@ -548,13 +622,14 @@ export default function TextToImagePage() {
 
     } catch (err) {
       const code = err?.response?.status;
-      if (code === 401) { // NEW: feedback claro de auth
+      if (code === 401) {
         setAuthError('Tu sesión no es válida o ha caducado. Inicia sesión para continuar.');
         setStatus(null);
       } else {
         console.error(err);
         setStatus('error');
       }
+      if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
       setSubmitting(false);
     }
   };
@@ -566,9 +641,9 @@ export default function TextToImagePage() {
           <h1>Generador de Imágenes con IA</h1>
           <p>Crea imágenes impactantes a partir de texto usando tecnología FLUX / ComfyUI.</p>
         </header>
-        {/* Aviso de autenticación (solo cuando hay error 401 o no logado) */}
+
         <InlineAlert message={authError} onLogin={goLogin} />
-        {/* ⬇️ Aquí ya no hay early return; solo elegimos qué UI mostrar */}
+
         {loading ? (
           <div className="main-content">
             <section className="control-panel" style={{ opacity: 0.6 }}>Cargando…</section>
@@ -592,17 +667,28 @@ export default function TextToImagePage() {
             onSubmit={onSubmit}
             canSubmit={canSubmit}
             submitting={submitting}
-            canTuneSteps={canTuneSteps}   // ⬅️ nuevo prop
+            canTuneSteps={canTuneSteps}
+            progress={progress}
           />
-          <ImagePreview status={status} finalUrl={finalUrl} />
+          <ImagePreview
+            status={status}
+            finalUrl={finalUrl}
+            progress={progress}
+            elapsedSec={elapsedSec}
+            queueIndex={queueIndex}
+          />
         </main>
-        <StatusDisplay status={status} imageId={imageId} />
+        <StatusDisplay
+          status={status}
+          imageId={imageId}
+          progress={progress}
+          elapsedSec={elapsedSec}
+          queueIndex={queueIndex}
+        />
         </>)}
-      </div> {/* ⬅️ cierre SIEMPRE fuera del ternario */}
-      
+      </div>
 
       <style>{`
-        /* --- ESTILOS GLOBALES Y RESET --- */
         :root {
           --color-primary: #3b82f6;
           --color-primary-hover: #2563eb;
@@ -671,7 +757,7 @@ export default function TextToImagePage() {
           display: flex; align-items: center; justify-content: center; gap: 0.75rem;
           background-color: var(--color-primary); color: #fff; font-size: 1rem; font-weight: 600;
           padding: 0.875rem 1.5rem; border: none; border-radius: var(--border-radius);
-          cursor: pointer; transition: background-color 0.2s; margin-top: 0.5rem;
+          cursor: pointer; transition: background-color 0.2s; margin-top: 0.5rem; min-height: 48px;
         }
         .submit-button:hover:not(:disabled) { background-color: var(--color-primary-hover); }
         .submit-button:disabled { background-color: #334155; cursor: not-allowed; opacity: 0.7; }
@@ -693,6 +779,17 @@ export default function TextToImagePage() {
         .status-en_proceso { background-color: rgba(245, 159, 11, 0.1); border-color: var(--color-warning); color: var(--color-warning); }
         .status-completada { background-color: rgba(34, 197, 94, 0.1); border-color: var(--color-success); color: var(--color-success); }
         .status-error { background-color: rgba(239, 68, 68, 0.1); border-color: var(--color-error); color: var(--color-error); }
+
+        /* progreso y tiempo */
+        .elapsed { font-size: 0.95rem; color: var(--color-text-secondary); }
+        .progress-wrap {
+          width: 260px; max-width: 80vw; height: 10px;
+          border: 1px solid var(--color-border);
+          background: rgba(15, 23, 42, 0.6);
+          border-radius: 999px; overflow: hidden;
+        }
+        .progress-bar { height: 100%; background: var(--color-primary); transition: width .35s ease; }
+        .progress-label { margin-top: .35rem; font-size: .9rem; color: var(--color-text-secondary); }
       `}</style>
     </>
   );

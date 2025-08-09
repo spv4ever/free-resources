@@ -11,24 +11,22 @@ const BASE_URL =
 
 const API = axios.create({
   baseURL: BASE_URL,
-  withCredentials: true, // ⬅️ permite enviar cookies de sesión si las hay
+  withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
-  // timeout: 20000, // opcional
 });
 
-// Bearer si hay JWT en localStorage (soporte híbrido)
+// Bearer si hay JWT en localStorage
 API.interceptors.request.use(cfg => {
   const token = localStorage.getItem('token');
   if (token) cfg.headers.Authorization = `Bearer ${token}`;
   return cfg;
 });
 
-// Centraliza el 401 (sesión caducada / no logado)
+// Centraliza 401
 API.interceptors.response.use(
   r => r,
   err => {
     if (err?.response?.status === 401) {
-      // limpia rastro local y deja que el UI muestre el aviso de login
       localStorage.removeItem('token');
     }
     return Promise.reject(err);
@@ -40,9 +38,20 @@ export const startText2Image = async (payload) => {
   return data;
 };
 
-export const getImageStatus = async (imageId) => {
+// ⬇️ ACEPTA PARAMS Y AÑADE ANTI-CACHÉ
+export const getImageStatus = async (imageId, extraParams = {}) => {
   if (!imageId) throw new Error('imageId requerido');
-  const { data } = await API.get(`/api/generacion/text2img/${imageId}`);
+
+  const { data } = await API.get(`/api/generacion/text2img/${imageId}`, {
+    params: { ...extraParams, t: Date.now() },     // ← evita cacheo
+    headers: {
+      'Cache-Control': 'no-cache',
+      Pragma: 'no-cache',
+      Expires: '0',
+    },
+  });
+
+  // devuelve tal cual; el unwrapping ya lo haces en TextToImagePage
   return data;
 };
 

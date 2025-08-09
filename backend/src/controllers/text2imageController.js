@@ -9,6 +9,7 @@ import { rollbackDebit } from '../utils/tokenRollback.js';
 import { patchFluxNormal } from '../utils/patchFluxNormal.js';
 // import { resolveComfyLoraName } from '../utils/resolveComfyLora.js';
 import { consumirToken, reembolsarToken } from '../services/tokenService.js'; // ⬅️ nuevo
+import { trackPendingJob, getJobStatus  } from '../services/comfySocketWatcher.js'; // ajusta la ruta a tu watcher real
 
 const proporciones = {
   '1:1': [1024, 1024],
@@ -169,6 +170,15 @@ export const iniciarTextoImagen = async (req, res) => {
     job.queueId = data?.prompt_id ?? null;
     await job.save();
 
+    // 👉 registra en el watcher para que tenga posición en cola desde el minuto 0
+    if (job.queueId) {
+        trackPendingJob(String(job.queueId).toLowerCase(), {
+        jobId: job._id.toString(),
+        userId: userId?.toString?.() || userId,
+        clientId,
+        });
+    }
+    
     return res.json({
       ok: true,
       imageId: job._id.toString(), // alias por compatibilidad
@@ -199,14 +209,31 @@ export const estadoTextoImagen = async (req, res) => {
     res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.set('Pragma', 'no-cache');
     res.set('Expires', '0');
+    // 🔎 leer progreso en watcher por prompt_id (queueId)
+    const promptId = job?.queueId ? String(job.queueId).toLowerCase() : null;
+    const watcher = promptId ? getJobStatus(promptId) : null;
+    // watcher?.progress es 0..1 → pasar a 0..100
+    let progress = typeof watcher?.progress === 'number'
+        ? Math.max(0, Math.min(100, Math.round(watcher.progress * 100)))
+        : null;
+    // cola (si el watcher la calcula)
+    const colaIndex = Number.isFinite(watcher?.colaIndex) ? watcher.colaIndex : null;
+
+    // si el job está completado en BD, fuerza 100
+    const status = job.status || 'en_proceso';
+    if (status === 'completada') progress = 100;
 
     return res.status(200).json({
-      status: job.status,
+      ok: true,
+      id: jobId,
+      status,
       finalUrl: job.finalUrl,
       url: job.url,
       filename: job.filename,
       createdAt: job.createdAt,
-      params: job.params
+      params: job.params,
+      progress,     // 0..100 | null
+      colaIndex     // número o null
     });
   } catch (err) {
     console.error('[estadoTextoImagen] ERROR:', err?.message || err);
