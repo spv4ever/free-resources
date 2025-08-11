@@ -44,11 +44,6 @@ export const getImageStatus = async (imageId, extraParams = {}) => {
 
   const { data } = await API.get(`/api/generacion/text2img/${imageId}`, {
     params: { ...extraParams, t: Date.now() },     // ← evita cacheo
-    headers: {
-      'Cache-Control': 'no-cache',
-      Pragma: 'no-cache',
-      Expires: '0',
-    },
   });
 
   // devuelve tal cual; el unwrapping ya lo haces en TextToImagePage
