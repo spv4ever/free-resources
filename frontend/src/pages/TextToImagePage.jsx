@@ -1,6 +1,6 @@
 // src/pages/TextToImagePage.jsx
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { startText2Image, getImageStatus } from '../services/text2imageApi';
+import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
+import { startText2Image, getImageStatus, listMyRecentImages } from '../services/text2imageApi';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -153,6 +153,240 @@ const FormField = ({ label, children, hint }) => (
   </div>
 );
 
+/* =========================
+   Modal de imagen (nuevo)
+   ========================= */
+function ImageModal({ open, images, index, onClose, onPrev, onNext }) {
+  const item = images?.[index];
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowLeft') onPrev();
+      if (e.key === 'ArrowRight') onNext();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, onClose, onPrev, onNext]);
+
+  if (!open || !item) return null;
+
+  const cfg = item.params || {};
+  const lora = cfg.lora || null;
+
+  const strengthModel = (lora?.strength_model ?? lora?.strengthModel);
+  const strengthClip  = (lora?.strength_clip  ?? lora?.strengthClip);
+  const loraName      = lora?.name || lora?.model || null;
+  const loraTrigger   = lora?.trigger || null;
+
+  const ratio = cfg.ratio ?? '—';
+  const steps = cfg.steps ?? '—';
+  const seed  = (cfg.seed ?? cfg.random_seed ?? null);
+  const fecha = item.createdAt || item.updatedAt || item.date || item.fecha || null;
+  const fechaFmt = fecha ? new Date(fecha).toLocaleString() : '—';
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal-dialog" onClick={(e)=>e.stopPropagation()}>
+        <div className="modal-header">
+          <strong>Vista previa</strong>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+
+        <div className="modal-body">
+          <img src={item.url} alt="preview" />
+
+          <div className="modal-meta">
+            {/* Prompt */}
+            <div className="meta-row">
+              <div className="meta-title">Prompt</div>
+              <div className="meta-actions">
+                <button className="btn subtle" onClick={() => navigator.clipboard.writeText(item.prompt || '')}>
+                  Copiar
+                </button>
+              </div>
+            </div>
+            <div className="modal-prompt">{item.prompt || '—'}</div>
+
+            {/* Detalles clave */}
+            <div className="meta-row" style={{marginTop:'.75rem'}}>
+              <div className="meta-title">Detalles</div>
+            </div>
+
+            <div className="info-list">
+              <div className="info-item">
+                <span className="k">Fecha</span>
+                <span className="v">{fechaFmt}</span>
+              </div>
+              <div className="info-item">
+                <span className="k">Proporción</span>
+                <span className="v">{ratio}</span>
+              </div>
+              <div className="info-item">
+                <span className="k">Pasos</span>
+                <span className="v">{steps}</span>
+              </div>
+              {seed !== null && (
+                <div className="info-item">
+                  <span className="k">Seed</span>
+                  <span className="v">{String(seed)}</span>
+                </div>
+              )}
+
+              {/* LoRA si existe */}
+              {lora && (
+                <>
+                  <div className="info-item">
+                    <span className="k">LoRA</span>
+                    <span className="v">{loraName || '—'}</span>
+                  </div>
+                  {loraTrigger && (
+                    <div className="info-item">
+                      <span className="k">Trigger</span>
+                      <span className="v">{loraTrigger}</span>
+                    </div>
+                  )}
+                  {strengthModel !== undefined && (
+                    <div className="info-item">
+                      <span className="k">Strength (modelo)</span>
+                      <span className="v">{String(strengthModel)}</span>
+                    </div>
+                  )}
+                  {strengthClip !== undefined && (
+                    <div className="info-item">
+                      <span className="k">Strength (CLIP)</span>
+                      <span className="v">{String(strengthClip)}</span>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="modal-footer">
+          <button onClick={onPrev}>&larr; Anterior</button>
+          <a href={item.url} target="_blank" rel="noreferrer">Abrir en nueva pestaña</a>
+          <button onClick={onNext}>Siguiente &rarr;</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =========================
+   Biblioteca de imágenes (nuevo)
+   ========================= */
+function UserImageLibrary({ isLogged, onNeedLogin, refreshSignal }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [images, setImages] = useState([]);
+  const [query, setQuery] = useState('');
+  const [sort, setSort] = useState('newest'); // 'newest' | 'oldest'
+  const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const fetchImages = useCallback(async () => {
+    if (!isLogged) return;
+    try {
+      setLoading(true);
+      setError('');
+      const list = await listMyRecentImages(30, 120);
+      const filtered = list.filter(it => (it.status || 'completada') === 'completada');
+      setImages(filtered);
+    } catch (e) {
+      console.error(e);
+      setError('No se pudo cargar tu biblioteca de imágenes.');
+    } finally {
+      setLoading(false);
+    }
+  }, [isLogged]);
+
+  useEffect(() => { fetchImages(); }, [fetchImages]);
+  useEffect(() => { if (refreshSignal) fetchImages(); }, [refreshSignal, fetchImages]);
+
+  const filtered = useMemo(() => {
+    const byQuery = query.trim()
+      ? images.filter(i => (i.prompt || '').toLowerCase().includes(query.toLowerCase()))
+      : images;
+    const sorted = byQuery.slice().sort((a,b) => {
+      const da = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const db = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return sort === 'newest' ? (db - da) : (da - db);
+    });
+    return sorted;
+  }, [images, query, sort]);
+
+  const openAt = (idx) => { setActiveIndex(idx); setOpen(true); };
+  const close = () => setOpen(false);
+  const prev = () => setActiveIndex(i => (i > 0 ? i - 1 : filtered.length - 1));
+  const next = () => setActiveIndex(i => (i < filtered.length - 1 ? i + 1 : 0));
+
+  return (
+    <section className="library-section" aria-label="Biblioteca de imágenes">
+      <div className="library-header">
+        <h2>Tu biblioteca (últimos 30 días)</h2>
+        {!isLogged ? (
+          <button className="btn" onClick={onNeedLogin}>Inicia sesión</button>
+        ) : null}
+      </div>
+
+      {isLogged && (
+        <>
+          <div className="library-controls">
+            <input
+              className="library-search"
+              type="text"
+              placeholder="Filtrar por texto del prompt…"
+              value={query}
+              onChange={(e)=>setQuery(e.target.value)}
+            />
+            <select className="library-sort" value={sort} onChange={(e)=>setSort(e.target.value)}>
+              <option value="newest">Más recientes</option>
+              <option value="oldest">Más antiguas</option>
+            </select>
+            <button className="btn subtle" onClick={fetchImages} disabled={loading}>
+              {loading ? 'Actualizando…' : 'Actualizar'}
+            </button>
+          </div>
+
+          {loading && <div className="library-empty">Cargando tu álbum…</div>}
+          {!loading && error && <div className="library-error">⚠️ {error}</div>}
+
+          {!loading && !error && filtered.length === 0 && (
+            <div className="library-empty">No hay imágenes en los últimos 30 días.</div>
+          )}
+
+          <div className="library-grid">
+            {filtered.map((it, idx) => (
+              <figure key={it.id} className="library-card" onClick={() => openAt(idx)}>
+                <img src={it.url} alt={it.prompt || 'imagen generada'} loading="lazy" />
+                <figcaption title={it.prompt || ''}>
+                  {(it.prompt || '').slice(0, 80)}
+                  {(it.prompt || '').length > 80 ? '…' : ''}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+
+          <ImageModal
+            open={open}
+            images={filtered}
+            index={activeIndex}
+            onClose={close}
+            onPrev={prev}
+            onNext={next}
+          />
+        </>
+      )}
+    </section>
+  );
+}
+
+/* =========================
+   LoraControls (completo, sin recortes)
+   ========================= */
 const LoraControls = ({
   useLora, setUseLora,
   loraKey, setLoraKey,
@@ -308,6 +542,9 @@ const LoraControls = ({
   );
 };
 
+/* =========================
+   ControlPanel (completo)
+   ========================= */
 const ControlPanel = ({
   prompt, setPrompt, ratio, setRatio, steps, setSteps, seed, setSeed,
   randomSeed, setRandomSeed, filenamePrefix, setFilenamePrefix,
@@ -489,6 +726,10 @@ export default function TextToImagePage() {
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
 
+  // Señal para refrescar biblioteca tras completar una imagen
+  const [libraryRefreshTick, setLibraryRefreshTick] = useState(0);
+  const bumpLibraryRefresh = () => setLibraryRefreshTick(t => t + 1);
+
   const goLogin = () => navigate('/login?error=unauthorized');
 
   const seedValue = useMemo(() => {
@@ -526,7 +767,6 @@ export default function TextToImagePage() {
 
     const tick = async () => {
       try {
-        // Si tu servicio no acepta el 2º parámetro, lo ignorará sin romper.
         const resp = await getImageStatus(id, { t: Date.now() });
         const data = unwrapStatus(resp);
 
@@ -545,6 +785,8 @@ export default function TextToImagePage() {
           clearInterval(pollRef.current); pollRef.current = null;
           setSubmitting(false);
           if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+          // actualiza la biblioteca
+          bumpLibraryRefresh();
         } else if ((data.status ?? data.estado) === 'error') {
           clearInterval(pollRef.current); pollRef.current = null;
           setSubmitting(false);
@@ -554,7 +796,7 @@ export default function TextToImagePage() {
         const code = e?.response?.status;
         if (code === 401) { stopTimers(); setSubmitting(false); setStatus(null); setAuthError('Debes iniciar sesión para generar imágenes.'); return; }
         if (code === 404) { stopTimers(); setStatus('error'); setSubmitting(false); return; }
-        // errores transitorios: seguimos
+        // errores transitorios: dejamos seguir
       }
     };
 
@@ -685,6 +927,13 @@ export default function TextToImagePage() {
           elapsedSec={elapsedSec}
           queueIndex={queueIndex}
         />
+
+        {/* === Biblioteca bajo el componente actual === */}
+        <UserImageLibrary
+          isLogged={isLogged}
+          onNeedLogin={goLogin}
+          refreshSignal={libraryRefreshTick}
+        />
         </>)}
       </div>
 
@@ -790,6 +1039,113 @@ export default function TextToImagePage() {
         }
         .progress-bar { height: 100%; background: var(--color-primary); transition: width .35s ease; }
         .progress-label { margin-top: .35rem; font-size: .9rem; color: var(--color-text-secondary); }
+
+        /* =====================
+           Biblioteca
+           ===================== */
+        .library-section {
+          margin-top: 2rem;
+          background: var(--color-bg-secondary);
+          border: 1px solid var(--color-border);
+          border-radius: var(--border-radius);
+          padding: 1.25rem 1.25rem 1.5rem;
+        }
+        .library-header {
+          display: flex; align-items: center; justify-content: space-between;
+          margin-bottom: 1rem;
+        }
+        .library-header h2 { margin: 0; font-size: 1.25rem; }
+        .library-controls {
+          display: flex; gap: .75rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;
+        }
+        .library-search, .library-sort {
+          background: var(--color-bg-primary);
+          border: 1px solid var(--color-border);
+          color: var(--color-text-primary);
+          border-radius: 6px;
+          padding: 0.5rem 0.75rem;
+        }
+        .btn {
+          background: var(--color-primary);
+          color: #fff;
+          border: none;
+          border-radius: 6px;
+          padding: 0.5rem .9rem;
+          cursor: pointer;
+        }
+        .btn.subtle {
+          background: transparent; color: var(--color-text-primary);
+          border: 1px solid var(--color-border);
+        }
+        .library-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+          gap: 0.75rem;
+        }
+        .library-card {
+          margin: 0; padding: 0; border: 1px solid var(--color-border);
+          border-radius: 10px; overflow: hidden; background: rgba(15,23,42,.5);
+          cursor: pointer; transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .library-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.2); }
+        .library-card img { width: 100%; height: 180px; object-fit: cover; display: block; }
+        .library-card figcaption {
+          padding: .5rem .6rem; font-size: .85rem; color: var(--color-text-secondary);
+          border-top: 1px solid var(--color-border);
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .library-empty, .library-error {
+          text-align: center; color: var(--color-text-secondary); padding: 1rem 0;
+        }
+
+        /* Modal */
+        .modal-backdrop {
+          position: fixed; inset: 0; background: rgba(0,0,0,.6);
+          display: flex; align-items: center; justify-content: center;
+          z-index: 1000; padding: 1rem;
+        }
+        .modal-dialog {
+          background: var(--color-bg-secondary); color: var(--color-text-primary);
+          border: 1px solid var(--color-border); border-radius: 10px;
+          width: min(1024px, 96vw); max-height: 92vh; display: flex; flex-direction: column;
+        }
+        .modal-header, .modal-footer {
+          padding: .75rem .9rem; border-bottom: 1px solid var(--color-border);
+          display: flex; align-items: center; justify-content: space-between;
+        }
+        .modal-footer { border-top: 1px solid var(--color-border); border-bottom: none; gap: .75rem; }
+        .modal-close {
+          background: transparent; border: none; color: var(--color-text-primary);
+          font-size: 1.1rem; cursor: pointer;
+        }
+        .modal-body {
+          padding: .75rem .9rem; overflow: auto; display: grid; gap: .75rem;
+          grid-template-columns: 1fr 320px;
+        }
+        .modal-body img { width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--color-border); }
+        .modal-meta { font-size: .9rem; color: var(--color-text-secondary); display: grid; gap: .5rem; }
+        .modal-prompt {
+          white-space: pre-wrap; background: rgba(15,23,42,.5);
+          border: 1px solid var(--color-border); padding: .5rem .6rem; border-radius: 6px;
+        }
+          /* Lista compacta de detalles clave */
+        .info-list { display: grid; gap: .45rem; }
+        .info-item {
+          display: grid;
+          grid-template-columns: 150px minmax(0,1fr);
+          gap: .5rem;
+          align-items: center;
+          padding: .25rem .3rem;
+          border-bottom: 1px dashed rgba(148,163,184,.25);
+        }
+        .info-item:last-child { border-bottom: 0; }
+        .info-item .k { color: var(--color-text-secondary); font-size: .92rem; }
+        .info-item .v {
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+          font-size: .95rem;
+          white-space: normal;
+          word-break: break-word;
+        }
       `}</style>
     </>
   );

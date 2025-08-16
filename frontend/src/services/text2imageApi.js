@@ -50,4 +50,27 @@ export const getImageStatus = async (imageId, extraParams = {}) => {
   return data;
 };
 
+
+/**
+ * Lista tus imágenes (últimos `days` días).
+ * Devuelve array de { id, url, prompt, createdAt, status } ya normalizado.
+ */
+
+/**
+ * Lista tus imágenes (últimos `days` días).
+ * Devuelve array normalizado: { id, url, prompt, createdAt, status }.
+ */
+export async function listMyRecentImages(days = 30, limit = 120, status = 'completada') {
+  const fromISO = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+
+  const { data } = await API.get('/api/generacion/imagenes/mias', {
+    params: { from: fromISO, limit, status, t: Date.now() }
+  });
+
+  // ⬇️ devuelve tal cual (ya normalizado por el backend)
+  const items = Array.isArray(data?.items) ? data.items : [];
+  return items;
+}
+
+
 export default API;

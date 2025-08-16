@@ -3,6 +3,7 @@ import Select from 'react-select';
 import PromptImageModal from './PromptImageModal';
 import '../styles/PromptCard.css';
 import { useUser } from '../context/UserContext';
+import API from '../utils/api';
 
 // --- ToggleSwitch Component ---
 const ToggleSwitch = ({ label, checked, onChange, disabled, isProUser, tooltipText }) => (
@@ -17,6 +18,8 @@ const ToggleSwitch = ({ label, checked, onChange, disabled, isProUser, tooltipTe
     <span>{label}</span>
   </div>
 );
+
+
 
 const PromptCardRedesigned = React.memo(({
   prompt,
@@ -40,7 +43,8 @@ const PromptCardRedesigned = React.memo(({
   setCustomText,
   customReplacement,       // ✅ añadido
   setCustomReplacement,    // ✅ añadido
-  imagenPreviewUrl 
+  imagenPreviewUrl,
+  onPromptUpdated   // ⬅️ NUEVO (opcional) 
 }) => {
   const { user } = useUser();
 
@@ -89,6 +93,53 @@ const PromptCardRedesigned = React.memo(({
     }
     return <p className="keiko-prompt-card__image-placeholder-text">🖼️</p>;
   };
+
+
+// ...dentro del componente, antes del return:
+  const getEffectivePromptText = () => {
+    let promptText = prompt.prompt;
+
+    if (showCustomInput && (customText[promptId]?.trim?.() || '').length > 0) {
+      promptText = customText[promptId].trim();
+    } else if (
+      prompt.category === 'Carteles' &&
+      (customReplacement[promptId]?.trim?.() || '').length > 0
+    ) {
+      promptText = promptText.replace(/(["'])KEIKODEV\1/g, (match, quote) => {
+        return `${quote}${customReplacement[promptId].trim()}${quote}`;
+      });
+    }
+    return promptText;
+  };
+
+  const handleUpdateOriginalPrompt = async () => {
+    try {
+      if (user?.role !== 'admin') {
+        alert('Solo los administradores pueden actualizar el prompt original.');
+        return;
+      }
+
+      const promptText = getEffectivePromptText();
+
+      // PUT /api/keiko/prompts/:id  (ruta correcta según tu controller)
+      const { data: updated } = await API.put(`/api/keiko/prompts/${promptId}`, {
+        prompt: promptText
+      });
+
+      // 🔔 Notifica al padre para refrescar en memoria (sin F5)
+      onPromptUpdated?.(promptId, { prompt: updated.prompt });
+
+      // (Opcional) sincroniza el área de edición local si la tienes abierta
+      setCustomText(prev => ({ ...prev, [promptId]: updated.prompt }));
+
+      alert('✅ Prompt original actualizado');
+    } catch (err) {
+      console.error(err);
+      const msg = err?.response?.data?.error || err?.message || 'Error desconocido';
+      alert(`❌ Error al actualizar el prompt: ${msg}`);
+    }
+  };
+
   // console.log("Categoría:", prompt.category);
   return (
     <div className="keiko-prompt-card">
@@ -216,7 +267,7 @@ const PromptCardRedesigned = React.memo(({
               />
             </div>
           )}
-
+          
           {isFlux && (user?.role === 'admin' || user?.role === 'pro') && showCustomInput && (
             <div className="keiko-prompt-card__custom-text">
               <textarea
@@ -227,6 +278,16 @@ const PromptCardRedesigned = React.memo(({
                 onChange={(e) => setCustomText(prev => ({ ...prev, [promptId]: e.target.value }))}
               />
             </div>
+          )}
+          {isFlux && user?.role === 'admin' && (
+            <button
+              className="keiko-prompt-card__btn keiko-prompt-card__btn--secondary"
+              onClick={handleUpdateOriginalPrompt}
+              disabled={isGenerating || isPending}
+              title="Actualiza en la base de datos el prompt original con el texto personalizado actual"
+            >
+              💾 Actualizar original
+            </button>
           )}
           {isFlux && (user?.role === 'admin' || user?.role === 'pro') && (
             <button

@@ -240,3 +240,60 @@ export const estadoTextoImagen = async (req, res) => {
     return res.status(500).json({ error: 'No se pudo consultar el estado', detail: err?.message || String(err) });
   }
 };
+
+// ================================
+// NUEVO: listarMisImagenes (últimos 30 días, filtrable)
+// GET /api/imagenes/mias?from=ISO&to=ISO&limit=120&status=completada
+// ================================
+export const listarMisImagenes = async (req, res) => {
+  try {
+    if (!req.user?._id) return res.status(401).json({ ok: false, error: 'UNAUTHORIZED' });
+
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+
+    const { from, to, limit = '120', status = 'completada' } = req.query || {};
+    const now = new Date();
+    const parseISO = (v, fb) => { const d = v ? new Date(v) : fb; return Number.isFinite(+d) ? d : fb; };
+
+    const fromDate = parseISO(from, new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000));
+    const toDate   = parseISO(to, now);
+    const limitNum = Math.max(1, Math.min(500, parseInt(limit, 10) || 120));
+
+    const query = {
+      user: req.user._id,
+      createdAt: { $gte: fromDate, $lte: toDate },
+      ...(status && status !== 'all' ? { status } : {}),
+    };
+
+    const jobs = await Text2ImageJob.find(query)
+      .sort({ createdAt: -1 })
+      .limit(limitNum)
+      .select('_id prompt params status filename url finalUrl createdAt updatedAt tokenCost tokensDebited clientId queueId')
+      .lean();
+
+    const items = (jobs || [])
+      .map(j => ({
+        id: String(j._id),
+        prompt: j.prompt || '',
+        params: j.params || {},           // ⬅️ la configuración
+        status: j.status || 'pendiente',
+        filename: j.filename || null,
+        url: j.finalUrl || j.url || null, // el grid usa "url"
+        finalUrl: j.finalUrl || null,
+        createdAt: j.createdAt || null,
+        updatedAt: j.updatedAt || null,
+        tokenCost: j.tokenCost ?? 1,
+        tokensDebited: !!j.tokensDebited,
+        clientId: j.clientId || null,
+        queueId: j.queueId || null,
+      }))
+      .filter(x => x.url);
+
+    return res.status(200).json({ ok: true, items });
+  } catch (err) {
+    console.error('[listarMisImagenes] ERROR:', err?.message || err);
+    return res.status(200).json({ ok: true, items: [] });
+  }
+};

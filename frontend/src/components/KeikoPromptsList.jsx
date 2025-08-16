@@ -55,6 +55,7 @@ export default function KeikoPromptsList() {
   const [customReplacement, setCustomReplacement] = useState({});
   
   
+  
 useEffect(() => {
     if (document.querySelector('script[data-name="BMC-Widget"]')) return;
 
@@ -114,7 +115,12 @@ useEffect(() => {
     return () => clearInterval(interval);
   }, [pendientes]);
 
-
+  const handlePromptUpdated = (id, patch) => {
+    // Actualización inmutable del array
+    setPrompts(prev =>
+      prev.map(p => (p._id === id ? { ...p, ...patch } : p))
+    );
+  };
 
   useEffect(() => {
     if (Object.keys(pendientes).length === 0) return;
@@ -430,6 +436,7 @@ useEffect(() => {
   { value: 'chromatic background', label: 'Chromatic background' }, // 🆕 para keying
   { value: 'soft lighting', label: 'Soft lighting' },
   { value: 'extra detail', label: 'Extra detail' },
+  { value: 'black and white', label: 'Black & White' },
   { value: 'HDR lighting', label: 'High contrast' }
 ];
 
@@ -708,6 +715,7 @@ useEffect(() => {
               setCustomText={setCustomText}
               customReplacement={customReplacement}
               setCustomReplacement={setCustomReplacement}
+              onPromptUpdated={handlePromptUpdated}   // ⬅️ importante
             />
           );
         })}
