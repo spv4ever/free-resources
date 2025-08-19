@@ -10,13 +10,12 @@ import { consumirToken } from '../services/tokenService.js';
 import Prompt from '../keikoprompts/models/KeikoPrompt.js';
 import Pack from '../keikoprompts/models/KeikoPromptPack.js';
 import { uploadImageBufferToImageKit } from '../services/imagekit.js';
-import sharp from 'sharp'; // instala si no lo tienes: npm i sharp
-import https from 'https';
-
-
+import sharp from 'sharp'; // si no lo usas aquí, puedes quitarlo más adelante
+import https from 'https';  // idem
 
 import axios from 'axios';
 
+/* ======================= GENERAR ======================= */
 export const generarImagen = async (req, res) => {
   try {
     const {
@@ -28,11 +27,10 @@ export const generarImagen = async (req, res) => {
       removeBackground = false,
       promptRef
     } = req.body;
-    // console.log('📦 Categoría detectada para promptRef:', category);
-    const filename_prefix = req.user.nickname || 'keiko';
-    
 
-    // 🔎 Obtener categoría del pack (si viene referencia de prompt)
+    const filename_prefix = req.user.nickname || 'keiko';
+
+    // 🔎 Categoría (si viene referencia)
     let category = '';
     if (promptRef) {
       const promptDoc = await Prompt.findById(promptRef).populate('packId');
@@ -40,6 +38,7 @@ export const generarImagen = async (req, res) => {
     }
     console.log('📦 Categoría detectada para promptRef:', category);
 
+    // 💳 Consumir token
     await consumirToken({
       userId: req.user._id,
       type: 'generation',
@@ -47,11 +46,13 @@ export const generarImagen = async (req, res) => {
       description: `Generación de imagen con prompt: ${prompt}`
     });
 
+    // 🎚️ Steps por categoría
     const categoriasAltaCalidad = ['stickers', 'tshirts', 't-shirts', 't-shirt'];
-    const stepsFinal = categoriasAltaCalidad.includes(category.toLowerCase())
+    const stepsFinal = categoriasAltaCalidad.includes((category || '').toLowerCase())
       ? 30
-      : steps || 15;
+      : (steps || 15);
 
+    // 🚀 Lanzar generación
     const resultado = await generarImagenServicio({
       prompt,
       ratio,
@@ -69,30 +70,28 @@ export const generarImagen = async (req, res) => {
       throw new Error('❌ No se recibió prompt_id desde generarImagenServicio');
     }
 
-
-
-    // Leer el usuario completo desde Mongo (por si el token no incluye ese campo)
+    // 👤 Leer usuario (para visibilidad)
     const User = await import('../models/User.js').then(m => m.default);
     const userDb = await User.findById(req.user._id);
 
-    // Verificación de valores antes de guardar
     console.log('🔍 esPublica en body:', req.body.esPublica);
-    console.log('🔍 permiteImagenesPublicas en usuario:', userDb.permiteImagenesPublicas);
+    console.log('🔍 permiteImagenesPublicas en usuario:', userDb?.permiteImagenesPublicas);
 
-    // Lógica final para determinar visibilidad pública
     const debeSerPublica =
       req.body.esPublica === true ||
       req.body.esPublica === 'true' ||
-      userDb.permiteImagenesPublicas === true;
+      userDb?.permiteImagenesPublicas === true;
 
+    // 🗃️ Guardar (sin status → usa default: 'pendiente')
     await ImagenGenerada.create({
       user: req.user._id,
       prompt_id: resultado.prompt_id,
       prompt,
       promptRef,
-      public: debeSerPublica,
+      public: debeSerPublica
     });
 
+    // 🛰️ Tracking opcional por WS
     trackPendingJob(resultado.prompt_id, {
       userId: req.user._id,
       nickname: filename_prefix,
@@ -106,19 +105,23 @@ export const generarImagen = async (req, res) => {
   }
 };
 
+/* =================== OBTENER (legacy) =================== */
 export const obtenerImagen = async (req, res) => {
   try {
     const { id } = req.params;
     console.log('Obteniendo imagen para prompt_id:', id);
+
     const resultado = await consultarImagenGenerada(id);
+
     await ImagenGenerada.findOneAndUpdate(
       { prompt_id: id },
       {
         filename: resultado.filename,
         url: resultado.imageUrl,
-        status: 'completada',
+        status: 'completada'
       }
     );
+
     console.log('Resultado:', resultado);
     res.json(resultado);
   } catch (error) {
@@ -127,6 +130,7 @@ export const obtenerImagen = async (req, res) => {
   }
 };
 
+/* ============ LISTADO IMÁGENES DEL USUARIO ============ */
 export const obtenerImagenesDelUsuario = async (req, res) => {
   try {
     const imagenes = await ImagenGenerada.find({ user: req.user._id })
@@ -150,76 +154,97 @@ export const obtenerImagenesDelUsuario = async (req, res) => {
   }
 };
 
-
+/* ===================== VERIFICAR ===================== */
 export const verificarImagen = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params; // promptId
     const comfyUrl = await getComfyUrl('flux');
 
     const { data } = await axios.get(`${comfyUrl}/history/${id}`, getComfyAuth());
     const entry = data[id] || data;
     const nodoSalida = Object.values(entry.outputs || {}).find(nodo => nodo?.images?.length > 0);
 
-
     if (nodoSalida && nodoSalida.images?.length > 0) {
       const { filename } = nodoSalida.images[0];
-      const imageUrl = `${comfyUrl}/view?filename=output/${filename}`;
+      const imageUrl = `${comfyUrl}/view?filename=output/${filename}&type=output`;
 
-      // 🔎 Buscar los datos guardados en Mongo
+      // 🔎 Doc en Mongo para conocer user/nickname
       const imagen = await ImagenGenerada.findOne({ prompt_id: id });
-      const user = await import('../models/User.js').then(m => m.default.findById(imagen.user));
-
-      // ⚡ Subir a Cloudinary y actualizar
       if (imagen) {
-        await manejarFinalizacionDeJob(id, {
-          userId: imagen.user,
-          nickname: user.nickname, // puede que quieras también guardar esto en Mongo
-          prompt: imagen.prompt,
-          filename
-        });
+        const User = await import('../models/User.js').then(m => m.default);
+        const user = await User.findById(imagen.user);
+
+        try {
+          // ⚙️ Finalización (sube a Cloudinary/ImageKit y actualiza Mongo → status 'completada' + finalUrl)
+          await manejarFinalizacionDeJob(id, {
+            userId: imagen.user,
+            nickname: user?.nickname || 'keiko',
+            prompt: imagen.prompt,
+            filename
+          });
+        } catch (err) {
+          // ⏳ Si el manejador sigue procesando (timeout controlado), responde 202 para que el front siga pollando
+          if (err?.http_code === 420) {
+            const doc = await ImagenGenerada.findOne({ prompt_id: id }).select('status finalUrl filename');
+            return res.status(202).json({
+              found: true,
+              status: doc?.status || 'procesando',
+              finalUrl: doc?.finalUrl || null,
+              filename: doc?.filename || filename,
+              imageUrl
+            });
+          }
+          console.warn(`[verificarImagen] manejarFinalizacionDeJob error: ${err.message}`);
+          return res.status(500).json({ error: 'FINALIZATION_ERROR' });
+        }
       }
 
-      // ✅ (opcional) Mantener también la URL local
+      // ✅ (opcional) Mantener también la URL local (idempotente)
       await ImagenGenerada.findOneAndUpdate(
         { prompt_id: id },
-        {
-          filename,
-          url: imageUrl,
-          status: 'completada'
-        }
+        { filename, url: imageUrl },
+        { new: true }
       );
 
-      return res.json({ found: true, filename, imageUrl });
+      // 📤 Responder con el estado real en Mongo
+      const doc = await ImagenGenerada.findOne({ prompt_id: id }).select('status finalUrl filename');
+      return res.status(200).json({
+        found: true,
+        status: doc?.status || 'completada',
+        finalUrl: doc?.finalUrl || null,
+        filename: doc?.filename || filename,
+        imageUrl
+      });
     }
 
-    return res.json({ found: false });
+    // 💤 Aún no hay outputs en history
+    return res.status(200).json({ found: false, status: 'pendiente' });
   } catch (err) {
     console.warn(`🔍 Verificación fallida: ${err.message}`);
-    return res.status(200).json({ found: false });
+    return res.status(200).json({ found: false, status: 'pendiente' });
   }
 };
-// src/controllers/fluxController.js
 
-
+/* =========== SERVIR IMAGEN DIRECTA DESDE COMFY =========== */
 export const servirImagenDesdeComfy = async (req, res) => {
   try {
     const { filename } = req.params;
-    const comfyUrl = await getComfyUrl('flux'); // por ejemplo, https://xxxx.ngrok-free.app
+    const comfyUrl = await getComfyUrl('flux'); // p.ej. https://xxxx.ngrok-free.app
     const auth = {
       username: process.env.COMFY_AUTH_USER,
       password: process.env.COMFY_AUTH_PASS
     };
 
-    const response = await axios.get(`${comfyUrl}/view?filename=output/${filename}`, {
+    const url = `${comfyUrl}/view?filename=output/${filename}&type=output`;
+    const response = await axios.get(url, {
       responseType: 'stream',
       auth
     });
 
-    res.setHeader('Content-Type', response.headers['content-type']);
+    res.setHeader('Content-Type', response.headers['content-type'] || 'image/png');
     response.data.pipe(res);
   } catch (err) {
     console.error('❌ Error al servir imagen:', err.message);
     res.status(500).send('No se pudo obtener la imagen');
   }
 };
-

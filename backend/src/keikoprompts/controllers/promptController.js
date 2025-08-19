@@ -1,9 +1,13 @@
+// src/keikoprompts/controllers/promptController.js
 import mongoose from 'mongoose';
 import KeikoPrompt from '../models/KeikoPrompt.js';
 import KeikoPromptOption from '../models/KeikoPromptOption.js';
 import KeikoPromptOptionGroup from '../models/KeikoPromptOptionGroup.js';
 import { enrichFixedOptions } from '../../middlewares/enrichFixedOptions.js';
 import ImagenGenerada from '../../models/ImagenGenerada.js';
+
+const { isValidObjectId } = mongoose;
+
 /**
  * GET  /api/keiko/prompts/by-pack/:packId
  * Obtiene todos los prompts del pack indicado
@@ -67,7 +71,11 @@ export const updatePrompt = async (req, res) => {
  */
 export const deletePrompt = async (req, res) => {
   try {
-    const deleted = await KeikoPrompt.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+    if (!isValidObjectId(id)) {
+      return res.status(400).json({ error: 'id inválido' });
+    }
+    const deleted = await KeikoPrompt.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ error: 'Prompt no encontrado' });
     res.status(204).end();
   } catch (err) {
@@ -80,25 +88,11 @@ export const deletePrompt = async (req, res) => {
  * GET /api/keiko/prompts/count/by-pack
  * Devuelve conteo de prompts por cada pack (packId → count)
  */
-// src/keikoprompts/controllers/promptController.js
-// src/keikoprompts/controllers/promptController.js
-
 export const countPromptsByPack = async (req, res) => {
   try {
     const counts = await KeikoPrompt.aggregate([
-      {
-        $group: {
-          _id: '$packId',        // <--- usar packId
-          count: { $sum: 1 }
-        }
-      },
-      {
-        $project: {
-          packId: { $toString: '$_id' },  // convierte ObjectId a string
-          count: 1,
-          _id: 0
-        }
-      }
+      { $group: { _id: '$packId', count: { $sum: 1 } } },
+      { $project: { packId: { $toString: '$_id' }, count: 1, _id: 0 } }
     ]);
 
     res.json(counts);
@@ -128,15 +122,18 @@ export const updateMultiplePlatforms = async (req, res) => {
   }
 };
 
-
 /**
  * GET /api/keiko/prompts/count/by-pack/:packId
  * Devuelve conteo de prompts para un único pack
  */
 export const countPromptsForOnePack = async (req, res) => {
   const { packId } = req.params;
-  
+
   try {
+    if (!isValidObjectId(packId)) {
+      return res.json({ packId, count: 0 });
+    }
+
     const result = await KeikoPrompt.aggregate([
       { $match: { packId: mongoose.Types.ObjectId(packId) } },
       { $group: { _id: null, count: { $sum: 1 } } }
@@ -148,7 +145,6 @@ export const countPromptsForOnePack = async (req, res) => {
     res.status(500).json({ message: 'Error interno al contar los prompts' });
   }
 };
-
 
 /**
  * GET /api/keiko/prompts/by-pack-paginated/:packId
@@ -170,10 +166,9 @@ export const getPromptsByPackPaginated = async (req, res) => {
   const groupKeyMap = {
     tematica: 'temática',
     estilo: 'estilo',
-    // añade más si tienes otros nombres especiales
   };
 
-  // 🔍 Parseo de filtros estilo filters[tematica]=halloween
+  // Parseo de filtros estilo filters[tematica]=halloween
   let filters = {};
   Object.keys(req.query).forEach(key => {
     const match = key.match(/^filters\[(.+)\]$/);
@@ -181,8 +176,6 @@ export const getPromptsByPackPaginated = async (req, res) => {
       filters[match[1]] = req.query[key];
     }
   });
-
-  // console.log('🧪 DEBUG QUERY - filters parsed:', filters);
 
   const query = {
     packId,
@@ -196,11 +189,10 @@ export const getPromptsByPackPaginated = async (req, res) => {
   if (access) query.access = access;
   if (nsfw !== undefined) query.nsfw = nsfw === 'true';
 
-  // 🎯 Aplicar filtros por opciones fijas (tematica, estilo, etc.)
+  // Filtros por fixedOptions
   for (const [groupKey, optionName] of Object.entries(filters)) {
     const realGroupKey = groupKeyMap[groupKey] || groupKey;
 
-    // Intentar usar _id si la opción existe en la colección
     const option = await KeikoPromptOption.findOne({ name: optionName }).lean();
     query.$and = query.$and || [];
 
@@ -213,17 +205,14 @@ export const getPromptsByPackPaginated = async (req, res) => {
       query.$and.push(matchByName);
     }
   }
+
   const sort = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
   const skip = (parseInt(page) - 1) * parseInt(limit);
 
   try {
-    // console.log('🧪 Query Mongo FINAL aplicado en .find():', query);
-
-    // Sin limit ni skip para contar total filtrado
     const allFiltered = await KeikoPrompt.find(query).sort(sort).lean();
     const total = allFiltered.length;
 
-    // Aplicamos paginación después
     const paginated = allFiltered.slice(skip, skip + parseInt(limit));
     const prompts = await enrichFixedOptions(paginated);
 
@@ -267,7 +256,7 @@ export const obtenerImagenesDePrompt = async (req, res) => {
       .sort({ createdAt: -1 })
       .populate({
         path: 'promptRef',
-        populate: { path: 'packId' } // para acceder a promptRef.packId.title
+        populate: { path: 'packId' }
       })
       .populate('user', 'nickname');
 
@@ -278,36 +267,31 @@ export const obtenerImagenesDePrompt = async (req, res) => {
   }
 };
 
-// const enrichFixedOptions = async prompts => {
-//   const allOptionIds = new Set();
+/**
+ * DELETE /api/keiko/prompts/mass-delete
+ * Borra múltiples prompts por ids
+ */
+export const massDeletePrompts = async (req, res) => {
+  try {
+    const { ids } = req.body || {};
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ error: 'Debes proporcionar un array de ids' });
+    }
 
-//   // 1. Recoger todos los ObjectId usados en los prompts
-//   for (const prompt of prompts) {
-//     const fixed = prompt.fixedOptions;
-//     if (!fixed) continue;
-//     for (const ids of Object.values(fixed)) {
-//       ids.forEach(id => allOptionIds.add(id));
-//     }
-//   }
+    const validIds = ids.filter(isValidObjectId);
+    if (validIds.length === 0) {
+      return res.status(400).json({ error: 'Ningún id es válido' });
+    }
 
-//   // 2. Obtener todos los objetos de opciones y sus grupos
-//   const options = await KeikoPromptOption.find({ _id: { $in: [...allOptionIds] } }).populate('group').lean();
-
-//   const optionMap = {};
-//   for (const opt of options) {
-//     optionMap[opt._id.toString()] = opt;
-//   }
-
-//   // 3. Reemplazar en cada prompt los IDs por los objetos
-//   for (const prompt of prompts) {
-//     const fixed = prompt.fixedOptions;
-//     if (!fixed) continue;
-//     for (const [group, ids] of Object.entries(fixed)) {
-//       prompt.fixedOptions[group] = ids
-//         .map(id => optionMap[id.toString()])
-//         .filter(Boolean);
-//     }
-//   }
-
-//   return prompts;
-// };
+    const result = await KeikoPrompt.deleteMany({ _id: { $in: validIds } });
+    return res.json({
+      ok: true,
+      requested: ids.length,
+      valid: validIds.length,
+      deleted: result.deletedCount || 0
+    });
+  } catch (err) {
+    console.error('Error en massDeletePrompts:', err);
+    return res.status(500).json({ error: 'Error al borrar prompts' });
+  }
+};
