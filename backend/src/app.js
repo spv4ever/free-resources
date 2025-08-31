@@ -178,7 +178,7 @@ if (process.env.NODE_ENV === 'development') {
 // app.use('/api/admin', createRateLimiter({ max: 50, windowMs: 15 * 60 * 1000 }));
 
 // app.use(generalLimiter);
-const allowedOrigins = ['http://localhost:3000', 'https://keikodev.es'];
+const allowedOrigins = ['http://localhost:3000', 'https://keikodev.es',"https://nocf.keikodev.es"];
 
 
 

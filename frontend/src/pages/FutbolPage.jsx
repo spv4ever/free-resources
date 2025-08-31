@@ -25,6 +25,7 @@ export default function FutbolPage() {
   const [loading, setLoading] = useState(false);
   const [log, setLog] = useState([]);
   const [refreshTick, setRefreshTick] = useState(0); // fuerza remount de widgets
+  const [updateStandings, setUpdateStandings] = useState(true); // ✅ nuevo: actualizar clasificación
 
   // Si tu API.baseURL ya incluye "/api" (p.ej. https://api.keikodev.es/api), pon API_PREFIX = ''.
   const API_PREFIX = '/api';
@@ -99,7 +100,7 @@ export default function FutbolPage() {
       gap: '12px',
       alignItems: 'center',
       background: '#151515',
-      border: '1px solid #2a2a2a', // <- corregido
+      border: '1px solid #2a2a2a',
       borderRadius: '12px',
       padding: '12px',
       marginBottom: '24px',
@@ -135,6 +136,15 @@ export default function FutbolPage() {
       borderRadius: '8px',
       padding: '8px',
     },
+    adminCheckboxWrap: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 8,
+      padding: '8px 10px',
+      border: '1px solid #333',
+      borderRadius: 8,
+      background: '#1a1a1a',
+    },
     adminLog: {
       marginTop: 8,
       padding: '10px 12px',
@@ -153,8 +163,14 @@ export default function FutbolPage() {
   const importarGoleadores = (competitionCode, competitionName) =>
     API.post(`${API_PREFIX}/futbol/goleadores/sync`, { competitionCode, competitionName, season });
 
+  const syncStandings = (competitionCode) =>
+    API.post(`${API_PREFIX}/futbol/standings/sync`, { competitionCode, season });
+
   const runAdminUpdate = async () => {
-    const ok = window.confirm(`¿Actualizar fútbol (${scope}) para la temporada ${season}?`);
+    const ok = window.confirm(
+      `¿Actualizar fútbol (${scope}) para la temporada ${season}?\n` +
+      (updateStandings ? '• También se actualizará la clasificación.' : '')
+    );
     if (!ok) return;
 
     setLoading(true);
@@ -181,16 +197,25 @@ export default function FutbolPage() {
       if (scope === 'resultados' || scope === 'todo') {
         for (const c of comps) {
           try {
-            await importarPartidos(c.code, c.name); // refresco previo
+            // refresco previo por si hay cambios del día
+            await importarPartidos(c.code, c.name);
             await importarGoleadores(c.code, c.name);
             steps.push(`🥅 Resultados + goleadores: ${c.name} ${season}`);
+
+            // ✅ Clasificación
+            if (updateStandings && c.code === 'PD') { // si quieres solo LaLiga, dejamos esta condición
+              await syncStandings(c.code);
+              steps.push(`📊 Clasificación actualizada: ${c.name} ${season}`);
+            }
+            // Si quisieras también Champions, elimina el "c.code === 'PD'"
           } catch (err) {
-            steps.push(`⚠️ Resultados/Goleadores NO actualizados: ${c.name}. Motivo: ${err?.response?.data?.error || err.message}`);
+            steps.push(`⚠️ Resultados/Goleadores/Clasificación NO actualizados: ${c.name}. Motivo: ${err?.response?.data?.error || err.message}`);
           }
         }
       }
 
       setLog([`✅ Proceso terminado (con posibles avisos)`, ...steps]);
+      // Fuerza que los widgets vuelvan a montarse y reconsulten datos
       setRefreshTick((t) => t + 1);
     } catch (e) {
       setLog([`❌ Error general: ${e?.response?.data?.error || e.message}`]);
@@ -238,6 +263,15 @@ export default function FutbolPage() {
                 onChange={(e) => setSeason(Number(e.target.value))}
                 style={estilos.adminInput}
               />
+            </label>
+
+            <label style={estilos.adminCheckboxWrap} title="Actualizar clasificación (standings) tras resultados">
+              <input
+                type="checkbox"
+                checked={updateStandings}
+                onChange={(e) => setUpdateStandings(e.target.checked)}
+              />
+              <span>Actualizar clasificación</span>
             </label>
 
             <button
