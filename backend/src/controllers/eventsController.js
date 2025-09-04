@@ -257,3 +257,191 @@ export async function getJornadasLaLigaDisponibles(req, res) {
     res.status(500).json({ error: 'Error al obtener jornadas disponibles' });
   }
 }
+
+// ⚠️ Asegúrate de que estas importaciones existen ya
+// import ... tus modelos/servicios de aquí ...
+
+// ---------- EXISTENTE (LaLiga) ----------
+// export async function getJornadasLaLigaDisponibles(req, res) { ... }
+// export async function getPartidosJornadaLaLiga(req, res) { ... }
+
+/**
+ * Champions: jornadas disponibles
+ * Reusa la misma lógica que LaLiga cambiando competition a 'CL'
+ */
+// ✅ Jornadas disponibles de Champions (fase de grupos, 1..6)
+export async function getJornadasChampionsDisponibles(req, res) {
+  try {
+    const temporada = Number(req.query.season ?? 2025);
+
+    const jornadas = await SportsEvent.distinct('metadata.matchday', {
+      sport: 'futbol',
+      competition: 'Champions League',        // <- coincide con lo que guardas
+      'metadata.season': temporada,    // <- numérico
+      'metadata.stage': 'LEAGUE_STAGE',
+      'metadata.matchday': { $ne: null }
+    });
+
+    return res.json((jornadas || []).sort((a, b) => a - b));
+  } catch (error) {
+    console.error('Error al obtener jornadas de Champions:', error);
+    return res.status(500).json({ error: 'Error al obtener jornadas de Champions' });
+  }
+}
+
+/**
+ * Champions: partidos por jornada
+ * Soporta dos rutas:
+ *  - /partidos/champions/jornada/auto?season=2025
+ *  - /partidos/champions/jornada/:jornada?season=2025
+ */
+// ✅ Partidos por jornada de Champions (fase de grupos)
+// GET /api/partidos/champions/jornada/auto?season=2025
+// GET /api/partidos/champions/jornada/:jornada?season=2025
+export async function getPartidosJornadaChampions(req, res) {
+  try {
+    const temporada = Number(req.query.season ?? 2025);
+    const jornadaParam = req.params.jornada;
+
+    if (jornadaParam) {
+      // Modo manual: todas los partidos del matchday (1..6) en fase de grupos
+      const partidos = await SportsEvent.find({
+        sport: 'futbol',
+        competition: 'Champions League',
+        'metadata.season': temporada,
+        'metadata.stage': 'LEAGUE_STAGE',
+        'metadata.matchday': Number(jornadaParam)
+      }).sort({ start: 1 });
+
+      return res.json(partidos || []);
+    }
+
+    // Modo auto: siguiente matchday de fase de grupos con TIMED/IN_PLAY
+    const ahora = new Date();
+    const proximos = await SportsEvent.find({
+      sport: 'futbol',
+      competition: 'Champions League',
+      'metadata.season': temporada,
+      'metadata.stage': 'LEAGUE_STAGE',
+      status: { $in: ['TIMED', 'IN_PLAY'] },
+      start: { $gte: ahora }
+    }).sort({ start: 1 });
+
+    if (!proximos.length) return res.json([]);
+
+    const siguienteJornada = proximos[0]?.metadata?.matchday;
+    if (siguienteJornada == null) return res.json([]);
+
+    const partidosDeEsaJornada = await SportsEvent.find({
+      sport: 'futbol',
+      competition: 'Champions League',
+      'metadata.season': temporada,
+      'metadata.stage': 'LEAGUE_STAGE',
+      'metadata.matchday': siguienteJornada
+    }).sort({ start: 1 });
+
+    return res.json(partidosDeEsaJornada || []);
+  } catch (error) {
+    console.error('Error al obtener la jornada de Champions:', error);
+    return res.status(500).json({ error: 'Error al obtener la jornada de Champions' });
+  }
+}
+
+/**
+ * GET /api/partidos/champions/matches?season=2025&stage=LEAGUE_STAGE&matchday=1[&group=GROUP_A]
+ * GET /api/partidos/champions/matches?season=2025&stage=KNOCKOUT&round=ROUND_OF_16
+ *
+ * Notas:
+ * - En BD guardas: competition = "Champions", metadata.season (Number), metadata.stage (p.ej. "LEAGUE_STAGE", "LAST_16", "QUARTER_FINALS", "SEMI_FINALS", "FINAL")
+ * - Para eliminatorias aceptamos round "ROUND_OF_16|QUARTER_FINAL|SEMI_FINAL|FINAL" y lo mapeamos a stage Football-Data:
+ *     ROUND_OF_16    -> LAST_16
+ *     QUARTER_FINAL  -> QUARTER_FINALS
+ *     SEMI_FINAL     -> SEMI_FINALS
+ *     FINAL          -> FINAL
+ */
+export async function getMatchesChampions(req, res) {
+  try {
+    const season = Number(req.query.season ?? 2025);
+    const stage = String(req.query.stage || '').toUpperCase().trim();
+
+    if (!season) {
+      return res.status(400).json({ error: 'Parámetro season requerido' });
+    }
+    if (!stage) {
+      return res.status(400).json({ error: 'Parámetro stage requerido (LEAGUE_STAGE | KNOCKOUT)' });
+    }
+
+    // Filtro base
+    const base = {
+      sport: 'futbol',
+      competition: 'Champions',
+      'metadata.season': season,
+    };
+
+    // ---- FASE DE GRUPOS ----
+    if (stage === 'LEAGUE_STAGE' || stage === 'GROUP' || stage === 'GROUP_STAGE') { // aceptamos alias
+      const matchday = Number(req.query.matchday);
+      if (!matchday) {
+        return res.status(400).json({ error: 'Parámetro matchday requerido para LEAGUE_STAGE (1..6)' });
+      }
+
+      const filter = {
+        ...base,
+        'metadata.stage': 'LEAGUE_STAGE',
+        'metadata.matchday': matchday,
+      };
+
+      // opcional: filtrar por grupo concreto (GROUP_A...GROUP_H)
+      if (req.query.group) {
+        filter['metadata.group'] = String(req.query.group).toUpperCase();
+      }
+
+      const partidos = await SportsEvent.find(filter).sort({ start: 1 });
+      return res.json(partidos || []);
+    }
+
+    // ---- ELIMINATORIAS ----
+    if (stage === 'KNOCKOUT') {
+      const roundRaw = String(req.query.round || '').toUpperCase().trim();
+      if (!roundRaw) {
+        return res.status(400).json({
+          error: 'Parámetro round requerido para KNOCKOUT (ROUND_OF_16 | QUARTER_FINAL | SEMI_FINAL | FINAL)',
+        });
+      }
+
+      // Mapeo de round (frontend) -> stage (football-data/tu BD)
+      const roundToStage = {
+        ROUND_OF_16: 'LAST_16',
+        QUARTER_FINAL: 'QUARTER_FINALS',
+        SEMI_FINAL: 'SEMI_FINALS',
+        FINAL: 'FINAL',
+      };
+
+      const stageMapped = roundToStage[roundRaw];
+      if (!stageMapped) {
+        return res.status(400).json({
+          error: 'round no válido. Usa: ROUND_OF_16 | QUARTER_FINAL | SEMI_FINAL | FINAL',
+        });
+      }
+
+      const filter = {
+        ...base,
+        'metadata.stage': stageMapped,
+      };
+
+      // opcional: si en tu BD distingues ida/vuelta en metadata.leg o metadata.matchday, podrías permitir ?leg=FIRST|SECOND
+      if (req.query.leg) {
+        filter['metadata.leg'] = String(req.query.leg).toUpperCase(); // si lo guardas así
+      }
+
+      const partidos = await SportsEvent.find(filter).sort({ start: 1 });
+      return res.json(partidos || []);
+    }
+
+    // Si llega aquí, stage no reconocido
+    return res.status(400).json({ error: 'stage no reconocido. Usa LEAGUE_STAGE o KNOCKOUT' });
+  } catch (error) {
+    console.error('getMatchesChampions error:', error);
+    return res.status(500).json({ error: 'Error al obtener partidos de Champions' });
+  }
+}

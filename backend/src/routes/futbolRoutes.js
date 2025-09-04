@@ -4,7 +4,11 @@ import {
   syncTeams,
   syncStandings,
   getEquiposLaLiga,
-  getClasificacionLaLiga
+  getClasificacionLaLiga,
+  getEquiposChampions,
+  getClasificacionChampions,
+  getEquiposByCompetition,
+  getClasificacionByCompetition
 } from '../controllers/futbolController.js';
 
 // 👇 importa las funciones que ya usas en los cron jobs
@@ -82,5 +86,13 @@ router.post('/goleadores/sync', async (req, res) => {
 // ---------------------------
 router.get('/laliga/equipos', getEquiposLaLiga);
 router.get('/laliga/clasificacion', getClasificacionLaLiga);
+
+// Champions (nuevas, mismo formato de salida)
+router.get('/champions/teams', getEquiposChampions);
+router.get('/champions/standings', getClasificacionChampions);
+
+// (Opcional) Endpoints genéricos por query:
+router.get('/equipos', getEquiposByCompetition);            // ?season=2025&competition=PD|CL|LaLiga|Champions
+router.get('/clasificacion', getClasificacionByCompetition); // ?season=2025&competition=...
 
 export default router;

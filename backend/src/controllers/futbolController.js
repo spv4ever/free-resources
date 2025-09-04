@@ -18,7 +18,6 @@ export async function syncTeams(competitionCode, season) {
     const competition = mapCompetitionCode(competitionCode);
 
     for (const t of teams) {
-      // 1. Guardamos/actualizamos el equipo base (sin importar competición)
       const team = await Team.findOneAndUpdate(
         { apiId: t.id },
         {
@@ -31,7 +30,6 @@ export async function syncTeams(competitionCode, season) {
         { upsert: true, new: true }
       );
 
-      // 2. Guardamos/actualizamos la participación
       await TeamParticipation.findOneAndUpdate(
         { team: team._id, competition, season },
         { team: team._id, competition, season },
@@ -57,14 +55,12 @@ export async function syncStandings(competitionCode, season) {
     for (const entry of generalTable.table) {
       const teamApiId = entry.team.id;
 
-      // Buscar el equipo base
       const team = await Team.findOne({ apiId: teamApiId });
       if (!team) {
         console.warn(`Equipo no encontrado para clasificación: ${teamApiId}`);
         continue;
       }
 
-      // Verificamos que tenga participación en esta competición/temporada
       const participation = await TeamParticipation.findOne({
         team: team._id,
         competition,
@@ -103,40 +99,94 @@ export async function syncStandings(competitionCode, season) {
   }
 }
 
-export async function getEquiposLaLiga(req, res) {
+/* ──────────────────────────────────────────────
+   LECTURA GENÉRICA (BD) REUTILIZABLE
+   competition puede venir como:
+   - 'PD' | 'CL'  → se mapea a 'LaLiga' | 'Champions'
+   - 'LaLiga' | 'Champions' → se usa tal cual
+────────────────────────────────────────────── */
+
+async function getCompetitionNameFromQuery(req) {
+  const { competition } = req.query || {};
+  if (!competition) return null;
+
+  // Acepta códigos o nombres
+  if (competition === 'PD' || competition === 'CL') {
+    return mapCompetitionCode(competition);
+  }
+  if (competition === 'LaLiga' || competition === 'Champions') {
+    return competition;
+  }
+  return null;
+}
+
+export async function getEquiposByCompetition(req, res, forcedCompetitionName) {
   try {
     const { season } = req.query;
     if (!season) return res.status(400).json({ error: 'Temporada requerida' });
 
+    const competitionName =
+      forcedCompetitionName || (await getCompetitionNameFromQuery(req));
+
+    if (!competitionName)
+      return res.status(400).json({ error: 'Parámetro "competition" inválido (use PD|CL|LaLiga|Champions)' });
+
     const equipos = await TeamParticipation.find({
-      competition: 'LaLiga',
+      competition: competitionName,
       season
     }).populate('team');
 
-    res.json(equipos);
+    // Devolvemos igual que LaLiga (participations con team populado)
+    return res.json(equipos);
   } catch (err) {
-    console.error('Error al obtener equipos de LaLiga:', err.message);
-    res.status(500).json({ error: 'Error interno al obtener equipos' });
+    console.error('Error al obtener equipos:', err.message);
+    return res.status(500).json({ error: 'Error interno al obtener equipos' });
   }
 }
 
-
-export async function getClasificacionLaLiga(req, res) {
+export async function getClasificacionByCompetition(req, res, forcedCompetitionName) {
   try {
     const { season } = req.query;
     if (!season) return res.status(400).json({ error: 'Temporada requerida' });
 
+    const competitionName =
+      forcedCompetitionName || (await getCompetitionNameFromQuery(req));
+
+    if (!competitionName)
+      return res.status(400).json({ error: 'Parámetro "competition" inválido (use PD|CL|LaLiga|Champions)' });
+
     const standings = await Standing.find({
-      competition: 'LaLiga',
+      competition: competitionName,
       season
     })
       .populate('team')
       .sort({ position: 1 });
 
-    res.json(standings);
+    return res.json(standings);
   } catch (err) {
-    console.error('Error al obtener clasificación de LaLiga:', err.message);
-    res.status(500).json({ error: 'Error interno al obtener clasificación' });
+    console.error('Error al obtener clasificación:', err.message);
+    return res.status(500).json({ error: 'Error interno al obtener clasificación' });
   }
 }
 
+
+
+/* ──────────────────────────────────────────────
+   WRAPPERS ESPECÍFICOS (mantienen tus rutas actuales)
+────────────────────────────────────────────── */
+
+// LaLiga (rutas existentes)
+export async function getEquiposLaLiga(req, res) {
+  return getEquiposByCompetition(req, res, 'LaLiga');
+}
+export async function getClasificacionLaLiga(req, res) {
+  return getClasificacionByCompetition(req, res, 'LaLiga');
+}
+
+// Champions (rutas nuevas, mismo formato de respuesta)
+export async function getEquiposChampions(req, res) {
+  return getEquiposByCompetition(req, res, 'Champions');
+}
+export async function getClasificacionChampions(req, res) {
+  return getClasificacionByCompetition(req, res, 'Champions');
+}

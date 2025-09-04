@@ -1,5 +1,10 @@
 import express from 'express';
-import { importarPartidos, getProximosPartidos, getPartidosJornadaLaLiga, importarGoleadores, getGoleadores, getJornadasLaLigaDisponibles } from '../controllers/eventsController.js';
+import { importarPartidos, getProximosPartidos, getPartidosJornadaLaLiga, importarGoleadores, getGoleadores, getJornadasLaLigaDisponibles,
+
+  // ⬇️ NUEVOS WRAPPERS (los crearás en el controller)
+  getMatchesChampions,
+  getJornadasChampionsDisponibles,
+  getPartidosJornadaChampions } from '../controllers/eventsController.js';
 
 const router = express.Router();
 
@@ -37,7 +42,18 @@ router.get('/partidos/laliga/jornadas', getJornadasLaLigaDisponibles);
 router.get('/partidos/laliga/jornada/auto', getPartidosJornadaLaLiga);
 router.get('/partidos/laliga/jornada/:jornada', getPartidosJornadaLaLiga);
 // Obtener partidos por jornada de LaLiga
+// -------------------- Champions (NUEVOS) --------------------
+// Lista de jornadas disponibles para Champions
+router.get('/partidos/champions/jornadas', getJornadasChampionsDisponibles);
 
+// Jornada “auto” (la que toque ahora) para Champions
+router.get('/partidos/champions/jornada/auto', getPartidosJornadaChampions);
+
+// Jornada concreta para Champions
+router.get('/partidos/champions/jornada/:jornada', getPartidosJornadaChampions);
+
+// Nuevo endpoint unificado (grupos + eliminatorias)
+router.get('/partidos/champions/matches', getMatchesChampions);
 
 
 export default router;

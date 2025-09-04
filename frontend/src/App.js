@@ -92,6 +92,7 @@ import GifsPage from './pages/GifsPage';
 import MisFavoritos from './components/MisFavoritos';
 import FutbolPage from './pages/FutbolPage';
 import LaLigaPage from './pages/futbol/LaLigaPage';
+import ChampionsPage from './pages/futbol/ChampionsPage';
 import EntrenaGenerador from './pages/EntrenaGenerador.jsx';
 import Apoyar from './components/Apoyar'
 import PromptImagesHistory from './components/PromptImagesHistory';
@@ -240,6 +241,7 @@ function App() {
             <Route path="/mis-favoritos" element={<MisFavoritos />} />
             <Route path="/futbol" element={<FutbolPage />} />
             <Route path="/futbol/laliga" element={<LaLigaPage />} /> 
+            <Route path="/futbol/champions" element={<ChampionsPage />} />
             
             
           </Route>

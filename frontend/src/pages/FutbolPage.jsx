@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Trophy, CalendarCheck, Goal, LineChart, RefreshCw, Shield } from 'lucide-react';
+import { Trophy, CalendarCheck, Goal, LineChart, RefreshCw, Shield, ArrowRightLeft } from 'lucide-react';
 
+// LaLiga
 import ProximosPartidos from '../components/futbol/ProximosPartidos';
 import JornadaLaLiga from '../components/futbol/JornadaLaLiga';
 import TopGoleadores from '../components/futbol/TopGoleadores';
+
+// Champions (asegúrate de tener estos 3 componentes creados)
+import ProximosPartidosChampions from '../components/futbol/ProximosPartidosChampions';
+import JornadaChampions from '../components/futbol/JornadaChampions';
+import TopGoleadoresChampions from '../components/futbol/TopGoleadoresChampions';
 
 // Contexto de usuario + cliente axios
 import { useUser } from '../context/UserContext';
@@ -19,13 +25,20 @@ export default function FutbolPage() {
     document.title = 'Fútbol | KeikoDev';
   }, []);
 
-  // --- Estado del panel admin ---
+  // --- Estado global ---
   const [scope, setScope] = useState('todo'); // 'todo' | 'calendario' | 'resultados'
   const [season, setSeason] = useState(2025);
   const [loading, setLoading] = useState(false);
   const [log, setLog] = useState([]);
   const [refreshTick, setRefreshTick] = useState(0); // fuerza remount de widgets
-  const [updateStandings, setUpdateStandings] = useState(true); // ✅ nuevo: actualizar clasificación
+  const [updateStandings, setUpdateStandings] = useState(true);
+
+  // NUEVO: selector de competición activa para los widgets (PD = LaLiga, CL = Champions)
+  const [competitionView, setCompetitionView] = useState('PD'); // 'PD' | 'CL'
+
+  // Panel admin: elegir qué competiciones actualizar
+  const [updatePD, setUpdatePD] = useState(true);
+  const [updateCL, setUpdateCL] = useState(true);
 
   // Si tu API.baseURL ya incluye "/api" (p.ej. https://api.keikodev.es/api), pon API_PREFIX = ''.
   const API_PREFIX = '/api';
@@ -117,10 +130,7 @@ export default function FutbolPage() {
       cursor: 'pointer',
       fontWeight: 700,
     },
-    adminBtnDisabled: {
-      opacity: 0.6,
-      cursor: 'not-allowed',
-    },
+    adminBtnDisabled: { opacity: 0.6, cursor: 'not-allowed' },
     adminSelect: {
       background: '#1f1f1f',
       color: '#fff',
@@ -154,6 +164,19 @@ export default function FutbolPage() {
       fontSize: 14,
       color: '#cfcfcf',
     },
+    chipGroup: { display: 'flex', gap: 8 },
+    chip: (active) => ({
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 8,
+      padding: '8px 12px',
+      borderRadius: 10,
+      border: active ? '1px solid #10b981' : '1px solid #333',
+      color: active ? '#10b981' : '#ddd',
+      background: active ? '#0b1f1a' : '#1a1a1a',
+      cursor: 'pointer',
+      fontWeight: 700,
+    }),
   };
 
   // --- Helpers para llamar a TUS endpoints del router de fútbol ---
@@ -167,8 +190,18 @@ export default function FutbolPage() {
     API.post(`${API_PREFIX}/futbol/standings/sync`, { competitionCode, season });
 
   const runAdminUpdate = async () => {
+    const comps = [];
+    if (updatePD) comps.push({ code: 'PD', name: 'LaLiga' });
+    if (updateCL) comps.push({ code: 'CL', name: 'Champions League' });
+
+    if (!comps.length) {
+      alert('Selecciona al menos una competición (LaLiga o Champions).');
+      return;
+    }
+
     const ok = window.confirm(
       `¿Actualizar fútbol (${scope}) para la temporada ${season}?\n` +
+      `Competiciones: ${comps.map(c => c.name).join(', ')}\n` +
       (updateStandings ? '• También se actualizará la clasificación.' : '')
     );
     if (!ok) return;
@@ -176,11 +209,6 @@ export default function FutbolPage() {
     setLoading(true);
     setLog([]);
     try {
-      const comps = [
-        { code: 'PD', name: 'LaLiga' },
-        { code: 'CL', name: 'Champions League' },
-      ];
-
       const steps = [];
 
       if (scope === 'calendario' || scope === 'todo') {
@@ -202,12 +230,11 @@ export default function FutbolPage() {
             await importarGoleadores(c.code, c.name);
             steps.push(`🥅 Resultados + goleadores: ${c.name} ${season}`);
 
-            // ✅ Clasificación
-            if (updateStandings && c.code === 'PD') { // si quieres solo LaLiga, dejamos esta condición
+            // Clasificación para cualquiera seleccionada (PD y/o CL)
+            if (updateStandings) {
               await syncStandings(c.code);
               steps.push(`📊 Clasificación actualizada: ${c.name} ${season}`);
             }
-            // Si quisieras también Champions, elimina el "c.code === 'PD'"
           } catch (err) {
             steps.push(`⚠️ Resultados/Goleadores/Clasificación NO actualizados: ${c.name}. Motivo: ${err?.response?.data?.error || err.message}`);
           }
@@ -215,8 +242,7 @@ export default function FutbolPage() {
       }
 
       setLog([`✅ Proceso terminado (con posibles avisos)`, ...steps]);
-      // Fuerza que los widgets vuelvan a montarse y reconsulten datos
-      setRefreshTick((t) => t + 1);
+      setRefreshTick((t) => t + 1); // fuerza remount de widgets
     } catch (e) {
       setLog([`❌ Error general: ${e?.response?.data?.error || e.message}`]);
     } finally {
@@ -265,7 +291,18 @@ export default function FutbolPage() {
               />
             </label>
 
-            <label style={estilos.adminCheckboxWrap} title="Actualizar clasificación (standings) tras resultados">
+            {/* Qué competiciones actualizar */}
+            <label style={estilos.adminCheckboxWrap} title="Incluir LaLiga (PD)">
+              <input type="checkbox" checked={updatePD} onChange={(e) => setUpdatePD(e.target.checked)} />
+              <span>LaLiga</span>
+            </label>
+            <label style={estilos.adminCheckboxWrap} title="Incluir Champions (CL)">
+              <input type="checkbox" checked={updateCL} onChange={(e) => setUpdateCL(e.target.checked)} />
+              <span>Champions</span>
+            </label>
+
+            {/* Clasificación */}
+            <label style={estilos.adminCheckboxWrap} title="Actualizar clasificación tras resultados">
               <input
                 type="checkbox"
                 checked={updateStandings}
@@ -277,10 +314,7 @@ export default function FutbolPage() {
             <button
               onClick={runAdminUpdate}
               disabled={loading}
-              style={{
-                ...estilos.adminBtn,
-                ...(loading ? estilos.adminBtnDisabled : {}),
-              }}
+              style={{ ...estilos.adminBtn, ...(loading ? estilos.adminBtnDisabled : {}) }}
               title="Ejecutar actualización manual"
             >
               <RefreshCw size={18} />
@@ -290,16 +324,14 @@ export default function FutbolPage() {
             {log.length > 0 && (
               <div style={estilos.adminLog}>
                 <ul style={{ margin: 0, paddingLeft: 18 }}>
-                  {log.map((l, i) => (
-                    <li key={i}>{l}</li>
-                  ))}
+                  {log.map((l, i) => <li key={i}>{l}</li>)}
                 </ul>
               </div>
             )}
           </div>
         )}
 
-        {/* Competiciones */}
+        {/* Competiciones (links a páginas dedicadas) */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} style={estilos.seccion}>
           <div style={estilos.tituloSeccion}>
             <Trophy size={24} /> Competiciones
@@ -310,28 +342,61 @@ export default function FutbolPage() {
           </div>
         </motion.div>
 
-        {/* Próximos partidos */}
+        {/* Selector de competición para widgets de la home de fútbol */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }} style={estilos.seccion}>
+          <div style={estilos.tituloSeccion}>
+            <ArrowRightLeft size={22} /> Vista de widgets
+          </div>
+          <div style={estilos.chipGroup}>
+            <button
+              onClick={() => setCompetitionView('PD')}
+              style={estilos.chip(competitionView === 'PD')}
+            >
+              LaLiga
+            </button>
+            <button
+              onClick={() => setCompetitionView('CL')}
+              style={estilos.chip(competitionView === 'CL')}
+            >
+              Champions
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Próximos partidos (según competición seleccionada) */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} style={estilos.seccion}>
           <div style={estilos.tituloSeccion}>
-            <CalendarCheck size={24} /> Próximos partidos
+            <CalendarCheck size={24} /> Próximos partidos – {competitionView === 'PD' ? 'LaLiga' : 'Champions'}
           </div>
-          <ProximosPartidos key={`pp-${refreshTick}`} />
+          {competitionView === 'PD' ? (
+            <ProximosPartidos key={`pp-pd-${refreshTick}`} />
+          ) : (
+            <ProximosPartidosChampions key={`pp-cl-${refreshTick}`} />
+          )}
         </motion.div>
 
-        {/* Jornada actual LaLiga */}
+        {/* Jornada actual (según competición) */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} style={estilos.seccion}>
           <div style={estilos.tituloSeccion}>
-            <Goal size={24} /> Jornada actual – LaLiga
+            <Goal size={24} /> Jornada / Ronda actual – {competitionView === 'PD' ? 'LaLiga' : 'Champions'}
           </div>
-          <JornadaLaLiga key={`jl-${refreshTick}`} />
+          {competitionView === 'PD' ? (
+            <JornadaLaLiga key={`jl-pd-${refreshTick}`} />
+          ) : (
+            <JornadaChampions key={`jl-cl-${refreshTick}`} defaultSeason={String(season)} />
+          )}
         </motion.div>
 
-        {/* Máximos Goleadores */}
+        {/* Máximos Goleadores (según competición) */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} style={estilos.seccion}>
           <div style={estilos.tituloSeccion}>
-            <LineChart size={24} /> Máximos goleadores
+            <LineChart size={24} /> Máximos goleadores – {competitionView === 'PD' ? 'LaLiga' : 'Champions'}
           </div>
-          <TopGoleadores key={`tg-${refreshTick}`} />
+          {competitionView === 'PD' ? (
+            <TopGoleadores key={`tg-pd-${refreshTick}`} />
+          ) : (
+            <TopGoleadoresChampions key={`tg-cl-${refreshTick}`} season={String(season)} />
+          )}
         </motion.div>
       </div>
     </div>
