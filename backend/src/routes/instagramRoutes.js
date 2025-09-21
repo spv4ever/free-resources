@@ -3,6 +3,7 @@ import ImagenGenerada from '../models/ImagenGenerada.js'; // 👈 NUEVO
 import { pickRandomCandidate, markAsPosted, tagCloudinaryPosted } from '../services/igQueueService.js';
 import { createContainer, publishContainer } from '../services/instagramService.js';
 import { buildCaption } from '../services/captionService.js';
+import { publishCarouselAccount2 } from '../controllers/instagramCarousel.controller.js';
 
 const router = express.Router();
 
@@ -134,6 +135,11 @@ router.get('/queue-stats', async (req, res) => {
   }
 });
 
+// NUEVO: publicar un carrusel para keikodevfree
+router.post('/publish-carousel-one', publishCarouselAccount2);
 
+// opcional GET para compatibilidad con tu scheduler
+
+router.get('/publish-carousel-one', publishCarouselAccount2);
 
 export default router;

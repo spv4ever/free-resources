@@ -117,6 +117,7 @@ import trackingRoutes from './routes/trackingRoutes.js';
 import text2imageRoutes from './routes/text2imageRoutes.js';
 import instagramRoutes from './routes/instagramRoutes.js';
 import { scheduleIGDailyJob } from './jobs/igDailyJob.js';
+import scheduleIGDailyCarouselJobAccount2 from './jobs/igDailyCarouselJob.account2.js';
 
 
 
@@ -386,6 +387,7 @@ startEnrichSpacexJob();
 startComfySocketWatcher();
 
 scheduleIGDailyJob();
+scheduleIGDailyCarouselJobAccount2();    // añade el carrusel para keikodevfree
 // import './jobs/index.js';
 // // Ejecutar cada 6 horas
 // setInterval(() => {
