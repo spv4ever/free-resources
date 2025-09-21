@@ -19,3 +19,4 @@ cron.schedule('0 4 * * 1', async () => {
     console.error('[CRON] Error en importMotoGPCalendar:', err.message);
   }
 });
+

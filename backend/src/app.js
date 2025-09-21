@@ -115,6 +115,9 @@ import generadorIARoutes from './routes/generadorIARoutes.js'; // ✅
 import cpxRoutes from './routes/cpxRoutes.js';
 import trackingRoutes from './routes/trackingRoutes.js';
 import text2imageRoutes from './routes/text2imageRoutes.js';
+import instagramRoutes from './routes/instagramRoutes.js';
+import { scheduleIGDailyJob } from './jobs/igDailyJob.js';
+
 
 
 
@@ -242,6 +245,7 @@ iniciarSchedulerFutbol(process.env.MONGO_URI);
 //fetchTodayImage();
 
 // Rutas
+app.use('/api/instagram', instagramRoutes);
 app.use('/api/generacion', text2imageRoutes);
 app.use('/api/tracking', trackingRoutes);
 app.use('/api', eventsRoutes);
@@ -380,6 +384,8 @@ import './jobs/igraalJob.js';
 import './jobs/syncWeeklyTop.js'; // activa el cronjob semanal
 startEnrichSpacexJob();
 startComfySocketWatcher();
+
+scheduleIGDailyJob();
 // import './jobs/index.js';
 // // Ejecutar cada 6 horas
 // setInterval(() => {

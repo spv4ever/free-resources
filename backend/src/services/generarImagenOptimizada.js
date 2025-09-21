@@ -37,7 +37,7 @@ export const generarImagenOptimizada = async ({
     prompt,
     ratio = '16:9',
     seed = null,
-    steps = 18,
+    steps = 30,
     filename_prefix = 'keiko',
     category = ''
   }) => {
@@ -76,7 +76,7 @@ export const generarImagenAvanzada = async ({
     prompt,
     ratio = '1:1',
     seed = null,
-    steps = 15,
+    steps = 30,
     filename_prefix = 'keiko',
     removeBackground = false,
     category = ''
@@ -311,7 +311,7 @@ export const generarImagenWallpaper = async ({
   prompt,
   ratio = '16:9',
   seed = null,
-  steps = 18,
+  steps = 30,
   filename_prefix = 'keiko'
 }) => {
   if (!prompt) throw new Error('El prompt es obligatorio');

@@ -36,7 +36,7 @@ const checkIfTodayHasEvents = async () => {
     const scheduleDynamicCron = () => {
       if (dynamicCronTask) dynamicCronTask.stop();
 
-      dynamicCronTask = cron.schedule('* * * * *', () => {
+      dynamicCronTask = cron.schedule('55 * * * *', () => {
         console.log(`[${new Date().toLocaleTimeString()}] 🔁 Notificando eventos activos...`);
         checkMotoGP();
         checkF1();  // AÑADE LA LLAMADA A F1

@@ -325,7 +325,7 @@ useEffect(() => {
         {
           prompt: finalPrompt,
           ratio: selectedRatio,
-          steps: pack?.category === 'Anime' ? 30 : 15,
+          steps: pack?.category === 'Anime' ? 30 : 25,
           seed: (isProUser && !useRandomSeed) ? parseInt(customSeed) : undefined,
           promptRef: promptId,
           advancedMode,

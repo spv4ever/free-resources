@@ -7,7 +7,7 @@ import axios from 'axios';
 const BASE_URL =
   process.env.REACT_APP_API_URL ||
   (typeof window !== 'undefined' && window.__APP_API_URL__) ||
-  'http://localhost:5000';
+  'http://localhost:5050';
 
 const API = axios.create({
   baseURL: BASE_URL,

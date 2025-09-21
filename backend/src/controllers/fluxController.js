@@ -50,7 +50,7 @@ export const generarImagen = async (req, res) => {
     const categoriasAltaCalidad = ['stickers', 'tshirts', 't-shirts', 't-shirt'];
     const stepsFinal = categoriasAltaCalidad.includes((category || '').toLowerCase())
       ? 30
-      : (steps || 15);
+      : (steps || 25);
 
     // 🚀 Lanzar generación
     const resultado = await generarImagenServicio({
