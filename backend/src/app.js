@@ -118,6 +118,7 @@ import text2imageRoutes from './routes/text2imageRoutes.js';
 import instagramRoutes from './routes/instagramRoutes.js';
 import { scheduleIGDailyJob } from './jobs/igDailyJob.js';
 import scheduleIGDailyCarouselJobAccount2 from './jobs/igDailyCarouselJob.account2.js';
+import scheduleIGDailyReelJobAccount2 from './jobs/igDailyReelJob.account2.js';
 
 
 
@@ -388,6 +389,7 @@ startComfySocketWatcher();
 
 scheduleIGDailyJob();
 scheduleIGDailyCarouselJobAccount2();    // añade el carrusel para keikodevfree
+scheduleIGDailyReelJobAccount2(); // opcional (si quieres automatizar reels)
 // import './jobs/index.js';
 // // Ejecutar cada 6 horas
 // setInterval(() => {

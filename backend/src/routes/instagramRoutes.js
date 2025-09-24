@@ -4,6 +4,7 @@ import { pickRandomCandidate, markAsPosted, tagCloudinaryPosted } from '../servi
 import { createContainer, publishContainer } from '../services/instagramService.js';
 import { buildCaption } from '../services/captionService.js';
 import { publishCarouselAccount2 } from '../controllers/instagramCarousel.controller.js';
+import { publishReelAccount2 } from '../controllers/instagramReel.controller.js';
 
 const router = express.Router();
 
@@ -141,5 +142,8 @@ router.post('/publish-carousel-one', publishCarouselAccount2);
 // opcional GET para compatibilidad con tu scheduler
 
 router.get('/publish-carousel-one', publishCarouselAccount2);
+
+router.post('/publish-reel-one', publishReelAccount2);
+router.get('/publish-reel-one', publishReelAccount2); // compat GET
 
 export default router;
