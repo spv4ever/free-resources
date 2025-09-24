@@ -52,7 +52,7 @@ function scheduleJitter({ start, end, tz, base, account, headers }) {
   return _task;
 }
 export function scheduleIGDailyReelJobAccount2() {
-  const enabled = process.env.IG_SCHEDULER_ENABLED === 'false';
+  const enabled = process.env.IG_SCHEDULER_ENABLED === 'true';
   if (!enabled) { console.log('[IG Reel] deshabilitado (IG_SCHEDULER_ENABLED != true)'); return null; }
 
   const mode = (process.env.IG_SCHEDULER_MODE || 'jitter').toLowerCase();
