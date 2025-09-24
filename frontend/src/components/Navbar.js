@@ -174,6 +174,7 @@ function Navbar() {
           <li><Link to="/admin/short-categories" onClick={toggleSidebar}>🎬 Categorías de Shorts</Link></li>
           <li><Link to="/admin/sync-shorts" onClick={toggleSidebar}>🔁 Sincronizar Shorts Virales</Link></li>
           <li><Link to="/admin/social-posts" onClick={toggleSidebar}>📢 Social Posts</Link></li>
+          <li><Link to="/admin/ig-monitor" onClick={toggleSidebar}>📊 IG Monitor</Link></li>
         </>
       )}
 

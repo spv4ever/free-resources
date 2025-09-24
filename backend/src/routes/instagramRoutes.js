@@ -5,6 +5,7 @@ import { createContainer, publishContainer } from '../services/instagramService.
 import { buildCaption } from '../services/captionService.js';
 import { publishCarouselAccount2 } from '../controllers/instagramCarousel.controller.js';
 import { publishReelAccount2 } from '../controllers/instagramReel.controller.js';
+import { getIGMonitorSummary, getIGRecent, getIGEligible } from '../controllers/instagramMonitor.controller.js';
 
 const router = express.Router();
 
@@ -145,5 +146,9 @@ router.get('/publish-carousel-one', publishCarouselAccount2);
 
 router.post('/publish-reel-one', publishReelAccount2);
 router.get('/publish-reel-one', publishReelAccount2); // compat GET
+
+router.get('/monitor/summary', getIGMonitorSummary);
+router.get('/monitor/recent', getIGRecent);
+router.get('/monitor/eligible', getIGEligible);
 
 export default router;

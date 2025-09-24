@@ -96,6 +96,7 @@ import ChampionsPage from './pages/futbol/ChampionsPage';
 import EntrenaGenerador from './pages/EntrenaGenerador.jsx';
 import Apoyar from './components/Apoyar'
 import PromptImagesHistory from './components/PromptImagesHistory';
+import AdminIGMonitorPage from './pages/AdminIGMonitorPage.jsx';
 
 
 
@@ -169,8 +170,10 @@ function App() {
             {/* <Route path="/admin/social-posts" element={<AdminRoute><div>Hola soy admin</div></AdminRoute>} /> */}
             <Route path="/admin/social-posts" element={<AdminRoute><SocialPostAdmin /></AdminRoute>} />
             <Route path="/admin/affiliate-clicks" element={<AdminRoute><AffiliateClickStatsAdmin /></AdminRoute>}
+            
             />
             {/* <Route path="/admin/social-posts" element={<SocialPostAdmin />} /> */}
+            <Route path="/admin/ig-monitor" element={<AdminIGMonitorPage />} />
             <Route path="/admin/suspicious-access" element={<AdminRoute><SuspiciousAccessAdmin /></AdminRoute>} />
             <Route path="/admin/scam-posts" element={<AdminRoute><ScamPostsPage /></AdminRoute>} />
             <Route path="category/:categoryName" element={<CategoryResourcesPage />} />
