@@ -8,3 +8,7 @@ gmail-token.json
 data/
 *.log
 Cookies/
+.env*
+.flaskenv*
+.env.project
+.env.vault

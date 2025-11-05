@@ -28,13 +28,11 @@ async function fireOnce({ base, account, headers }) {
       body: JSON.stringify({ account })
     });
     if (res.status === 405) {
-      res = await fetch(
-        `${base}/api/instagram/publish-one?account=${encodeURIComponent(account)}`,
-        { method: 'GET', headers }
-      );
+      res = await fetch(`${base}/api/instagram/publish-one?account=${encodeURIComponent(account)}`, { method: 'GET', headers });
     }
     const text = await res.text();
-    console.log(`[IG Scheduler] ${new Date().toISOString()} status=${res.status} body=${text}`);
+    let payload = null; try { payload = text ? JSON.parse(text) : null; } catch {}
+    console.log(`[IG Scheduler] ${new Date().toISOString()} status=${res.status} postId=${payload?.publishedId ?? 'N/A'} usedUrl=${payload?.usedUrl ?? 'N/A'} body=${text.slice(0,200)}`);
   } catch (e) {
     console.error('[IG Scheduler] ERROR', e.message);
   }
