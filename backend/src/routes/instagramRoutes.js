@@ -133,7 +133,14 @@ async function handlePublishOne(req, res) {
     await markAsPosted({ id: candidate._id, platform: 'instagram', account, postId: publishedId });
     await tagCloudinaryPosted({ publicId: candidate.cloudinaryPublicId, account });
 
-    return res.json({ ok: true, candidateId: candidate._id, publishedId, usedUrl: fixedUrl });
+    return res.json({
+       ok: true,
+       candidateId: candidate._id,
+       publishedId,
+       igMediaId: publishedId,   // alias para front actual
+       postId: publishedId,      // alias adicional por si acaso
+       usedUrl: fixedUrl
+     });
   } catch (e) {
     // ⬅️ NUEVO: mejora el mensaje cuando es 9004/2207052
     const body = e?.body || e; // por si tu createContainer lanza con .body
