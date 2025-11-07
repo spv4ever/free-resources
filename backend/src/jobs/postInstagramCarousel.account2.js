@@ -1,3 +1,5 @@
+// backend/src/jobs/postInstagramCarousel.account2.js
+
 // ES Modules
 import 'dotenv/config';
 import axios from 'axios';
@@ -19,6 +21,9 @@ const POLL_INTERVAL_MS   = 2000;    // cada 2s
 const CHILD_TIMEOUT_MS   = 120000;  // 120s por child
 const PARENT_TIMEOUT_MS  = 120000;  // 120s contenedor carrusel
 
+// ====== GRAPH ======
+const GRAPH = 'https://graph.facebook.com/v21.0'; // ⬅️ actualizado v21.0
+
 // ====== CAPTION BREVE ORIENTADO A keikodevfree ======
 function buildCaptionKeikoDevFree({ titulo = '', tagsExtra = [] } = {}) {
   const base = [
@@ -35,20 +40,36 @@ function buildCaptionKeikoDevFree({ titulo = '', tagsExtra = [] } = {}) {
 // ====== UTILS ======
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-async function headOk(url) {
+// Fuerza Cloudinary → JPEG estable (f_jpg + .jpg + w_1080)
+function forceCloudinaryJpeg(url, { width = 1080, quality = 'auto:good' } = {}) {
   try {
-    const res = await fetch(url, { method: 'HEAD' });
-    if (!res.ok) return false;
-    const ct = res.headers.get('content-type') || '';
-    return ct.startsWith('image/');
+    const u = new URL(url);
+    if (!/res\.cloudinary\.com$/i.test(u.hostname)) return url;
+    const trans = ['f_jpg', quality ? `q_${quality}` : null, width ? `w_${width}` : null]
+      .filter(Boolean).join(',');
+    u.pathname = u.pathname.replace(/\/image\/upload\/(?!.*\/f_jpg)/, `/image/upload/${trans}/`);
+    u.pathname = u.pathname.replace(/\.(png|webp|avif)(?=$)/i, '.jpg');
+    return u.toString();
   } catch {
-    return false;
+    return url;
+  }
+}
+
+// HEAD que exige image/jpeg (nada de image/* genérico)
+async function headIsJpeg(url) {
+  try {
+    const res = await fetch(url, { method: 'HEAD', redirect: 'follow' });
+    if (!res.ok) return { ok: false, status: res.status, ct: null };
+    const ct = (res.headers.get('content-type') || '').toLowerCase();
+    return { ok: /^image\/jpeg/.test(ct), status: res.status, ct };
+  } catch (e) {
+    return { ok: false, status: 0, ct: 'HEAD_FAIL' };
   }
 }
 
 // ====== IG HELPERS ======
 async function igCreateCarouselItem({ imageUrl }) {
-  const url = `https://graph.facebook.com/v20.0/${IG_USER_ID}/media`;
+  const url = `${GRAPH}/${IG_USER_ID}/media`;
   const params = {
     image_url: imageUrl,
     is_carousel_item: true,
@@ -59,43 +80,56 @@ async function igCreateCarouselItem({ imageUrl }) {
 }
 
 /**
- * Intenta crear un child con reintentos (maneja errores transitorios de Meta).
+ * Intenta crear un child con 3 estrategias:
+ *  A) original
+ *  B) JPEG forzado (f_jpg + .jpg)
+ *  C) JPEG 1080 (f_jpg + .jpg + w_1080)
+ * Cada paso valida con HEAD que sea image/jpeg.
  */
-async function igCreateCarouselItemRetry({ imageUrl, maxAttempts = CHILD_MAX_ATTEMPTS }) {
-  // Verificación rápida del asset antes de pegar a Graph
-  const ok = await headOk(imageUrl);
-  if (!ok) {
-    throw new Error(`HEAD check falló o no es image/* → ${imageUrl}`);
-  }
+async function igCreateCarouselItemSmart({ rawUrl, maxAttemptsPerStep = 2 }) {
+  const attempts = [
+    { label: 'original', makeUrl: () => rawUrl },
+    { label: 'jpeg',     makeUrl: () => forceCloudinaryJpeg(rawUrl) },
+    { label: 'jpeg1080', makeUrl: () => forceCloudinaryJpeg(rawUrl, { width: 1080, quality: 'auto:good' }) },
+  ];
 
   let lastErr;
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    try {
-      const id = await igCreateCarouselItem({ imageUrl });
-      return id;
-    } catch (e) {
-      lastErr = e;
-      const payload = e?.response?.data?.error || {};
-      const transient = payload?.is_transient || payload?.code === 2;
+  for (const step of attempts) {
+    const candidate = step.makeUrl();
 
-      console.error(
-        `[carousel][attempt ${attempt}/${maxAttempts}] fallo creando child para ${imageUrl}`,
-        payload || e.message
-      );
+    const pre = await headIsJpeg(candidate);
+    console.log(`[carousel][preflight ${step.label}] url=${candidate} status=${pre.status} ct=${pre.ct}`);
+    if (!pre.ok) {
+      lastErr = new Error(`Preflight fallido (${step.label}): ${pre.status} ${pre.ct}`);
+      continue;
+    }
 
-      if (!transient || attempt === maxAttempts) break;
-
-      // backoff exponencial con jitter (1s, 2s, 4s, 8s +/- aleatorio)
-      const base = Math.pow(2, attempt - 1) * 1000;
-      const jitter = Math.floor(Math.random() * 400);
-      await sleep(base + jitter);
+    for (let attempt = 1; attempt <= Math.min(CHILD_MAX_ATTEMPTS, maxAttemptsPerStep); attempt++) {
+      try {
+        const id = await igCreateCarouselItem({ imageUrl: candidate });
+        console.log(`[carousel] child OK (${step.label}) creation_id=${id}`);
+        return { creationId: id, usedUrl: candidate, mode: step.label };
+      } catch (e) {
+        const payload = e?.response?.data?.error || {};
+        const transient = payload?.is_transient || payload?.code === 2;
+        console.warn(
+          `[carousel][attempt ${attempt}/${maxAttemptsPerStep}] fallo creando child (${step.label})`,
+          payload || e.message
+        );
+        lastErr = e;
+        if (!transient || attempt === maxAttemptsPerStep) break;
+        // backoff exponencial con jitter (1s, 2s) por step
+        const base = Math.pow(2, attempt - 1) * 1000;
+        const jitter = Math.floor(Math.random() * 400);
+        await sleep(base + jitter);
+      }
     }
   }
-  throw lastErr;
+  throw lastErr || new Error('No se pudo crear el child tras saneo y reintentos');
 }
 
 async function igCreateCarouselContainer({ childrenIds = [], caption }) {
-  const url = `https://graph.facebook.com/v20.0/${IG_USER_ID}/media`;
+  const url = `${GRAPH}/${IG_USER_ID}/media`;
   const params = {
     media_type: 'CAROUSEL',
     children: childrenIds.join(','),
@@ -107,14 +141,14 @@ async function igCreateCarouselContainer({ childrenIds = [], caption }) {
 }
 
 async function igPublish({ creationId }) {
-  const url = `https://graph.facebook.com/v20.0/${IG_USER_ID}/media_publish`;
+  const url = `${GRAPH}/${IG_USER_ID}/media_publish`;
   const params = { creation_id: creationId, access_token: IG_ACCESS_TOKEN };
   const { data } = await axios.post(url, null, { params });
   return data.id; // igMediaId
 }
 
 async function igGetStatusCode(creationId) {
-  const url = `https://graph.facebook.com/v20.0/${creationId}`;
+  const url = `${GRAPH}/${creationId}`;
   const params = { fields: 'status_code', access_token: IG_ACCESS_TOKEN };
   const { data } = await axios.get(url, { params });
   return data?.status_code || null; // IN_PROGRESS | FINISHED | ERROR
@@ -129,6 +163,7 @@ async function waitUntilFinished(creationId, { timeoutMs, label }) {
     let status = 'UNKNOWN';
     try {
       status = await igGetStatusCode(creationId);
+      console.log(`[${label}] ${creationId} status_code=${status}`);
     } catch (e) {
       console.warn(`[${label}] fallo consultando status_code`, e?.response?.data || e.message);
     }
@@ -167,7 +202,7 @@ async function pickPublishableImages({ limit = 5 }) {
   const imgs = await ImagenGenerada
     .find(query)
     .sort({ createdAt: -1 })
-    .limit(max)
+    .limit(max * 3) // buscamos más por si alguna cae
     .lean();
 
   return imgs; // devolvemos docs completos (necesitamos _id para actualizar)
@@ -198,39 +233,46 @@ export async function postCarouselAccount2({
     console.log('[keikodevfree.carousel] No hay imágenes publicables nuevas.');
     return null;
   }
-  const imageUrls = images.map(i => i.finalUrl);
 
   const caption = buildCaptionKeikoDevFree({ titulo, tagsExtra });
 
   if (dryRun) {
-    console.log('[keikodevfree.carousel] DRY RUN →', { imageUrls, caption });
-    return { dryRun: true, imageUrls, caption };
+    const preview = images.slice(0, limit).map(i => i.finalUrl);
+    console.log('[keikodevfree.carousel] DRY RUN →', { preview, caption });
+    return { dryRun: true, imageUrls: preview, caption };
   }
 
-  // 1) crear children (con reintentos) y esperar FINISHED por cada uno
+  // 1) crear children robustos y esperar FINISHED por cada uno
   const childrenIds = [];
   const failedItems = [];
+  const usedUrls = []; // [{imgId, usedUrl}]
 
   for (const img of images) {
+    if (childrenIds.length >= limit) break;
+
+    const rawUrl = img.finalUrl;
+    if (!rawUrl) continue;
+
     try {
-      const childId = await igCreateCarouselItemRetry({ imageUrl: img.finalUrl });
+      const { creationId, usedUrl, mode } = await igCreateCarouselItemSmart({ rawUrl });
       try {
-        await waitUntilFinished(childId, { timeoutMs: CHILD_TIMEOUT_MS, label: 'child' });
-        childrenIds.push(childId);
+        await waitUntilFinished(creationId, { timeoutMs: CHILD_TIMEOUT_MS, label: 'child' });
+        childrenIds.push(creationId);
+        usedUrls.push({ imgId: img._id, usedUrl, mode });
       } catch (err) {
-        failedItems.push({ url: img.finalUrl, error: err.message });
-        console.error('[carousel] child no terminó a tiempo:', img.finalUrl, err.message);
+        failedItems.push({ url: rawUrl, error: err.message });
+        console.error('[carousel] child no terminó a tiempo:', rawUrl, err.message);
       }
     } catch (e) {
-      failedItems.push({ url: img.finalUrl, error: e?.response?.data?.error || e.message });
-      console.error('[carousel] Item descartado tras reintentos:', img.finalUrl);
+      failedItems.push({ url: rawUrl, error: e?.response?.data?.error || e.message });
+      console.error('[carousel] Item descartado tras reintentos:', rawUrl);
     }
   }
 
   // Requisitos de IG: un carrusel necesita ≥2 items
   if (childrenIds.length < 2) {
     console.error('[carousel] No hay suficientes items válidos (>=2) para publicar el carrusel.');
-    return { error: 'NOT_ENOUGH_CHILDREN', failedItems, imageUrls };
+    return { error: 'NOT_ENOUGH_CHILDREN', failedItems, imageUrls: images.map(i => i.finalUrl) };
   }
 
   // 2) contenedor del carrusel y espera FINISHED
@@ -239,14 +281,13 @@ export async function postCarouselAccount2({
 
   // 3) publicar
   const igMediaId = await igPublish({ creationId });
-
   console.log('[keikodevfree.carousel] Publicado:', igMediaId);
 
   // 4) Marca como publicadas SOLO las imágenes que entraron en el carrusel
   try {
-    const failedSet = new Set(failedItems.map(f => f.url));
+    const usedSet = new Set(usedUrls.map(u => String(u.imgId)));
     const usedIds = images
-      .filter(i => !failedSet.has(i.finalUrl))
+      .filter(i => usedSet.has(String(i._id)))
       .map(i => i._id);
 
     if (usedIds.length) {
@@ -268,7 +309,16 @@ export async function postCarouselAccount2({
     console.error('[keikodevfree.carousel] No se pudo actualizar publications:', e?.message || e);
   }
 
-  return { igMediaId, childrenIds, failedItems, imageUrls };
+  return {
+    ok: true,
+    publishedId: igMediaId,     // ⬅️ para consistencia con post simple
+    igMediaId,                  // alias para tu frontend actual
+    postId: igMediaId,          // alias adicional
+    childrenIds,
+    failedItems,
+    usedUrls,                   // [{imgId, usedUrl, mode}]
+    imageUrls: images.map(i => i.finalUrl)
+  };
 }
 
 // ====== CLI OPCIONAL ======
