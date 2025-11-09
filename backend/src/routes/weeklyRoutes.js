@@ -11,6 +11,12 @@ import {
 
 import { run as runAdapter } from '../jobs/adapters/runner.js';
 
+// imports extra
+import {
+  bootWeeklyPlanner, stopWeeklyPlanner, isWeeklyPlannerEnabled,
+  setWeeklyPlannerEnabled, rebuildAllWeekly
+} from '../jobs/WeeklyPlanner.js';
+
 const router = Router();
 
 /** Salud del módulo + TZ del proceso */
@@ -91,6 +97,30 @@ router.post('/run-now/:accountId', async (req, res) => {
   });
 
   return res.json({ ok: true, ran: type, alias: acc.alias });
+});
+
+// Estado
+router.get('/status', (req,res)=> {
+  res.json({ enabled: isWeeklyPlannerEnabled(), tz: Intl.DateTimeFormat().resolvedOptions().timeZone });
+});
+
+// Toggle en caliente
+router.post('/toggle', async (req,res)=> {
+  const { enabled } = req.body || {};
+  if (enabled === true) {
+    setWeeklyPlannerEnabled(true);
+    await bootWeeklyPlanner();
+    return res.json({ ok:true, enabled:true });
+  }
+  setWeeklyPlannerEnabled(false);
+  stopWeeklyPlanner();
+  return res.json({ ok:true, enabled:false });
+});
+
+// Rebuild global
+router.post('/rebuild-all', async (req,res)=> {
+  await rebuildAllWeekly();
+  res.json({ ok:true });
 });
 
 export default router;

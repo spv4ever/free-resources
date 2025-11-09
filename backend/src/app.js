@@ -119,7 +119,7 @@ import instagramRoutes from './routes/instagramRoutes.js';
 import { scheduleIGDailyJob } from './jobs/igDailyJob.js';
 import scheduleIGDailyCarouselJobAccount2 from './jobs/igDailyCarouselJob.account2.js';
 import scheduleIGDailyReelJobAccount2 from './jobs/igDailyReelJob.account2.js';
-import { bootWeeklyPlanner, rebuildWeeklyForAccount,startCronProbe } from './jobs/WeeklyPlanner.js';
+import { bootWeeklyPlanner, rebuildWeeklyForAccount,startCronProbe,setWeeklyPlannerEnabled } from './jobs/WeeklyPlanner.js';
 import weeklyRoutes from './routes/weeklyRoutes.js';
 
 
@@ -251,8 +251,16 @@ iniciarSchedulerFutbol(process.env.MONGO_URI);
 const PORT = process.env.PORT || 5050;
 app.listen(PORT, async () => {
   console.log(`Server up http://localhost:${PORT}`);
-  await bootWeeklyPlanner();   
-  startCronProbe('Europe/Madrid'); // 👈 solo si DEBUG_WEEKLY=1   // 👈 arranca planificador semanal
+
+  // Encendido por .env, sin distinguir prod/dev
+  const want = (process.env.WEEKLY_PLANNER_ENABLED || 'false') === 'true';
+  setWeeklyPlannerEnabled(want);
+  if (want) {
+    await bootWeeklyPlanner();
+    if (process.env.DEBUG_WEEKLY === '1') startCronProbe('Europe/Madrid');
+  } else {
+    console.log('⚠️ Weekly planner desactivado por .env');
+  }
 });
 // Rutas
 app.use('/api/instagram', instagramRoutes);

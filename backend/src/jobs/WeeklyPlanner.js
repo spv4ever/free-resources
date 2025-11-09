@@ -7,10 +7,17 @@ import { run as runAdapter } from './adapters/runner.js';
 
 const MAP_DAY = { sun:0, mon:1, tue:2, wed:3, thu:4, fri:5, sat:6 };
 
-// accountId -> [CronTask]
-const REGISTRY = new Map();
-// accountId -> [{ label, H, M, dow, tz, expr }]
-const REGISTRY_META = new Map();
+// ─────────────────────────────────────────────────────────────
+// REGISTRY y meta para diagnóstico + flag de encendido
+// ─────────────────────────────────────────────────────────────
+let REGISTRY = new Map();       // accountId -> [CronTask]
+let REGISTRY_META = new Map();  // accountId -> [{ label, H, M, dow, tz, expr }]
+let PLANNER_ENABLED = false;
+
+export function isWeeklyPlannerEnabled() { return PLANNER_ENABLED; }
+export function setWeeklyPlannerEnabled(v) { PLANNER_ENABLED = !!v; }
+
+// ─────────────────────────────────────────────────────────────
 
 function stopAllFor(accountId){
   const arr = REGISTRY.get(accountId) || [];
@@ -82,6 +89,11 @@ function scheduleOne({ tz, dow, H, M, label, cb, accountId }){
 }
 
 export async function rebuildWeeklyForAccount(accountId){
+  if (!PLANNER_ENABLED) {
+    console.log(`[weekly][rebuild] planner disabled, skip accountId=${accountId}`);
+    return;
+  }
+
   stopAllFor(accountId);
 
   const [account, sched] = await Promise.all([
@@ -101,7 +113,9 @@ export async function rebuildWeeklyForAccount(accountId){
   for (const type of TYPES){
     const raw = sched[type] || {};
     const weekly = (raw && typeof raw.toObject === 'function') ? raw.toObject() : raw;
-    console.log(`[weekly][rebuild] account=${account.alias} type=${type} keys=`, Object.keys(weekly));
+
+    const keys = Object.keys(weekly);
+    console.log(`[weekly][rebuild] account=${account.alias} type=${type} keys=`, keys);
 
     for (const [dayKey, cfg] of Object.entries(weekly)){
       if (!cfg?.enabled) {
@@ -126,9 +140,31 @@ export async function rebuildWeeklyForAccount(accountId){
   console.log(`[weekly][rebuild] DONE account=${account.alias} scheduled=${scheduledCount}`);
 }
 
+/** Arranca el planner y rehace todas las cuentas habilitadas */
 export async function bootWeeklyPlanner(){
-  const accounts = await InstagramAccount.find({ isEnabled:true }).lean();
+  PLANNER_ENABLED = true;
+  console.log('[weekly] BOOT (enabled=true)');
+  await rebuildAllWeekly();
+}
+
+/** Rebuild global (todas las cuentas habilitadas) */
+export async function rebuildAllWeekly() {
+  if (!PLANNER_ENABLED) {
+    console.log('[weekly] rebuildAllWeekly: planner disabled, skip');
+    return;
+  }
+  const accounts = await InstagramAccount.find({ isEnabled: true }).lean();
   for (const acc of accounts) await rebuildWeeklyForAccount(acc._id);
+}
+
+/** Apaga todo el planner (borra y para todas las tareas) */
+export function stopWeeklyPlanner() {
+  for (const [accountId, arr] of REGISTRY.entries()) {
+    arr.forEach(t => t.stop());
+  }
+  REGISTRY = new Map();
+  REGISTRY_META = new Map();
+  console.log('[weekly] STOP — all tasks cleared');
 }
 
 // (opcional) sonda por minuto para verificar que cron late
