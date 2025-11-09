@@ -119,6 +119,9 @@ import instagramRoutes from './routes/instagramRoutes.js';
 import { scheduleIGDailyJob } from './jobs/igDailyJob.js';
 import scheduleIGDailyCarouselJobAccount2 from './jobs/igDailyCarouselJob.account2.js';
 import scheduleIGDailyReelJobAccount2 from './jobs/igDailyReelJob.account2.js';
+import { bootWeeklyPlanner, rebuildWeeklyForAccount,startCronProbe } from './jobs/WeeklyPlanner.js';
+import weeklyRoutes from './routes/weeklyRoutes.js';
+
 
 
 
@@ -245,7 +248,12 @@ startF1Notifier();
 startDailyEventScheduler(); // activa cron diario
 iniciarSchedulerFutbol(process.env.MONGO_URI);
 //fetchTodayImage();
-
+const PORT = process.env.PORT || 5050;
+app.listen(PORT, async () => {
+  console.log(`Server up http://localhost:${PORT}`);
+  await bootWeeklyPlanner();   
+  startCronProbe('Europe/Madrid'); // 👈 solo si DEBUG_WEEKLY=1   // 👈 arranca planificador semanal
+});
 // Rutas
 app.use('/api/instagram', instagramRoutes);
 app.use('/api/generacion', text2imageRoutes);
@@ -359,6 +367,19 @@ app.use('/api/summaryRoutes', summaryRoutes);
 
 app.use('/api/telegram-f1', f1Routes);
 app.use('/api/futbol', futbolRoutes);
+
+// (opcional) monta la API del calendario semanal (UI)
+app.use('/api/weekly', weeklyRoutes);
+
+// (opcional) un endpoint directo para rebuild sin weeklyRoutes
+app.post('/api/weekly/rebuild/:accountId', async (req, res) => {
+  try {
+    await rebuildWeeklyForAccount(req.params.accountId);
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message || 'Error rebuild' });
+  }
+});
 
 
 
