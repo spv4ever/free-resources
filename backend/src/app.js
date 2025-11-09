@@ -408,9 +408,11 @@ import './jobs/syncWeeklyTop.js'; // activa el cronjob semanal
 startEnrichSpacexJob();
 startComfySocketWatcher();
 
-scheduleIGDailyJob();
-scheduleIGDailyCarouselJobAccount2();    // añade el carrusel para keikodevfree
-scheduleIGDailyReelJobAccount2(); // opcional (si quieres automatizar reels)
+if (process.env.IG_SCHEDULER_ENABLED === 'true') {
+  scheduleIGDailyJob();
+  scheduleIGDailyCarouselJobAccount2();
+  scheduleIGDailyReelJobAccount2();
+}
 // import './jobs/index.js';
 // // Ejecutar cada 6 horas
 // setInterval(() => {
