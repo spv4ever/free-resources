@@ -175,6 +175,51 @@ export const generarImagenStickers = async ({
   return data;
 };
 
+export const generarImagenZImage = async ({
+  prompt,
+  negativePrompt = "blurry ugly bad",
+  ratio = "3:4",
+  seed = null,
+  filename_prefix = "keiko"
+}) => {
+  if (!prompt) throw new Error("El prompt es obligatorio");
+
+  const modificado = clonarFlujo(flujosCargados.zimage);
+  const [width, height] = resolucionesOptimizadas[ratio] || resolucionesOptimizadas["3:4"];
+
+  // Nodos del z-image.json (según tu archivo):
+  // 6: positivo (CLIPTextEncode)
+  // 7: negativo (CLIPTextEncode)
+  // 13: latente SD3 (EmptySD3LatentImage) -> width/height
+  // 3: KSampler -> seed/steps
+  // 9: SaveImage -> filename_prefix
+  if (modificado["6"]) modificado["6"].inputs.text = prompt;
+  if (modificado["7"]) modificado["7"].inputs.text = negativePrompt;
+
+  if (modificado["13"]) {
+    modificado["13"].inputs.width = width;
+    modificado["13"].inputs.height = height;
+  }
+
+  // seed + steps (SIEMPRE 10)
+  if (modificado["3"]) {
+    modificado["3"].inputs.seed = seed || Math.floor(Math.random() * 1e16);
+    modificado["3"].inputs.steps = 10; // ✅ fijo por requisito
+  }
+
+  if (modificado["9"]) {
+    modificado["9"].inputs.filename_prefix = filename_prefix;
+  }
+
+  const comfyUrl = await getComfyUrl("flux");
+  const { data } = await axios.post(`${comfyUrl}/prompt`, { prompt: modificado }, getComfyAuth());
+
+  if (data?.prompt_id) trackPendingJob(data.prompt_id);
+
+  return data;
+};
+
+
 export const generarImagen = async ({
   prompt,
   ratio,
@@ -183,8 +228,22 @@ export const generarImagen = async ({
   filename_prefix,
   advancedMode = false,
   removeBackground = false,
-  category = ''
+  category = '',
+  engine = null,           // ✅ NUEVO
+  negativePrompt = null    // ✅ opcional por si quieres pasarlo desde frontend
 }) => {
+  // ✅ OVERRIDE GLOBAL: si engine=zimage => da igual la categoría
+  if (engine === 'zimage') {
+    console.log(`[FLUJO] Override engine=zimage (steps=10 fijo)`);
+    return generarImagenZImage({
+      prompt,
+      negativePrompt: negativePrompt || "blurry ugly bad",
+      ratio,
+      seed,
+      filename_prefix
+    });
+  }
+
   const esSticker = ['Stickers', 'T-Shirt'].includes(category);
   const esAnime = category === 'Anime';
 
@@ -207,9 +266,11 @@ export const generarImagen = async ({
     console.log(`[FLUJO] Usando flujo "pro" (modo avanzado activado)`);
     return generarImagenAvanzada({ prompt, ratio, seed, steps, filename_prefix, removeBackground, category });
   }
+
   console.log(`[FLUJO] Usando flujo "normal" por defecto`);
   return generarImagenOptimizada({ prompt, ratio, seed, steps, filename_prefix, category });
 };
+
 
 export const generarImagenAnime = async ({
   prompt,

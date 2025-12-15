@@ -44,6 +44,8 @@ const PromptCardRedesigned = React.memo(({
   customReplacement,       // ✅ añadido
   setCustomReplacement,    // ✅ añadido
   imagenPreviewUrl,
+  turboMode,              // ✅ NUEVO
+  setTurboMode,           // ✅ NUEVO
   onPromptUpdated   // ⬅️ NUEVO (opcional) 
 }) => {
   const { user } = useUser();
@@ -244,6 +246,13 @@ const PromptCardRedesigned = React.memo(({
                   isProUser={isProUser}
                   tooltipText={removeBgTooltipText}
                 />
+                <ToggleSwitch
+                  label="Turbo (Z-Image)"
+                  checked={turboMode?.[promptId] || false}
+                  onChange={() => setTurboMode(prev => ({ ...prev, [promptId]: !prev[promptId] }))}
+                  isProUser={true}                 // si quieres que sea para todos, déjalo true
+                  tooltipText={"Generación rápida (steps=10)"}
+                />
               </div>
             </div>
           )}
@@ -347,6 +356,7 @@ const PromptCardRedesigned = React.memo(({
                     selectedExtras: selectedExtras[promptId] || [],
                     advancedMode: advancedMode[promptId] || false,
                     removeBackground: removeBackground[promptId] || false,
+                    engine: turboMode?.[promptId] ? 'zimage' : null,
                     esPublica: false
                   });
               }}

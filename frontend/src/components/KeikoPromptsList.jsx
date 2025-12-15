@@ -53,6 +53,7 @@ export default function KeikoPromptsList() {
   const [customText, setCustomText] = useState({});
   const [imagePreviews, setImagePreviews] = useState({});
   const [customReplacement, setCustomReplacement] = useState({});
+  const [turboMode, setTurboMode] = useState({});
   
   
   
@@ -299,7 +300,8 @@ useEffect(() => {
     selectedExtras = [],
     advancedMode = false,
     removeBackground = false,
-    esPublica = false
+    esPublica = false,
+    engine = null // ✅ NUEVO
   }) => {
     try {
       setImagenes(prevImagenes => {
@@ -330,7 +332,8 @@ useEffect(() => {
           promptRef: promptId,
           advancedMode,
           removeBackground,
-          esPublica
+          esPublica,
+          engine // ✅ NUEVO
         },
         {
           headers: { Authorization: `Bearer ${token}` }
@@ -715,6 +718,8 @@ useEffect(() => {
               setCustomText={setCustomText}
               customReplacement={customReplacement}
               setCustomReplacement={setCustomReplacement}
+              turboMode={turboMode}
+              setTurboMode={setTurboMode}
               onPromptUpdated={handlePromptUpdated}   // ⬅️ importante
             />
           );

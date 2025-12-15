@@ -25,7 +25,8 @@ export const generarImagen = async (req, res) => {
       steps,
       advancedMode = false,
       removeBackground = false,
-      promptRef
+      promptRef,
+      engine = null // ✅ NUEVO
     } = req.body;
 
     const filename_prefix = req.user.nickname || 'keiko';
@@ -48,10 +49,13 @@ export const generarImagen = async (req, res) => {
 
     // 🎚️ Steps por categoría
     const categoriasAltaCalidad = ['stickers', 'tshirts', 't-shirts', 't-shirt'];
-    const stepsFinal = categoriasAltaCalidad.includes((category || '').toLowerCase())
-      ? 30
-      : (steps || 25);
-
+    const stepsFinal =
+      engine === 'zimage'
+        ? 10
+        : (categoriasAltaCalidad.includes((category || '').toLowerCase())
+            ? 30
+            : (steps || 25));
+    console.log('⚡ Engine:', engine, '| stepsFinal:', stepsFinal);
     // 🚀 Lanzar generación
     const resultado = await generarImagenServicio({
       prompt,
@@ -61,7 +65,8 @@ export const generarImagen = async (req, res) => {
       filename_prefix,
       removeBackground,
       advancedMode,
-      category
+      category,
+      engine // ✅ NUEVO  
     });
 
     console.log('📥 Resultado de generarImagenServicio:', resultado);

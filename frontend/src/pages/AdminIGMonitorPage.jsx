@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import IGMonitor from '../components/IGMonitor.jsx';
 import WeeklyCalendarBeta from '../components/WeeklyCalendarBeta.jsx';
+import WeeklyPlannerSwitch from '../components/WeeklyPlannerSwitch.jsx';
 
 // misma base que tu .env
 const API_BASE = (process.env.REACT_APP_API_URL || '').replace(/\/+$/, '');
@@ -43,6 +44,8 @@ export default function AdminIGMonitorPage() {
       <div style={styles.card}>
         <h1 style={styles.title}>IG Admin — {IG_ALIAS}</h1>
         <p style={styles.muted}>Inventario, publicaciones y planificación.</p>
+        {/* 🔌 Controles del planner semanal */}
+        <WeeklyPlannerSwitch />
 
         {/* Tabs */}
         <div className="tabs">

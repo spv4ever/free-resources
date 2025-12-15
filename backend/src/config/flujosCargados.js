@@ -7,7 +7,9 @@ const rutaStickers = path.join(process.cwd(), 'src', 'modeloia', 'stickers.json'
 const rutaAnime = path.join(process.cwd(), 'src', 'modeloia', 'anime.json');
 const rutaRMBG = path.join(process.cwd(), 'src', 'modeloia', 'RMBG.json');
 const rutaUpscale = path.join(process.cwd(), 'src', 'modeloia', 'upscale.json');
-const rutaWallpaper = path.join(process.cwd(), 'src', 'modeloia', 'flux_wallpaper.json'); // 👈 nueva línea
+const rutaWallpaper = path.join(process.cwd(), 'src', 'modeloia', 'flux_wallpaper.json');
+const rutaZImage = path.join(process.cwd(), 'src', 'modeloia', 'z-image.json');
+ // 👈 nueva línea
 
 export const flujosCargados = {
   normal: JSON.parse(fs.readFileSync(rutaNormal, 'utf-8')),
@@ -16,5 +18,6 @@ export const flujosCargados = {
   anime: JSON.parse(fs.readFileSync(rutaAnime, 'utf-8')),
   rmbg: JSON.parse(fs.readFileSync(rutaRMBG, 'utf-8')),
   upscale: JSON.parse(fs.readFileSync(rutaUpscale, 'utf-8')),
-  wallpaper: JSON.parse(fs.readFileSync(rutaWallpaper, 'utf-8')) // 👈 nueva entrada
+  wallpaper: JSON.parse(fs.readFileSync(rutaWallpaper, 'utf-8')), // 👈 nueva entrada
+  zimage: JSON.parse(fs.readFileSync(rutaZImage, 'utf-8'))
 };
