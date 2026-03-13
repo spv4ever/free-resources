@@ -244,8 +244,14 @@
   cursor: pointer;
 }
 
-.hamburger-btn:focus {
-  outline: none;
+
+.hamburger-btn:focus-visible,
+.navbar a:focus-visible,
+.navbar button:focus-visible,
+.mobile-menu a:focus-visible,
+.mobile-menu button:focus-visible {
+  outline: 3px solid #00bfff;
+  outline-offset: 3px;
 }
 
 

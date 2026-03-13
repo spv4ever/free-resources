@@ -118,7 +118,15 @@ function Navbar() {
       </div>
       
 
-      <button className="hamburger-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>☰</button>
+      <button
+        className="hamburger-btn"
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        aria-label={mobileMenuOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'}
+        aria-expanded={mobileMenuOpen}
+        aria-controls="mobile-navigation-menu"
+      >
+        ☰
+      </button>
 
       <div className="navbar-links">
         <Link to="/">Home</Link>
@@ -140,7 +148,7 @@ function Navbar() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="mobile-menu">
+        <div className="mobile-menu" id="mobile-navigation-menu">
           <Link to="/" onClick={() => setMobileMenuOpen(false)}>Home</Link>
           {user ? (
             <>

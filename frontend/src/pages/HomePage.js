@@ -1,7 +1,7 @@
   import React, { useEffect, useState } from 'react';
   // import MetaTags from '../components/MetaTags';
   import '../styles/HomePage.css';
-  import { useNavigate, useLocation } from 'react-router-dom';
+  import { Link, useLocation } from 'react-router-dom';
   import { FaCircleInfo } from 'react-icons/fa6';
   import axios from 'axios';
   import dayjs from 'dayjs';
@@ -10,7 +10,6 @@
   
   import NasaCard from '../components/NasaCard';
   import NasaCardVideo from '../components/NasaCardVideo';
-  import AdBanner from '../components/AdBanner';
   // import AdBannerExtra from '../components/AdBannerExtra';
   import AffiliatePopup from '../components/AffiliatePopup';
   import IgraalDealHighlight from '../components/IgraalDealHighlight';
@@ -28,7 +27,6 @@
 
   function HomePage() {
     const location = useLocation();
-    const navigate = useNavigate();
     // const { user } = useUser();
     const [posts, setPosts] = useState([]);
     const [launches, setLaunches] = useState([]);
@@ -88,7 +86,7 @@
         /> */}
         <div className="cards-container">
           
-          <div className="card-home card-keikoprompts" onClick={() => navigate('/keikoprompts')}>
+          <Link to="/keikoprompts" className="card-home card-home-link card-keikoprompts">
             <h2>🎯 Explora KeikoPrompts</h2>
             <p>Inspiración creativa y generación de imágenes IA desde un solo lugar.</p>
             <ul>
@@ -97,25 +95,19 @@
               <li>🚀 Compatible con MidJourney, ChatGPT, PixAI y más</li>
             </ul>
 
-            {user && (
-              <button
-                className="btn-imagenes"
-                onClick={(e) => {
-                  e.stopPropagation(); // ← para que no active el navigate de la tarjeta
-                  navigate('/mis-imagenes');
-                }}
-              >
-                📸 Ver mis imágenes
-              </button>
-            )}
-
             <p className="keiko-footer">
               ¡Empieza gratis con tokens diarios!
             </p>
-          </div>
+          </Link>
+
+          {user && (
+            <Link to="/mis-imagenes" className="btn-imagenes-link">
+              📸 Ver mis imágenes
+            </Link>
+          )}
 
           {/* BLOG DESTACADO */}
-          <div className="card-home" onClick={() => navigate('/blog')}>
+          <Link to="/blog" className="card-home card-home-link">
             <h2>📝 Blog Keiko – Últimas entradas</h2>
             {postsBlog.slice(0, 3).map((post) => (
             <div key={post._id} className="blog-snippet">
@@ -126,10 +118,10 @@
               <p className="blog-summary">{post.summary.slice(0, 60)}...</p>
             </div>
           ))} 
-          </div>
+          </Link>
             
           {/* TOP 10 SERIES */}
-          <div className="card-home" onClick={() => navigate('/series')}>
+          <Link to="/series" className="card-home card-home-link">
             <h2>📺 Top 10 Series de la Semana</h2>
             <div className="top-series-list">
               {topSeries.slice(0, 10).map((serie, idx) => (
@@ -139,10 +131,10 @@
                 </div>
               ))}
             </div>
-          </div>
+          </Link>
 
           {/* LANZAMIENTOS */}
-          <div className="card-home" onClick={() => navigate('/spacex')}>
+          <Link to="/spacex" className="card-home card-home-link">
             <h2>🚀 Próximos Lanzamientos</h2>
             <ul>
               {launches.slice(0, 7).map((launch) => {
@@ -155,10 +147,10 @@
               })}
             </ul>
             {nextLaunch && <CountdownBox launchDateUtc={nextLaunch.dateUtc} />}
-          </div>
+          </Link>
 
           {/* NOTICIAS DE ESTAFA */}
-          <div className="card-home" onClick={() => navigate('/scam-posts')}>
+          <Link to="/scam-posts" className="card-home card-home-link">
             <h2>🛑 Últimas Noticias de Estafas</h2>
             <ul>
               {posts.slice(0, 6).map((post) => (
@@ -166,13 +158,6 @@
                   <strong>{new Date(post.createdAt).toLocaleDateString('es-ES')}</strong>:&nbsp;
                   <span style={{ display: 'inline-flex', gap: '0.5rem', alignItems: 'center' }}>
                     {post.resumen.slice(0, 20)}...
-                    <a
-                      href={`/scam-posts/${post._id}`}
-                      onClick={(e) => e.stopPropagation()}
-                      style={{ color: '#3498db', whiteSpace: 'nowrap' }}
-                    >
-                      Ver más →
-                    </a>
                   </span>
                 </li>
               ))}
@@ -184,11 +169,11 @@
                 🔐 Protege tus datos con nuestro Analizador IA de enlaces sospechosos 🔍
               </div>
             </div>
-          </div>
+          </Link>
 
 
           {/* HERRAMIENTAS DE IA */}
-          <div className="card-home" onClick={() => navigate('/ai-links')}>
+          <Link to="/ai-links" className="card-home card-home-link">
             <h2>🧠 Herramientas de IA por Categoría</h2>
             <ul>
               {aiStats.map(stat => (
@@ -197,7 +182,7 @@
                 </li>
               ))}
             </ul>
-          </div>
+          </Link>
 
           {/* COMPONENTES VISUALES */}
           <NasaCard />
@@ -209,7 +194,7 @@
           <F1CircuitCard />
 
           {/* TARJETA MOVIDA AL FINAL */}
-          <div className="card-home" onClick={() => navigate('/resources')}>
+          <Link to="/resources" className="card-home card-home-link">
             <h2>📚 Recursos por Categoría</h2>
             <ul>
               {categoryStats.map(stat => (
@@ -218,13 +203,14 @@
                 </li>
               ))}
             </ul>
-          </div>
+          </Link>
           {/* CANAL DE TELEGRAM */}
-          <div className="card-home telegram-card" onClick={(e) => {
-              if (e.target.tagName !== 'IMG') {
-                window.open('https://t.me/keikodevrecursos', '_blank');
-              }
-            }}>
+          <a
+            className="card-home card-home-link telegram-card"
+            href="https://t.me/keikodevrecursos"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
               <div className="telegram-content">
                 <div className="telegram-text">
                   <h2>📢 <span style={{ color: '#00bfff' }}>Únete a nuestro canal de Telegram</span></h2>
@@ -235,7 +221,7 @@
                   <img src="/assets/qr_telegram.JPG" alt="QR Telegram" className="qr-image" />
                 </div>
               </div>
-            </div>
+            </a>
 
           <AffiliatePopup currentPath={location.pathname} />
         </div>
