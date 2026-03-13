@@ -1,4 +1,5 @@
-import app, { initializePostStartTasks } from './src/app.js';
+import app from './src/app.js';
+import { initializePostStartTasks } from './src/bootstrapPostStartTasks.js';
 import { initializeRuntimeTasks } from './src/bootstrapRuntimeTasks.js';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
@@ -23,6 +24,7 @@ const startServer = async () => {
       console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
       await initializeRuntimeTasks();
       await initializePostStartTasks();
+      console.log('✅ Runtime inicializado OK');
     
       // Verificar rutas registradas
       // setTimeout(() => {

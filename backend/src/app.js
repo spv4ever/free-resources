@@ -15,7 +15,7 @@ import errorHandler from './middlewares/errorMiddleware.js';
 import notFound from './middlewares/notFoundMiddleware.js';
 import { suspiciousRouteLogger } from './middlewares/suspiciousRoutes.js';
 import { secureHeaders } from './middlewares/secureHeaders.js';
-import { bootWeeklyPlanner, rebuildWeeklyForAccount,startCronProbe,setWeeklyPlannerEnabled } from './jobs/WeeklyPlanner.js';
+import { rebuildWeeklyForAccount } from './jobs/WeeklyPlanner.js';
 import { registerApiRoutes } from './routes/registerApiRoutes.js';
 
 
@@ -138,17 +138,6 @@ app.use(helmet({
 app.use(secureHeaders); // 🛡️ Añade cabeceras de seguridad personalizadas
 app.use(morgan('dev'));
 app.use(express.json());
-export const initializePostStartTasks = async () => {
-  // Encendido por .env, sin distinguir prod/dev
-  const want = (process.env.WEEKLY_PLANNER_ENABLED || 'false') === 'true';
-  setWeeklyPlannerEnabled(want);
-  if (want) {
-    await bootWeeklyPlanner();
-    if (process.env.DEBUG_WEEKLY === '1') startCronProbe('Europe/Madrid');
-  } else {
-    console.log('⚠️ Weekly planner desactivado por .env');
-  }
-};
 // Rutas
 registerApiRoutes({ app, __dirname, rebuildWeeklyForAccount });
 
