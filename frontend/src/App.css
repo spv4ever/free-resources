@@ -1,5 +1,4 @@
 * {
-  outline: 1px solid red !important;
   box-sizing: border-box;
 }
 
@@ -18,11 +17,6 @@ img, video, iframe {
   max-width: 100%;
   height: auto;
   display: block;
-}
-
-/* Opcional: ayuda visual para detectar qué elemento se está saliendo */
-* {
-  box-sizing: border-box;
 }
 
 body {
@@ -98,4 +92,3 @@ a {
     transform: translateY(0);
   }
 }
-
