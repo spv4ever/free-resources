@@ -1,259 +1,241 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import { UserProvider } from './context/UserContext';
-import HomePage from './pages/HomePage';
-import ResourcesPage from './pages/ResourcesPage';
-import LoginPage from './pages/LoginPage';
-import CategoriesPage from './pages/admin/CategoriesPage';
-import Layout from './layouts/Layout'; // 👈 nuevo layout con navbar + menú
-import CategoryResourcesPage from './pages/CategoryResourcesPage';
-import AiLinksPage from './pages/AiLinksPage';
-import AiToolsAdminPage from './pages/admin/AiToolsAdminPage';
-import AdminRoute from './components/AdminRoute';
-import MediaPage from './pages/MediaPage';
-import FotosUniversoPage from './pages/FotosUniversoPage';
-import VideosUniversoPage from './pages/VideosUniversoPage';
-import NasaFetchMonthPage from './pages/admin/NasaFetchMonthPage';
-import YouTubeChannelsPage from './pages/YouTubeChannelsPage';
-import ChannelVideosPage from './pages/ChannelVideosPage';
-import TrainingAdminPage from './pages/admin/TrainingAdminPage';
-import TrainingPage from './pages/TrainingPage';
-import ShortCategoriesPage from './pages/admin/ShortCategoriesPage';
-import SyncShortsPage from './pages/admin/SyncShortsPage'; // si lo vas a separar
-import ViralShorts from './pages/ViralShorts';
-import CorelDrawCursoPage from './pages/CorelDrawCursoPage';
-import SpaceXPage from './pages/SpaceXPage';
-import EmailContextAdmin from './components/EmailContextAdmin';
-import ScamPostsPage from './pages/ScamPostsPage';
-import ScamPostDetailPage from './pages/ScamPostDetailPage';
-import EmailReviewPage from './pages/admin/EmailReviewPage';
-import ArticleReviewPage from './pages/ArticleReviewPage.jsx';
-import HerramientasIA from './pages/HerramientasIA';
-import EmailVerificationHandler from './pages/EmailVerificationHandler';
-import VerifySuccessPage from './pages/VerifySuccessPage';
-import RegisterPage from './pages/RegisterPage';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import AdminUsersPage from './pages/AdminUsersPage';
-import SocialPostAdmin from './components/SocialPostAdmin';
-import ViralShortsCategory from './pages/ViralShortsCategory'; // ajusta la ruta si está en otro lugar
-import LegalNotice from './pages/LegalNotice'; // ajusta la ruta si es necesario
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import CookiesPolicy from './pages/CookiesPolicy';
-import AnimePromptGenerator from './components/AnimePromptGenerator';
-import AnimePromptOptionsPage from './pages/AnimePromptOptionsPage';
-import AffiliateLinksAdmin from './components/AffiliateLinksAdmin';
-import AffiliateClickStatsAdmin from './components/AffiliateClickStatsAdmin';
-import IgraalDealsAdmin from './components/IgraalDealsAdmin';
-import IgraalDealsPage from './components/IgraalDealsPage';
-import IgraalCouponsPage from './components/IgraalCouponsPage';
-import IgraalCouponAdmin from './components/IgraalCouponAdmin';
-import TopSeriesSyncPage from './pages/admin/TopSeriesSyncPage';
-import TopSeriesHistoryPage from './pages/admin/TopSeriesHistoryPage';
-import SerieDetalle from './pages/SerieDetalle'; // Asegúrate de tenerlo
-import SeriesCategoryList from './pages/SeriesCategoryList';
-import CategorySeriesPage from './pages/CategorySeriesPage';
-import SuspiciousAccessAdmin from './components/SuspiciousAccessAdmin';
-import LaunchDetail from './pages/LaunchDetail';
-import SpacexLaunchAdmin from './pages/admin/SpacexLaunchAdmin';
-import AdminLinkAnalysis from './components/admin/AdminLinkAnalysis';
-import UserLinkDetail from './components/UserLinkDetail';
-import UserLinkHistory from './components/UserLinkHistory';
-import YouTubeLandingPage from './pages/YouTubeLandingPage.jsx'
-import UserProfile from './pages/UserProfile';
-import SeriesFilteredList from './pages/SeriesFilteredList';
 import { TokenProvider } from './context/TokenContext';
-import KeikoPromptPacks from './components/KeikoPromptPacks';
-import KeikoPromptsList from './components/KeikoPromptsList';
-import KeikoPromptPacksAdmin from './components/admin/KeikoPromptPacksAdmin';
-import KeikoPromptsAdmin from './components/admin/KeikoPromptsAdmin';
-import AdminImport from './components/admin/AdminImport';
-import DuplicateCleanup from './components/admin/DuplicateCleanup';
-import MotoGPCircuitMobileView from './components/MotoGPCircuitMobileView';
-import MotoGPCalendarPage from './pages/MotoGPCalendar'; // ⚠️ Ajusta la ruta si va en otro sitio
-import MotoGPCircuitPage from './pages/MotoGPCircuitPage';
-import UserImageGallery from './components/UserImageGallery';
-import RegisterLogsTable from './components/admin/RegisterLogsTable';
-import TokenInfoPage from './pages/TokenInfoPage';
-import KeikoIAGallery from './pages/KeikoIAGallery';
-import PackImages from './components/PackImages';
-import Imagenes from './pages/EdicionImagenes';
-import AuthCallback from './components/AuthCallback';
+import Layout from './layouts/Layout';
+import AdminRoute from './components/AdminRoute';
 import PrivateRoute from './components/PrivateRoute';
-import CompresorImagenes from './pages/CompresorImagenes';
-import RedimensionadorImagenes from "./pages/RedimensionadorImagenes";
-import ConvertidorImagenes from "./pages/ConvertidorImagenes";
-import CapturaDesdeURL from "./pages/CapturaDesdeURL";
-import DescargasPage from './pages/DescargasPage';
-import AdminTempFiles from './components/AdminTempFiles';
-import GifsPage from './pages/GifsPage';
-import MisFavoritos from './components/MisFavoritos';
-import FutbolPage from './pages/FutbolPage';
-import LaLigaPage from './pages/futbol/LaLigaPage';
-import ChampionsPage from './pages/futbol/ChampionsPage';
-import EntrenaGenerador from './pages/EntrenaGenerador.jsx';
-import Apoyar from './components/Apoyar'
-import PromptImagesHistory from './components/PromptImagesHistory';
-import AdminIGMonitorPage from './pages/AdminIGMonitorPage.jsx';
 
+const RouteFallback = <div className="route-loading">Cargando…</div>;
 
+// Público
+const HomePage = lazy(() => import('./pages/HomePage'));
+const ResourcesPage = lazy(() => import('./pages/ResourcesPage'));
+const CategoryResourcesPage = lazy(() => import('./pages/CategoryResourcesPage'));
+const AiLinksPage = lazy(() => import('./pages/AiLinksPage'));
+const MediaPage = lazy(() => import('./pages/MediaPage'));
+const FotosUniversoPage = lazy(() => import('./pages/FotosUniversoPage'));
+const VideosUniversoPage = lazy(() => import('./pages/VideosUniversoPage'));
+const YouTubeChannelsPage = lazy(() => import('./pages/YouTubeChannelsPage'));
+const ChannelVideosPage = lazy(() => import('./pages/ChannelVideosPage'));
+const ViralShorts = lazy(() => import('./pages/ViralShorts'));
+const ViralShortsCategory = lazy(() => import('./pages/ViralShortsCategory'));
+const LaunchDetail = lazy(() => import('./pages/LaunchDetail'));
+const TrainingPage = lazy(() => import('./pages/TrainingPage'));
+const CorelDrawCursoPage = lazy(() => import('./pages/CorelDrawCursoPage'));
+const SpaceXPage = lazy(() => import('./pages/SpaceXPage'));
+const ScamPostsPage = lazy(() => import('./pages/ScamPostsPage'));
+const ScamPostDetailPage = lazy(() => import('./pages/ScamPostDetailPage'));
+const HerramientasIA = lazy(() => import('./pages/HerramientasIA'));
+const IgraalDealsPage = lazy(() => import('./components/IgraalDealsPage'));
+const IgraalCouponsPage = lazy(() => import('./components/IgraalCouponsPage'));
+const SerieDetalle = lazy(() => import('./pages/SerieDetalle'));
+const SeriesFilteredList = lazy(() => import('./pages/SeriesFilteredList'));
+const SeriesCategoryList = lazy(() => import('./pages/SeriesCategoryList'));
+const CategorySeriesPage = lazy(() => import('./pages/CategorySeriesPage'));
+const YouTubeLandingPage = lazy(() => import('./pages/YouTubeLandingPage.jsx'));
+const UserProfile = lazy(() => import('./pages/UserProfile'));
+const MotoGPCalendarPage = lazy(() => import('./pages/MotoGPCalendar'));
+const MotoGPCircuitPage = lazy(() => import('./pages/MotoGPCircuitPage'));
+const UserImageGallery = lazy(() => import('./components/UserImageGallery'));
+const TokenInfoPage = lazy(() => import('./pages/TokenInfoPage'));
+const KeikoIAGallery = lazy(() => import('./pages/KeikoIAGallery'));
+const PackImages = lazy(() => import('./components/PackImages'));
+const BlogList = lazy(() => import('./pages/BlogList'));
+const BlogPost = lazy(() => import('./pages/BlogPost'));
+const GifsPage = lazy(() => import('./pages/GifsPage'));
+const MisFavoritos = lazy(() => import('./components/MisFavoritos'));
+const FutbolPage = lazy(() => import('./pages/FutbolPage'));
+const LaLigaPage = lazy(() => import('./pages/futbol/LaLigaPage'));
+const ChampionsPage = lazy(() => import('./pages/futbol/ChampionsPage'));
+const LegalNotice = lazy(() => import('./pages/LegalNotice'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const CookiesPolicy = lazy(() => import('./pages/CookiesPolicy'));
+const DescargasPage = lazy(() => import('./pages/DescargasPage'));
+const Apoyar = lazy(() => import('./components/Apoyar'));
 
-import MarcaDeAgua from "./pages/MarcaDeAgua";
-import BlogList from "./pages/BlogList";
-import BlogPost from "./pages/BlogPost";
+// Auth
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const EmailVerificationHandler = lazy(() => import('./pages/EmailVerificationHandler'));
+const VerifySuccessPage = lazy(() => import('./pages/VerifySuccessPage'));
+const RegisterPage = lazy(() => import('./pages/RegisterPage'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const AuthCallback = lazy(() => import('./components/AuthCallback'));
 
-import BlogAdmin from "./pages/admin/BlogAdmin";
-import BlogCreate from "./pages/admin/BlogCreate";
-import BlogEdit from "./pages/admin/BlogEdit";
+// Admin
+const CategoriesPage = lazy(() => import('./pages/admin/CategoriesPage'));
+const AiToolsAdminPage = lazy(() => import('./pages/admin/AiToolsAdminPage'));
+const NasaFetchMonthPage = lazy(() => import('./pages/admin/NasaFetchMonthPage'));
+const TrainingAdminPage = lazy(() => import('./pages/admin/TrainingAdminPage'));
+const ShortCategoriesPage = lazy(() => import('./pages/admin/ShortCategoriesPage'));
+const SyncShortsPage = lazy(() => import('./pages/admin/SyncShortsPage'));
+const EmailContextAdmin = lazy(() => import('./components/EmailContextAdmin'));
+const EmailReviewPage = lazy(() => import('./pages/admin/EmailReviewPage'));
+const ArticleReviewPage = lazy(() => import('./pages/ArticleReviewPage.jsx'));
+const SportsEventsAdminPage = lazy(() => import('./pages/admin/SportsEventsAdminPage'));
+const AdminTempFiles = lazy(() => import('./components/AdminTempFiles'));
+const PromptImagesHistory = lazy(() => import('./components/PromptImagesHistory'));
+const TextToImagePage = lazy(() => import('./pages/TextToImagePage'));
+const AdminUsersPage = lazy(() => import('./pages/AdminUsersPage'));
+const AnimePromptOptionsPage = lazy(() => import('./pages/AnimePromptOptionsPage'));
+const AffiliateLinksAdmin = lazy(() => import('./components/AffiliateLinksAdmin'));
+const IgraalCouponAdmin = lazy(() => import('./components/IgraalCouponAdmin'));
+const AnimePromptGenerator = lazy(() => import('./components/AnimePromptGenerator'));
+const IgraalDealsAdmin = lazy(() => import('./components/IgraalDealsAdmin'));
+const TopSeriesHistoryPage = lazy(() => import('./pages/admin/TopSeriesHistoryPage'));
+const SpacexLaunchAdmin = lazy(() => import('./pages/admin/SpacexLaunchAdmin'));
+const TopSeriesSyncPage = lazy(() => import('./pages/admin/TopSeriesSyncPage'));
+const SocialPostAdmin = lazy(() => import('./components/SocialPostAdmin'));
+const AffiliateClickStatsAdmin = lazy(() => import('./components/AffiliateClickStatsAdmin'));
+const AdminIGMonitorPage = lazy(() => import('./pages/AdminIGMonitorPage.jsx'));
+const SuspiciousAccessAdmin = lazy(() => import('./components/SuspiciousAccessAdmin'));
+const AdminLinkAnalysis = lazy(() => import('./components/admin/AdminLinkAnalysis'));
+const KeikoPromptPacksAdmin = lazy(() => import('./components/admin/KeikoPromptPacksAdmin'));
+const KeikoPromptsAdmin = lazy(() => import('./components/admin/KeikoPromptsAdmin'));
+const AdminImport = lazy(() => import('./components/admin/AdminImport'));
+const DuplicateCleanup = lazy(() => import('./components/admin/DuplicateCleanup'));
+const RegisterLogsTable = lazy(() => import('./components/admin/RegisterLogsTable'));
+const BlogAdmin = lazy(() => import('./pages/admin/BlogAdmin'));
+const BlogCreate = lazy(() => import('./pages/admin/BlogCreate'));
+const BlogEdit = lazy(() => import('./pages/admin/BlogEdit'));
 
-import KeikoRemoveBG from './pages/KeikoRemoveBG';
-import SportsEventsAdminPage from './pages/admin/SportsEventsAdminPage';
-import KeikoUpscale from './pages/KeikoUpscale'; // Ajusta ruta si es distinta
-import PixeladorImagen from "./pages/PixeladorImagen";
-import GiradorImagenes from "./pages/GiradorImagenes";
-import RecortadorImagen from "./pages/RecortadorImagen"; // o el nombre que le hayas dado
-import TextToImagePage from './pages/TextToImagePage';
-
-
-
-
+// Utilidades
+const RedimensionadorImagenes = lazy(() => import('./pages/RedimensionadorImagenes'));
+const ConvertidorImagenes = lazy(() => import('./pages/ConvertidorImagenes'));
+const CapturaDesdeURL = lazy(() => import('./pages/CapturaDesdeURL'));
+const Imagenes = lazy(() => import('./pages/EdicionImagenes'));
+const CompresorImagenes = lazy(() => import('./pages/CompresorImagenes'));
+const MarcaDeAgua = lazy(() => import('./pages/MarcaDeAgua'));
+const PixeladorImagen = lazy(() => import('./pages/PixeladorImagen'));
+const GiradorImagenes = lazy(() => import('./pages/GiradorImagenes'));
+const RecortadorImagen = lazy(() => import('./pages/RecortadorImagen'));
+const KeikoRemoveBG = lazy(() => import('./pages/KeikoRemoveBG'));
+const KeikoUpscale = lazy(() => import('./pages/KeikoUpscale'));
+const KeikoPromptPacks = lazy(() => import('./components/KeikoPromptPacks'));
+const KeikoPromptsList = lazy(() => import('./components/KeikoPromptsList'));
+const EntrenaGenerador = lazy(() => import('./pages/EntrenaGenerador.jsx'));
+const UserLinkDetail = lazy(() => import('./components/UserLinkDetail'));
+const UserLinkHistory = lazy(() => import('./components/UserLinkHistory'));
+const MotoGPCircuitMobileView = lazy(() => import('./components/MotoGPCircuitMobileView'));
 
 function App() {
   return (
-    
     <UserProvider>
       <TokenProvider>
-      <Router>
-        <Routes>
-          {/* Rutas que comparten el layout */}
-          <Route path="/" element={<Layout />}>
-            <Route index element={<HomePage />} />
-            <Route path="/herramientas/descargas" element={<DescargasPage />} />
-            <Route path="resources" element={<ResourcesPage />} />
-            <Route path="ai-links" element={<AiLinksPage />} />
-            <Route path="/aviso-legal" element={<LegalNotice />} />
-            <Route path="/privacidad" element={<PrivacyPolicy />} />
-            <Route path="/cookies" element={<CookiesPolicy />} />
-            <Route path="admin/categories" element={<AdminRoute><CategoriesPage /></AdminRoute>} />
-            <Route path="admin/ai-tools" element={<AdminRoute><AiToolsAdminPage /></AdminRoute>}/>
-            <Route path="/admin/nasa-fechas" element={<AdminRoute><NasaFetchMonthPage /></AdminRoute>} />
-            <Route path="/admin/training" element={<AdminRoute><TrainingAdminPage /></AdminRoute>} />
-            <Route path="/admin/short-categories" element={<AdminRoute><ShortCategoriesPage /></AdminRoute>} />
-            <Route path="/admin/sync-shorts" element={<AdminRoute><SyncShortsPage /></AdminRoute>} />
-            <Route path="/admin/email-contexts" element={<AdminRoute><EmailContextAdmin /></AdminRoute>} />
-            <Route path="/admin/email-review" element={<AdminRoute><EmailReviewPage /></AdminRoute>} />
-            <Route path="/admin/email-articles" element={<AdminRoute><ArticleReviewPage /></AdminRoute>} />
-            <Route path="/admin/sports-events" element={<AdminRoute><SportsEventsAdminPage /></AdminRoute>} />
-            <Route path="/admin/temp-files" element={<AdminRoute><AdminTempFiles /></AdminRoute>} />
-            {/* <Route path="/admin/sports-events" element={<SportsEventsAdminPage />} /> */}
-            <Route path="/keikoprompts/historial/:promptId" element={<PromptImagesHistory />} />
-            <Route path="/texto-a-imagen" element={<TextToImagePage />} />
-
-            <Route path="/admin/users" element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
-            <Route path="/admin/anime-options" element={<AnimePromptOptionsPage />} />
-            <Route path="/admin/affiliate-links" element={<AffiliateLinksAdmin />} />
-            <Route path="/admin/igraal-coupons" element={<IgraalCouponAdmin />} />
-            {/* <Route path="/generador-anime-prompts" element={<AdminRoute><AnimePromptGenerator /></AdminRoute>} /> */}
-            <Route path="/generador-anime-prompts" element={<AnimePromptGenerator />} />
-            <Route path="/admin/igraal-deals" element={<AdminRoute><IgraalDealsAdmin /></AdminRoute> }/>
-            <Route path="/admin/top-series-history" element={<AdminRoute><TopSeriesHistoryPage /></AdminRoute>} />
-            <Route path="/series/:tmdbId" element={<SerieDetalle />} />
-            <Route path="/series/estado/:status" element={<SeriesFilteredList />} />
-            <Route path="/series" element={<SeriesCategoryList />} />
-            <Route path="/admin/spacex" element={<SpacexLaunchAdmin />} />
-            <Route path="/perfil" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
-            <Route path="/apoyar" element={<Apoyar />} />
-
-            <Route path="/admin/top-series-sync" element={<TopSeriesSyncPage />} />
-            {/* <Route path="/admin/social-posts" element={<AdminRoute><div>Hola soy admin</div></AdminRoute>} /> */}
-            <Route path="/admin/social-posts" element={<AdminRoute><SocialPostAdmin /></AdminRoute>} />
-            <Route path="/admin/affiliate-clicks" element={<AdminRoute><AffiliateClickStatsAdmin /></AdminRoute>}
-            
-            />
-            {/* <Route path="/admin/social-posts" element={<SocialPostAdmin />} /> */}
-            <Route path="/admin/ig-monitor" element={<AdminIGMonitorPage />} />
-            <Route path="/admin/suspicious-access" element={<AdminRoute><SuspiciousAccessAdmin /></AdminRoute>} />
-            <Route path="/admin/scam-posts" element={<AdminRoute><ScamPostsPage /></AdminRoute>} />
-            <Route path="category/:categoryName" element={<CategoryResourcesPage />} />
-            <Route path="/media" element={<MediaPage />} />
-            <Route path="/media/fotos-universo" element={<FotosUniversoPage />} />
-            <Route path="/media/videos-universo" element={<VideosUniversoPage />} />
-            <Route path="/youtube-channels" element={<YouTubeChannelsPage />} />
-            <Route path="/youtube-channels/:id" element={<ChannelVideosPage />} />
-            <Route path="viral-shorts" element={<ViralShorts />} /> {/* 👈 Nueva ruta */}
-            <Route path="/viral-shorts/:categoryId" element={<ViralShortsCategory />} />
-            <Route path="/launch/:id" element={<LaunchDetail />} />
-            <Route path="training" element={<TrainingPage />} />
-            <Route path="/curso/corel-draw" element={<CorelDrawCursoPage />} />
-            <Route path="/spacex" element={<SpaceXPage />} />
-            <Route path="/scam-posts" element={<ScamPostsPage />} />
-            <Route path="/scam-posts/:id" element={<ScamPostDetailPage />} />
-            <Route path="/herramientas-ia" element={<HerramientasIA />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/verify-email" element={<EmailVerificationHandler />} />
-            <Route path="/verify-success" element={<VerifySuccessPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/chollos" element={<IgraalDealsPage />} />
-            <Route path="/cupones" element={<IgraalCouponsPage />} />
-            <Route path="/series/categoria/:slug" element={<CategorySeriesPage />} />
-            <Route path="/admin/link-analysis" element={<AdminLinkAnalysis />} />
-            <Route path="/pro/link-analysis/:id" element={<UserLinkDetail />} />
-            <Route path="/panel/pro/historial" element={<UserLinkHistory />} />
-            <Route path="/youtube-uploader" element={<YouTubeLandingPage />} />
-            <Route path="/keiko-remove-bg" element={<KeikoRemoveBG />} />
-            <Route path="/edicion-imagenes" element={<Imagenes />} />
-            <Route path="/redimensionar-imagenes" element={<RedimensionadorImagenes />} />
-            <Route path="/pixelar-zona" element={<PixeladorImagen />} />
-            <Route path="/rotate" element={<GiradorImagenes />} />
-            <Route path="/crop" element={<RecortadorImagen />} />
-            <Route path="/captura-url" element={<CapturaDesdeURL />} />
-            <Route path="/entrena-generador" element={<EntrenaGenerador />} />
-            
-
-            <Route path="/convertir-imagenes" element={<ConvertidorImagenes />} />
-
-            <Route path="/marca-de-agua" element={<MarcaDeAgua />} />
-            
-            {/* <Route path="/keikoprompts" element={<KeikoPromptPacks />} /> */}
-            <Route path="/prompts/:packId" element={<KeikoPromptsList />} />
-
-            <Route path="/admin/keiko-packs" element={<KeikoPromptPacksAdmin />} />
-            <Route path="/admin/keiko-prompts" element={<KeikoPromptsAdmin />} />
-            <Route path="/keikoprompts" element={<KeikoPromptPacks />} />
-            <Route path="/admin/imports" element={<AdminImport />} />
-            <Route path="/admin/DuplicateCleanup" element={<DuplicateCleanup />} />
-            <Route path="/motogp-calendar" element={<MotoGPCalendarPage />} />
-            <Route path="/motogp/:slug" element={<MotoGPCircuitPage />} />
-            <Route path="/mis-imagenes" element={<UserImageGallery />} />
-            <Route path="/admin/register-logs" element={<RegisterLogsTable />} />
-            <Route path="/info/tokens" element={<TokenInfoPage />} />
-            <Route path="/multimedia/keikoia" element={<KeikoIAGallery />} />
-            <Route path="/biblioteca/pack/:packId" element={<PackImages />} />
-            <Route path="/blog" element={<BlogList />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/upscale" element={<KeikoUpscale />} />
-            
-            <Route path="/admin/blog" element={<AdminRoute><BlogAdmin /></AdminRoute>} />
-            <Route path="/admin/blog/create" element={<AdminRoute><BlogCreate /></AdminRoute>} />
-            <Route path="/admin/blog/edit/:id" element={<AdminRoute><BlogEdit /></AdminRoute>} />
-            <Route path="/compresor-imagenes" element={<CompresorImagenes />} />
-            <Route path="/gifs" element={<GifsPage />} />
-            <Route path="/mis-favoritos" element={<MisFavoritos />} />
-            <Route path="/futbol" element={<FutbolPage />} />
-            <Route path="/futbol/laliga" element={<LaLigaPage />} /> 
-            <Route path="/futbol/champions" element={<ChampionsPage />} />
-            
-            
-          </Route>
-          <Route path="/motogp-live" element={<MotoGPCircuitMobileView />} />
-          <Route path="/login" element={<LoginPage />} />
-          
-          {/* Ruta fuera del layout */}
-          <Route path="/auth/callback" element={<AuthCallback />} />
-          </Routes>
+        <Router>
+          <Suspense fallback={RouteFallback}>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<HomePage />} />
+                <Route path="/herramientas/descargas" element={<DescargasPage />} />
+                <Route path="resources" element={<ResourcesPage />} />
+                <Route path="ai-links" element={<AiLinksPage />} />
+                <Route path="/aviso-legal" element={<LegalNotice />} />
+                <Route path="/privacidad" element={<PrivacyPolicy />} />
+                <Route path="/cookies" element={<CookiesPolicy />} />
+                <Route path="admin/categories" element={<AdminRoute><CategoriesPage /></AdminRoute>} />
+                <Route path="admin/ai-tools" element={<AdminRoute><AiToolsAdminPage /></AdminRoute>} />
+                <Route path="/admin/nasa-fechas" element={<AdminRoute><NasaFetchMonthPage /></AdminRoute>} />
+                <Route path="/admin/training" element={<AdminRoute><TrainingAdminPage /></AdminRoute>} />
+                <Route path="/admin/short-categories" element={<AdminRoute><ShortCategoriesPage /></AdminRoute>} />
+                <Route path="/admin/sync-shorts" element={<AdminRoute><SyncShortsPage /></AdminRoute>} />
+                <Route path="/admin/email-contexts" element={<AdminRoute><EmailContextAdmin /></AdminRoute>} />
+                <Route path="/admin/email-review" element={<AdminRoute><EmailReviewPage /></AdminRoute>} />
+                <Route path="/admin/email-articles" element={<AdminRoute><ArticleReviewPage /></AdminRoute>} />
+                <Route path="/admin/sports-events" element={<AdminRoute><SportsEventsAdminPage /></AdminRoute>} />
+                <Route path="/admin/temp-files" element={<AdminRoute><AdminTempFiles /></AdminRoute>} />
+                <Route path="/keikoprompts/historial/:promptId" element={<PromptImagesHistory />} />
+                <Route path="/texto-a-imagen" element={<TextToImagePage />} />
+                <Route path="/admin/users" element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
+                <Route path="/admin/anime-options" element={<AnimePromptOptionsPage />} />
+                <Route path="/admin/affiliate-links" element={<AffiliateLinksAdmin />} />
+                <Route path="/admin/igraal-coupons" element={<IgraalCouponAdmin />} />
+                <Route path="/generador-anime-prompts" element={<AnimePromptGenerator />} />
+                <Route path="/admin/igraal-deals" element={<AdminRoute><IgraalDealsAdmin /></AdminRoute>} />
+                <Route path="/admin/top-series-history" element={<AdminRoute><TopSeriesHistoryPage /></AdminRoute>} />
+                <Route path="/series/:tmdbId" element={<SerieDetalle />} />
+                <Route path="/series/estado/:status" element={<SeriesFilteredList />} />
+                <Route path="/series" element={<SeriesCategoryList />} />
+                <Route path="/admin/spacex" element={<SpacexLaunchAdmin />} />
+                <Route path="/perfil" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
+                <Route path="/apoyar" element={<Apoyar />} />
+                <Route path="/admin/top-series-sync" element={<TopSeriesSyncPage />} />
+                <Route path="/admin/social-posts" element={<AdminRoute><SocialPostAdmin /></AdminRoute>} />
+                <Route path="/admin/affiliate-clicks" element={<AdminRoute><AffiliateClickStatsAdmin /></AdminRoute>} />
+                <Route path="/admin/ig-monitor" element={<AdminIGMonitorPage />} />
+                <Route path="/admin/suspicious-access" element={<AdminRoute><SuspiciousAccessAdmin /></AdminRoute>} />
+                <Route path="/admin/scam-posts" element={<AdminRoute><ScamPostsPage /></AdminRoute>} />
+                <Route path="category/:categoryName" element={<CategoryResourcesPage />} />
+                <Route path="/media" element={<MediaPage />} />
+                <Route path="/media/fotos-universo" element={<FotosUniversoPage />} />
+                <Route path="/media/videos-universo" element={<VideosUniversoPage />} />
+                <Route path="/youtube-channels" element={<YouTubeChannelsPage />} />
+                <Route path="/youtube-channels/:id" element={<ChannelVideosPage />} />
+                <Route path="viral-shorts" element={<ViralShorts />} />
+                <Route path="/viral-shorts/:categoryId" element={<ViralShortsCategory />} />
+                <Route path="/launch/:id" element={<LaunchDetail />} />
+                <Route path="training" element={<TrainingPage />} />
+                <Route path="/curso/corel-draw" element={<CorelDrawCursoPage />} />
+                <Route path="/spacex" element={<SpaceXPage />} />
+                <Route path="/scam-posts" element={<ScamPostsPage />} />
+                <Route path="/scam-posts/:id" element={<ScamPostDetailPage />} />
+                <Route path="/herramientas-ia" element={<HerramientasIA />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/verify-email" element={<EmailVerificationHandler />} />
+                <Route path="/verify-success" element={<VerifySuccessPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/chollos" element={<IgraalDealsPage />} />
+                <Route path="/cupones" element={<IgraalCouponsPage />} />
+                <Route path="/series/categoria/:slug" element={<CategorySeriesPage />} />
+                <Route path="/admin/link-analysis" element={<AdminLinkAnalysis />} />
+                <Route path="/pro/link-analysis/:id" element={<UserLinkDetail />} />
+                <Route path="/panel/pro/historial" element={<UserLinkHistory />} />
+                <Route path="/youtube-uploader" element={<YouTubeLandingPage />} />
+                <Route path="/keiko-remove-bg" element={<KeikoRemoveBG />} />
+                <Route path="/edicion-imagenes" element={<Imagenes />} />
+                <Route path="/redimensionar-imagenes" element={<RedimensionadorImagenes />} />
+                <Route path="/pixelar-zona" element={<PixeladorImagen />} />
+                <Route path="/rotate" element={<GiradorImagenes />} />
+                <Route path="/crop" element={<RecortadorImagen />} />
+                <Route path="/captura-url" element={<CapturaDesdeURL />} />
+                <Route path="/entrena-generador" element={<EntrenaGenerador />} />
+                <Route path="/convertir-imagenes" element={<ConvertidorImagenes />} />
+                <Route path="/marca-de-agua" element={<MarcaDeAgua />} />
+                <Route path="/prompts/:packId" element={<KeikoPromptsList />} />
+                <Route path="/admin/keiko-packs" element={<KeikoPromptPacksAdmin />} />
+                <Route path="/admin/keiko-prompts" element={<KeikoPromptsAdmin />} />
+                <Route path="/keikoprompts" element={<KeikoPromptPacks />} />
+                <Route path="/admin/imports" element={<AdminImport />} />
+                <Route path="/admin/DuplicateCleanup" element={<DuplicateCleanup />} />
+                <Route path="/motogp-calendar" element={<MotoGPCalendarPage />} />
+                <Route path="/motogp/:slug" element={<MotoGPCircuitPage />} />
+                <Route path="/mis-imagenes" element={<UserImageGallery />} />
+                <Route path="/admin/register-logs" element={<RegisterLogsTable />} />
+                <Route path="/info/tokens" element={<TokenInfoPage />} />
+                <Route path="/multimedia/keikoia" element={<KeikoIAGallery />} />
+                <Route path="/biblioteca/pack/:packId" element={<PackImages />} />
+                <Route path="/blog" element={<BlogList />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+                <Route path="/upscale" element={<KeikoUpscale />} />
+                <Route path="/admin/blog" element={<AdminRoute><BlogAdmin /></AdminRoute>} />
+                <Route path="/admin/blog/create" element={<AdminRoute><BlogCreate /></AdminRoute>} />
+                <Route path="/admin/blog/edit/:id" element={<AdminRoute><BlogEdit /></AdminRoute>} />
+                <Route path="/compresor-imagenes" element={<CompresorImagenes />} />
+                <Route path="/gifs" element={<GifsPage />} />
+                <Route path="/mis-favoritos" element={<MisFavoritos />} />
+                <Route path="/futbol" element={<FutbolPage />} />
+                <Route path="/futbol/laliga" element={<LaLigaPage />} />
+                <Route path="/futbol/champions" element={<ChampionsPage />} />
+              </Route>
+              <Route path="/motogp-live" element={<MotoGPCircuitMobileView />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
+            </Routes>
+          </Suspense>
         </Router>
       </TokenProvider>
     </UserProvider>
