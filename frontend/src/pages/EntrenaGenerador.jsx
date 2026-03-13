@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { motion } from 'framer-motion';
 import UpgradePanel from './UpgradePanel.jsx';
 import ProgresoIA from './ProgresoIA.jsx';

@@ -1,6 +1,5 @@
 import { mejorasDisponibles } from '../utils/upgrades';
 import API from '../utils/api';
-import axios from 'axios';
 
 export default function UpgradePanel({ estado, setEstado }) {
   const handleUpgrade = async (id) => {
