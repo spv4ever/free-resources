@@ -44,6 +44,17 @@
   overflow: hidden;
 }
 
+
+.card-home-link {
+  text-decoration: none;
+}
+
+.card-home-link:focus-visible,
+.btn-imagenes-link:focus-visible {
+  outline: 3px solid #00bfff;
+  outline-offset: 3px;
+}
+
 .card-home:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
@@ -203,8 +214,8 @@
   padding: 1rem;
 }
 
-.card-home .btn-imagenes {
-  margin-top: 12px;
+.btn-imagenes-link {
+  margin: -0.5rem 1rem 0;
   background-color: #2b2b2b;
   color: #fff;
   border: 1px solid #555;
@@ -213,9 +224,11 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
 }
 
-.card-home .btn-imagenes:hover {
+.btn-imagenes-link:hover {
   background-color: #3a3a3a;
 }
 .card-home .keiko-footer {
