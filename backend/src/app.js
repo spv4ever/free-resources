@@ -13,114 +13,26 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-import resourceLibraryRoutes from './routes/resourceLibraryRoutes.js';
 import errorHandler from './middlewares/errorMiddleware.js';
 import notFound from './middlewares/notFoundMiddleware.js';
-import categoryRoutes from './routes/categoryRoutes.js';
-import authRoutes from './routes/authRoutes.js';
-import aiToolRoutes from './routes/aiToolRoutes.js';
-import nasaImageRoutes from './routes/nasaImageRoutes.js';
 import fetchNasaImageDaily from './jobs/fetchNasaImage.js';
 import { fetchTodayImage } from './jobs/fetchNasaImage.js';
-import adminToolsRoutes from './routes/adminToolsRoutes.js';
-import youtubeChannelRoutes from './routes/youtubeChannelRoutes.js';
-import trainingResourceRoutes from './routes/trainingResourceRoutes.js';
-import shortCategoryRoutes from './routes/shortCategoryRoutes.js';
-import viralShortRoutes from './routes/viralShortRoutes.js';
 import { startMotoGPNotifier } from './services/motogp-notifier.js';
-import gmailRoutes from './routes/gmailRoutes.js';
 import { runScheduledImports } from './services/emailScheduler.js';
-import emailContextsRoutes from './routes/emailContexts.js';
-import scamPostRoutes from './routes/scamPostRoutes.js';
-import adminEmailEntryRoutes from './routes/adminEmailEntryRoutes.js';
-import adminEmailArticleRoutes from './routes/adminEmailArticleRoutes.js';
-import aiDetectorRoutes from './routes/aiDetectorRoutes.js';
-import uploadRoutes from './routes/uploadRoutes.js';
-import socialPostRoutes from './routes/socialPostRoutes.js';
-import animeCharacterRoutes from './routes/animeCharacterRoutes.js';
-import animePromptDataRoutes from './routes/animePromptDataRoutes.js';
-import animePromptRoutes from './routes/animePromptRoutes.js';
-import affiliateLinkRoutes from './routes/affiliateLinkRoutes.js';
-import affiliateClickRoutes from './routes/affiliateClickRoutes.js';
-import igraalDealRoutes from './routes/igraalDealRoutes.js';
-import igraalCouponRoutes from './routes/igraalCouponRoutes.js';
-import seriesRoutes from './routes/seriesRoutes.js';
 import { suspiciousRouteLogger } from './middlewares/suspiciousRoutes.js';
 import { secureHeaders } from './middlewares/secureHeaders.js';
-import seriesCategoryRoutes from './routes/seriesCategoryRoutes.js';
-import adminSuspiciousRoutes from './routes/adminSuspiciousRoutes.js';
 import { createRateLimiter } from './middlewares/rateLimitHandler.js';
-import rateLimitBlockRoutes from './routes/rateLimitBlockRoutes.js';
-import adminEnrichRoute from './routes/adminEnrichRoute.js';
 import { startEnrichSpacexJob } from './jobs/enrichSpacexJob.js';
-import spacexPublicRoutes from './routes/spacexPublicRoutes.js';
-import spacexAdminRoutes from './routes/spacexAdminRoutes.js';
-import linkAnalysisRoutes from './routes/linkAnalysisRoutes.js';
-import adminLinkAnalysisRoutes from './routes/adminLinkAnalysisRoutes.js';
-import proLinkAnalysisRoutes from './routes/proLinkAnalysisRoutes.js';
-import youtubeAuthRoutes from './routes/youtubeAuthRoutes.js';
-import youtubeUploadRoutes from './routes/youtubeUploadRoutes.js';
-import youtubeTokenRoutes from './routes/youtubeTokenRoutes.js';
-import userFavoriteSeriesRoutes from './routes/userFavoriteSeriesRoutes.js';
-import userSeriesStatsRoutes from './routes/userSeriesStatsRoutes.js';
-import favoriteRoutes from './routes/favoriteRoutes.js';
-import shareRoutes from './routes/shareRoutes.js';
-import promptPackRoutes from './routes/promptPackRoutes.js';
-import promptItemRoutes from './routes/promptItemRoutes.js';
-import promptOptionGroupRoutes from './routes/promptOptionGroupRoutes.js';
-import promptOptionRoutes from './routes/promptOptionRoutes.js';
-import userPromptFavoriteRoutes from './routes/userPromptFavoriteRoutes.js';
-import promptUsageLogRoutes from './routes/promptUsageLogRoutes.js';
-import legacyImportRoutes from './routes/keikoImportRoutes.js';
-import keikoPackRoutes from './keikoprompts/routes/packs.js';
-import keikoPromptRoutes from './keikoprompts/routes/prompts.js';
-import keikoOptionRoutes from './keikoprompts/routes/options.js';
-import keikoImportRoutes from './keikoprompts/routes/import.js';
-import duplicateRoutes from './keikoprompts/routes/duplicateRoutes.js';
-import motogpRoutes from './routes/motogpRoutes.js';
-import comfyRoutes from './routes/comfyRoutes.js';
-import fluxRoutes from './routes/fluxRoutes.js';
 import { startComfySocketWatcher } from './services/comfySocketWatcher.js';
-import tokenRoutes from './routes/tokenRoutes.js';
-import imagenesPublicasRoutes from './routes/imagenesPublicasRoutes.js';
-import devTestRoutes from './keikoprompts/routes/devTestRoutes.js';
-import sportsRoutes from './routes/sportsRoutes.js';
 import { startDailyEventScheduler } from './notifier/coreScheduler.js';
-import imagenesRoutes from './routes/imagenes.route.js';
-import blogRoutes from "./routes/blogRoutes.js";
-import formula1Routes from './routes/formula1Routes.js';
 import { startF1Notifier } from './services/f1-notifier.js';
-import keikoRemoveBGRoutes from './routes/keikoRemoveBGRoutes.js';
-import sportsEventsRoutes from './routes/sportsEvents.routes.js';
-import summaryRoutes from './routes/telegram.js';
-import f1Routes from './routes/telegram-f1.js';
-import upscaler from './routes/keikoUpscaleRoutes.js';
-import telegramRoutes from './routes/telegram.routes.js';
-import compressRoutes from "./routes/compressRoutes.js";
-import resizeRoutes from "./routes/resizeRoutes.js";
-import convertRoutes from "./routes/convertRoutes.js";
-import watermarkRoutes from "./routes/watermarkRoutes.js";
-import pixelateRoutes from "./routes/pixelateRoutes.js";
-import cropRoutes from "./routes/cropRoutes.js";
-import rotateRoutes from "./routes/rotateRoutes.js";
-import capturaDesdeUrlRoutes from './routes/capturaDesdeUrlRoutes.js';
-import downloadRoutes from './routes/downloadRoutes.js';
-import zipRoutes from './routes/zipRoutes.js';
 import { limpiarDescargasTemporales } from './jobs/cleanupDownloads.js';
-import favoritoRoutes from './routes/favoritoRoutes.js';
-import eventsRoutes from './routes/events.routes.js';
 import { iniciarSchedulerFutbol } from './jobs/futbolScheduler.js';
-import futbolRoutes from './routes/futbolRoutes.js';
-import generadorIARoutes from './routes/generadorIARoutes.js'; // ✅
-import cpxRoutes from './routes/cpxRoutes.js';
-import trackingRoutes from './routes/trackingRoutes.js';
-import text2imageRoutes from './routes/text2imageRoutes.js';
-import instagramRoutes from './routes/instagramRoutes.js';
 import { scheduleIGDailyJob } from './jobs/igDailyJob.js';
 import scheduleIGDailyCarouselJobAccount2 from './jobs/igDailyCarouselJob.account2.js';
 import scheduleIGDailyReelJobAccount2 from './jobs/igDailyReelJob.account2.js';
 import { bootWeeklyPlanner, rebuildWeeklyForAccount,startCronProbe,setWeeklyPlannerEnabled } from './jobs/WeeklyPlanner.js';
-import weeklyRoutes from './routes/weeklyRoutes.js';
+import { registerApiRoutes } from './routes/registerApiRoutes.js';
 
 
 
@@ -248,10 +160,7 @@ startF1Notifier();
 startDailyEventScheduler(); // activa cron diario
 iniciarSchedulerFutbol(process.env.MONGO_URI);
 //fetchTodayImage();
-const PORT = process.env.PORT || 5050;
-app.listen(PORT, async () => {
-  console.log(`Server up http://localhost:${PORT}`);
-
+export const initializePostStartTasks = async () => {
   // Encendido por .env, sin distinguir prod/dev
   const want = (process.env.WEEKLY_PLANNER_ENABLED || 'false') === 'true';
   setWeeklyPlannerEnabled(want);
@@ -261,142 +170,9 @@ app.listen(PORT, async () => {
   } else {
     console.log('⚠️ Weekly planner desactivado por .env');
   }
-});
+};
 // Rutas
-app.use('/api/instagram', instagramRoutes);
-app.use('/api/generacion', text2imageRoutes);
-app.use('/api/tracking', trackingRoutes);
-app.use('/api', eventsRoutes);
-app.use('/api/favoritos', favoritoRoutes);
-app.use('/zip', zipRoutes);
-app.use('/api/download', downloadRoutes);
-app.use('/api', upscaler); // 👈 nueva ruta para upscale
-app.use('/api/telegram', telegramRoutes);
-app.use('/api/resources', resourceLibraryRoutes);
-app.use('/api/anime-characters', animeCharacterRoutes)
-app.use('/api/auth', authRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/aitools', aiToolRoutes);
-app.use('/api/nasa-images', nasaImageRoutes);
-app.use('/api/admin', adminToolsRoutes);
-app.use('/api/social-posts', socialPostRoutes);
-app.use('/api/youtube-channels', youtubeChannelRoutes);
-app.use('/api/training-resources', trainingResourceRoutes);
-app.use('/api/short-categories', shortCategoryRoutes);
-app.use('/api/viral-shorts', viralShortRoutes);
-app.use('/api/gmail', gmailRoutes);
-app.use('/api/admin/email-contexts', emailContextsRoutes);
-app.use('/api/scam-posts', scamPostRoutes);
-app.use('/api/admin/email-entries', adminEmailEntryRoutes);
-app.use('/api/admin/email-articles', adminEmailArticleRoutes);
-app.use('/api/ai', aiDetectorRoutes);
-app.use('/api/upload', uploadRoutes);
-app.use('/api/anime-prompt-data', animePromptDataRoutes);
-app.use('/api/anime-prompts', animePromptRoutes);
-app.use('/api/affiliate-links', affiliateLinkRoutes);
-app.use('/api/affiliate-clicks', affiliateClickRoutes);
-app.use('/api/igraal-deals', igraalDealRoutes);
-app.use('/api/igraal-coupons', igraalCouponRoutes);
-app.use('/api/series/categories', seriesCategoryRoutes);
-app.use('/api/series', seriesRoutes);
-app.use('/api/admin/suspicious-access', adminSuspiciousRoutes);
-app.use('/api/admin/rate-limit-blocks', rateLimitBlockRoutes);
-app.use('/api', adminEnrichRoute);
-app.use('/api/spacex', spacexPublicRoutes);
-app.use('/api/admin', spacexAdminRoutes);
-app.use('/api', linkAnalysisRoutes);
-app.use('/api/admin', adminLinkAnalysisRoutes);
-app.use('/api/pro', proLinkAnalysisRoutes);
-app.use('/api/youtube', youtubeAuthRoutes);
-app.use('/api/youtube', youtubeUploadRoutes);
-app.use('/api/youtube', youtubeTokenRoutes);
-app.use('/api/user/favorites', userFavoriteSeriesRoutes);
-app.use('/api', userSeriesStatsRoutes);
-app.use('/api/series/favorites', favoriteRoutes);
-app.use('/share', shareRoutes);
-app.use('/api/prompt-packs', promptPackRoutes);
-app.use('/api/prompt-items', promptItemRoutes);
-app.use('/api/option-groups', promptOptionGroupRoutes);
-app.use('/api/prompt-options', promptOptionRoutes);
-app.use('/api/favorites', userPromptFavoriteRoutes);
-app.use('/api/prompt-usage', promptUsageLogRoutes);
-app.use('/api/admin/keiko', legacyImportRoutes );
-app.use('/api/keiko/packs', keikoPackRoutes);
-app.use('/api/keiko/prompts', keikoPromptRoutes);
-app.use('/api/keiko/options', keikoOptionRoutes);
-app.use('/api/keiko/import', keikoImportRoutes);
-app.use('/api/keiko/duplicates', duplicateRoutes);
-app.use('/api/sports/motogp', motogpRoutes);
-app.use('/api/comfy', comfyRoutes);
-app.use('/api/tokens', tokenRoutes);
-app.use('/api/flux', fluxRoutes);
-app.use('/api/public-images', imagenesPublicasRoutes);
-app.use('/api/dev', devTestRoutes);
-app.use('/api/sports', sportsRoutes);
-app.use('/api/imagenes', imagenesRoutes);
-app.use('/api', formula1Routes);
-app.use('/api/keiko-remove-bg', keikoRemoveBGRoutes); 
-app.use('/api/sports-events', sportsEventsRoutes);
-app.use("/api", convertRoutes);
-// Rutas API
-app.use("/api", compressRoutes);
-
-app.use("/api", resizeRoutes);
-
-app.use("/api", watermarkRoutes);
-app.use("/api", pixelateRoutes);
-app.use("/api", cropRoutes);
-app.use("/api", rotateRoutes);
-app.use('/api/captura-url', capturaDesdeUrlRoutes);
-app.use('/api/generador', generadorIARoutes);
-app.use('/api/recompensas', cpxRoutes);
-
-app.use("/cropped", express.static(path.join(__dirname, "public/cropped")));
-
-app.use("/pixelated", express.static(path.join(__dirname, "public/pixelated"), {
-  setHeaders: (res) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-  }
-}));
-// Servir y eliminar ZIP tras descarga
-app.get("/zip/:filename", (req, res) => {
-  const filePath = path.join(__dirname, "public", "zip", req.params.filename);
-  res.download(filePath, () => {
-    fs.unlink(filePath, () => {});
-  });
-});
-
-
-
-app.use("/api/blog", blogRoutes);
-
-
-app.use('/api/summaryRoutes', summaryRoutes);
-
-app.use('/api/telegram-f1', f1Routes);
-app.use('/api/futbol', futbolRoutes);
-
-// (opcional) monta la API del calendario semanal (UI)
-app.use('/api/weekly', weeklyRoutes);
-
-// (opcional) un endpoint directo para rebuild sin weeklyRoutes
-app.post('/api/weekly/rebuild/:accountId', async (req, res) => {
-  try {
-    await rebuildWeeklyForAccount(req.params.accountId);
-    res.json({ ok: true });
-  } catch (e) {
-    res.status(500).json({ error: e.message || 'Error rebuild' });
-  }
-});
-
-
-
-
-
-
-
-
-
+registerApiRoutes({ app, __dirname, rebuildWeeklyForAccount });
 
 
 // app.use((req, res, next) => {
