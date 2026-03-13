@@ -13,24 +13,33 @@ import scheduleIGDailyCarouselJobAccount2 from './jobs/igDailyCarouselJob.accoun
 import scheduleIGDailyReelJobAccount2 from './jobs/igDailyReelJob.account2.js';
 import { runScheduledImports } from './services/emailScheduler.js';
 
-import './jobs/spaceXJob.js';
-import './jobs/igraalJob.js';
-import './jobs/syncWeeklyTop.js';
+const runSafe = (name, fn) => {
+  try {
+    fn();
+  } catch (error) {
+    console.error(`❌ Error iniciando ${name}:`, error?.message || error);
+  }
+};
 
-export const initializeRuntimeTasks = () => {
-  fetchNasaImageDaily();
-  startMotoGPNotifier();
-  startF1Notifier();
-  startDailyEventScheduler();
-  iniciarSchedulerFutbol(process.env.MONGO_URI);
+export const initializeRuntimeTasks = async () => {
+  // Cargar jobs con side-effects explícitamente tras arrancar servidor
+  await import('./jobs/spaceXJob.js');
+  await import('./jobs/igraalJob.js');
+  await import('./jobs/syncWeeklyTop.js');
 
-  startEnrichSpacexJob();
-  startComfySocketWatcher();
+  runSafe('fetchNasaImageDaily', () => fetchNasaImageDaily());
+  runSafe('startMotoGPNotifier', () => startMotoGPNotifier());
+  runSafe('startF1Notifier', () => startF1Notifier());
+  runSafe('startDailyEventScheduler', () => startDailyEventScheduler());
+  runSafe('iniciarSchedulerFutbol', () => iniciarSchedulerFutbol(process.env.MONGO_URI));
+
+  runSafe('startEnrichSpacexJob', () => startEnrichSpacexJob());
+  runSafe('startComfySocketWatcher', () => startComfySocketWatcher());
 
   if (process.env.IG_SCHEDULER_ENABLED === 'true') {
-    scheduleIGDailyJob();
-    scheduleIGDailyCarouselJobAccount2();
-    scheduleIGDailyReelJobAccount2();
+    runSafe('scheduleIGDailyJob', () => scheduleIGDailyJob());
+    runSafe('scheduleIGDailyCarouselJobAccount2', () => scheduleIGDailyCarouselJobAccount2());
+    runSafe('scheduleIGDailyReelJobAccount2', () => scheduleIGDailyReelJobAccount2());
   }
 
   const uploadDir = path.resolve('temp_uploads');
