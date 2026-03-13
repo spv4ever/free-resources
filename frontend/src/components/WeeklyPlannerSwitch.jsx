@@ -70,7 +70,7 @@ export default function WeeklyPlannerSwitch() {
   const rebuildAll = async () => {
     setLoading(true); setMsg('');
     try {
-      const out = await callJSON('/api/weekly/rebuild-all', {});
+      await callJSON('/api/weekly/rebuild-all', {});
       setMsg(`✅ Rebuild global OK`);
     } catch (e) {
       setMsg(`❌ ${e.message}`);

@@ -122,7 +122,7 @@ function NasaMediaGallery({ mediaType }) {
 
   const downloadViaProxy = (item) => {
     const src = item.hdurl || item.url;
-    const base = (item.titulo || 'nasa-image').replace(/[^\w\-]+/g, '_').slice(0,80);
+    const base = (item.titulo || 'nasa-image').replace(/[^\w-]+/g, '_').slice(0,80);
     const href = `${process.env.REACT_APP_API_URL}/api/nasa-images/download?src=${encodeURIComponent(src)}&filename=${encodeURIComponent(base)}`;
 
     const a = document.createElement('a');
