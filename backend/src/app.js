@@ -8,7 +8,6 @@ import session from 'express-session';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
@@ -186,58 +185,6 @@ registerApiRoutes({ app, __dirname, rebuildWeeklyForAccount });
 // });
 
 
-import './jobs/spaceXJob.js';
-import './jobs/igraalJob.js';
-import './jobs/syncWeeklyTop.js'; // activa el cronjob semanal
-startEnrichSpacexJob();
-startComfySocketWatcher();
-
-if (process.env.IG_SCHEDULER_ENABLED === 'true') {
-  scheduleIGDailyJob();
-  scheduleIGDailyCarouselJobAccount2();
-  scheduleIGDailyReelJobAccount2();
-}
-// import './jobs/index.js';
-// // Ejecutar cada 6 horas
-// setInterval(() => {
-//   console.log('🧹 Ejecutando limpieza de descargas temporales...');
-//   limpiarDescargasTemporales();
-// }, 1000 * 60 * 60 * 6); // cada 6 horas
-
-// // Primera ejecución al inicio
-// setTimeout(() => {
-//   console.log('🧹 Limpieza inicial de descargas temporales...');
-//   limpiarDescargasTemporales();
-// }, 10000); // 10s después de arrancar
-
-
-// Intervalo de ejecución: cada 6h (puedes cambiarlo)
-const IMPORT_INTERVAL = 1000 * 60 * 60 * 6;
-
-// ⬇️ Asegurar carpeta temporal
-const uploadDir = path.resolve('temp_uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-  console.log('📁 Carpeta "temp_uploads" creada automáticamente');
-  }
-
-// Primera ejecución 10s después de iniciar el backend
-setTimeout(() => {
-  console.log('▶️ Importación automática inicial');
-  runScheduledImports();
-}, 10000);
-
-// Repetición automática cada IMPORT_INTERVAL
-setInterval(() => {
-  console.log('🕒 Ejecutando importación programada...');
-  runScheduledImports();
-}, IMPORT_INTERVAL);
-
-
-// // Ruta de prueba
-// app.get('/', (req, res) => {
-//   res.send('API funcionando correctamente 🚀');
-// });
 app.get('/', (req, res) => {
     res.send('🚀 API de KeikoDev activa');
   });
