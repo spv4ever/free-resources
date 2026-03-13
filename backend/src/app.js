@@ -248,10 +248,7 @@ startF1Notifier();
 startDailyEventScheduler(); // activa cron diario
 iniciarSchedulerFutbol(process.env.MONGO_URI);
 //fetchTodayImage();
-const PORT = process.env.PORT || 5050;
-app.listen(PORT, async () => {
-  console.log(`Server up http://localhost:${PORT}`);
-
+export const initializePostStartTasks = async () => {
   // Encendido por .env, sin distinguir prod/dev
   const want = (process.env.WEEKLY_PLANNER_ENABLED || 'false') === 'true';
   setWeeklyPlannerEnabled(want);
@@ -261,7 +258,7 @@ app.listen(PORT, async () => {
   } else {
     console.log('⚠️ Weekly planner desactivado por .env');
   }
-});
+};
 // Rutas
 app.use('/api/instagram', instagramRoutes);
 app.use('/api/generacion', text2imageRoutes);

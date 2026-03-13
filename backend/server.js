@@ -1,4 +1,4 @@
-import app from './src/app.js';
+import app, { initializePostStartTasks } from './src/app.js';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
@@ -18,8 +18,9 @@ const startServer = async () => {
     //});
     console.log('✅ Conectado a MongoDB');
 
-    app.listen(PORT, () => {
-      console.log(`🚀 Servidor corriendo`);
+    app.listen(PORT, async () => {
+      console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+      await initializePostStartTasks();
     
       // Verificar rutas registradas
       // setTimeout(() => {
