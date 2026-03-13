@@ -13,6 +13,8 @@ import scheduleIGDailyCarouselJobAccount2 from './jobs/igDailyCarouselJob.accoun
 import scheduleIGDailyReelJobAccount2 from './jobs/igDailyReelJob.account2.js';
 import { runScheduledImports } from './services/emailScheduler.js';
 
+let runtimeInitialized = false;
+
 const runSafe = (name, fn) => {
   try {
     fn();
@@ -21,11 +23,25 @@ const runSafe = (name, fn) => {
   }
 };
 
+const importJobModule = async (modulePath) => {
+  try {
+    await import(modulePath);
+  } catch (error) {
+    console.error(`❌ Error cargando módulo ${modulePath}:`, error?.message || error);
+  }
+};
+
 export const initializeRuntimeTasks = async () => {
+  if (runtimeInitialized) {
+    console.log('ℹ️ Runtime tasks ya inicializadas, se omite reinicio.');
+    return;
+  }
+  runtimeInitialized = true;
+
   // Cargar jobs con side-effects explícitamente tras arrancar servidor
-  await import('./jobs/spaceXJob.js');
-  await import('./jobs/igraalJob.js');
-  await import('./jobs/syncWeeklyTop.js');
+  await importJobModule('./jobs/spaceXJob.js');
+  await importJobModule('./jobs/igraalJob.js');
+  await importJobModule('./jobs/syncWeeklyTop.js');
 
   runSafe('fetchNasaImageDaily', () => fetchNasaImageDaily());
   runSafe('startMotoGPNotifier', () => startMotoGPNotifier());

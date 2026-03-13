@@ -3,7 +3,6 @@ dotenv.config();
 import passport from 'passport';
 import './config/passport.js'; // 👈 registra las estrategias (como google-free-resources)
 import express from 'express';
-import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -16,7 +15,6 @@ import errorHandler from './middlewares/errorMiddleware.js';
 import notFound from './middlewares/notFoundMiddleware.js';
 import { suspiciousRouteLogger } from './middlewares/suspiciousRoutes.js';
 import { secureHeaders } from './middlewares/secureHeaders.js';
-import { createRateLimiter } from './middlewares/rateLimitHandler.js';
 import { bootWeeklyPlanner, rebuildWeeklyForAccount,startCronProbe,setWeeklyPlannerEnabled } from './jobs/WeeklyPlanner.js';
 import { registerApiRoutes } from './routes/registerApiRoutes.js';
 
