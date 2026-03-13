@@ -14,9 +14,22 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import errorHandler from './middlewares/errorMiddleware.js';
 import notFound from './middlewares/notFoundMiddleware.js';
+import fetchNasaImageDaily from './jobs/fetchNasaImage.js';
+import { fetchTodayImage } from './jobs/fetchNasaImage.js';
+import { startMotoGPNotifier } from './services/motogp-notifier.js';
+import { runScheduledImports } from './services/emailScheduler.js';
 import { suspiciousRouteLogger } from './middlewares/suspiciousRoutes.js';
 import { secureHeaders } from './middlewares/secureHeaders.js';
 import { createRateLimiter } from './middlewares/rateLimitHandler.js';
+import { startEnrichSpacexJob } from './jobs/enrichSpacexJob.js';
+import { startComfySocketWatcher } from './services/comfySocketWatcher.js';
+import { startDailyEventScheduler } from './notifier/coreScheduler.js';
+import { startF1Notifier } from './services/f1-notifier.js';
+import { limpiarDescargasTemporales } from './jobs/cleanupDownloads.js';
+import { iniciarSchedulerFutbol } from './jobs/futbolScheduler.js';
+import { scheduleIGDailyJob } from './jobs/igDailyJob.js';
+import scheduleIGDailyCarouselJobAccount2 from './jobs/igDailyCarouselJob.account2.js';
+import scheduleIGDailyReelJobAccount2 from './jobs/igDailyReelJob.account2.js';
 import { bootWeeklyPlanner, rebuildWeeklyForAccount,startCronProbe,setWeeklyPlannerEnabled } from './jobs/WeeklyPlanner.js';
 import { registerApiRoutes } from './routes/registerApiRoutes.js';
 
@@ -140,6 +153,12 @@ app.use(helmet({
 app.use(secureHeaders); // 🛡️ Añade cabeceras de seguridad personalizadas
 app.use(morgan('dev'));
 app.use(express.json());
+fetchNasaImageDaily();
+startMotoGPNotifier();
+startF1Notifier();
+startDailyEventScheduler(); // activa cron diario
+iniciarSchedulerFutbol(process.env.MONGO_URI);
+//fetchTodayImage();
 export const initializePostStartTasks = async () => {
   // Encendido por .env, sin distinguir prod/dev
   const want = (process.env.WEEKLY_PLANNER_ENABLED || 'false') === 'true';
