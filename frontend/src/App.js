@@ -150,22 +150,22 @@ function App() {
                 <Route path="/keikoprompts/historial/:promptId" element={<PromptImagesHistory />} />
                 <Route path="/texto-a-imagen" element={<TextToImagePage />} />
                 <Route path="/admin/users" element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
-                <Route path="/admin/anime-options" element={<AnimePromptOptionsPage />} />
-                <Route path="/admin/affiliate-links" element={<AffiliateLinksAdmin />} />
-                <Route path="/admin/igraal-coupons" element={<IgraalCouponAdmin />} />
+                <Route path="/admin/anime-options" element={<AdminRoute><AnimePromptOptionsPage /></AdminRoute>} />
+                <Route path="/admin/affiliate-links" element={<AdminRoute><AffiliateLinksAdmin /></AdminRoute>} />
+                <Route path="/admin/igraal-coupons" element={<AdminRoute><IgraalCouponAdmin /></AdminRoute>} />
                 <Route path="/generador-anime-prompts" element={<AnimePromptGenerator />} />
                 <Route path="/admin/igraal-deals" element={<AdminRoute><IgraalDealsAdmin /></AdminRoute>} />
                 <Route path="/admin/top-series-history" element={<AdminRoute><TopSeriesHistoryPage /></AdminRoute>} />
                 <Route path="/series/:tmdbId" element={<SerieDetalle />} />
                 <Route path="/series/estado/:status" element={<SeriesFilteredList />} />
                 <Route path="/series" element={<SeriesCategoryList />} />
-                <Route path="/admin/spacex" element={<SpacexLaunchAdmin />} />
+                <Route path="/admin/spacex" element={<AdminRoute><SpacexLaunchAdmin /></AdminRoute>} />
                 <Route path="/perfil" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
                 <Route path="/apoyar" element={<Apoyar />} />
-                <Route path="/admin/top-series-sync" element={<TopSeriesSyncPage />} />
+                <Route path="/admin/top-series-sync" element={<AdminRoute><TopSeriesSyncPage /></AdminRoute>} />
                 <Route path="/admin/social-posts" element={<AdminRoute><SocialPostAdmin /></AdminRoute>} />
                 <Route path="/admin/affiliate-clicks" element={<AdminRoute><AffiliateClickStatsAdmin /></AdminRoute>} />
-                <Route path="/admin/ig-monitor" element={<AdminIGMonitorPage />} />
+                <Route path="/admin/ig-monitor" element={<AdminRoute><AdminIGMonitorPage /></AdminRoute>} />
                 <Route path="/admin/suspicious-access" element={<AdminRoute><SuspiciousAccessAdmin /></AdminRoute>} />
                 <Route path="/admin/scam-posts" element={<AdminRoute><ScamPostsPage /></AdminRoute>} />
                 <Route path="category/:categoryName" element={<CategoryResourcesPage />} />
@@ -191,7 +191,7 @@ function App() {
                 <Route path="/chollos" element={<IgraalDealsPage />} />
                 <Route path="/cupones" element={<IgraalCouponsPage />} />
                 <Route path="/series/categoria/:slug" element={<CategorySeriesPage />} />
-                <Route path="/admin/link-analysis" element={<AdminLinkAnalysis />} />
+                <Route path="/admin/link-analysis" element={<AdminRoute><AdminLinkAnalysis /></AdminRoute>} />
                 <Route path="/pro/link-analysis/:id" element={<UserLinkDetail />} />
                 <Route path="/panel/pro/historial" element={<UserLinkHistory />} />
                 <Route path="/youtube-uploader" element={<YouTubeLandingPage />} />
@@ -206,15 +206,15 @@ function App() {
                 <Route path="/convertir-imagenes" element={<ConvertidorImagenes />} />
                 <Route path="/marca-de-agua" element={<MarcaDeAgua />} />
                 <Route path="/prompts/:packId" element={<KeikoPromptsList />} />
-                <Route path="/admin/keiko-packs" element={<KeikoPromptPacksAdmin />} />
-                <Route path="/admin/keiko-prompts" element={<KeikoPromptsAdmin />} />
+                <Route path="/admin/keiko-packs" element={<AdminRoute><KeikoPromptPacksAdmin /></AdminRoute>} />
+                <Route path="/admin/keiko-prompts" element={<AdminRoute><KeikoPromptsAdmin /></AdminRoute>} />
                 <Route path="/keikoprompts" element={<KeikoPromptPacks />} />
-                <Route path="/admin/imports" element={<AdminImport />} />
-                <Route path="/admin/DuplicateCleanup" element={<DuplicateCleanup />} />
+                <Route path="/admin/imports" element={<AdminRoute><AdminImport /></AdminRoute>} />
+                <Route path="/admin/DuplicateCleanup" element={<AdminRoute><DuplicateCleanup /></AdminRoute>} />
                 <Route path="/motogp-calendar" element={<MotoGPCalendarPage />} />
                 <Route path="/motogp/:slug" element={<MotoGPCircuitPage />} />
                 <Route path="/mis-imagenes" element={<UserImageGallery />} />
-                <Route path="/admin/register-logs" element={<RegisterLogsTable />} />
+                <Route path="/admin/register-logs" element={<AdminRoute><RegisterLogsTable /></AdminRoute>} />
                 <Route path="/info/tokens" element={<TokenInfoPage />} />
                 <Route path="/multimedia/keikoia" element={<KeikoIAGallery />} />
                 <Route path="/biblioteca/pack/:packId" element={<PackImages />} />
