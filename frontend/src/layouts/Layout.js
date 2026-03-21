@@ -51,7 +51,6 @@
     { title: 'Cupones iGraal', description: 'Códigos descuento + cashback real', path: '/cupones', icon: <FaTicketAlt /> },
     { title: 'Chollos iGraal', description: 'Ofertas con cashback actualizadas a diario', path: '/chollos', icon: <FaGift /> },
 
-    { title: 'MotoGP', description: 'Calendario completo de MotoGP por circuito', path: '/motogp-calendar', icon: <FaRocket /> },  // Puedes cambiar el icono
     { title: 'Blog Keiko', description: 'Entradas destacadas y novedades IA', path: '/blog', icon: <FaBook /> },
     { title: 'Keiko Gifs', description: 'Los mejores Gifs por gentileza de Tenor', path: '/gifs', icon: <FaSmileBeam /> },
     {
