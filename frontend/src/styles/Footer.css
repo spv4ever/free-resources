@@ -1,6 +1,6 @@
 .footer {
-  background-color: #222;
-  color: #ccc;
+  background: var(--panel-gradient);
+  color: var(--color-text-muted);
   padding: 2rem 1rem;
   position: relative;
   display: flex;
@@ -38,7 +38,7 @@
 /* ✅ Atributo de texto TMDb */
 .tmdb-text {
   font-size: 0.75rem;
-  color: #aaa;
+  color: var(--color-text-muted);
   margin: 0;
 }
 
@@ -50,14 +50,14 @@
 
 /* ✅ Links */
 .footer a {
-  color: #ccc;
+  color: var(--color-text-muted);
   text-decoration: none;
   margin-right: 0.5rem;
   transition: color 0.2s ease;
 }
 
 .footer a:hover {
-  color: #fff;
+  color: var(--color-text);
 }
 
 /* Redes sociales */
@@ -80,7 +80,7 @@
 
 .footer-links-row a,
 .footer-links-row .cookie-button {
-  color: #00bfff;
+  color: var(--color-accent);
   background: none;
   border: none;
   cursor: pointer;
@@ -97,12 +97,12 @@
 
 .footer-links-row a:hover,
 .footer-links-row .cookie-button:hover {
-  color: #ffffff;
+  color: var(--color-text);
   text-decoration: underline;
 }
 
 .footer-links-row .separator {
-  color: #aaa;
+  color: var(--color-text-muted);
   padding: 0 0.25rem;
 }
 

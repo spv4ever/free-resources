@@ -2,7 +2,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #121212;
+  background-color: var(--color-bg);
   padding: 0;
   margin: 0;
   box-sizing: border-box;
@@ -14,7 +14,7 @@
 }
 
 .homepage-title {
-  color: white;
+  color: var(--color-text);
   font-size: 2rem;
   margin-bottom: 2rem;
   text-align: center;
@@ -28,11 +28,11 @@
 }
 
 .card-home {
-  background-color: #1e1e1e;
-  color: #f1f1f1;
+  background-color: var(--color-bg-soft);
+  color: var(--color-text);
   border-radius: 12px;
   padding: 1.2rem 1.4rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px var(--color-shadow);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
   display: flex;
@@ -55,7 +55,7 @@
 .dropdown-trigger:focus-visible,
 .dropdown-link-card:focus-visible,
 .menu-toggle-btn:focus-visible {
-  outline: 3px solid #00bfff;
+  outline: 3px solid var(--color-accent);
   outline-offset: 3px;
 }
 
@@ -69,7 +69,7 @@
 .nasa-video-card h2,
 .igraal-highlight-card h2 {
   font-size: 1.2rem;
-  color: #00bfff;
+  color: var(--color-accent);
   margin-bottom: 0.8rem;
   text-align: left;
 }
@@ -148,9 +148,9 @@
 }
 
 .card-keikoprompts {
-  background: linear-gradient(135deg, #1f1f1f, #292929);
-  border: 1px solid #444;
-  box-shadow: 0 0 12px rgba(255, 215, 89, 0.1);
+  background: linear-gradient(135deg, var(--color-bg-soft), var(--color-bg-soft));
+  border: 1px solid var(--color-border);
+  box-shadow: 0 0 12px var(--color-glow);
 }
 
 .layout-container {
@@ -169,7 +169,7 @@
   top: 0;
   z-index: 30;
   padding: 1rem 1rem 0;
-  background: linear-gradient(180deg, rgba(18, 18, 18, 0.98), rgba(18, 18, 18, 0.9));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 96%, transparent), color-mix(in srgb, var(--color-bg) 88%, transparent));
   backdrop-filter: blur(12px);
 }
 
@@ -179,21 +179,21 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem 1.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
   border-radius: 18px;
-  background: linear-gradient(135deg, rgba(16, 25, 40, 0.95), rgba(10, 84, 140, 0.72));
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  background: var(--panel-gradient);
+  box-shadow: 0 18px 40px var(--color-shadow);
 }
 
 .header-shortcuts-branding {
   max-width: 360px;
-  color: #f5f7fb;
+  color: var(--color-text);
 }
 
 .header-shortcuts-eyebrow {
   display: inline-block;
   margin-bottom: 0.35rem;
-  color: #8ecfff;
+  color: var(--color-heading);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -204,7 +204,48 @@
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--color-text-muted);
+}
+
+
+.header-shortcuts-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.85rem;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.78rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--theme-toggle-gradient);
+  color: var(--color-text);
+  box-shadow: 0 12px 24px var(--color-glow);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--color-border-strong);
+  box-shadow: 0 16px 28px var(--color-glow);
+}
+
+.theme-toggle-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 999px;
+  background: var(--color-surface-strong);
 }
 
 .desktop-dropdown-nav {
@@ -212,7 +253,6 @@
   align-items: center;
   justify-content: flex-end;
   gap: 0.75rem;
-  flex: 1;
   flex-wrap: wrap;
 }
 
@@ -225,10 +265,10 @@
   align-items: center;
   gap: 0.6rem;
   padding: 0.8rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--color-border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
+  background: var(--color-surface);
+  color: var(--color-text);
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
@@ -237,8 +277,8 @@
 
 .dropdown-trigger:hover,
 .dropdown-group.is-open .dropdown-trigger {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(142, 207, 255, 0.45);
+  background: var(--color-surface-strong);
+  border-color: var(--color-border-strong);
   transform: translateY(-1px);
 }
 
@@ -258,9 +298,9 @@
   width: min(760px, 84vw);
   padding: 1rem;
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(10, 14, 22, 0.98);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-bg-elevated) 96%, var(--color-bg) 4%);
+  box-shadow: 0 24px 60px color-mix(in srgb, var(--color-shadow) 150%, transparent);
   opacity: 0;
   visibility: hidden;
   transform: translateY(8px);
@@ -281,14 +321,14 @@
 
 .dropdown-panel-header strong {
   display: block;
-  color: #fff;
+  color: var(--color-text);
   font-size: 1rem;
   margin-bottom: 0.25rem;
 }
 
 .dropdown-panel-header p {
   margin: 0;
-  color: rgba(255, 255, 255, 0.66);
+  color: var(--color-text-muted);
   font-size: 0.9rem;
   line-height: 1.45;
 }
@@ -305,11 +345,11 @@
   align-items: flex-start;
   gap: 0.85rem;
   text-decoration: none;
-  color: white;
+  color: var(--color-text);
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(180deg, rgba(0, 119, 204, 0.22), rgba(2, 33, 63, 0.5));
-  box-shadow: 0 10px 24px rgba(0, 40, 80, 0.25);
+  border: 1px solid var(--color-border);
+  background: var(--card-gradient);
+  box-shadow: 0 10px 24px var(--color-glow);
   transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 }
 
@@ -320,8 +360,8 @@
 .dropdown-link-card:hover,
 .menu-button:hover {
   transform: translateY(-2px);
-  border-color: rgba(0, 191, 255, 0.45);
-  background: linear-gradient(180deg, rgba(0, 119, 204, 0.35), rgba(3, 47, 92, 0.7));
+  border-color: var(--color-border-strong);
+  background: var(--card-gradient-hover);
 }
 
 .dropdown-link-icon,
@@ -333,7 +373,7 @@
   height: 2.4rem;
   flex-shrink: 0;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--color-surface-strong);
   font-size: 1rem;
 }
 
@@ -353,7 +393,7 @@
 
 .dropdown-link-copy small,
 .menu-button-copy small {
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--color-text-muted);
   font-size: 0.78rem;
   line-height: 1.4;
 }
@@ -363,9 +403,9 @@
 }
 
 .menu-toggle-btn {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
   padding: 0.8rem 1rem;
   border-radius: 999px;
   font-weight: 600;
@@ -377,22 +417,22 @@
 }
 
 .menu-group-card {
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
   border-radius: 20px;
   padding: 1rem;
-  background: rgba(10, 14, 22, 0.92);
-  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.24);
+  background: var(--color-bg-elevated);
+  box-shadow: 0 16px 30px var(--color-shadow);
 }
 
 .menu-group-heading h3 {
   margin: 0;
-  color: #fff;
+  color: var(--color-text);
   font-size: 1rem;
 }
 
 .menu-group-heading p {
   margin: 0.35rem 0 0;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-muted);
   font-size: 0.85rem;
   line-height: 1.45;
 }
@@ -410,9 +450,9 @@
 
 .btn-imagenes-link {
   margin: -0.5rem 1rem 0;
-  background-color: #2b2b2b;
-  color: #fff;
-  border: 1px solid #555;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
   padding: 8px 12px;
   border-radius: 6px;
   font-weight: bold;
@@ -423,13 +463,13 @@
 }
 
 .btn-imagenes-link:hover {
-  background-color: #3a3a3a;
+  background-color: var(--color-surface-strong);
 }
 
 .card-home .keiko-footer {
   margin-top: 10px;
   font-weight: bold;
-  color: #ffd859;
+  color: var(--color-heading);
 }
 
 .telegram-fab {
@@ -438,9 +478,9 @@
   left: 20px;
   width: 56px;
   height: 56px;
-  background-color: #444;
+  background-color: var(--color-border);
   border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px var(--color-shadow);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -450,19 +490,19 @@
 }
 
 .telegram-fab:hover {
-  background-color: #666;
+  background-color: var(--color-surface-strong);
 }
 
 .home-intro {
   display: none;
-  background-color: #1e1e1e;
-  color: white;
+  background: var(--intro-gradient);
+  color: var(--color-text);
   padding: 1.5rem 1rem;
   text-align: center;
   border-radius: 8px;
   margin: 1rem auto;
   max-width: 480px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px var(--color-shadow);
 }
 
 .home-intro h2 {
@@ -475,13 +515,13 @@
   width: 100%;
   border-radius: 8px;
   margin: 1rem 0;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 10px var(--color-shadow);
 }
 
 .cta-button {
   display: inline-block;
-  background-color: #00bfff;
-  color: white;
+  background-color: var(--color-accent);
+  color: var(--color-accent-contrast);
   padding: 0.6rem 1.2rem;
   border-radius: 8px;
   text-decoration: none;
@@ -490,7 +530,7 @@
 }
 
 .cta-button:hover {
-  background-color: #009fd8;
+  background-color: var(--color-accent-strong);
 }
 
 .scroll-cue {
@@ -523,6 +563,11 @@
     max-width: none;
   }
 
+  .header-shortcuts-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .desktop-dropdown-nav {
     width: 100%;
     justify-content: flex-start;
@@ -543,6 +588,10 @@
     padding: 0.9rem;
   }
 
+  .header-shortcuts-actions {
+    width: 100%;
+  }
+
   .desktop-dropdown-nav {
     display: none;
   }
@@ -550,6 +599,11 @@
   .mobile-menu-toggle {
     display: block;
     width: 100%;
+  }
+
+  .theme-toggle-btn {
+    width: 100%;
+    justify-content: center;
   }
 
   .menu-toggle-btn {
