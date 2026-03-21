@@ -151,7 +151,7 @@ function Navbar({
                   return (
                     <div
                       key={group.id}
-                      className={`dropdown-group ${isOpen ? 'is-open' : ''}`}
+                      className={`dropdown-group ${isOpen ? 'is-open' : ''} ${group.align === 'end' ? 'dropdown-group--align-end' : ''}`.trim()}
                       onMouseEnter={() => openDropdown(group.id)}
                       onMouseLeave={() => scheduleDropdownClose(group.id)}
                       onFocus={() => openDropdown(group.id)}

@@ -50,6 +50,7 @@ function Layout() {
       {
         id: 'crear',
         label: 'Crear',
+        align: 'start',
         description: 'Herramientas principales para crear, editar y publicar contenido.',
         items: [
           {
@@ -81,6 +82,7 @@ function Layout() {
       {
         id: 'explorar',
         label: 'Explorar',
+        align: 'start',
         description: 'Accesos rápidos a colecciones, medios y contenidos destacados.',
         items: [
           {
@@ -130,6 +132,7 @@ function Layout() {
       {
         id: 'temas',
         label: 'Temas',
+        align: 'start',
         description: 'Secciones temáticas con seguimiento y contenido especializado.',
         items: [
           {
@@ -161,6 +164,7 @@ function Layout() {
       {
         id: 'comunidad',
         label: 'Comunidad',
+        align: 'start',
         description: 'Ventajas, descuentos y recursos para la comunidad.',
         items: [
           {

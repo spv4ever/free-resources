@@ -82,6 +82,12 @@
 }
 
 .nav-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  line-height: 1;
+  box-sizing: border-box;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -239,8 +245,8 @@
   position: absolute;
   z-index: 1300;
   top: calc(100% + 0.9rem);
-  right: 0;
-  width: min(760px, 84vw);
+  left: 0;
+  width: min(760px, calc(100vw - 2rem));
   padding: 1rem;
   border-radius: 20px;
   border: 1px solid var(--color-border);
@@ -683,4 +689,10 @@
     min-width: 0;
     padding-right: 0;
   }
+}
+
+
+.dropdown-group.dropdown-group--align-end .dropdown-panel {
+  left: auto;
+  right: 0;
 }
