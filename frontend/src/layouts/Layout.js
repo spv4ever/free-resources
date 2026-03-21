@@ -12,10 +12,12 @@ import {
   FaGraduationCap,
   FaImage,
   FaMagic,
+  FaMoon,
   FaRobot,
   FaRocket,
   FaShieldVirus,
   FaSmileBeam,
+  FaSun,
   FaTicketAlt,
   FaTv,
   FaYoutube,
@@ -29,12 +31,15 @@ import AffiliateBannerAndSidebar from '../components/AffiliateBannerAndSidebar';
 import { useUser } from '../context/UserContext';
 import '../styles/HomePage.css';
 
+const THEME_STORAGE_KEY = 'keikodev-theme';
+
 function Layout() {
   const { user } = useUser();
   const location = useLocation();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [theme, setTheme] = useState('dark');
   const dropdownRef = useRef(null);
   const closeDropdownTimeoutRef = useRef(null);
 
@@ -42,6 +47,8 @@ function Layout() {
     sessionStorage.setItem('scrollToPromptSection', 'true');
     navigate('/keikoprompts');
   };
+
+  const themeLabel = theme === 'dark' ? 'Activar modo claro' : 'Activar modo oscuro';
 
   const menuGroups = useMemo(() => {
     const groups = [
@@ -202,6 +209,29 @@ function Layout() {
   }, [user]);
 
   useEffect(() => {
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      setTheme(savedTheme);
+      return;
+    }
+
+    const preferredTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    setTheme(preferredTheme);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.body.dataset.theme = theme;
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+
+    const themeMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeMeta) {
+      themeMeta.setAttribute('content', theme === 'dark' ? '#07111f' : '#edf4ff');
+    }
+  }, [theme]);
+
+  useEffect(() => {
     setMenuOpen(false);
     setActiveDropdown(null);
   }, [location.pathname]);
@@ -258,6 +288,10 @@ function Layout() {
     setActiveDropdown((current) => (current === groupId ? null : groupId));
   };
 
+  const toggleTheme = () => {
+    setTheme((current) => (current === 'dark' ? 'light' : 'dark'));
+  };
+
   return (
     <div className="layout-container">
       <AffiliatePopup currentPath={location.pathname} />
@@ -271,53 +305,66 @@ function Layout() {
             <p>Todo lo importante de la home, ahora agrupado en un menú más claro y profesional.</p>
           </div>
 
-          <div className="desktop-dropdown-nav" aria-label="Menú principal de accesos directos">
-            {menuGroups.map((group) => {
-              const isOpen = activeDropdown === group.id;
-              return (
-                <div
-                  key={group.id}
-                  className={`dropdown-group ${isOpen ? 'is-open' : ''}`}
-                  onMouseEnter={() => openDropdown(group.id)}
-                  onMouseLeave={() => scheduleDropdownClose(group.id)}
-                  onFocus={() => openDropdown(group.id)}
-                  onBlur={(event) => handleDropdownBlur(event, group.id)}
-                >
-                  <button
-                    type="button"
-                    className="dropdown-trigger"
-                    aria-expanded={isOpen}
-                    onClick={() => toggleDropdown(group.id)}
-                  >
-                    <span>{group.label}</span>
-                    <FaChevronDown className="dropdown-trigger-icon" />
-                  </button>
+          <div className="header-shortcuts-actions">
+            <button
+              type="button"
+              className="theme-toggle-btn"
+              onClick={toggleTheme}
+              aria-label={themeLabel}
+              title={themeLabel}
+            >
+              <span className="theme-toggle-btn-icon">{theme === 'dark' ? <FaSun /> : <FaMoon />}</span>
+              <span>{theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</span>
+            </button>
 
-                  <div className="dropdown-panel">
-                    <div className="dropdown-panel-header">
-                      <strong>{group.label}</strong>
-                      <p>{group.description}</p>
-                    </div>
-                    <div className="dropdown-links-grid">
-                      {group.items.map((item) => (
-                        <Link
-                          key={item.path}
-                          to={item.path}
-                          className="dropdown-link-card"
-                          title={item.description}
-                        >
-                          <span className="dropdown-link-icon">{item.icon}</span>
-                          <span className="dropdown-link-copy">
-                            <strong>{item.title}</strong>
-                            <small>{item.description}</small>
-                          </span>
-                        </Link>
-                      ))}
+            <div className="desktop-dropdown-nav" aria-label="Menú principal de accesos directos">
+              {menuGroups.map((group) => {
+                const isOpen = activeDropdown === group.id;
+                return (
+                  <div
+                    key={group.id}
+                    className={`dropdown-group ${isOpen ? 'is-open' : ''}`}
+                    onMouseEnter={() => openDropdown(group.id)}
+                    onMouseLeave={() => scheduleDropdownClose(group.id)}
+                    onFocus={() => openDropdown(group.id)}
+                    onBlur={(event) => handleDropdownBlur(event, group.id)}
+                  >
+                    <button
+                      type="button"
+                      className="dropdown-trigger"
+                      aria-expanded={isOpen}
+                      onClick={() => toggleDropdown(group.id)}
+                    >
+                      <span>{group.label}</span>
+                      <FaChevronDown className="dropdown-trigger-icon" />
+                    </button>
+
+                    <div className="dropdown-panel">
+                      <div className="dropdown-panel-header">
+                        <strong>{group.label}</strong>
+                        <p>{group.description}</p>
+                      </div>
+                      <div className="dropdown-links-grid">
+                        {group.items.map((item) => (
+                          <Link
+                            key={item.path}
+                            to={item.path}
+                            className="dropdown-link-card"
+                            title={item.description}
+                          >
+                            <span className="dropdown-link-icon">{item.icon}</span>
+                            <span className="dropdown-link-copy">
+                              <strong>{item.title}</strong>
+                              <small>{item.description}</small>
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
 
           <div className="mobile-only mobile-menu-toggle">
