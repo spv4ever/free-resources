@@ -306,17 +306,6 @@ function Layout() {
           </div>
 
           <div className="header-shortcuts-actions">
-            <button
-              type="button"
-              className="theme-toggle-btn"
-              onClick={toggleTheme}
-              aria-label={themeLabel}
-              title={themeLabel}
-            >
-              <span className="theme-toggle-btn-icon">{theme === 'dark' ? <FaSun /> : <FaMoon />}</span>
-              <span>{theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</span>
-            </button>
-
             <div className="desktop-dropdown-nav" aria-label="Menú principal de accesos directos">
               {menuGroups.map((group) => {
                 const isOpen = activeDropdown === group.id;
@@ -365,6 +354,17 @@ function Layout() {
                 );
               })}
             </div>
+
+            <button
+              type="button"
+              className="theme-toggle-btn"
+              onClick={toggleTheme}
+              aria-label={themeLabel}
+              title={themeLabel}
+            >
+              <span className="theme-toggle-btn-icon">{theme === 'dark' ? <FaSun /> : <FaMoon />}</span>
+              <span>{theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</span>
+            </button>
           </div>
 
           <div className="mobile-only mobile-menu-toggle">
