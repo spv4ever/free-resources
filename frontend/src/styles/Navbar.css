@@ -19,11 +19,11 @@
 
 .navbar-top-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
   padding: 0 1rem;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 }
 
 .navbar-logo a,
@@ -48,12 +48,12 @@
   align-items: center;
   justify-content: flex-end;
   gap: 0.85rem;
-  flex: 1;
+  flex: 1 1 100%;
   min-width: 0;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  overflow-y: visible;
-  padding-bottom: 0.25rem;
+  width: 100%;
+  flex-wrap: wrap;
+  overflow: visible;
+  padding-top: 0.25rem;
 }
 
 .navbar-links a,
@@ -78,6 +78,7 @@
   align-items: center;
   gap: 0.85rem;
   flex-shrink: 0;
+  flex-wrap: wrap;
 }
 
 .nav-pill {
@@ -190,8 +191,8 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  flex-wrap: nowrap;
-  flex-shrink: 0;
+  flex-wrap: wrap;
+  flex-shrink: 1;
 }
 
 .theme-toggle-btn--icon {
@@ -527,6 +528,17 @@
   outline-offset: 3px;
 }
 
+
+
+@media screen and (min-width: 769px) and (max-width: 1200px) {
+  .navbar-links {
+    justify-content: flex-start;
+  }
+
+  .desktop-dropdown-nav {
+    width: 100%;
+  }
+}
 
 @media screen and (max-width: 768px) {
   .navbar {
