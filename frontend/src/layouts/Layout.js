@@ -36,6 +36,7 @@ function Layout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const dropdownRef = useRef(null);
+  const closeDropdownTimeoutRef = useRef(null);
 
   const handleStart = () => {
     sessionStorage.setItem('scrollToPromptSection', 'true');
@@ -216,7 +217,44 @@ function Layout() {
     return () => document.removeEventListener('mousedown', handlePointerDown);
   }, []);
 
+  useEffect(() => () => {
+    if (closeDropdownTimeoutRef.current) {
+      clearTimeout(closeDropdownTimeoutRef.current);
+    }
+  }, []);
+
+  const cancelDropdownClose = () => {
+    if (closeDropdownTimeoutRef.current) {
+      clearTimeout(closeDropdownTimeoutRef.current);
+      closeDropdownTimeoutRef.current = null;
+    }
+  };
+
+  const openDropdown = (groupId) => {
+    cancelDropdownClose();
+    setActiveDropdown(groupId);
+  };
+
+  const scheduleDropdownClose = (groupId) => {
+    cancelDropdownClose();
+    closeDropdownTimeoutRef.current = setTimeout(() => {
+      setActiveDropdown((current) => (current === groupId ? null : current));
+      closeDropdownTimeoutRef.current = null;
+    }, 220);
+  };
+
+  const handleDropdownBlur = (event, groupId) => {
+    const nextFocusedElement = event.relatedTarget;
+
+    if (event.currentTarget.contains(nextFocusedElement)) {
+      return;
+    }
+
+    scheduleDropdownClose(groupId);
+  };
+
   const toggleDropdown = (groupId) => {
+    cancelDropdownClose();
     setActiveDropdown((current) => (current === groupId ? null : groupId));
   };
 
@@ -240,8 +278,10 @@ function Layout() {
                 <div
                   key={group.id}
                   className={`dropdown-group ${isOpen ? 'is-open' : ''}`}
-                  onMouseEnter={() => setActiveDropdown(group.id)}
-                  onMouseLeave={() => setActiveDropdown((current) => (current === group.id ? null : current))}
+                  onMouseEnter={() => openDropdown(group.id)}
+                  onMouseLeave={() => scheduleDropdownClose(group.id)}
+                  onFocus={() => openDropdown(group.id)}
+                  onBlur={(event) => handleDropdownBlur(event, group.id)}
                 >
                   <button
                     type="button"
