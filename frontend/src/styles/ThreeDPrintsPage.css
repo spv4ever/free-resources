@@ -1,0 +1,196 @@
+.three-d-prints-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  color: var(--color-text);
+}
+
+.three-d-hero,
+.three-d-overview,
+.three-d-sections {
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  background: var(--panel-gradient, var(--color-bg-soft));
+  box-shadow: 0 18px 40px var(--color-shadow);
+}
+
+.three-d-hero {
+  padding: clamp(1.5rem, 4vw, 3rem);
+  position: relative;
+  overflow: hidden;
+}
+
+.three-d-hero::after {
+  content: '';
+  position: absolute;
+  inset: auto -10% -30% auto;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 32%, transparent), transparent 70%);
+  pointer-events: none;
+}
+
+.three-d-hero__eyebrow,
+.three-d-sections__header span {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  color: var(--color-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.three-d-hero h1,
+.three-d-sections__header h2 {
+  margin: 1rem 0 0.85rem;
+  color: var(--color-heading);
+}
+
+.three-d-hero p,
+.three-d-sections__header p,
+.three-d-overview__card p,
+.three-d-section-card p,
+.three-d-section-card li {
+  color: var(--color-text-muted);
+  line-height: 1.65;
+}
+
+.three-d-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 1.5rem;
+}
+
+.three-d-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0.8rem 1.15rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.three-d-button:hover {
+  transform: translateY(-2px);
+}
+
+.three-d-button--primary {
+  background: linear-gradient(135deg, var(--color-accent), color-mix(in srgb, var(--color-accent) 65%, #ffffff));
+  color: #07111f;
+  box-shadow: 0 18px 30px color-mix(in srgb, var(--color-accent) 28%, transparent);
+}
+
+.three-d-button--secondary {
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-bg-soft) 82%, transparent);
+}
+
+.three-d-overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.three-d-overview__card,
+.three-d-section-card {
+  border: 1px solid color-mix(in srgb, var(--color-border) 88%, transparent);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--color-bg-soft) 88%, transparent);
+}
+
+.three-d-overview__card {
+  padding: 1.25rem;
+}
+
+.three-d-overview__card strong,
+.three-d-section-card h3 {
+  color: var(--color-heading);
+}
+
+.three-d-sections {
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.three-d-sections__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.three-d-section-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.35rem;
+  min-height: 100%;
+}
+
+.three-d-section-card__top,
+.three-d-section-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.three-d-section-card__index,
+.three-d-section-card__footer span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+  color: var(--color-heading);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.three-d-section-card__emoji {
+  font-size: 1.7rem;
+}
+
+.three-d-section-card ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+@media (max-width: 960px) {
+  .three-d-overview,
+  .three-d-sections__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .three-d-prints-page {
+    gap: 1.25rem;
+  }
+
+  .three-d-hero,
+  .three-d-sections {
+    padding: 1.1rem;
+  }
+
+  .three-d-overview {
+    padding: 0.85rem;
+  }
+
+  .three-d-button {
+    width: 100%;
+  }
+}
