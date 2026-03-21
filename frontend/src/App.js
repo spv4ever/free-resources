@@ -12,6 +12,7 @@ const RouteFallback = <div className="route-loading">Cargando…</div>;
 
 // Público
 const HomePage = lazy(() => import('./pages/HomePage'));
+const ThreeDPrintsPage = lazy(() => import('./pages/ThreeDPrintsPage'));
 const ResourcesPage = lazy(() => import('./pages/ResourcesPage'));
 const CategoryResourcesPage = lazy(() => import('./pages/CategoryResourcesPage'));
 const AiLinksPage = lazy(() => import('./pages/AiLinksPage'));
@@ -206,6 +207,7 @@ function App() {
                 <Route path="/admin/keiko-packs" element={<AdminRoute><KeikoPromptPacksAdmin /></AdminRoute>} />
                 <Route path="/admin/keiko-prompts" element={<AdminRoute><KeikoPromptsAdmin /></AdminRoute>} />
                 <Route path="/keikoprompts" element={<KeikoPromptPacks />} />
+                <Route path="/3dprints-keiko" element={<ThreeDPrintsPage />} />
                 <Route path="/admin/imports" element={<AdminRoute><AdminImport /></AdminRoute>} />
                 <Route path="/admin/DuplicateCleanup" element={<AdminRoute><DuplicateCleanup /></AdminRoute>} />
                 <Route path="/mis-imagenes" element={<UserImageGallery />} />

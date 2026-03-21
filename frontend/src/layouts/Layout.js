@@ -18,6 +18,7 @@ import {
   FaTicketAlt,
   FaTv,
   FaYoutube,
+  FaCube,
 } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -64,6 +65,12 @@ function Layout() {
             description: 'Explora packs de prompts para IA listos para usar.',
             path: '/keikoprompts',
             icon: <FaBoxes />,
+          },
+          {
+            title: '3DPrints by Keiko',
+            description: 'Nueva sección modular para diseños, filamentos y material de impresión 3D.',
+            path: '/3dprints-keiko',
+            icon: <FaCube />,
           },
           {
             title: 'Texto a Imagen',

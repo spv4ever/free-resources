@@ -649,3 +649,8 @@
     font-size: 0.8rem;
   }
 }
+
+.card-3dprints {
+  border: 1px solid color-mix(in srgb, #8ec5ff 40%, var(--color-border));
+  background: linear-gradient(160deg, color-mix(in srgb, var(--color-bg-soft) 92%, transparent), color-mix(in srgb, #60a5fa 14%, transparent));
+}

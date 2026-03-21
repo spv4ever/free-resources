@@ -37,6 +37,20 @@ function HomePage() {
           </p>
         </Link>
 
+        <Link to="/3dprints-keiko" className="card-home card-home-link card-3dprints">
+          <h2>🖨️ 3DPrints by Keiko</h2>
+          <p>Nuevo espacio frontend preparado para crecer con muchas categorías de impresión 3D.</p>
+          <ul>
+            <li>🧩 Mis Diseños para destacar creaciones propias</li>
+            <li>🧵 Filamentos para organizar colores, marcas y perfiles</li>
+            <li>🛠️ Material para herramientas, accesorios y futuras guías</li>
+          </ul>
+
+          <p className="keiko-footer">
+            Base escalable lista para seguir ampliándose
+          </p>
+        </Link>
+
         <Link to="/series" className="card-home card-home-link">
           <h2>📺 Top 10 Series de la semana</h2>
           <div className="top-series-list">
