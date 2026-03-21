@@ -1,21 +1,32 @@
 /* === Estilos generales para la barra de navegación === */
 .navbar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: var(--color-bg-soft);
+  padding: 1rem;
+  color: var(--color-text);
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.navbar-shell {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.navbar-top-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--color-bg-soft);
-  padding: 1rem 2rem;
-  color: var(--color-text);
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow-x: hidden;
-  overflow: visible;
-}
-
-.navbar {
-  position: relative;
-  z-index: 10;
+  gap: 1rem;
+  padding: 0 1rem;
 }
 
 .navbar-logo a,
@@ -35,12 +46,11 @@
   object-fit: contain;
 }
 
-/* === Contenedor de enlaces === */
 .navbar-links {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;         /* No permitas que salte de línea aquí */
-  overflow-x: auto;          /* Si se pasa, aparece scroll interno */
+  flex-wrap: nowrap;
+  overflow-x: auto;
   gap: 1rem;
   max-width: 100%;
 }
@@ -66,7 +76,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-} 
+}
 
 .navbar-links a:hover,
 .navbar-links button:hover {
@@ -75,7 +85,6 @@
   color: var(--color-accent-contrast);
 }
 
-/* Botón "Desconectar" */
 .logout-btn {
   background-color: #ff4d4d;
   border-color: #ff4d4d;
@@ -99,7 +108,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 44px; /* forzamos misma altura */
+  height: 44px;
   line-height: 1;
   box-sizing: border-box;
   vertical-align: middle;
@@ -112,22 +121,316 @@
   text-decoration: none;
 }
 
-/* Usuario logueado */
 .navbar-user {
   color: var(--color-heading);
   font-size: 1rem;
   font-weight: bold;
-  padding: 0 15px; /* ✅ en lugar de 50px */
+  padding: 0 15px;
   word-break: break-word;
+}
+
+.navbar-links a.admin-btn,
+.navbar-links button.admin-btn {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.token-balance {
+  margin-left: 10px;
+  background-color: var(--color-heading);
+  color: var(--color-accent-contrast);
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.navbar-shortcuts {
+  width: 100%;
+}
+
+.navbar-shortcuts-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  background: var(--panel-gradient);
+  box-shadow: 0 18px 40px var(--color-shadow);
+}
+
+.navbar-shortcuts-branding {
+  max-width: 360px;
+  color: var(--color-text);
+}
+
+.navbar-shortcuts-eyebrow {
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  color: var(--color-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.navbar-shortcuts-branding p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.navbar-shortcuts-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.85rem;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.78rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--theme-toggle-gradient);
+  color: var(--color-text);
+  box-shadow: 0 12px 24px var(--color-glow);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--color-border-strong);
+  box-shadow: 0 16px 28px var(--color-glow);
+}
+
+.theme-toggle-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 999px;
+  background: var(--color-surface-strong);
+}
+
+.desktop-dropdown-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.dropdown-group {
+  position: relative;
+}
+
+.dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.dropdown-trigger:hover,
+.dropdown-group.is-open .dropdown-trigger {
+  background: var(--color-surface-strong);
+  border-color: var(--color-border-strong);
+  transform: translateY(-1px);
+}
+
+.dropdown-trigger-icon {
+  font-size: 0.78rem;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-group.is-open .dropdown-trigger-icon {
+  transform: rotate(180deg);
+}
+
+.dropdown-panel {
+  position: absolute;
+  top: calc(100% + 0.9rem);
+  right: 0;
+  width: min(760px, 84vw);
+  padding: 1rem;
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-bg-elevated) 96%, var(--color-bg) 4%);
+  box-shadow: 0 24px 60px color-mix(in srgb, var(--color-shadow) 150%, transparent);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+}
+
+.dropdown-group.is-open .dropdown-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.dropdown-panel-header {
+  margin-bottom: 1rem;
+}
+
+.dropdown-panel-header strong {
+  display: block;
+  color: var(--color-text);
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.dropdown-panel-header p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.dropdown-links-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.dropdown-link-card,
+.menu-button {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  text-decoration: none;
+  color: var(--color-text);
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  background: var(--card-gradient);
+  box-shadow: 0 10px 24px var(--color-glow);
+  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.dropdown-link-card {
+  padding: 0.95rem;
+}
+
+.dropdown-link-card:hover,
+.menu-button:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-border-strong);
+  background: var(--card-gradient-hover);
+}
+
+.dropdown-link-icon,
+.menu-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--color-surface-strong);
+  font-size: 1rem;
+}
+
+.dropdown-link-copy,
+.menu-button-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.dropdown-link-copy strong,
+.menu-button-copy strong {
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+.dropdown-link-copy small,
+.menu-button-copy small {
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.mobile-menu-toggle {
+  display: none;
+}
+
+.menu-toggle-btn {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: 0.8rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.menu-bar {
+  display: none;
+}
+
+.menu-group-card {
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 1rem;
+  background: var(--color-bg-elevated);
+  box-shadow: 0 16px 30px var(--color-shadow);
+}
+
+.menu-group-heading h3 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+.menu-group-heading p {
+  margin: 0.35rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.menu-group-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.menu-button {
+  padding: 0.9rem;
 }
 
 /* === Sidebar === */
 .sidebar {
-  width: 700px; /* o más si lo necesitas */
+  width: 700px;
   background-color: var(--color-bg-soft);
   box-shadow: 2px 0 10px var(--color-shadow);
   position: fixed;
-  top: 60px; /* o lo que mida tu navbar superior */
+  top: 60px;
   right: 0;
   bottom: 0;
   color: var(--color-text);
@@ -141,10 +444,17 @@
   transform: translateX(0);
 }
 
+.sidebar-columns {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+}
+
 .sidebar-col {
   flex: 1;
-  min-width: 300px; /* fuerza un mínimo visual */
-  padding-right: 12px;
+  min-width: 300px;
+  list-style: none;
+  padding: 0 12px 0 0;
 }
 
 .sidebar ul {
@@ -180,12 +490,11 @@
 
 .sidebar ul li a:hover,
 .sidebar ul li button:hover {
-    color: var(--color-text);
+  color: var(--color-text);
   background-color: var(--color-surface);
   border-radius: 6px;
 }
 
-/* Botón cerrar sidebar */
 .sidebar-close-btn {
   position: absolute;
   bottom: 50px;
@@ -206,7 +515,6 @@
   color: var(--color-accent-contrast);
 }
 
-/* Capa overlay para cerrar sidebar al hacer clic fuera */
 .sidebar-overlay {
   position: fixed;
   top: 0;
@@ -218,7 +526,6 @@
   display: block;
 }
 
-/* Botones personalizados dentro de sidebar */
 .admin-link-button {
   background: none;
   border: none;
@@ -234,7 +541,6 @@
   background-color: var(--color-surface);
 }
 
-/* === Botón hamburguesa (responsive) === */
 .hamburger-btn {
   display: none;
   background: none;
@@ -243,7 +549,6 @@
   color: var(--color-text);
   cursor: pointer;
 }
-
 
 .hamburger-btn:focus-visible,
 .navbar a:focus-visible,
@@ -254,37 +559,36 @@
   outline-offset: 3px;
 }
 
+@media screen and (max-width: 1200px) {
+  .navbar-shortcuts-inner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 
-.navbar-links a.admin-btn,
-.navbar-links button.admin-btn {
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-}
-.token-balance {
-  margin-left: 10px;
-  background-color: var(--color-heading);
-  color: var(--color-accent-contrast);
-  padding: 4px 10px;
-  border-radius: 16px;
-  font-weight: 600;
-  font-size: 14px;
-}
+  .navbar-shortcuts-branding {
+    max-width: none;
+  }
 
-.sidebar-columns {
-  display: flex;
-  flex-direction: row;
-  gap: 40px; /* más separación */
+  .navbar-shortcuts-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .desktop-dropdown-nav {
+    width: 100%;
+    justify-content: flex-start;
+  }
 }
 
-.sidebar-col {
-  flex: 1;
-  list-style: none;
-  padding: 0;
-}
-
-/* === Media Queries === */
 @media screen and (max-width: 768px) {
+  .navbar {
+    padding: 1rem 0.75rem;
+  }
+
+  .navbar-top-row {
+    padding: 0;
+  }
+
   .navbar-links,
   .navbar-user {
     display: none;
@@ -315,19 +619,81 @@
     text-decoration: none;
   }
 
+  .mobile-menu .navbar-user {
+    display: block;
+  }
+
   .mobile-menu a:hover,
   .mobile-menu button:hover {
     background-color: var(--color-heading);
     color: var(--color-accent-contrast);
   }
 
-  @media screen and (max-width: 768px) {
-  .navbar-user {
+  .navbar-shortcuts-inner {
+    padding: 0.9rem;
+  }
+
+  .desktop-dropdown-nav {
     display: none;
   }
 
-  .mobile-menu .navbar-user {
+  .navbar-shortcuts-actions {
+    width: 100%;
+  }
+
+  .mobile-menu-toggle {
     display: block;
+    width: 100%;
+  }
+
+  .theme-toggle-btn,
+  .menu-toggle-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .menu-bar {
+    margin-top: 0.85rem;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .menu-bar.show {
+    display: grid;
+  }
+
+  .menu-bar.hide {
+    display: none;
+  }
+
+  .menu-group-links {
+    grid-template-columns: 1fr;
   }
 }
+
+@media screen and (max-width: 480px) {
+  .dropdown-links-grid,
+  .menu-group-links {
+    grid-template-columns: 1fr;
+  }
+
+  .navbar-shortcuts-branding p,
+  .menu-group-heading p,
+  .menu-button-copy small {
+    font-size: 0.8rem;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+
+  .sidebar-columns {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .sidebar-col {
+    min-width: 0;
+    padding-right: 0;
+  }
 }

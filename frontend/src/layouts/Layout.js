@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   FaBook,
   FaBoxes,
-  FaChevronDown,
   FaCompass,
   FaCut,
   FaDownload,
@@ -12,12 +11,10 @@ import {
   FaGraduationCap,
   FaImage,
   FaMagic,
-  FaMoon,
   FaRobot,
   FaRocket,
   FaShieldVirus,
   FaSmileBeam,
-  FaSun,
   FaTicketAlt,
   FaTv,
   FaYoutube,
@@ -47,8 +44,6 @@ function Layout() {
     sessionStorage.setItem('scrollToPromptSection', 'true');
     navigate('/keikoprompts');
   };
-
-  const themeLabel = theme === 'dark' ? 'Activar modo claro' : 'Activar modo oscuro';
 
   const menuGroups = useMemo(() => {
     const groups = [
@@ -296,117 +291,19 @@ function Layout() {
     <div className="layout-container">
       <AffiliatePopup currentPath={location.pathname} />
 
-      <Navbar />
-
-      <div className="header-shortcuts" ref={dropdownRef}>
-        <div className="header-shortcuts-inner">
-          <div className="header-shortcuts-branding">
-            <span className="header-shortcuts-eyebrow">Accesos directos</span>
-            <p>Todo lo importante de la home, ahora agrupado en un menú más claro y profesional.</p>
-          </div>
-
-          <div className="header-shortcuts-actions">
-            <div className="desktop-dropdown-nav" aria-label="Menú principal de accesos directos">
-              {menuGroups.map((group) => {
-                const isOpen = activeDropdown === group.id;
-                return (
-                  <div
-                    key={group.id}
-                    className={`dropdown-group ${isOpen ? 'is-open' : ''}`}
-                    onMouseEnter={() => openDropdown(group.id)}
-                    onMouseLeave={() => scheduleDropdownClose(group.id)}
-                    onFocus={() => openDropdown(group.id)}
-                    onBlur={(event) => handleDropdownBlur(event, group.id)}
-                  >
-                    <button
-                      type="button"
-                      className="dropdown-trigger"
-                      aria-expanded={isOpen}
-                      onClick={() => toggleDropdown(group.id)}
-                    >
-                      <span>{group.label}</span>
-                      <FaChevronDown className="dropdown-trigger-icon" />
-                    </button>
-
-                    <div className="dropdown-panel">
-                      <div className="dropdown-panel-header">
-                        <strong>{group.label}</strong>
-                        <p>{group.description}</p>
-                      </div>
-                      <div className="dropdown-links-grid">
-                        {group.items.map((item) => (
-                          <Link
-                            key={item.path}
-                            to={item.path}
-                            className="dropdown-link-card"
-                            title={item.description}
-                          >
-                            <span className="dropdown-link-icon">{item.icon}</span>
-                            <span className="dropdown-link-copy">
-                              <strong>{item.title}</strong>
-                              <small>{item.description}</small>
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <button
-              type="button"
-              className="theme-toggle-btn"
-              onClick={toggleTheme}
-              aria-label={themeLabel}
-              title={themeLabel}
-            >
-              <span className="theme-toggle-btn-icon">{theme === 'dark' ? <FaSun /> : <FaMoon />}</span>
-              <span>{theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</span>
-            </button>
-          </div>
-
-          <div className="mobile-only mobile-menu-toggle">
-            <button
-              onClick={() => setMenuOpen((current) => !current)}
-              className="menu-toggle-btn"
-              type="button"
-              aria-expanded={menuOpen}
-            >
-              {menuOpen ? '▲ Ocultar accesos' : '▼ Ver accesos'}
-            </button>
-          </div>
-        </div>
-
-        <div className={`menu-bar ${menuOpen ? 'show' : 'hide'}`}>
-          {menuGroups.map((group) => (
-            <section key={group.id} className="menu-group-card" aria-label={group.label}>
-              <div className="menu-group-heading">
-                <h3>{group.label}</h3>
-                <p>{group.description}</p>
-              </div>
-
-              <div className="menu-group-links">
-                {group.items.map((item) => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className="menu-button"
-                    title={item.description}
-                  >
-                    <span className="menu-icon">{item.icon}</span>
-                    <span className="menu-button-copy">
-                      <strong>{item.title}</strong>
-                      <small>{item.description}</small>
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
-      </div>
+      <Navbar
+        menuGroups={menuGroups}
+        activeDropdown={activeDropdown}
+        openDropdown={openDropdown}
+        scheduleDropdownClose={scheduleDropdownClose}
+        handleDropdownBlur={handleDropdownBlur}
+        toggleDropdown={toggleDropdown}
+        dropdownRef={dropdownRef}
+        theme={theme}
+        toggleTheme={toggleTheme}
+        menuOpen={menuOpen}
+        setMenuOpen={setMenuOpen}
+      />
 
       <div className="home-intro">
         <h2>🎨 Crea imágenes increíbles con IA</h2>
