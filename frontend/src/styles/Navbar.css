@@ -1,7 +1,8 @@
 /* === Estilos generales para la barra de navegación === */
 .navbar {
   position: relative;
-  z-index: 10;
+  z-index: 1200;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   background-color: var(--color-bg-soft);
@@ -22,6 +23,7 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0 1rem;
+  flex-wrap: nowrap;
 }
 
 .navbar-logo a,
@@ -44,10 +46,13 @@
 .navbar-links {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.85rem;
   flex: 1;
   min-width: 0;
+  flex-wrap: nowrap;
   overflow-x: auto;
+  overflow-y: visible;
   padding-bottom: 0.25rem;
 }
 
@@ -72,10 +77,12 @@
   display: flex;
   align-items: center;
   gap: 0.85rem;
+  flex-shrink: 0;
 }
 
 .nav-pill {
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .navbar-links a:hover,
@@ -126,7 +133,7 @@
   font-size: 1rem;
   font-weight: bold;
   padding: 0 15px;
-  word-break: break-word;
+  white-space: nowrap;
 }
 
 .navbar-links a.admin-btn,
@@ -193,6 +200,7 @@
 
 .dropdown-group {
   position: relative;
+  flex-shrink: 0;
 }
 
 .dropdown-trigger {
@@ -228,6 +236,7 @@
 
 .dropdown-panel {
   position: absolute;
+  z-index: 1300;
   top: calc(100% + 0.9rem);
   right: 0;
   width: min(760px, 84vw);
@@ -518,11 +527,6 @@
   outline-offset: 3px;
 }
 
-@media screen and (max-width: 1200px) {
-  .navbar-top-row {
-    align-items: flex-start;
-  }
-}
 
 @media screen and (max-width: 768px) {
   .navbar {
