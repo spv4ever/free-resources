@@ -1,155 +1,349 @@
-  import React from 'react';
-  import { useState } from 'react';
-  import { Link, Outlet, useNavigate } from 'react-router-dom';
-  import Navbar from '../components/Navbar';
-  import Footer from '../components/Footer';
-  import { FaBook, FaRobot, FaYoutube, FaFileAlt, FaImage, FaGraduationCap, FaRocket, FaShieldVirus, FaMagic, FaGift, FaTicketAlt, FaTv, FaBoxes, FaCut  } from 'react-icons/fa';
-  import '../styles/HomePage.css';
-  import CookieConsentBanner from '../components/CookieConsentBanner';
-  import AnalyticsLoader from '../components/AnalyticsLoader';
-  import { useLocation } from 'react-router-dom';
-  import AffiliatePopup from '../components/AffiliatePopup';
-  import AffiliateBannerAndSidebar from '../components/AffiliateBannerAndSidebar';
-  import { FaDownload, FaSmileBeam } from 'react-icons/fa';
-  import { useUser } from '../context/UserContext';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import {
+  FaBook,
+  FaBoxes,
+  FaChevronDown,
+  FaCompass,
+  FaCut,
+  FaDownload,
+  FaFileAlt,
+  FaGift,
+  FaGraduationCap,
+  FaImage,
+  FaMagic,
+  FaRobot,
+  FaRocket,
+  FaShieldVirus,
+  FaSmileBeam,
+  FaTicketAlt,
+  FaTv,
+  FaYoutube,
+} from 'react-icons/fa';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import CookieConsentBanner from '../components/CookieConsentBanner';
+import AnalyticsLoader from '../components/AnalyticsLoader';
+import AffiliatePopup from '../components/AffiliatePopup';
+import AffiliateBannerAndSidebar from '../components/AffiliateBannerAndSidebar';
+import { useUser } from '../context/UserContext';
+import '../styles/HomePage.css';
 
-  function Layout() {
-    const { user } = useUser();
-    const location = useLocation();
-    const navigate = useNavigate();
-    const [menuOpen, setMenuOpen] = useState(false);
-    const handleStart = () => {
-      sessionStorage.setItem('scrollToPromptSection', 'true');
-      navigate('/keikoprompts');
-    };
-    const sections = [
-    // 🔥 Inicio atractivo (alto interés / engagement)
-    {
-      title: 'Edición de Imágenes',
-      description: 'Herramientas para editar y mejorar tus imágenes con IA',
-      path: '/edicion-imagenes',
-      icon: <FaCut />,
-    },
-    { title: 'MultiMedia', description: 'Imágenes del universo, los mejores vídeos, todo Multimedia', path: '/media', icon: <FaImage /> },
-    { title: 'Videos Virales', description: 'Los mejores Shorts organizados por categoría', path: '/viral-shorts', icon: <FaFileAlt /> },
-    { title: 'YouTube Uploader', description: 'Sube y programa tus creaciones! Verán la luz cuando tu decidas', path: '/youtube-uploader', icon: <FaYoutube /> },
-    // { title: 'Anime Prompts', description: 'Generador de prompts IA con personajes anime', path: '/generador-anime-prompts', icon: <FaMagic /> },
-    { title: 'KeikoPrompts', description: 'Explora nuestros packs de prompts para IA, listos para usar.', path: '/keikoprompts', icon: <FaBoxes /> },
-    { title: 'Texto a Imagen', description: 'Genera imágenes desde prompt con diferentes LORAs', path: '/texto-a-imagen', icon: <FaBoxes /> },
-    { title: 'AI Links', description: 'Lista de herramientas de inteligencia artificial.', path: '/ai-links', icon: <FaRobot /> },
+function Layout() {
+  const { user } = useUser();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const dropdownRef = useRef(null);
 
-    // 🎓 Valor educativo / útil
-    { title: 'Recursos', description: 'Accede a nuestra biblioteca de imágenes y recursos.', path: '/resources', icon: <FaBook /> },
-    { title: 'Formación', description: 'Recursos gratuitos para aprender.', path: '/training', icon: <FaGraduationCap /> },
-    { title: 'Series', description: 'Explora el catálogo de series por categorías', path: '/series', icon: <FaTv /> },
+  const handleStart = () => {
+    sessionStorage.setItem('scrollToPromptSection', 'true');
+    navigate('/keikoprompts');
+  };
 
-    // 🚀 Temáticas especializadas
-    { title: 'SpaceX', description: 'Todo lo relacionado con los lanzamientos de SpaceX. Rumbo a Marte', path: '/spacex', icon: <FaRocket /> },
-    { title: 'CiberEstafas', description: 'Todo lo relacionado Noticias sobre ciberestafas.', path: '/scam-posts', icon: <FaShieldVirus /> },
-
-    // 💰 Ofertas y monetización
-    { title: 'Cupones iGraal', description: 'Códigos descuento + cashback real', path: '/cupones', icon: <FaTicketAlt /> },
-    { title: 'Chollos iGraal', description: 'Ofertas con cashback actualizadas a diario', path: '/chollos', icon: <FaGift /> },
-
-    { title: 'Blog Keiko', description: 'Entradas destacadas y novedades IA', path: '/blog', icon: <FaBook /> },
-    { title: 'Keiko Gifs', description: 'Los mejores Gifs por gentileza de Tenor', path: '/gifs', icon: <FaSmileBeam /> },
-    {
-      title: 'Apoya el Proyecto',
-      description: 'Completa encuestas para ayudarnos y gana créditos',
-      path: '/apoyar',
-      icon: <FaGift />
-    },
-
-    {
-      title: 'Fútbol',
-      description: 'Partidos, goleadores y estadísticas actualizadas',
-      path: '/futbol',
-      icon: <FaRocket /> // Puedes cambiarlo por otro como FaFutbol si lo tienes
-    },
-    
-    
-
-  ];
-  if (user?.role === 'admin') {
-    sections.push(
+  const menuGroups = useMemo(() => {
+    const groups = [
       {
-        title: 'Descargador de Videos',
-        description: 'Extrae videos y audios desde YouTube, Instagram, TikTok y más',
-        path: '/herramientas/descargas',
-        icon: <FaDownload />
+        id: 'crear',
+        label: 'Crear',
+        description: 'Herramientas principales para crear, editar y publicar contenido.',
+        items: [
+          {
+            title: 'Edición de Imágenes',
+            description: 'Herramientas para editar y mejorar tus imágenes con IA.',
+            path: '/edicion-imagenes',
+            icon: <FaCut />,
+          },
+          {
+            title: 'KeikoPrompts',
+            description: 'Explora packs de prompts para IA listos para usar.',
+            path: '/keikoprompts',
+            icon: <FaBoxes />,
+          },
+          {
+            title: 'Texto a Imagen',
+            description: 'Genera imágenes desde prompt con diferentes LORAs.',
+            path: '/texto-a-imagen',
+            icon: <FaBoxes />,
+          },
+          {
+            title: 'YouTube Uploader',
+            description: 'Sube y programa tus creaciones cuando tú decidas.',
+            path: '/youtube-uploader',
+            icon: <FaYoutube />,
+          },
+        ],
       },
       {
-      title: 'Anime Prompts',
-      description: 'Generador de prompts IA con personajes anime',
-      path: '/generador-anime-prompts',
-      icon: <FaMagic />
-    });
-  }
+        id: 'explorar',
+        label: 'Explorar',
+        description: 'Accesos rápidos a colecciones, medios y contenidos destacados.',
+        items: [
+          {
+            title: 'MultiMedia',
+            description: 'Imágenes del universo, vídeos y contenido multimedia.',
+            path: '/media',
+            icon: <FaImage />,
+          },
+          {
+            title: 'Videos Virales',
+            description: 'Los mejores shorts organizados por categoría.',
+            path: '/viral-shorts',
+            icon: <FaFileAlt />,
+          },
+          {
+            title: 'Recursos',
+            description: 'Accede a la biblioteca de imágenes y recursos.',
+            path: '/resources',
+            icon: <FaBook />,
+          },
+          {
+            title: 'Formación',
+            description: 'Recursos gratuitos para aprender y mejorar habilidades.',
+            path: '/training',
+            icon: <FaGraduationCap />,
+          },
+          {
+            title: 'AI Links',
+            description: 'Herramientas y enlaces útiles de inteligencia artificial.',
+            path: '/ai-links',
+            icon: <FaRobot />,
+          },
+          {
+            title: 'Blog Keiko',
+            description: 'Entradas destacadas, novedades y contenidos del proyecto.',
+            path: '/blog',
+            icon: <FaBook />,
+          },
+          {
+            title: 'Keiko Gifs',
+            description: 'Galería de GIFs seleccionados con Tenor.',
+            path: '/gifs',
+            icon: <FaSmileBeam />,
+          },
+        ],
+      },
+      {
+        id: 'temas',
+        label: 'Temas',
+        description: 'Secciones temáticas con seguimiento y contenido especializado.',
+        items: [
+          {
+            title: 'Series',
+            description: 'Explora el catálogo de series por categorías.',
+            path: '/series',
+            icon: <FaTv />,
+          },
+          {
+            title: 'Fútbol',
+            description: 'Partidos, goleadores y estadísticas actualizadas.',
+            path: '/futbol',
+            icon: <FaCompass />,
+          },
+          {
+            title: 'SpaceX',
+            description: 'Lanzamientos, historia y actualidad espacial.',
+            path: '/spacex',
+            icon: <FaRocket />,
+          },
+          {
+            title: 'CiberEstafas',
+            description: 'Noticias y avisos relacionados con ciberestafas.',
+            path: '/scam-posts',
+            icon: <FaShieldVirus />,
+          },
+        ],
+      },
+      {
+        id: 'comunidad',
+        label: 'Comunidad',
+        description: 'Ventajas, descuentos y formas de apoyar el proyecto.',
+        items: [
+          {
+            title: 'Cupones iGraal',
+            description: 'Códigos descuento y cashback real.',
+            path: '/cupones',
+            icon: <FaTicketAlt />,
+          },
+          {
+            title: 'Chollos iGraal',
+            description: 'Ofertas con cashback actualizadas a diario.',
+            path: '/chollos',
+            icon: <FaGift />,
+          },
+          {
+            title: 'Apoya el Proyecto',
+            description: 'Completa encuestas para ayudarnos y ganar créditos.',
+            path: '/apoyar',
+            icon: <FaGift />,
+          },
+        ],
+      },
+    ];
 
-    // // 🔐 Añadir solo si es usuario PRO
-    
-    //   sections.push({
-    //     title: 'Anime Prompts',
-    //     description: 'Generador de prompts IA con personajes anime',
-    //     path: '/generador-anime-prompts',
-    //     icon: <FaMagic />
-    //   });
-    
+    if (user?.role === 'admin') {
+      groups[0].items.push({
+        title: 'Descargador de Videos',
+        description: 'Extrae videos y audios desde YouTube, Instagram, TikTok y más.',
+        path: '/herramientas/descargas',
+        icon: <FaDownload />,
+      });
+      groups[0].items.push({
+        title: 'Anime Prompts',
+        description: 'Generador de prompts IA con personajes anime.',
+        path: '/generador-anime-prompts',
+        icon: <FaMagic />,
+      });
+    }
 
-    return (
-      <div className="layout-container">
-        <AffiliatePopup currentPath={location.pathname} />
-        
-        <Navbar />
-        
-        
-        {/* SOLO visible en móvil */}
-        <div className="mobile-only mobile-menu-toggle">
-          <button onClick={() => setMenuOpen(!menuOpen)} className="menu-toggle-btn">
-            {menuOpen ? '▲ Ocultar Menú' : '▼ Mostrar Menú'}
-          </button>
+    return groups;
+  }, [user]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+    setActiveDropdown(null);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handlePointerDown = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setActiveDropdown(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    return () => document.removeEventListener('mousedown', handlePointerDown);
+  }, []);
+
+  const toggleDropdown = (groupId) => {
+    setActiveDropdown((current) => (current === groupId ? null : groupId));
+  };
+
+  return (
+    <div className="layout-container">
+      <AffiliatePopup currentPath={location.pathname} />
+
+      <Navbar />
+
+      <div className="header-shortcuts" ref={dropdownRef}>
+        <div className="header-shortcuts-inner">
+          <div className="header-shortcuts-branding">
+            <span className="header-shortcuts-eyebrow">Accesos directos</span>
+            <p>Todo lo importante de la home, ahora agrupado en un menú más claro y profesional.</p>
+          </div>
+
+          <div className="desktop-dropdown-nav" aria-label="Menú principal de accesos directos">
+            {menuGroups.map((group) => {
+              const isOpen = activeDropdown === group.id;
+              return (
+                <div
+                  key={group.id}
+                  className={`dropdown-group ${isOpen ? 'is-open' : ''}`}
+                  onMouseEnter={() => setActiveDropdown(group.id)}
+                  onMouseLeave={() => setActiveDropdown((current) => (current === group.id ? null : current))}
+                >
+                  <button
+                    type="button"
+                    className="dropdown-trigger"
+                    aria-expanded={isOpen}
+                    onClick={() => toggleDropdown(group.id)}
+                  >
+                    <span>{group.label}</span>
+                    <FaChevronDown className="dropdown-trigger-icon" />
+                  </button>
+
+                  <div className="dropdown-panel">
+                    <div className="dropdown-panel-header">
+                      <strong>{group.label}</strong>
+                      <p>{group.description}</p>
+                    </div>
+                    <div className="dropdown-links-grid">
+                      {group.items.map((item) => (
+                        <Link
+                          key={item.path}
+                          to={item.path}
+                          className="dropdown-link-card"
+                          title={item.description}
+                        >
+                          <span className="dropdown-link-icon">{item.icon}</span>
+                          <span className="dropdown-link-copy">
+                            <strong>{item.title}</strong>
+                            <small>{item.description}</small>
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mobile-only mobile-menu-toggle">
+            <button
+              onClick={() => setMenuOpen((current) => !current)}
+              className="menu-toggle-btn"
+              type="button"
+              aria-expanded={menuOpen}
+            >
+              {menuOpen ? '▲ Ocultar accesos' : '▼ Ver accesos'}
+            </button>
+          </div>
         </div>
 
-        {/* El menú: ocultar/mostrar solo en móvil */}
         <div className={`menu-bar ${menuOpen ? 'show' : 'hide'}`}>
-          {sections.map((section, index) => (
-            <Link
-              key={index}
-              to={section.path}
-              className="menu-button"
-              title={section.description}
-            >
-              <span className="menu-icon">{section.icon}</span>
-              <span>{section.title}</span>
-            </Link>
+          {menuGroups.map((group) => (
+            <section key={group.id} className="menu-group-card" aria-label={group.label}>
+              <div className="menu-group-heading">
+                <h3>{group.label}</h3>
+                <p>{group.description}</p>
+              </div>
+
+              <div className="menu-group-links">
+                {group.items.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className="menu-button"
+                    title={item.description}
+                  >
+                    <span className="menu-icon">{item.icon}</span>
+                    <span className="menu-button-copy">
+                      <strong>{item.title}</strong>
+                      <small>{item.description}</small>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </section>
           ))}
         </div>
-            
-        <div className="home-intro">
-          <h2>🎨 Crea imágenes increíbles con IA</h2>
-          <img
-            src="https://res.cloudinary.com/dhoaeyjpt/image/upload/v1751195850/keikoprompts/KeikoLover/2025-06-29/KeikoLover_00515_.png"
-            alt="Ejemplo de imagen IA"
-            className="intro-image"
-          />
-          <p>Prueba KeikoPrompts y genera tu primera imagen en segundos. ¡Gratis!</p>
-          <button className="cta-button" onClick={handleStart}>
-            Empezar ahora
-          </button>
-        </div>
-
-        <main className="layout-content">
-          <AffiliateBannerAndSidebar />
-          <Outlet />
-          
-          
-        </main>
-
-        <Footer />
-        <CookieConsentBanner />
-        <AnalyticsLoader />
       </div>
-    );
-  }
 
-  export default Layout;
+      <div className="home-intro">
+        <h2>🎨 Crea imágenes increíbles con IA</h2>
+        <img
+          src="https://res.cloudinary.com/dhoaeyjpt/image/upload/v1751195850/keikoprompts/KeikoLover/2025-06-29/KeikoLover_00515_.png"
+          alt="Ejemplo de imagen IA"
+          className="intro-image"
+        />
+        <p>Prueba KeikoPrompts y genera tu primera imagen en segundos. ¡Gratis!</p>
+        <button className="cta-button" onClick={handleStart}>
+          Empezar ahora
+        </button>
+      </div>
+
+      <main className="layout-content">
+        <AffiliateBannerAndSidebar />
+        <Outlet />
+      </main>
+
+      <Footer />
+      <CookieConsentBanner />
+      <AnalyticsLoader />
+    </div>
+  );
+}
+
+export default Layout;
