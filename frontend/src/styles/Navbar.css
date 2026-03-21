@@ -19,7 +19,7 @@
 
 .navbar-top-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
   padding: 0 1rem;
@@ -517,6 +517,40 @@
   font-size: 1.8rem;
   color: var(--color-text);
   cursor: pointer;
+}
+
+
+@media screen and (min-width: 769px) {
+  .navbar {
+    padding-block: 0.55rem;
+  }
+
+  .navbar-top-row {
+    flex-wrap: nowrap;
+  }
+
+  .navbar-links {
+    flex: 1 1 auto;
+    width: auto;
+    flex-wrap: nowrap;
+    padding-top: 0;
+  }
+
+  .navbar-actions,
+  .desktop-dropdown-nav {
+    flex-wrap: nowrap;
+  }
+
+  .navbar-links a,
+  .navbar-links button,
+  .navbar-links .admin-btn,
+  .dropdown-trigger,
+  .theme-toggle-btn,
+  .admin-btn {
+    min-height: 44px;
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+  }
 }
 
 .hamburger-btn:focus-visible,
