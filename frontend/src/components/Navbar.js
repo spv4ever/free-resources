@@ -258,7 +258,6 @@ function Navbar({
               </section>
             ))}
           </div>
-        </div>
 
         {mobileMenuOpen && (
           <div className="mobile-menu" id="mobile-navigation-menu">
