@@ -37,8 +37,6 @@ const SeriesCategoryList = lazy(() => import('./pages/SeriesCategoryList'));
 const CategorySeriesPage = lazy(() => import('./pages/CategorySeriesPage'));
 const YouTubeLandingPage = lazy(() => import('./pages/YouTubeLandingPage.jsx'));
 const UserProfile = lazy(() => import('./pages/UserProfile'));
-const MotoGPCalendarPage = lazy(() => import('./pages/MotoGPCalendar'));
-const MotoGPCircuitPage = lazy(() => import('./pages/MotoGPCircuitPage'));
 const UserImageGallery = lazy(() => import('./components/UserImageGallery'));
 const TokenInfoPage = lazy(() => import('./pages/TokenInfoPage'));
 const KeikoIAGallery = lazy(() => import('./pages/KeikoIAGallery'));
@@ -119,7 +117,6 @@ const KeikoPromptsList = lazy(() => import('./components/KeikoPromptsList'));
 const EntrenaGenerador = lazy(() => import('./pages/EntrenaGenerador.jsx'));
 const UserLinkDetail = lazy(() => import('./components/UserLinkDetail'));
 const UserLinkHistory = lazy(() => import('./components/UserLinkHistory'));
-const MotoGPCircuitMobileView = lazy(() => import('./components/MotoGPCircuitMobileView'));
 
 function App() {
   return (
@@ -211,8 +208,6 @@ function App() {
                 <Route path="/keikoprompts" element={<KeikoPromptPacks />} />
                 <Route path="/admin/imports" element={<AdminRoute><AdminImport /></AdminRoute>} />
                 <Route path="/admin/DuplicateCleanup" element={<AdminRoute><DuplicateCleanup /></AdminRoute>} />
-                <Route path="/motogp-calendar" element={<MotoGPCalendarPage />} />
-                <Route path="/motogp/:slug" element={<MotoGPCircuitPage />} />
                 <Route path="/mis-imagenes" element={<UserImageGallery />} />
                 <Route path="/admin/register-logs" element={<AdminRoute><RegisterLogsTable /></AdminRoute>} />
                 <Route path="/info/tokens" element={<TokenInfoPage />} />
@@ -231,7 +226,6 @@ function App() {
                 <Route path="/futbol/laliga" element={<LaLigaPage />} />
                 <Route path="/futbol/champions" element={<ChampionsPage />} />
               </Route>
-              <Route path="/motogp-live" element={<MotoGPCircuitMobileView />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
             </Routes>
