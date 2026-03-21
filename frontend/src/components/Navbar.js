@@ -144,35 +144,8 @@ function Navbar({
             ☰
           </button>
 
-          <div className="navbar-links">
-            <Link to="/">Home</Link>
-            {user ? (
-              <div className="navbar-actions">
-                <span className="navbar-user">
-                  Bienvenido, {user.nickname || user.email} ({user.role})
-                </span>
-                <span className="token-balance">💰 {balance} tokens</span>
-                {user.role === 'admin' && (
-                  <Link to="#" onClick={toggleSidebar} className="admin-btn">Admin</Link>
-                )}
-                <Link to="/perfil" className="admin-btn">Mi Perfil</Link>
-                <Link to="#" onClick={(e) => { e.preventDefault(); handleLogout(); }} className="logout-btn">Desconectar</Link>
-              </div>
-            ) : (
-              <Link to="/login">Iniciar sesión</Link>
-            )}
-          </div>
-        </div>
-
-        <div className="navbar-shortcuts" ref={dropdownRef}>
-          <div className="navbar-shortcuts-inner">
-            <div className="navbar-shortcuts-branding">
-              <span className="navbar-shortcuts-eyebrow">Accesos directos</span>
-              <p>Todo lo importante de la home, ahora agrupado en un menú más claro y profesional.</p>
-            </div>
-
-            <div className="navbar-shortcuts-actions">
-              <div className="desktop-dropdown-nav" aria-label="Menú principal de accesos directos">
+          <div className="navbar-links" ref={dropdownRef}>
+            <div className="desktop-dropdown-nav" aria-label="Menú principal de navegación">
                 {menuGroups.map((group) => {
                   const isOpen = activeDropdown === group.id;
                   return (
@@ -219,33 +192,46 @@ function Navbar({
                     </div>
                   );
                 })}
+            </div>
+
+            <Link to="/" className="nav-pill">Home</Link>
+            {user ? (
+              <div className="navbar-actions">
+                <span className="navbar-user">{user.nickname || user.email} ({user.role})</span>
+                <span className="token-balance">💰 {balance} tokens</span>
+                {user.role === 'admin' && (
+                  <Link to="#" onClick={(e) => { e.preventDefault(); toggleSidebar(); }} className="admin-btn">Admin</Link>
+                )}
+                <Link to="/perfil" className="admin-btn">Mi Perfil</Link>
               </div>
+            ) : (
+              <Link to="/login" className="nav-pill">Iniciar sesión</Link>
+            )}
 
-              <button
-                type="button"
-                className="theme-toggle-btn"
-                onClick={toggleTheme}
-                aria-label={themeLabel}
-                title={themeLabel}
-              >
-                <span className="theme-toggle-btn-icon">{theme === 'dark' ? <FaSun /> : <FaMoon />}</span>
-                <span>{theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</span>
-              </button>
-            </div>
-
-            <div className="mobile-only mobile-menu-toggle">
-              <button
-                onClick={() => setMenuOpen((current) => !current)}
-                className="menu-toggle-btn"
-                type="button"
-                aria-expanded={menuOpen}
-              >
-                {menuOpen ? '▲ Ocultar accesos' : '▼ Ver accesos'}
-              </button>
-            </div>
+            <button
+              type="button"
+              className="theme-toggle-btn theme-toggle-btn--icon"
+              onClick={toggleTheme}
+              aria-label={themeLabel}
+              title={themeLabel}
+            >
+              <span className="theme-toggle-btn-icon">{theme === 'dark' ? <FaSun /> : <FaMoon />}</span>
+            </button>
           </div>
+        </div>
 
-          <div className={`menu-bar ${menuOpen ? 'show' : 'hide'}`}>
+        <div className="mobile-only mobile-menu-toggle">
+          <button
+            onClick={() => setMenuOpen((current) => !current)}
+            className="menu-toggle-btn"
+            type="button"
+            aria-expanded={menuOpen}
+          >
+            {menuOpen ? '▲ Ocultar accesos' : '▼ Ver accesos'}
+          </button>
+        </div>
+
+        <div className={`menu-bar ${menuOpen ? 'show' : 'hide'}`}>
             {menuGroups.map((group) => (
               <section key={group.id} className="menu-group-card" aria-label={group.label}>
                 <div className="menu-group-heading">
@@ -439,7 +425,6 @@ function Navbar({
 </div>
 
       )}
-      <a href="https://www.buymeacoffee.com/keikodev"><img src="https://img.buymeacoffee.com/button-api/?text=Apoyar el proyecto&emoji=🔔&slug=keikodev&button_colour=FFDD00&font_colour=000000&font_family=Poppins&outline_colour=000000&coffee_colour=ffffff" alt="Apoya la web"/></a>
     </nav>
   );
 }

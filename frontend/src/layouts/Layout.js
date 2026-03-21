@@ -161,7 +161,7 @@ function Layout() {
       {
         id: 'comunidad',
         label: 'Comunidad',
-        description: 'Ventajas, descuentos y formas de apoyar el proyecto.',
+        description: 'Ventajas, descuentos y recursos para la comunidad.',
         items: [
           {
             title: 'Cupones iGraal',
@@ -173,12 +173,6 @@ function Layout() {
             title: 'Chollos iGraal',
             description: 'Ofertas con cashback actualizadas a diario.',
             path: '/chollos',
-            icon: <FaGift />,
-          },
-          {
-            title: 'Apoya el Proyecto',
-            description: 'Completa encuestas para ayudarnos y ganar créditos.',
-            path: '/apoyar',
             icon: <FaGift />,
           },
         ],

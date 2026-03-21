@@ -4,7 +4,6 @@
   z-index: 10;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   background-color: var(--color-bg-soft);
   padding: 1rem;
   color: var(--color-text);
@@ -15,14 +14,10 @@
 
 .navbar-shell {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 }
 
 .navbar-top-row {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -49,16 +44,17 @@
 .navbar-links {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
+  gap: 0.85rem;
+  flex: 1;
+  min-width: 0;
   overflow-x: auto;
-  gap: 1rem;
-  max-width: 100%;
+  padding-bottom: 0.25rem;
 }
 
 .navbar-links a,
 .navbar-links button,
 .navbar-links .admin-btn {
-  margin-left: 1rem;
+  margin-left: 0;
   font-weight: bold;
   text-decoration: none;
   background-color: var(--color-surface-strong);
@@ -75,7 +71,11 @@
 .navbar-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.85rem;
+}
+
+.nav-pill {
+  white-space: nowrap;
 }
 
 .navbar-links a:hover,
@@ -146,55 +146,10 @@
   font-size: 14px;
 }
 
-.navbar-shortcuts {
-  width: 100%;
-}
-
-.navbar-shortcuts-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 1.25rem;
-  border: 1px solid var(--color-border);
-  border-radius: 18px;
-  background: var(--panel-gradient);
-  box-shadow: 0 18px 40px var(--color-shadow);
-}
-
-.navbar-shortcuts-branding {
-  max-width: 360px;
-  color: var(--color-text);
-}
-
-.navbar-shortcuts-eyebrow {
-  display: inline-block;
-  margin-bottom: 0.35rem;
-  color: var(--color-heading);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.navbar-shortcuts-branding p {
-  margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: var(--color-text-muted);
-}
-
-.navbar-shortcuts-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.85rem;
-  flex: 1;
-  flex-wrap: wrap;
-}
 
 .theme-toggle-btn {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 0.65rem;
   padding: 0.78rem 1rem;
@@ -227,9 +182,13 @@
 .desktop-dropdown-nav {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: 0.75rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+.theme-toggle-btn--icon {
+  padding: 0.65rem;
 }
 
 .dropdown-group {
@@ -560,23 +519,8 @@
 }
 
 @media screen and (max-width: 1200px) {
-  .navbar-shortcuts-inner {
+  .navbar-top-row {
     align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .navbar-shortcuts-branding {
-    max-width: none;
-  }
-
-  .navbar-shortcuts-actions {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .desktop-dropdown-nav {
-    width: 100%;
-    justify-content: flex-start;
   }
 }
 
@@ -629,16 +573,10 @@
     color: var(--color-accent-contrast);
   }
 
-  .navbar-shortcuts-inner {
-    padding: 0.9rem;
-  }
-
-  .desktop-dropdown-nav {
+  .desktop-dropdown-nav,
+  .navbar-actions,
+  .theme-toggle-btn {
     display: none;
-  }
-
-  .navbar-shortcuts-actions {
-    width: 100%;
   }
 
   .mobile-menu-toggle {
@@ -646,7 +584,6 @@
     width: 100%;
   }
 
-  .theme-toggle-btn,
   .menu-toggle-btn {
     width: 100%;
     justify-content: center;
