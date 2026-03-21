@@ -3,6 +3,17 @@ import axios from 'axios';
 import '../styles//AffiliateBannerAndSidebar.css';
 import { useLocation } from 'react-router-dom';
 
+const isTelegramPromo = (link) => {
+  if (!link) return false;
+
+  const content = [link.title, link.cta, link.url]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+
+  return content.includes('telegram') || content.includes('t.me/');
+};
+
 function AffiliateBannerAndSidebar() {
   const location = useLocation();
   const [banner, setBanner] = useState(null);
@@ -29,7 +40,7 @@ useEffect(() => {
           params: { page: location.pathname }
         });
         const links = res.data;
-        setBanner(links.find(l => l.location === 'banner'));
+        setBanner(links.find(l => l.location === 'banner' && !isTelegramPromo(l)) || null);
         setSidebar(links.find(l => l.location === 'sidebar'));
       } catch (err) {
         console.error('Error al cargar enlaces de afiliado:', err);
