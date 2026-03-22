@@ -91,6 +91,7 @@ import f1Routes from './telegram-f1.js';
 import upscaler from './keikoUpscaleRoutes.js';
 import telegramRoutes from './telegram.routes.js';
 import weeklyRoutes from './weeklyRoutes.js';
+import filamentRoutes from './filamentRoutes.js';
 
 export const registerApiRoutes = ({ app, __dirname, rebuildWeeklyForAccount }) => {
   app.use('/api/instagram', instagramRoutes);
@@ -197,6 +198,7 @@ export const registerApiRoutes = ({ app, __dirname, rebuildWeeklyForAccount }) =
   app.use('/api/telegram-f1', f1Routes);
   app.use('/api/futbol', futbolRoutes);
   app.use('/api/weekly', weeklyRoutes);
+  app.use('/api/filaments', filamentRoutes);
 
   app.post('/api/weekly/rebuild/:accountId', async (req, res) => {
     try {

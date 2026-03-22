@@ -19,13 +19,14 @@ const PRINTS_SECTIONS = [
     id: 'filamentos',
     title: 'Filamentos / Colores',
     emoji: '🧵',
-    description: 'Área pensada para clasificar materiales por marca, color, acabado o configuración recomendada de impresión.',
+    description: 'Catálogo conectado a base de datos con tarjetas visuales, detalle ampliado, imagen de tarjeta de color y enlace de compra.',
     bullets: [
-      'Comparativas de colores, texturas y resultados reales.',
-      'Preparado para incorporar perfiles, temperaturas y notas de uso.',
-      'Escalable para catálogos amplios con filtros por fabricante o impresora.',
+      'Fichas públicas con marca, material, color y temperaturas recomendadas.',
+      'Página de detalle para mostrar especificaciones completas y notas de impresión.',
+      'Panel admin CRUD para alta, edición, borrado y carga de imagen de muestra.',
     ],
-    status: 'Sección preparada para catálogos dinámicos',
+    status: 'Catálogo dinámico disponible',
+    cta: { to: '/3dprints-keiko/filamentos', label: 'Ver catálogo de filamentos' },
   },
   {
     id: 'material',
@@ -48,13 +49,13 @@ function ThreeDPrintsPage() {
         <span className="three-d-hero__eyebrow">Nuevo espacio en construcción</span>
         <h1>🖨️ 3DPrints by Keiko</h1>
         <p>
-          Empezamos con un frontend sólido y escalable para que esta sección pueda crecer sin fricción.
-          Hoy nace con tres bloques principales, pero la estructura ya está preparada para alojar muchas más áreas.
+          Empezamos con una base sólida para seguir creciendo. La sección de filamentos ya está conectada a MongoDB Atlas
+          y preparada para mostrar catálogo, detalle y mantenimiento desde el panel de administración.
         </p>
 
         <div className="three-d-hero__actions">
           <a href="#three-d-sections" className="three-d-button three-d-button--primary">Ver secciones iniciales</a>
-          <Link to="/" className="three-d-button three-d-button--secondary">Volver al inicio</Link>
+          <Link to="/3dprints-keiko/filamentos" className="three-d-button three-d-button--secondary">Ir a filamentos</Link>
         </div>
       </section>
 
@@ -64,12 +65,12 @@ function ThreeDPrintsPage() {
           <p>Las tarjetas y la navegación de esta página se renderizan desde una estructura de datos, facilitando añadir nuevas secciones.</p>
         </article>
         <article className="three-d-overview__card">
-          <strong>Preparado para catálogo</strong>
-          <p>Más adelante se podrán conectar colecciones, fichas, filtros, imágenes, descargas y comparativas sin rehacer la base visual.</p>
+          <strong>Catálogo vivo</strong>
+          <p>Filamentos ya funciona como módulo dinámico con fichas, colores, acceso a compra y mantenimiento CRUD para administración.</p>
         </article>
         <article className="three-d-overview__card">
           <strong>Enfoque iterativo</strong>
-          <p>Primero consolidamos la experiencia visual y después podremos incorporar contenido real, backend o herramientas específicas.</p>
+          <p>La base visual sigue preparada para incorporar nuevas familias de contenido sin rehacer la experiencia.</p>
         </article>
       </section>
 
@@ -101,6 +102,7 @@ function ThreeDPrintsPage() {
 
               <div className="three-d-section-card__footer">
                 <span>{section.status}</span>
+                {section.cta && <Link to={section.cta.to}>{section.cta.label}</Link>}
               </div>
             </article>
           ))}
