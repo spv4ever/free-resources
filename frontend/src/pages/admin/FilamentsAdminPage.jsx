@@ -23,12 +23,18 @@ const EMPTY_FORM = {
   isActive: true,
 };
 
+const EMPTY_ROTATIONS = {
+  imageUrl: 0,
+  spoolImageUrl: 0,
+};
+
 function FilamentsAdminPage() {
   const [filaments, setFilaments] = useState([]);
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState(null);
   const [uploadingField, setUploadingField] = useState('');
   const [status, setStatus] = useState('');
+  const [previewRotations, setPreviewRotations] = useState(EMPTY_ROTATIONS);
 
   const token = useMemo(() => localStorage.getItem('token'), []);
 
@@ -60,6 +66,14 @@ function FilamentsAdminPage() {
     setFormData(EMPTY_FORM);
     setEditingId(null);
     setStatus('');
+    setPreviewRotations(EMPTY_ROTATIONS);
+  };
+
+  const rotatePreview = (fieldName, delta) => {
+    setPreviewRotations((current) => ({
+      ...current,
+      [fieldName]: (((current[fieldName] || 0) + delta) % 360 + 360) % 360,
+    }));
   };
 
   const handleUpload = (fieldName) => async (event) => {
@@ -75,6 +89,7 @@ function FilamentsAdminPage() {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setFormData((current) => ({ ...current, [fieldName]: response.data.url }));
+      setPreviewRotations((current) => ({ ...current, [fieldName]: 0 }));
       setStatus(
         fieldName === 'spoolImageUrl'
           ? '✅ Imagen de la bobina subida correctamente'
@@ -123,6 +138,7 @@ function FilamentsAdminPage() {
       bedTempMin: filament.bedTempMin ?? '',
       bedTempMax: filament.bedTempMax ?? '',
     });
+    setPreviewRotations(EMPTY_ROTATIONS);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -215,18 +231,38 @@ function FilamentsAdminPage() {
 
         {(formData.imageUrl || formData.spoolImageUrl) && (
           <div className="filaments-admin-form__preview-grid">
-            {formData.imageUrl && (
-              <div className="filaments-admin-form__preview">
-                <p>Imagen principal</p>
-                <img src={formData.imageUrl} alt="Tarjeta de color" />
-              </div>
-            )}
-            {formData.spoolImageUrl && (
-              <div className="filaments-admin-form__preview">
-                <p>Foto de la bobina</p>
-                <img src={formData.spoolImageUrl} alt="Bobina del filamento" />
-              </div>
-            )}
+            {[
+              ['imageUrl', 'Imagen principal', 'Tarjeta de color'],
+              ['spoolImageUrl', 'Foto de la bobina', 'Bobina del filamento'],
+            ].map(([fieldName, title, alt]) => {
+              if (!formData[fieldName]) return null;
+
+              const rotation = previewRotations[fieldName] || 0;
+              const isVertical = rotation === 90 || rotation === 270;
+
+              return (
+                <div key={fieldName} className="filaments-admin-form__preview">
+                  <div className="filaments-admin-form__preview-header">
+                    <p>{title}</p>
+                    <div className="filaments-admin-form__preview-actions">
+                      <button type="button" onClick={() => rotatePreview(fieldName, -90)}>
+                        ↺ Girar
+                      </button>
+                      <button type="button" onClick={() => rotatePreview(fieldName, 90)}>
+                        ↻ Girar
+                      </button>
+                    </div>
+                  </div>
+                  <div className={`filaments-admin-form__preview-frame${isVertical ? ' is-vertical' : ''}`}>
+                    <img
+                      src={formData[fieldName]}
+                      alt={alt}
+                      style={{ transform: `rotate(${rotation}deg)` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
 
