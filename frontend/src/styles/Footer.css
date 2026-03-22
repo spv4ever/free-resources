@@ -67,6 +67,27 @@
   flex-wrap: wrap;
 }
 
+
+.follow-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff4fd8, #7c5cff);
+  color: #fff !important;
+  font-weight: 700;
+  box-shadow: 0 10px 24px rgba(124, 92, 255, 0.28);
+}
+
+.follow-cta:hover {
+  color: #fff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(124, 92, 255, 0.36);
+}
+
 /* Links legales + botón de cookies */
 .footer-links-row {
   display: flex;
