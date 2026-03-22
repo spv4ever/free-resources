@@ -61,6 +61,7 @@ function ThreeDPrintsPage() {
   const [instagramMeta, setInstagramMeta] = useState(null);
   const [instagramLoading, setInstagramLoading] = useState(true);
   const [instagramError, setInstagramError] = useState('');
+  const [instagramWarning, setInstagramWarning] = useState('');
 
   useEffect(() => {
     const existingTikTokScript = document.querySelector('script[data-tiktok-embed="creator-profile"]');
@@ -87,6 +88,7 @@ function ThreeDPrintsPage() {
       try {
         setInstagramLoading(true);
         setInstagramError('');
+        setInstagramWarning('');
 
         const response = await fetch(`${API_BASE}/api/instagram/public-feed?username=${encodeURIComponent(INSTAGRAM_ACCOUNT.username)}&limit=6`);
         const text = await response.text();
@@ -99,6 +101,7 @@ function ThreeDPrintsPage() {
         if (!cancelled) {
           setInstagramMeta(payload);
           setInstagramFeed(Array.isArray(payload?.posts) ? payload.posts : []);
+          setInstagramWarning(payload?.warning || '');
         }
       } catch (error) {
         if (!cancelled) {
@@ -216,7 +219,15 @@ function ThreeDPrintsPage() {
                 </a>
               </div>
             ) : null}
-            {!instagramLoading && !instagramError ? (
+            {!instagramLoading && !instagramError && instagramWarning ? (
+              <div className="three-d-social-feed__status">
+                <p>{instagramWarning}</p>
+                <a href={INSTAGRAM_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
+                  Abrir perfil en Instagram
+                </a>
+              </div>
+            ) : null}
+            {!instagramLoading && !instagramError && instagramFeed.length > 0 ? (
               <div className="three-d-instagram-grid">
                 {instagramFeed.map((post) => (
                   <a
@@ -233,6 +244,14 @@ function ThreeDPrintsPage() {
                     </div>
                   </a>
                 ))}
+              </div>
+            ) : null}
+            {!instagramLoading && !instagramError && !instagramWarning && instagramFeed.length === 0 ? (
+              <div className="three-d-social-feed__status">
+                <p>No hay publicaciones disponibles ahora mismo.</p>
+                <a href={INSTAGRAM_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
+                  Abrir perfil en Instagram
+                </a>
               </div>
             ) : null}
           </div>
