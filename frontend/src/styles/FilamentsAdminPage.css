@@ -11,9 +11,16 @@
 .filaments-admin-form__actions { display:flex; gap:1rem; margin-top:1rem; }
 .filaments-admin-form__actions button, .filaments-admin-card__actions button { border:none; border-radius:999px; padding:.8rem 1.1rem; cursor:pointer; font-weight:700; }
 .filaments-admin-form__actions .secondary { background:#334155; color:#fff; }
-.filaments-admin-form__preview-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-top:1rem; }
-.filaments-admin-form__preview p { margin:.25rem 0 .5rem; font-size:.9rem; color:#93c5fd; }
-.filaments-admin-form__preview img, .filaments-admin-card__media img { width: 100%; border-radius: 14px; object-fit: cover; aspect-ratio: 1 / 1; }
+.filaments-admin-form__preview-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap:1rem; margin-top:1rem; }
+.filaments-admin-form__preview { display:flex; flex-direction:column; gap:.75rem; }
+.filaments-admin-form__preview-header { display:flex; align-items:center; justify-content:space-between; gap:.75rem; flex-wrap:wrap; }
+.filaments-admin-form__preview p { margin:0; font-size:.9rem; color:#93c5fd; }
+.filaments-admin-form__preview-actions { display:flex; gap:.5rem; flex-wrap:wrap; }
+.filaments-admin-form__preview-actions button { border:1px solid #334155; background:#020617; color:#fff; border-radius:999px; padding:.45rem .8rem; cursor:pointer; }
+.filaments-admin-form__preview-frame { display:grid; place-items:center; min-height:240px; max-height:360px; padding:1rem; border:1px solid #334155; border-radius:14px; background:#020617; overflow:hidden; }
+.filaments-admin-form__preview-frame.is-vertical { min-height:360px; }
+.filaments-admin-form__preview-frame img { width:auto; max-width:100%; max-height:320px; border-radius:14px; object-fit:contain; transform-origin:center center; transition:transform .2s ease; }
+.filaments-admin-card__media img { width: 100%; border-radius: 14px; object-fit: cover; aspect-ratio: 1 / 1; }
 .filaments-admin-list { display:grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap:1rem; margin-top:1.5rem; }
 .filaments-admin-card { display:flex; gap:1rem; align-items:flex-start; }
 .filaments-admin-card__media-group { display:grid; grid-template-columns: repeat(2, 120px); gap:.75rem; }
