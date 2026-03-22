@@ -5,6 +5,14 @@
 .models-admin-form__grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; }
 .models-admin-form label,.models-admin-form__secondary-row { display:flex; flex-direction:column; gap:.45rem; }
 .models-admin-form input,.models-admin-form select,.models-admin-form textarea,.models-admin-form__secondary-row input { background:#111827; color:#e5eefc; border:1px solid #334155; border-radius:14px; padding:.8rem .9rem; }
+.models-admin-form__image-field { align-self:start; }
+.models-admin-form__upload-button { display:inline-flex; width:fit-content; cursor:pointer; }
+.models-admin-form__upload-button input { display:none; }
+.models-admin-form__upload-button span { display:inline-flex; align-items:center; justify-content:center; padding:.75rem 1rem; border-radius:999px; background:#2563eb; color:#fff; font-weight:600; }
+.models-admin-form__upload-button.is-disabled { cursor:wait; }
+.models-admin-form__upload-button.is-disabled span { opacity:.7; }
+.models-admin-form__image-preview { width:100%; max-width:220px; overflow:hidden; border-radius:16px; border:1px solid #334155; background:#111827; }
+.models-admin-form__image-preview img { display:block; width:100%; height:auto; object-fit:cover; }
 .models-admin-form__full { margin-top:1rem; }
 .models-admin-form__secondary { margin-top:1rem; display:flex; flex-direction:column; gap:.75rem; }
 .models-admin-form__secondary-head,.models-admin-form__toggles,.models-admin-form__actions,.models-admin-card__actions,.models-admin-card__meta { display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; justify-content:space-between; }

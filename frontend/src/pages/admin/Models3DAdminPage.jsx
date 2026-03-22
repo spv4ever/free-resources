@@ -32,6 +32,7 @@ function Models3DAdminPage() {
   const [models, setModels] = useState([]);
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState(null);
+  const [uploadingMainImage, setUploadingMainImage] = useState(false);
   const [status, setStatus] = useState('');
   const token = useMemo(() => localStorage.getItem('token'), []);
 
@@ -85,12 +86,40 @@ function Models3DAdminPage() {
   const resetForm = () => {
     setFormData(EMPTY_FORM);
     setEditingId(null);
+    setUploadingMainImage(false);
   };
 
   const buildPayload = () => ({
     ...formData,
     secondaryImages: formData.secondaryImages.filter((image) => image.url.trim()),
   });
+
+  const handleMainImageUpload = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+
+    const payload = new FormData();
+    payload.append('image', file);
+
+    try {
+      setUploadingMainImage(true);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/upload/image`, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      setFormData((current) => ({
+        ...current,
+        mainImageUrl: response.data.url,
+      }));
+      setStatus('✅ Imagen principal subida correctamente');
+    } catch (error) {
+      console.error('Error al subir imagen principal:', error);
+      setStatus('❌ No se pudo subir la imagen principal');
+    } finally {
+      setUploadingMainImage(false);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -174,7 +203,19 @@ function Models3DAdminPage() {
             <span>Dificultad</span>
             <select name="difficulty" value={formData.difficulty} onChange={handleChange}>{DIFFICULTY_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}</select>
           </label>
-          <label><span>Imagen principal</span><input name="mainImageUrl" value={formData.mainImageUrl} onChange={handleChange} placeholder="https://..." /></label>
+          <div className="models-admin-form__image-field">
+            <span>Imagen principal</span>
+            <input name="mainImageUrl" value={formData.mainImageUrl} onChange={handleChange} placeholder="https://..." />
+            <label htmlFor="models-main-image-upload" className={`models-admin-form__upload-button${uploadingMainImage ? ' is-disabled' : ''}`}>
+              <input id="models-main-image-upload" type="file" accept="image/*" onChange={handleMainImageUpload} disabled={uploadingMainImage} />
+              <span>{uploadingMainImage ? 'Subiendo...' : 'Subir foto principal'}</span>
+            </label>
+            {formData.mainImageUrl && (
+              <div className="models-admin-form__image-preview">
+                <img src={formData.mainImageUrl} alt="Vista previa de la imagen principal" />
+              </div>
+            )}
+          </div>
           <label><span>Etiquetas</span><input name="tags" value={formData.tags} onChange={handleChange} placeholder="regalo, anime, escritorio" /></label>
         </div>
 
