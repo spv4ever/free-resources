@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaInstagram, FaTiktok } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import '../styles/ThreeDPrintsPage.css';
+
+const API_BASE = (process.env.REACT_APP_API_URL || '').replace(/\/+$/, '');
 
 const TIKTOK_ACCOUNT = {
   username: '3dprints_by_keikodev',
@@ -55,6 +57,11 @@ const PRINTS_SECTIONS = [
 ];
 
 function ThreeDPrintsPage() {
+  const [instagramFeed, setInstagramFeed] = useState([]);
+  const [instagramMeta, setInstagramMeta] = useState(null);
+  const [instagramLoading, setInstagramLoading] = useState(true);
+  const [instagramError, setInstagramError] = useState('');
+
   useEffect(() => {
     const existingTikTokScript = document.querySelector('script[data-tiktok-embed="creator-profile"]');
 
@@ -68,21 +75,46 @@ function ThreeDPrintsPage() {
     tikTokScript.setAttribute('data-tiktok-embed', 'creator-profile');
     document.body.appendChild(tikTokScript);
 
-    const existingInstagramScript = document.querySelector('script[data-instagram-embed="profile"]');
-
-    if (existingInstagramScript) {
-      existingInstagramScript.remove();
-    }
-
-    const instagramScript = document.createElement('script');
-    instagramScript.src = 'https://www.instagram.com/embed.js';
-    instagramScript.async = true;
-    instagramScript.setAttribute('data-instagram-embed', 'profile');
-    document.body.appendChild(instagramScript);
-
     return () => {
       tikTokScript.remove();
-      instagramScript.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadInstagramFeed() {
+      try {
+        setInstagramLoading(true);
+        setInstagramError('');
+
+        const response = await fetch(`${API_BASE}/api/instagram/public-feed?username=${encodeURIComponent(INSTAGRAM_ACCOUNT.username)}&limit=6`);
+        const text = await response.text();
+        const payload = text ? JSON.parse(text) : null;
+
+        if (!response.ok) {
+          throw new Error(payload?.error || 'No se pudo cargar el feed de Instagram');
+        }
+
+        if (!cancelled) {
+          setInstagramMeta(payload);
+          setInstagramFeed(Array.isArray(payload?.posts) ? payload.posts : []);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setInstagramError(error.message || 'No se pudo cargar el feed de Instagram');
+          setInstagramFeed([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setInstagramLoading(false);
+        }
+      }
+    }
+
+    loadInstagramFeed();
+    return () => {
+      cancelled = true;
     };
   }, []);
 
@@ -162,26 +194,47 @@ function ThreeDPrintsPage() {
             <span>Feed Instagram</span>
             <h2 id="three-d-instagram-feed-title">Últimas publicaciones del perfil de Instagram</h2>
             <p>
-              Justo debajo del feed de TikTok, añadimos también el perfil de Instagram de 3DPrints by Keiko para que se pueda explorar el contenido visual, novedades y piezas destacadas desde la propia página.
+              Ahora el bloque carga una galería real de publicaciones recientes del perfil de Instagram para que el feed sí se vea directamente en la página.
             </p>
             <a className="three-d-social-feed__button" href={INSTAGRAM_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
               <span>Ver en</span>
               <FaInstagram aria-hidden="true" />
               <span className="sr-only">Instagram</span>
             </a>
+            {instagramMeta?.followers ? (
+              <small className="three-d-social-feed__meta">{instagramMeta.followers.toLocaleString('es-ES')} seguidores</small>
+            ) : null}
           </div>
 
-          <div className="three-d-social-feed__embed three-d-social-feed__embed--instagram">
-            <blockquote
-              className="instagram-media"
-              data-instgrm-permalink={INSTAGRAM_ACCOUNT.url}
-              data-instgrm-version="14"
-              style={{ margin: 0, maxWidth: '540px', minWidth: '280px', width: '100%' }}
-            >
-              <a href={INSTAGRAM_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
-                @{INSTAGRAM_ACCOUNT.username}
-              </a>
-            </blockquote>
+          <div className="three-d-social-feed__embed three-d-social-feed__embed--instagram-grid">
+            {instagramLoading ? <p className="three-d-social-feed__status">Cargando feed de Instagram…</p> : null}
+            {!instagramLoading && instagramError ? (
+              <div className="three-d-social-feed__status three-d-social-feed__status--error">
+                <p>{instagramError}</p>
+                <a href={INSTAGRAM_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
+                  Abrir perfil en Instagram
+                </a>
+              </div>
+            ) : null}
+            {!instagramLoading && !instagramError ? (
+              <div className="three-d-instagram-grid">
+                {instagramFeed.map((post) => (
+                  <a
+                    key={post.id}
+                    className="three-d-instagram-card"
+                    href={post.permalink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img src={post.thumbnailUrl} alt={post.caption || `Publicación de Instagram de ${INSTAGRAM_ACCOUNT.username}`} loading="lazy" />
+                    <div className="three-d-instagram-card__overlay">
+                      <span>{post.isVideo ? '▶ Reel / vídeo' : '📷 Publicación'}</span>
+                      {post.caption ? <p>{post.caption}</p> : null}
+                    </div>
+                  </a>
+                ))}
+              </div>
+            ) : null}
           </div>
         </div>
       </section>
