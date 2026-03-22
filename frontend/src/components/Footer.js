@@ -36,6 +36,15 @@ function Footer() {
             <FontAwesomeIcon icon={faInstagram} /> Instagram
           </a>
         </div>
+        <a
+          className="follow-cta"
+          href="https://www.instagram.com/keikodevfree/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Abrir Instagram de KeikoDev para ganar follows"
+        >
+          🚀 Link para ganar follows
+        </a>
       </div>
 
       <div className="footer-center">
