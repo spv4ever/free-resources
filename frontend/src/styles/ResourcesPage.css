@@ -28,6 +28,8 @@ h1{
     gap: 20px;
     justify-content: center;
     padding: 20px;
+    max-width: calc(4 * 300px + 3 * 20px);
+    margin: 0 auto;
   }
   
   .category-card {
