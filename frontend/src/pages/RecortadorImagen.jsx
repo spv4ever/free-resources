@@ -55,16 +55,21 @@ export default function RecortadorImagen() {
   }, [previewUrl]);
 
   const obtenerCoords = (e) => {
-    const rect = canvasRef.current.getBoundingClientRect();
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
     return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
+      x: Math.max(0, Math.min(canvas.width, (e.clientX - rect.left) * scaleX)),
+      y: Math.max(0, Math.min(canvas.height, (e.clientY - rect.top) * scaleY)),
     };
   };
 
   const iniciarSeleccion = (e) => {
     const { x, y } = obtenerCoords(e);
     setSeleccion({ x, y, w: 0, h: 0 });
+    actualizarOverlay({ x, y, w: 0, h: 0 });
     setArrastrando(true);
   };
 
@@ -84,56 +89,66 @@ export default function RecortadorImagen() {
   };
 
   const actualizarOverlay = (sel) => {
-    if (!overlayRef.current) return;
-    overlayRef.current.style.left = `${Math.min(sel.x, sel.x + sel.w)}px`;
-    overlayRef.current.style.top = `${Math.min(sel.y, sel.y + sel.h)}px`;
-    overlayRef.current.style.width = `${Math.abs(sel.w)}px`;
-    overlayRef.current.style.height = `${Math.abs(sel.h)}px`;
-    overlayRef.current.style.display = "block";
+    const canvas = canvasRef.current;
+    const overlay = overlayRef.current;
+    if (!canvas || !overlay) return;
+
+    const scaleX = canvas.clientWidth / canvas.width || 1;
+    const scaleY = canvas.clientHeight / canvas.height || 1;
+
+    overlay.style.left = `${Math.min(sel.x, sel.x + sel.w) * scaleX}px`;
+    overlay.style.top = `${Math.min(sel.y, sel.y + sel.h) * scaleY}px`;
+    overlay.style.width = `${Math.abs(sel.w) * scaleX}px`;
+    overlay.style.height = `${Math.abs(sel.h) * scaleY}px`;
+    overlay.style.display = "block";
   };
 
   const aplicarRecorte = async () => {
     if (!imagen || !seleccion) return;
 
-    const w = Math.abs(seleccion.w / escala);
-    const h = Math.abs(seleccion.h / escala);
-    const x = Math.min(seleccion.x, seleccion.x + seleccion.w) / escala;
-    const y = Math.min(seleccion.y, seleccion.y + seleccion.h) / escala;
+    const rawWidth = Math.abs(seleccion.w);
+    const rawHeight = Math.abs(seleccion.h);
+    const rawX = Math.min(seleccion.x, seleccion.x + seleccion.w);
+    const rawY = Math.min(seleccion.y, seleccion.y + seleccion.h);
 
-    if (w === 0 || h === 0) {
-        setMensaje("Selecciona un área válida para recortar.");
-        return;
+    const x = Math.max(0, Math.round(rawX / escala));
+    const y = Math.max(0, Math.round(rawY / escala));
+    const width = Math.max(1, Math.round(rawWidth / escala));
+    const height = Math.max(1, Math.round(rawHeight / escala));
+
+    if (width <= 1 || height <= 1) {
+      setMensaje("Selecciona un área válida para recortar.");
+      return;
     }
 
     const formData = new FormData();
     formData.append("image", imagen);
-    formData.append("x", Math.round(x));
-    formData.append("y", Math.round(y));
-    formData.append("width", Math.round(w));
-    formData.append("height", Math.round(h));
+    formData.append("x", x);
+    formData.append("y", y);
+    formData.append("width", width);
+    formData.append("height", height);
 
     try {
-        // setProcesando(true);
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/crop-image`, {
+      // setProcesando(true);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/crop-image`, {
         method: "POST",
         body: formData,
-        });
+      });
 
-        if (!res.ok) {
+      if (!res.ok) {
         throw new Error("Error en el servidor");
-        }
+      }
 
-        const blob = await res.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        setResultadoUrl(blobUrl);
-        setMensaje("Imagen recortada correctamente.");
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      setResultadoUrl(blobUrl);
+      setMensaje("Imagen recortada correctamente.");
     } catch (err) {
-        setMensaje("Error al conectar con el servidor.");
+      setMensaje("Error al conectar con el servidor.");
     } finally {
-        // setProcesando(false);
+      // setProcesando(false);
     }
-    };
-
+  };
 
   return (
     <div style={estilos.contenedor}>

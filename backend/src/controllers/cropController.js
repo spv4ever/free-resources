@@ -5,14 +5,18 @@ export const cropImage = async (req, res) => {
     const file = req.file;
     const { x, y, width, height } = req.body;
 
-    if (!file || !x || !y || !width || !height) {
+    if (!file || [x, y, width, height].some((value) => value === undefined)) {
       return res.status(400).json({ error: "Faltan datos para recortar." });
     }
 
-    const left = parseInt(x);
-    const top = parseInt(y);
-    const w = parseInt(width);
-    const h = parseInt(height);
+    const left = Number.parseInt(x, 10);
+    const top = Number.parseInt(y, 10);
+    const w = Number.parseInt(width, 10);
+    const h = Number.parseInt(height, 10);
+
+    if ([left, top, w, h].some(Number.isNaN) || w <= 0 || h <= 0) {
+      return res.status(400).json({ error: "Coordenadas de recorte inválidas." });
+    }
 
     const ext = file.mimetype === "image/png" ? "png" : "jpeg";
 
