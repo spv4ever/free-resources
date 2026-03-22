@@ -45,35 +45,6 @@ const PRINTS_SECTIONS = [
 function ThreeDPrintsPage() {
   return (
     <div className="three-d-prints-page">
-      <section className="three-d-hero">
-        <span className="three-d-hero__eyebrow">Nuevo espacio en construcción</span>
-        <h1>🖨️ 3DPrints by Keiko</h1>
-        <p>
-          Empezamos con una base sólida para seguir creciendo. La sección de filamentos ya está conectada a MongoDB Atlas
-          y preparada para mostrar catálogo, detalle y mantenimiento desde el panel de administración.
-        </p>
-
-        <div className="three-d-hero__actions">
-          <a href="#three-d-sections" className="three-d-button three-d-button--primary">Ver secciones iniciales</a>
-          <Link to="/3dprints-keiko/filamentos" className="three-d-button three-d-button--secondary">Ir a filamentos</Link>
-        </div>
-      </section>
-
-      <section className="three-d-overview">
-        <article className="three-d-overview__card">
-          <strong>Arquitectura escalable</strong>
-          <p>Las tarjetas y la navegación de esta página se renderizan desde una estructura de datos, facilitando añadir nuevas secciones.</p>
-        </article>
-        <article className="three-d-overview__card">
-          <strong>Catálogo vivo</strong>
-          <p>Filamentos ya funciona como módulo dinámico con fichas, colores, acceso a compra y mantenimiento CRUD para administración.</p>
-        </article>
-        <article className="three-d-overview__card">
-          <strong>Enfoque iterativo</strong>
-          <p>La base visual sigue preparada para incorporar nuevas familias de contenido sin rehacer la experiencia.</p>
-        </article>
-      </section>
-
       <section id="three-d-sections" className="three-d-sections">
         <div className="three-d-sections__header">
           <span>Bloques iniciales</span>
