@@ -32,7 +32,8 @@
   color: var(--color-text);
   border-radius: 12px;
   padding: 1.2rem 1.4rem;
-  box-shadow: 0 4px 12px var(--color-shadow);
+  border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
+  box-shadow: 0 8px 24px var(--color-shadow);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
   display: flex;
@@ -41,7 +42,7 @@
   min-width: 0;
   width: 100%;
   box-sizing: border-box;
-  height: 360px;
+  min-height: 360px;
   overflow: hidden;
 }
 
@@ -493,61 +494,9 @@
   background-color: var(--color-surface-strong);
 }
 
-.home-intro {
-  display: none;
-  background: var(--intro-gradient);
-  color: var(--color-text);
-  padding: 1.5rem 1rem;
-  text-align: center;
-  border-radius: 8px;
-  margin: 1rem auto;
-  max-width: 480px;
-  box-shadow: 0 0 10px var(--color-shadow);
-}
-
-.home-intro h2 {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-}
 
 
-.intro-image {
-  width: 100%;
-  border-radius: 8px;
-  margin: 1rem 0;
-  box-shadow: 0 0 10px var(--color-shadow);
-}
 
-.cta-button {
-  display: inline-block;
-  background-color: var(--color-accent);
-  color: var(--color-accent-contrast);
-  padding: 0.6rem 1.2rem;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  margin-top: 1rem;
-}
-
-.cta-button:hover {
-  background-color: var(--color-accent-strong);
-}
-
-.scroll-cue {
-  text-align: center;
-  font-size: 1.5rem;
-  animation: bounce 1.5s infinite;
-}
-
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(8px);
-  }
-}
 
 @media (max-width: 1200px) {
   .cards-container {
@@ -576,15 +525,35 @@
 
 @media (max-width: 768px) {
   .cards-container {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0.75rem;
+  }
+
+  .card-home {
+    min-height: 0;
+    height: auto;
+    padding: 1.15rem;
+    overflow: visible;
+  }
+
+  .card-home ul,
+  .top-series-list {
+    overflow: visible;
+    max-height: none;
+  }
+
+  .top-series-item {
+    white-space: normal;
+    align-items: flex-start;
   }
 
   .card-keikoprompts {
-    display: none;
+    display: flex;
   }
 
   .card-3dprints {
-    order: -1;
+    order: 0;
   }
 
   .header-shortcuts {
@@ -636,9 +605,6 @@
     grid-template-columns: 1fr;
   }
 
-  .home-intro {
-    display: block;
-  }
 }
 
 @media (max-width: 480px) {
