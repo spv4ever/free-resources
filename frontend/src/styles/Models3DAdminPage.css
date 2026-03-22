@@ -1,0 +1,21 @@
+.models-admin-page { padding: 2rem; color: #e5eefc; }
+.models-admin-page__header { margin-bottom: 1.5rem; }
+.models-admin-page__eyebrow { text-transform: uppercase; letter-spacing: .08em; color: #93c5fd; }
+.models-admin-form,.models-admin-list { background:#0f172a; border:1px solid #1e293b; border-radius:28px; padding:1.5rem; }
+.models-admin-form__grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; }
+.models-admin-form label,.models-admin-form__secondary-row { display:flex; flex-direction:column; gap:.45rem; }
+.models-admin-form input,.models-admin-form select,.models-admin-form textarea,.models-admin-form__secondary-row input { background:#111827; color:#e5eefc; border:1px solid #334155; border-radius:14px; padding:.8rem .9rem; }
+.models-admin-form__full { margin-top:1rem; }
+.models-admin-form__secondary { margin-top:1rem; display:flex; flex-direction:column; gap:.75rem; }
+.models-admin-form__secondary-head,.models-admin-form__toggles,.models-admin-form__actions,.models-admin-card__actions,.models-admin-card__meta { display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; justify-content:space-between; }
+.models-admin-form button,.models-admin-card__actions button { border:none; border-radius:999px; padding:.8rem 1rem; cursor:pointer; font-weight:600; }
+.models-admin-form__actions button:first-child,.models-admin-card__actions button:first-child,.models-admin-form__secondary-head button { background:#2563eb; color:white; }
+.models-admin-card__actions button:last-child,.models-admin-form__actions button:last-child,.models-admin-form__secondary-row button { background:#ef4444; color:white; }
+.models-admin-form__status { margin-top:1rem; }
+.models-admin-list { margin-top:1.5rem; }
+.models-admin-list__grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; margin-top:1rem; }
+.models-admin-card { background:#111827; border:1px solid #1f2937; border-radius:20px; overflow:hidden; }
+.models-admin-card__image { min-height:200px; background:#1f2937; display:grid; place-items:center; }
+.models-admin-card__image img { width:100%; height:200px; object-fit:cover; }
+.models-admin-card__content { padding:1rem; display:flex; flex-direction:column; gap:.75rem; }
+@media (max-width:768px){ .models-admin-page{ padding:1rem; } .models-admin-form,.models-admin-list{ padding:1rem; } .models-admin-form__secondary-row{ gap:.5rem; } }

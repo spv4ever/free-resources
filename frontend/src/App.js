@@ -101,8 +101,11 @@ const BlogAdmin = lazy(() => import('./pages/admin/BlogAdmin'));
 const BlogCreate = lazy(() => import('./pages/admin/BlogCreate'));
 const BlogEdit = lazy(() => import('./pages/admin/BlogEdit'));
 const FilamentsAdminPage = lazy(() => import('./pages/admin/FilamentsAdminPage'));
+const Models3DAdminPage = lazy(() => import('./pages/admin/Models3DAdminPage'));
 const FilamentsPage = lazy(() => import('./pages/FilamentsPage'));
 const FilamentDetailPage = lazy(() => import('./pages/FilamentDetailPage'));
+const Models3DPage = lazy(() => import('./pages/Models3DPage'));
+const Model3DDetailPage = lazy(() => import('./pages/Model3DDetailPage'));
 
 // Utilidades
 const RedimensionadorImagenes = lazy(() => import('./pages/RedimensionadorImagenes'));
@@ -213,7 +216,10 @@ function App() {
                 <Route path="/3dprints-keiko" element={<ThreeDPrintsPage />} />
                 <Route path="/3dprints-keiko/filamentos" element={<FilamentsPage />} />
                 <Route path="/3dprints-keiko/filamentos/:slug" element={<FilamentDetailPage />} />
+                <Route path="/3dprints-keiko/modelos" element={<Models3DPage />} />
+                <Route path="/3dprints-keiko/modelos/:slug" element={<Model3DDetailPage />} />
                 <Route path="/admin/filaments" element={<AdminRoute><FilamentsAdminPage /></AdminRoute>} />
+                <Route path="/admin/models-3d" element={<AdminRoute><Models3DAdminPage /></AdminRoute>} />
                 <Route path="/admin/imports" element={<AdminRoute><AdminImport /></AdminRoute>} />
                 <Route path="/admin/DuplicateCleanup" element={<AdminRoute><DuplicateCleanup /></AdminRoute>} />
                 <Route path="/mis-imagenes" element={<UserImageGallery />} />

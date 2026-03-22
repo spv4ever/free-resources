@@ -92,6 +92,7 @@ import upscaler from './keikoUpscaleRoutes.js';
 import telegramRoutes from './telegram.routes.js';
 import weeklyRoutes from './weeklyRoutes.js';
 import filamentRoutes from './filamentRoutes.js';
+import model3DRoutes from './model3DRoutes.js';
 
 export const registerApiRoutes = ({ app, __dirname, rebuildWeeklyForAccount }) => {
   app.use('/api/instagram', instagramRoutes);
@@ -199,6 +200,7 @@ export const registerApiRoutes = ({ app, __dirname, rebuildWeeklyForAccount }) =
   app.use('/api/futbol', futbolRoutes);
   app.use('/api/weekly', weeklyRoutes);
   app.use('/api/filaments', filamentRoutes);
+  app.use('/api/models-3d', model3DRoutes);
 
   app.post('/api/weekly/rebuild/:accountId', async (req, res) => {
     try {

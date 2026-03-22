@@ -5,15 +5,16 @@ import '../styles/ThreeDPrintsPage.css';
 const PRINTS_SECTIONS = [
   {
     id: 'mis-disenos',
-    title: 'Mis Diseños',
+    title: 'Modelos 3D',
     emoji: '🧩',
-    description: 'Colección principal para publicar creaciones propias, organizar modelos destacados y preparar futuras fichas descargables.',
+    description: 'Catálogo para publicar diseños con ficha completa, MakerWorld opcional, galería, tamaños, materiales y metadatos de impresión.',
     bullets: [
-      'Escaparate de piezas y prototipos creados por Keiko.',
-      'Espacio listo para añadir galerías, filtros y fichas por proyecto.',
-      'Ideal para conectar después STL, renders, tiempos de impresión y revisiones.',
+      'Modelos con imagen principal y múltiples imágenes secundarias.',
+      'Fichas con tipo, material, tamaño, colores, dificultad, peso y notas.',
+      'Panel admin con CRUD para gestionar todo el catálogo desde el menú de administración.',
     ],
-    status: 'Frontend base listo para crecer',
+    status: 'Catálogo dinámico disponible',
+    cta: { to: '/3dprints-keiko/modelos', label: 'Ver catálogo de modelos' },
   },
   {
     id: 'filamentos',
