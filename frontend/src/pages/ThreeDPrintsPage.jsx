@@ -1,11 +1,16 @@
 import React, { useEffect } from 'react';
-import { FaTiktok } from 'react-icons/fa';
+import { FaInstagram, FaTiktok } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import '../styles/ThreeDPrintsPage.css';
 
 const TIKTOK_ACCOUNT = {
   username: '3dprints_by_keikodev',
   url: 'https://www.tiktok.com/@3dprints_by_keikodev',
+};
+
+const INSTAGRAM_ACCOUNT = {
+  username: '3dprintsbykeiko',
+  url: 'https://www.instagram.com/3dprintsbykeiko/',
 };
 
 const PRINTS_SECTIONS = [
@@ -51,20 +56,33 @@ const PRINTS_SECTIONS = [
 
 function ThreeDPrintsPage() {
   useEffect(() => {
-    const existingScript = document.querySelector('script[data-tiktok-embed="creator-profile"]');
+    const existingTikTokScript = document.querySelector('script[data-tiktok-embed="creator-profile"]');
 
-    if (existingScript) {
-      existingScript.remove();
+    if (existingTikTokScript) {
+      existingTikTokScript.remove();
     }
 
-    const script = document.createElement('script');
-    script.src = 'https://www.tiktok.com/embed.js';
-    script.async = true;
-    script.setAttribute('data-tiktok-embed', 'creator-profile');
-    document.body.appendChild(script);
+    const tikTokScript = document.createElement('script');
+    tikTokScript.src = 'https://www.tiktok.com/embed.js';
+    tikTokScript.async = true;
+    tikTokScript.setAttribute('data-tiktok-embed', 'creator-profile');
+    document.body.appendChild(tikTokScript);
+
+    const existingInstagramScript = document.querySelector('script[data-instagram-embed="profile"]');
+
+    if (existingInstagramScript) {
+      existingInstagramScript.remove();
+    }
+
+    const instagramScript = document.createElement('script');
+    instagramScript.src = 'https://www.instagram.com/embed.js';
+    instagramScript.async = true;
+    instagramScript.setAttribute('data-instagram-embed', 'profile');
+    document.body.appendChild(instagramScript);
 
     return () => {
-      script.remove();
+      tikTokScript.remove();
+      instagramScript.remove();
     };
   }, []);
 
@@ -105,22 +123,22 @@ function ThreeDPrintsPage() {
         </div>
       </section>
 
-      <section className="three-d-tiktok-feed" aria-labelledby="three-d-tiktok-feed-title">
-        <div className="three-d-tiktok-feed__content">
-          <div className="three-d-tiktok-feed__copy">
+      <section className="three-d-social-feed three-d-social-feed--tiktok" aria-labelledby="three-d-tiktok-feed-title">
+        <div className="three-d-social-feed__content">
+          <div className="three-d-social-feed__copy">
             <span>Feed TikTok</span>
             <h2 id="three-d-tiktok-feed-title">Últimos vídeos del perfil de TikTok</h2>
             <p>
               Descubre nuestros últimos vídeos directamente desde TikTok. Este espacio se actualiza automáticamente para que no te pierdas ninguna novedad, contenido creativo o lanzamiento reciente.
             </p>
-            <a className="three-d-tiktok-feed__button" href={TIKTOK_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
+            <a className="three-d-social-feed__button" href={TIKTOK_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
               <span>Ver en</span>
               <FaTiktok aria-hidden="true" />
               <span className="sr-only">TikTok</span>
             </a>
           </div>
 
-          <div className="three-d-tiktok-feed__embed">
+          <div className="three-d-social-feed__embed">
             <blockquote
               className="tiktok-embed"
               cite={TIKTOK_ACCOUNT.url}
@@ -133,6 +151,36 @@ function ThreeDPrintsPage() {
                   @{TIKTOK_ACCOUNT.username}
                 </a>
               </section>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      <section className="three-d-social-feed" aria-labelledby="three-d-instagram-feed-title">
+        <div className="three-d-social-feed__content">
+          <div className="three-d-social-feed__copy">
+            <span>Feed Instagram</span>
+            <h2 id="three-d-instagram-feed-title">Últimas publicaciones del perfil de Instagram</h2>
+            <p>
+              Justo debajo del feed de TikTok, añadimos también el perfil de Instagram de 3DPrints by Keiko para que se pueda explorar el contenido visual, novedades y piezas destacadas desde la propia página.
+            </p>
+            <a className="three-d-social-feed__button" href={INSTAGRAM_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
+              <span>Ver en</span>
+              <FaInstagram aria-hidden="true" />
+              <span className="sr-only">Instagram</span>
+            </a>
+          </div>
+
+          <div className="three-d-social-feed__embed three-d-social-feed__embed--instagram">
+            <blockquote
+              className="instagram-media"
+              data-instgrm-permalink={INSTAGRAM_ACCOUNT.url}
+              data-instgrm-version="14"
+              style={{ margin: 0, maxWidth: '540px', minWidth: '280px', width: '100%' }}
+            >
+              <a href={INSTAGRAM_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
+                @{INSTAGRAM_ACCOUNT.username}
+              </a>
             </blockquote>
           </div>
         </div>
