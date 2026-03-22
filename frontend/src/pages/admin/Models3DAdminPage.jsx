@@ -205,11 +205,13 @@ function Models3DAdminPage() {
           </label>
           <div className="models-admin-form__image-field">
             <span>Imagen principal</span>
-            <input name="mainImageUrl" value={formData.mainImageUrl} onChange={handleChange} placeholder="https://..." />
-            <label htmlFor="models-main-image-upload" className={`models-admin-form__upload-button${uploadingMainImage ? ' is-disabled' : ''}`}>
-              <input id="models-main-image-upload" type="file" accept="image/*" onChange={handleMainImageUpload} disabled={uploadingMainImage} />
-              <span>{uploadingMainImage ? 'Subiendo...' : 'Subir foto principal'}</span>
-            </label>
+            <div className="models-admin-form__image-input-row">
+              <input name="mainImageUrl" value={formData.mainImageUrl} onChange={handleChange} placeholder="https://..." />
+              <label htmlFor="models-main-image-upload" className={`models-admin-form__upload-button${uploadingMainImage ? ' is-disabled' : ''}`}>
+                <input id="models-main-image-upload" type="file" accept="image/*" onChange={handleMainImageUpload} disabled={uploadingMainImage} />
+                <span>{uploadingMainImage ? 'Subiendo...' : 'Subir foto principal'}</span>
+              </label>
+            </div>
             {formData.mainImageUrl && (
               <div className="models-admin-form__image-preview">
                 <img src={formData.mainImageUrl} alt="Vista previa de la imagen principal" />
