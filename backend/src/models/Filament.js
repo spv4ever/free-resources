@@ -28,6 +28,7 @@ const filamentSchema = new mongoose.Schema(
     bedTempMax: { type: Number },
     printSpeed: { type: String, trim: true, default: '' },
     imageUrl: { type: String, trim: true, default: '' },
+    spoolImageUrl: { type: String, trim: true, default: '' },
     amazonUrl: { type: String, trim: true, default: '' },
     notes: { type: String, trim: true, default: '' },
     isActive: { type: Boolean, default: true },

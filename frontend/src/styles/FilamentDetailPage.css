@@ -1,12 +1,16 @@
 .filament-detail-page { padding: 2rem; color:#e5eefc; }
 .filament-detail-page__back { display:inline-block; margin-bottom:1rem; color:#93c5fd; }
 .filament-detail-card { display:grid; grid-template-columns: minmax(280px,420px) 1fr; gap:2rem; background:#0f172a; border:1px solid #1e293b; border-radius:28px; padding:1.5rem; }
+.filament-detail-card__gallery { display:grid; gap:1rem; }
+.filament-detail-card__image { margin:0; }
 .filament-detail-card__image img, .filament-detail-card__image div { width:100%; border-radius:20px; background:#1e293b; min-height:320px; object-fit:cover; display:grid; place-items:center; }
+.filament-detail-card__image figcaption { margin-top:.6rem; font-size:.9rem; color:#bfdbfe; }
 .filament-detail-card__eyebrow { color:#93c5fd; text-transform:uppercase; letter-spacing:.08em; }
 .filament-detail-card__color { display:flex; align-items:center; gap:.75rem; margin:1rem 0; }
 .filament-detail-card__color span { width:28px; height:28px; border-radius:999px; border:2px solid rgba(255,255,255,.5); }
 .filament-detail-card__specs { display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:.75rem; }
 .filament-detail-card__notes { margin-top:1.5rem; }
+.filament-detail-card__notes--spool { padding:1rem 1.1rem; border:1px solid #1d4ed8; border-radius:18px; background:rgba(37,99,235,.12); }
 .filament-detail-card__actions { margin-top:1.5rem; }
 .filament-detail-card__actions a { display:inline-block; text-decoration:none; background:#f59e0b; color:#111827; padding:.85rem 1.2rem; border-radius:999px; font-weight:700; }
 @media (max-width: 860px) { .filament-detail-card { grid-template-columns: 1fr; } }

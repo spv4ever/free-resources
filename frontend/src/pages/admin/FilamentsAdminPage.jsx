@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import '../../styles/FilamentsAdminPage.css';
 
@@ -17,6 +17,7 @@ const EMPTY_FORM = {
   bedTempMax: '',
   printSpeed: '',
   imageUrl: '',
+  spoolImageUrl: '',
   amazonUrl: '',
   notes: '',
   isActive: true,
@@ -26,12 +27,12 @@ function FilamentsAdminPage() {
   const [filaments, setFilaments] = useState([]);
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const [uploadingField, setUploadingField] = useState('');
   const [status, setStatus] = useState('');
 
   const token = useMemo(() => localStorage.getItem('token'), []);
 
-  const fetchFilaments = async () => {
+  const fetchFilaments = useCallback(async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/filaments/admin`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -41,11 +42,11 @@ function FilamentsAdminPage() {
       console.error('Error al cargar filamentos:', error);
       setStatus('❌ No se pudieron cargar los filamentos');
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchFilaments();
-  }, []);
+  }, [fetchFilaments]);
 
   const handleChange = ({ target }) => {
     const { name, value, type, checked } = target;
@@ -61,7 +62,7 @@ function FilamentsAdminPage() {
     setStatus('');
   };
 
-  const handleUpload = async (event) => {
+  const handleUpload = (fieldName) => async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -69,17 +70,21 @@ function FilamentsAdminPage() {
     payload.append('image', file);
 
     try {
-      setIsUploading(true);
+      setUploadingField(fieldName);
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/upload/image`, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      setFormData((current) => ({ ...current, imageUrl: response.data.url }));
-      setStatus('✅ Imagen subida correctamente');
+      setFormData((current) => ({ ...current, [fieldName]: response.data.url }));
+      setStatus(
+        fieldName === 'spoolImageUrl'
+          ? '✅ Imagen de la bobina subida correctamente'
+          : '✅ Imagen principal subida correctamente'
+      );
     } catch (error) {
       console.error('Error al subir imagen:', error);
       setStatus('❌ No se pudo subir la imagen');
     } finally {
-      setIsUploading(false);
+      setUploadingField('');
       event.target.value = '';
     }
   };
@@ -142,7 +147,7 @@ function FilamentsAdminPage() {
         <div>
           <p className="filaments-admin-page__eyebrow">Admin · 3DPrints by Keiko</p>
           <h1>🧵 Gestión de filamentos</h1>
-          <p>Crea, edita y elimina fichas de filamentos con imagen de tarjeta de color y enlace de compra.</p>
+          <p>Crea, edita y elimina fichas de filamentos con imagen de tarjeta de color, foto de la bobina y enlace de compra.</p>
         </div>
       </div>
 
@@ -183,8 +188,18 @@ function FilamentsAdminPage() {
           </label>
 
           <label>
-            <span>Subir imagen</span>
-            <input type="file" accept="image/*" onChange={handleUpload} disabled={isUploading} />
+            <span>Subir imagen principal</span>
+            <input type="file" accept="image/*" onChange={handleUpload('imageUrl')} disabled={Boolean(uploadingField)} />
+          </label>
+
+          <label>
+            <span>URL foto bobina</span>
+            <input name="spoolImageUrl" value={formData.spoolImageUrl ?? ''} onChange={handleChange} />
+          </label>
+
+          <label>
+            <span>Subir foto de la bobina</span>
+            <input type="file" accept="image/*" onChange={handleUpload('spoolImageUrl')} disabled={Boolean(uploadingField)} />
           </label>
         </div>
 
@@ -198,9 +213,20 @@ function FilamentsAdminPage() {
           <span>Visible en catálogo público</span>
         </label>
 
-        {formData.imageUrl && (
-          <div className="filaments-admin-form__preview">
-            <img src={formData.imageUrl} alt="Tarjeta de color" />
+        {(formData.imageUrl || formData.spoolImageUrl) && (
+          <div className="filaments-admin-form__preview-grid">
+            {formData.imageUrl && (
+              <div className="filaments-admin-form__preview">
+                <p>Imagen principal</p>
+                <img src={formData.imageUrl} alt="Tarjeta de color" />
+              </div>
+            )}
+            {formData.spoolImageUrl && (
+              <div className="filaments-admin-form__preview">
+                <p>Foto de la bobina</p>
+                <img src={formData.spoolImageUrl} alt="Bobina del filamento" />
+              </div>
+            )}
           </div>
         )}
 
@@ -215,8 +241,13 @@ function FilamentsAdminPage() {
       <section className="filaments-admin-list">
         {filaments.map((filament) => (
           <article key={filament._id} className="filaments-admin-card">
-            <div className="filaments-admin-card__media">
-              {filament.imageUrl ? <img src={filament.imageUrl} alt={filament.colorName} /> : <div>Sin imagen</div>}
+            <div className="filaments-admin-card__media-group">
+              <div className="filaments-admin-card__media">
+                {filament.imageUrl ? <img src={filament.imageUrl} alt={filament.colorName} /> : <div>Sin imagen</div>}
+              </div>
+              <div className="filaments-admin-card__media">
+                {filament.spoolImageUrl ? <img src={filament.spoolImageUrl} alt={`Bobina ${filament.colorName}`} /> : <div>Sin foto bobina</div>}
+              </div>
             </div>
             <div className="filaments-admin-card__content">
               <h2>{filament.brand} · {filament.name}</h2>
