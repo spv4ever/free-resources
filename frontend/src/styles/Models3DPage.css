@@ -3,12 +3,14 @@
 .models-3d-page__eyebrow { text-transform: uppercase; letter-spacing: .08em; color: #bfdbfe; }
 .models-3d-page__hero input { width: min(420px,100%); margin-top: 1rem; padding: .85rem 1rem; border-radius: 999px; border: none; }
 .models-3d-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap:1.25rem; }
-.model-3d-card { background:#0f172a; border:1px solid #1e293b; border-radius:24px; overflow:hidden; display:flex; flex-direction:column; }
-.model-3d-card__image { min-height:220px; background:#1e293b; display:grid; place-items:center; }
-.model-3d-card__image img { width:100%; height:220px; object-fit:cover; }
+.model-3d-card { position:relative; background:#0f172a; border:1px solid #1e293b; border-radius:24px; overflow:visible; display:flex; flex-direction:column; transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+.model-3d-card:hover { transform:translateY(-4px); box-shadow:0 18px 36px rgba(15, 23, 42, .45); border-color:#3b82f6; z-index:3; }
+.model-3d-card__image { position:relative; min-height:220px; background:#1e293b; display:grid; place-items:center; }
+.model-3d-card__image img { width:100%; height:220px; object-fit:contain; background:#0b1120; transition:transform .24s ease, box-shadow .24s ease, background-color .24s ease; transform-origin:center center; cursor:zoom-in; }
+.model-3d-card:hover .model-3d-card__image img { transform:translateY(-18px) scale(1.55); box-shadow:0 20px 36px rgba(2, 6, 23, .65); border-radius:18px; z-index:5; }
 .model-3d-card__content { padding:1rem; display:flex; flex-direction:column; gap:.75rem; }
 .model-3d-card__badges,.model-3d-card__tags,.model-3d-card__meta,.model-3d-card__actions { display:flex; flex-wrap:wrap; gap:.5rem; }
 .model-3d-card__badges span,.model-3d-card__tags span,.model-3d-card__meta span { background:#1e3a8a; color:#dbeafe; border-radius:999px; padding:.35rem .7rem; font-size:.8rem; }
 .model-3d-card__actions a { text-decoration:none; background:#2563eb; color:white; padding:.7rem 1rem; border-radius:999px; }
 .model-3d-card__actions a:last-child { background:#f59e0b; color:#111827; }
-@media (max-width: 768px) { .models-3d-page { padding:1rem; } .models-3d-page__hero { padding:1.25rem; } }
+@media (max-width: 768px) { .models-3d-page { padding:1rem; } .models-3d-page__hero { padding:1.25rem; } .model-3d-card { overflow:hidden; } .model-3d-card:hover { transform:none; } .model-3d-card:hover .model-3d-card__image img { transform:none; box-shadow:none; border-radius:0; } }
