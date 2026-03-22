@@ -8,12 +8,15 @@ const normalizePayload = (payload = {}) => ({
   nozzleTempMax: payload.nozzleTempMax === '' || payload.nozzleTempMax == null ? undefined : Number(payload.nozzleTempMax),
   bedTempMin: payload.bedTempMin === '' || payload.bedTempMin == null ? undefined : Number(payload.bedTempMin),
   bedTempMax: payload.bedTempMax === '' || payload.bedTempMax == null ? undefined : Number(payload.bedTempMax),
-  isActive: payload.isActive === false || payload.isActive === 'false' ? false : Boolean(payload.isActive),
+  isActive:
+    payload.isActive == null || payload.isActive === ''
+      ? undefined
+      : !(payload.isActive === false || payload.isActive === 'false'),
 });
 
 export const getPublicFilaments = async (req, res) => {
   try {
-    const filaments = await Filament.find({ isActive: true }).sort({ brand: 1, name: 1, colorName: 1 });
+    const filaments = await Filament.find({ isActive: { $ne: false } }).sort({ brand: 1, name: 1, colorName: 1 });
     res.json(filaments);
   } catch (error) {
     res.status(500).json({ message: 'Error al cargar los filamentos', error: error.message });
@@ -31,7 +34,7 @@ export const getAdminFilaments = async (req, res) => {
 
 export const getFilamentBySlug = async (req, res) => {
   try {
-    const filament = await Filament.findOne({ slug: req.params.slug, isActive: true });
+    const filament = await Filament.findOne({ slug: req.params.slug, isActive: { $ne: false } });
     if (!filament) return res.status(404).json({ message: 'Filamento no encontrado' });
     res.json(filament);
   } catch (error) {
