@@ -303,28 +303,104 @@ function FilamentsAdminPage() {
       </form>
 
       <section className="filaments-admin-list">
-        {filaments.map((filament) => (
-          <article key={filament._id} className="filaments-admin-card">
-            <div className="filaments-admin-card__media-group">
-              <div className="filaments-admin-card__media">
-                {filament.imageUrl ? <img src={filament.imageUrl} alt={filament.colorName} /> : <div>Sin imagen</div>}
+        {filaments.map((filament) => {
+          const detailItems = [
+            ['Material', filament.material || '—'],
+            ['Color', filament.colorName || '—'],
+            ['Acabado', filament.finish || '—'],
+            ['Diámetro', filament.diameter ? `${filament.diameter} mm` : '—'],
+            ['Bobina', filament.spoolWeightKg ? `${filament.spoolWeightKg} kg` : '—'],
+            ['Perfil', filament.printSpeed || '—'],
+          ];
+
+          const temperatureRange = [filament.nozzleTempMin, filament.nozzleTempMax].filter(Boolean).join('–');
+          const bedRange = [filament.bedTempMin, filament.bedTempMax].filter(Boolean).join('–');
+
+          return (
+            <article key={filament._id} className="filaments-admin-card">
+              <div className="filaments-admin-card__top">
+                <div className="filaments-admin-card__media-group">
+                  <div className="filaments-admin-card__media">
+                    {filament.imageUrl ? <img src={filament.imageUrl} alt={filament.colorName} /> : <div>Sin imagen</div>}
+                  </div>
+                  <div className="filaments-admin-card__media">
+                    {filament.spoolImageUrl ? <img src={filament.spoolImageUrl} alt={`Bobina ${filament.colorName}`} /> : <div>Sin foto bobina</div>}
+                  </div>
+                </div>
+
+                <div className="filaments-admin-card__hero">
+                  <div className="filaments-admin-card__badges">
+                    <span className="filaments-admin-card__badge">{filament.brand || 'Marca'}</span>
+                    <span className={`filaments-admin-card__badge ${filament.isActive ? 'is-active' : 'is-hidden'}`}>
+                      {filament.isActive ? 'Público' : 'Oculto'}
+                    </span>
+                  </div>
+
+                  <div className="filaments-admin-card__title-row">
+                    <div>
+                      <h2>{filament.name || 'Sin referencia'}</h2>
+                      <p className="filaments-admin-card__subtitle">{filament.material} · {filament.colorName}</p>
+                    </div>
+                    <div className="filaments-admin-card__swatch">
+                      <span
+                        className="filaments-admin-card__swatch-color"
+                        style={{ backgroundColor: filament.colorHex || '#334155' }}
+                        aria-hidden="true"
+                      />
+                      <code>{filament.colorHex || 'Sin HEX'}</code>
+                    </div>
+                  </div>
+
+                  <div className="filaments-admin-card__slug">
+                    <span>Slug</span>
+                    <code>{filament.slug}</code>
+                  </div>
+                </div>
               </div>
-              <div className="filaments-admin-card__media">
-                {filament.spoolImageUrl ? <img src={filament.spoolImageUrl} alt={`Bobina ${filament.colorName}`} /> : <div>Sin foto bobina</div>}
+
+              <div className="filaments-admin-card__details">
+                {detailItems.map(([label, value]) => (
+                  <div key={label} className="filaments-admin-card__detail">
+                    <span>{label}</span>
+                    <strong>{value}</strong>
+                  </div>
+                ))}
+                <div className="filaments-admin-card__detail">
+                  <span>Boquilla</span>
+                  <strong>{temperatureRange ? `${temperatureRange} ºC` : '—'}</strong>
+                </div>
+                <div className="filaments-admin-card__detail">
+                  <span>Cama</span>
+                  <strong>{bedRange ? `${bedRange} ºC` : '—'}</strong>
+                </div>
               </div>
-            </div>
-            <div className="filaments-admin-card__content">
-              <h2>{filament.brand} · {filament.name}</h2>
-              <p>{filament.material} · {filament.colorName}</p>
-              <p>Slug: <code>{filament.slug}</code></p>
-              <p>{filament.isActive ? '✅ Público' : '🚫 Oculto'}</p>
-              <div className="filaments-admin-card__actions">
-                <button type="button" onClick={() => handleEdit(filament)}>✏️ Editar</button>
-                <button type="button" className="danger" onClick={() => handleDelete(filament._id)}>🗑 Eliminar</button>
+
+              {filament.notes && (
+                <div className="filaments-admin-card__notes">
+                  <span>Notas</span>
+                  <p>{filament.notes}</p>
+                </div>
+              )}
+
+              <div className="filaments-admin-card__footer">
+                <div className="filaments-admin-card__meta">
+                  {filament.amazonUrl ? (
+                    <a href={filament.amazonUrl} target="_blank" rel="noreferrer">
+                      Ver enlace de compra ↗
+                    </a>
+                  ) : (
+                    <span>Sin enlace de compra</span>
+                  )}
+                </div>
+
+                <div className="filaments-admin-card__actions">
+                  <button type="button" onClick={() => handleEdit(filament)}>✏️ Editar</button>
+                  <button type="button" className="danger" onClick={() => handleDelete(filament._id)}>🗑 Eliminar</button>
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </section>
     </div>
   );
