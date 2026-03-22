@@ -7,6 +7,7 @@ import { publishCarouselAccount2 } from '../controllers/instagramCarousel.contro
 import { publishReelAccount2 } from '../controllers/instagramReel.controller.js';
 import { getIGMonitorSummary, getIGRecent, getIGEligible } from '../controllers/instagramMonitor.controller.js';
 import { publishContainerWithWait } from '../services/instagramService.js';
+import { fetchInstagramPublicFeed } from '../services/instagramPublicFeedService.js';
 
 // ⬅️ NUEVO: para HEAD preflight
 import fetch from 'node-fetch';
@@ -213,6 +214,26 @@ router.post('/publish-reel-one', publishReelAccount2);
 router.get('/publish-reel-one', publishReelAccount2);
 router.get('/monitor/summary', getIGMonitorSummary);
 router.get('/monitor/recent', getIGRecent);
+router.get('/public-feed', async (req, res) => {
+  try {
+    const username = String(req.query.username || '').trim();
+    const limit = Math.min(Math.max(Number(req.query.limit) || 6, 1), 12);
+
+    if (!username) {
+      return res.status(400).json({ error: 'Falta username' });
+    }
+
+    const feed = await fetchInstagramPublicFeed(username, { limit });
+    return res.json(feed);
+  } catch (error) {
+    console.error('[IG PUBLIC FEED]', error);
+    return res.status(error.status || 502).json({
+      error: error.message || 'No se pudo cargar el feed público de Instagram',
+      details: error.details || null,
+    });
+  }
+});
+
 router.get('/monitor/eligible', getIGEligible);
 
 export default router;
