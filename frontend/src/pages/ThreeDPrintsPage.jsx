@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { FaTiktok } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import '../styles/ThreeDPrintsPage.css';
 
@@ -112,8 +113,10 @@ function ThreeDPrintsPage() {
             <p>
               Descubre nuestros últimos vídeos directamente desde TikTok. Este espacio se actualiza automáticamente para que no te pierdas ninguna novedad, contenido creativo o lanzamiento reciente.
             </p>
-            <a href={TIKTOK_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
-              Abrir @{TIKTOK_ACCOUNT.username} en TikTok
+            <a className="three-d-tiktok-feed__button" href={TIKTOK_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
+              <span>Ver en</span>
+              <FaTiktok aria-hidden="true" />
+              <span className="sr-only">TikTok</span>
             </a>
           </div>
 
