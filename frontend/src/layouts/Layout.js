@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import {
   FaBook,
   FaBoxes,
@@ -34,17 +34,12 @@ const THEME_STORAGE_KEY = 'keikodev-theme';
 function Layout() {
   const { user } = useUser();
   const location = useLocation();
-  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [theme, setTheme] = useState('dark');
   const dropdownRef = useRef(null);
   const closeDropdownTimeoutRef = useRef(null);
 
-  const handleStart = () => {
-    sessionStorage.setItem('scrollToPromptSection', 'true');
-    navigate('/keikoprompts');
-  };
 
   const menuGroups = useMemo(() => {
     const groups = [
@@ -310,18 +305,6 @@ function Layout() {
         setMenuOpen={setMenuOpen}
       />
 
-      <div className="home-intro">
-        <h2>🎨 Crea imágenes increíbles con IA</h2>
-        <img
-          src="https://res.cloudinary.com/dhoaeyjpt/image/upload/v1751195850/keikoprompts/KeikoLover/2025-06-29/KeikoLover_00515_.png"
-          alt="Ejemplo de imagen IA"
-          className="intro-image"
-        />
-        <p>Prueba KeikoPrompts y genera tu primera imagen en segundos. ¡Gratis!</p>
-        <button className="cta-button" onClick={handleStart}>
-          Empezar ahora
-        </button>
-      </div>
 
       <main className="layout-content">
         <AffiliateBannerAndSidebar />
