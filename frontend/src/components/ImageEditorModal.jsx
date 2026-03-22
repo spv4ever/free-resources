@@ -9,6 +9,10 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+function normalizeRotation(rotation) {
+  return ((rotation % 360) + 360) % 360;
+}
+
 function loadImage(src) {
   return new Promise((resolve, reject) => {
     const image = new Image();
@@ -226,28 +230,37 @@ export default function ImageEditorModal({
 
   const exportEditedFile = useCallback(async () => {
     if (!imageElement || !crop) return null;
+    const workingCanvas = document.createElement('canvas');
+    workingCanvas.width = Math.max(Math.round(sourceSize.width), 1);
+    workingCanvas.height = Math.max(Math.round(sourceSize.height), 1);
+
+    const workingCtx = workingCanvas.getContext('2d');
+    workingCtx.clearRect(0, 0, workingCanvas.width, workingCanvas.height);
+    workingCtx.save();
+    workingCtx.filter = `brightness(${adjustments.brightness}%) contrast(${adjustments.contrast}%) saturate(${adjustments.saturation}%)`;
+    workingCtx.translate(workingCanvas.width / 2, workingCanvas.height / 2);
+    workingCtx.rotate((normalizeRotation(rotation) * Math.PI) / 180);
+    workingCtx.drawImage(
+      imageElement,
+      -imageElement.width / 2,
+      -imageElement.height / 2,
+      imageElement.width,
+      imageElement.height,
+    );
+    workingCtx.restore();
+
     const exportCanvas = document.createElement('canvas');
     exportCanvas.width = Math.max(Math.round(crop.width), 1);
     exportCanvas.height = Math.max(Math.round(crop.height), 1);
     const ctx = exportCanvas.getContext('2d');
-    ctx.filter = `brightness(${adjustments.brightness}%) contrast(${adjustments.contrast}%) saturate(${adjustments.saturation}%)`;
-    ctx.translate(exportCanvas.width / 2, exportCanvas.height / 2);
-    ctx.rotate((rotation * Math.PI) / 180);
-
-    const rotated = rotation % 180 !== 0;
-    const drawX = rotated ? crop.y : crop.x;
-    const drawY = rotated ? imageElement.height - crop.x - crop.width : crop.y;
-    const drawWidth = rotated ? crop.height : crop.width;
-    const drawHeight = rotated ? crop.width : crop.height;
-
     ctx.drawImage(
-      imageElement,
-      drawX,
-      drawY,
-      drawWidth,
-      drawHeight,
-      -exportCanvas.width / 2,
-      -exportCanvas.height / 2,
+      workingCanvas,
+      Math.round(crop.x),
+      Math.round(crop.y),
+      Math.round(crop.width),
+      Math.round(crop.height),
+      0,
+      0,
       exportCanvas.width,
       exportCanvas.height,
     );
@@ -265,7 +278,7 @@ export default function ImageEditorModal({
         resolve(outputFile);
       }, file.type === 'image/png' ? 'image/png' : 'image/jpeg', 0.92);
     });
-  }, [adjustments.brightness, adjustments.contrast, adjustments.saturation, crop, file, imageElement, rotation]);
+  }, [adjustments.brightness, adjustments.contrast, adjustments.saturation, crop, file, imageElement, rotation, sourceSize.height, sourceSize.width]);
 
   const handleConfirm = async () => {
     try {
