@@ -46,7 +46,7 @@
   margin-top: 1.5rem;
 }
 
-.three-d-tiktok-feed {
+.three-d-social-feed {
   border: 1px solid var(--color-border);
   border-radius: 24px;
   background: var(--panel-gradient, var(--color-bg-soft));
@@ -54,19 +54,19 @@
   padding: clamp(1.25rem, 3vw, 2rem);
 }
 
-.three-d-tiktok-feed__content {
+.three-d-social-feed__content {
   display: grid;
   grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
   gap: 1.5rem;
   align-items: start;
 }
 
-.three-d-tiktok-feed__copy {
+.three-d-social-feed__copy {
   display: grid;
   gap: 1rem;
 }
 
-.three-d-tiktok-feed__copy span {
+.three-d-social-feed__copy span {
   display: inline-flex;
   align-items: center;
   width: fit-content;
@@ -80,18 +80,18 @@
   text-transform: uppercase;
 }
 
-.three-d-tiktok-feed__copy h2 {
+.three-d-social-feed__copy h2 {
   margin: 0;
   color: var(--color-heading);
 }
 
-.three-d-tiktok-feed__copy p {
+.three-d-social-feed__copy p {
   margin: 0;
   color: var(--color-text-muted);
   line-height: 1.65;
 }
 
-.three-d-tiktok-feed__button {
+.three-d-social-feed__button {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
@@ -106,13 +106,13 @@
   transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
-.three-d-tiktok-feed__button:hover {
+.three-d-social-feed__button:hover {
   background: color-mix(in srgb, var(--color-accent) 26%, transparent);
   border-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
   transform: translateY(-1px);
 }
 
-.three-d-tiktok-feed__button svg {
+.three-d-social-feed__button svg {
   font-size: 1rem;
 }
 
@@ -128,7 +128,7 @@
   border: 0;
 }
 
-.three-d-tiktok-feed__embed {
+.three-d-social-feed__embed {
   min-width: 0;
   padding: clamp(0.75rem, 2vw, 1rem);
   border: 1px solid color-mix(in srgb, var(--color-border) 88%, transparent);
@@ -136,7 +136,7 @@
   background: color-mix(in srgb, var(--color-bg-soft) 88%, transparent);
 }
 
-.three-d-tiktok-feed__embed .tiktok-embed {
+.three-d-social-feed__embed .tiktok-embed {
   margin: 0 auto !important;
   max-width: 780px !important;
 }
@@ -199,7 +199,7 @@
 
 @media (max-width: 960px) {
   .three-d-sections__grid,
-  .three-d-tiktok-feed__content {
+  .three-d-social-feed__content {
     grid-template-columns: 1fr;
   }
 }
@@ -212,4 +212,13 @@
   .three-d-sections {
     padding: 1.1rem;
   }
+}
+
+.three-d-social-feed__embed--instagram {
+  display: flex;
+  justify-content: center;
+}
+
+.three-d-social-feed__embed--instagram .instagram-media {
+  width: 100% !important;
 }
