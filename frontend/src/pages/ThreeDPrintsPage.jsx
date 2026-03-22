@@ -17,7 +17,7 @@ const PRINTS_SECTIONS = [
   },
   {
     id: 'filamentos',
-    title: 'Filamentos',
+    title: 'Filamentos / Colores',
     emoji: '🧵',
     description: 'Área pensada para clasificar materiales por marca, color, acabado o configuración recomendada de impresión.',
     bullets: [
