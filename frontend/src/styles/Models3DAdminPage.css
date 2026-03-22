@@ -24,7 +24,7 @@
 .models-admin-card__actions button:last-child,.models-admin-form__actions button:last-child,.models-admin-form__secondary-row button { background:#ef4444; color:white; }
 .models-admin-form__status { margin-top:1rem; }
 .models-admin-list { margin-top:1.5rem; }
-.models-admin-list__grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; margin-top:1rem; }
+.models-admin-list__grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; width:min(100%, calc(4 * 280px + 3 * 1rem)); margin:1rem auto 0; }
 .models-admin-card { background:#111827; border:1px solid #1f2937; border-radius:20px; overflow:hidden; }
 .models-admin-card__image { min-height:200px; background:#1f2937; display:grid; place-items:center; }
 .models-admin-card__image img { width:100%; height:200px; object-fit:cover; }
