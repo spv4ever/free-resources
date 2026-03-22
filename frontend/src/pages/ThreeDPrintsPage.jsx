@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/ThreeDPrintsPage.css';
+
+const TIKTOK_ACCOUNT = {
+  username: 'keikodev',
+  url: 'https://www.tiktok.com/@keikodev',
+};
 
 const PRINTS_SECTIONS = [
   {
@@ -44,6 +49,24 @@ const PRINTS_SECTIONS = [
 ];
 
 function ThreeDPrintsPage() {
+  useEffect(() => {
+    const existingScript = document.querySelector('script[data-tiktok-embed="creator-profile"]');
+
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://www.tiktok.com/embed.js';
+    script.async = true;
+    script.setAttribute('data-tiktok-embed', 'creator-profile');
+    document.body.appendChild(script);
+
+    return () => {
+      script.remove();
+    };
+  }, []);
+
   return (
     <div className="three-d-prints-page">
       <section id="three-d-sections" className="three-d-sections">
@@ -78,6 +101,38 @@ function ThreeDPrintsPage() {
               </div>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="three-d-tiktok-feed" aria-labelledby="three-d-tiktok-feed-title">
+        <div className="three-d-tiktok-feed__content">
+          <div className="three-d-tiktok-feed__copy">
+            <span>Feed TikTok</span>
+            <h2 id="three-d-tiktok-feed-title">Últimos vídeos del perfil de TikTok</h2>
+            <p>
+              Sí, es posible añadirlo aquí debajo. He dejado integrado el embed oficial del perfil para mostrar
+              los vídeos más recientes directamente en esta página.
+            </p>
+            <a href={TIKTOK_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
+              Abrir @{TIKTOK_ACCOUNT.username} en TikTok
+            </a>
+          </div>
+
+          <div className="three-d-tiktok-feed__embed">
+            <blockquote
+              className="tiktok-embed"
+              cite={TIKTOK_ACCOUNT.url}
+              data-unique-id={TIKTOK_ACCOUNT.username}
+              data-embed-from="embed_page"
+              data-embed-type="creator"
+            >
+              <section>
+                <a href={`${TIKTOK_ACCOUNT.url}?refer=creator_embed`} target="_blank" rel="noopener noreferrer">
+                  @{TIKTOK_ACCOUNT.username}
+                </a>
+              </section>
+            </blockquote>
+          </div>
         </div>
       </section>
     </div>
