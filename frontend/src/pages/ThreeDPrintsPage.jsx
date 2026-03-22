@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { FaInstagram, FaTiktok } from 'react-icons/fa';
+import React, { useEffect } from 'react';
+import { FaTiktok } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import '../styles/ThreeDPrintsPage.css';
-
-const API_BASE = (process.env.REACT_APP_API_URL || '').replace(/\/+$/, '');
 
 const TIKTOK_ACCOUNT = {
   username: '3dprints_by_keikodev',
   url: 'https://www.tiktok.com/@3dprints_by_keikodev',
-};
-
-const INSTAGRAM_ACCOUNT = {
-  username: '3dprintsbykeiko',
-  url: 'https://www.instagram.com/3dprintsbykeiko/',
 };
 
 const PRINTS_SECTIONS = [
@@ -57,12 +50,6 @@ const PRINTS_SECTIONS = [
 ];
 
 function ThreeDPrintsPage() {
-  const [instagramFeed, setInstagramFeed] = useState([]);
-  const [instagramMeta, setInstagramMeta] = useState(null);
-  const [instagramLoading, setInstagramLoading] = useState(true);
-  const [instagramError, setInstagramError] = useState('');
-  const [instagramWarning, setInstagramWarning] = useState('');
-
   useEffect(() => {
     const existingTikTokScript = document.querySelector('script[data-tiktok-embed="creator-profile"]');
 
@@ -78,46 +65,6 @@ function ThreeDPrintsPage() {
 
     return () => {
       tikTokScript.remove();
-    };
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadInstagramFeed() {
-      try {
-        setInstagramLoading(true);
-        setInstagramError('');
-        setInstagramWarning('');
-
-        const response = await fetch(`${API_BASE}/api/instagram/public-feed?username=${encodeURIComponent(INSTAGRAM_ACCOUNT.username)}&limit=6`);
-        const text = await response.text();
-        const payload = text ? JSON.parse(text) : null;
-
-        if (!response.ok) {
-          throw new Error(payload?.error || 'No se pudo cargar el feed de Instagram');
-        }
-
-        if (!cancelled) {
-          setInstagramMeta(payload);
-          setInstagramFeed(Array.isArray(payload?.posts) ? payload.posts : []);
-          setInstagramWarning(payload?.warning || '');
-        }
-      } catch (error) {
-        if (!cancelled) {
-          setInstagramError(error.message || 'No se pudo cargar el feed de Instagram');
-          setInstagramFeed([]);
-        }
-      } finally {
-        if (!cancelled) {
-          setInstagramLoading(false);
-        }
-      }
-    }
-
-    loadInstagramFeed();
-    return () => {
-      cancelled = true;
     };
   }, []);
 
@@ -187,73 +134,6 @@ function ThreeDPrintsPage() {
                 </a>
               </section>
             </blockquote>
-          </div>
-        </div>
-      </section>
-
-      <section className="three-d-social-feed" aria-labelledby="three-d-instagram-feed-title">
-        <div className="three-d-social-feed__content">
-          <div className="three-d-social-feed__copy">
-            <span>Feed Instagram</span>
-            <h2 id="three-d-instagram-feed-title">Últimas publicaciones del perfil de Instagram</h2>
-            <p>
-              Ahora el bloque carga una galería real de publicaciones recientes del perfil de Instagram para que el feed sí se vea directamente en la página.
-            </p>
-            <a className="three-d-social-feed__button" href={INSTAGRAM_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
-              <span>Ver en</span>
-              <FaInstagram aria-hidden="true" />
-              <span className="sr-only">Instagram</span>
-            </a>
-            {instagramMeta?.followers ? (
-              <small className="three-d-social-feed__meta">{instagramMeta.followers.toLocaleString('es-ES')} seguidores</small>
-            ) : null}
-          </div>
-
-          <div className="three-d-social-feed__embed three-d-social-feed__embed--instagram-grid">
-            {instagramLoading ? <p className="three-d-social-feed__status">Cargando feed de Instagram…</p> : null}
-            {!instagramLoading && instagramError ? (
-              <div className="three-d-social-feed__status three-d-social-feed__status--error">
-                <p>{instagramError}</p>
-                <a href={INSTAGRAM_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
-                  Abrir perfil en Instagram
-                </a>
-              </div>
-            ) : null}
-            {!instagramLoading && !instagramError && instagramWarning ? (
-              <div className="three-d-social-feed__status">
-                <p>{instagramWarning}</p>
-                <a href={INSTAGRAM_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
-                  Abrir perfil en Instagram
-                </a>
-              </div>
-            ) : null}
-            {!instagramLoading && !instagramError && instagramFeed.length > 0 ? (
-              <div className="three-d-instagram-grid">
-                {instagramFeed.map((post) => (
-                  <a
-                    key={post.id}
-                    className="three-d-instagram-card"
-                    href={post.permalink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <img src={post.thumbnailUrl} alt={post.caption || `Publicación de Instagram de ${INSTAGRAM_ACCOUNT.username}`} loading="lazy" />
-                    <div className="three-d-instagram-card__overlay">
-                      <span>{post.isVideo ? '▶ Reel / vídeo' : '📷 Publicación'}</span>
-                      {post.caption ? <p>{post.caption}</p> : null}
-                    </div>
-                  </a>
-                ))}
-              </div>
-            ) : null}
-            {!instagramLoading && !instagramError && !instagramWarning && instagramFeed.length === 0 ? (
-              <div className="three-d-social-feed__status">
-                <p>No hay publicaciones disponibles ahora mismo.</p>
-                <a href={INSTAGRAM_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
-                  Abrir perfil en Instagram
-                </a>
-              </div>
-            ) : null}
           </div>
         </div>
       </section>
