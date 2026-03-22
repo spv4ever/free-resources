@@ -3,6 +3,7 @@ import '../styles/ImageEditorModal.css';
 
 const INITIAL_ADJUSTMENTS = { brightness: 100, contrast: 100, saturation: 100 };
 const MIN_CROP_SIZE = 30;
+const RESIZE_DIRECTIONS = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw'];
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -43,6 +44,7 @@ export default function ImageEditorModal({
 
   const canvasRef = useRef(null);
   const frameRef = useRef(null);
+  const stageRef = useRef(null);
 
   useEffect(() => {
     const objectUrl = URL.createObjectURL(file);
@@ -131,9 +133,10 @@ export default function ImageEditorModal({
   }, [crop, sourceSize.height, sourceSize.width, viewport.height, viewport.width]);
 
   const startCropDrag = (event, type) => {
-    if (!crop || !frameRef.current) return;
+    if (!crop || !stageRef.current) return;
     event.preventDefault();
-    const rect = canvasRef.current.getBoundingClientRect();
+    event.stopPropagation();
+    const rect = stageRef.current.getBoundingClientRect();
     const position = getClientPosition(event, rect);
     setDragState({ type, startX: position.x, startY: position.y, initialCrop: crop });
   };
@@ -142,33 +145,47 @@ export default function ImageEditorModal({
     if (!dragState) return undefined;
 
     const move = (event) => {
-      const rect = canvasRef.current.getBoundingClientRect();
+      const rect = stageRef.current?.getBoundingClientRect();
+      if (!rect || !viewport.width || !viewport.height) return;
+
       const currentPosition = getClientPosition(event, rect);
       const dx = ((currentPosition.x - dragState.startX) / viewport.width) * sourceSize.width;
       const dy = ((currentPosition.y - dragState.startY) / viewport.height) * sourceSize.height;
       const initial = dragState.initialCrop;
-      let nextCrop = { ...initial };
+
+      let left = initial.x;
+      let top = initial.y;
+      let right = initial.x + initial.width;
+      let bottom = initial.y + initial.height;
 
       if (dragState.type === 'move') {
-        nextCrop.x = clamp(initial.x + dx, 0, sourceSize.width - initial.width);
-        nextCrop.y = clamp(initial.y + dy, 0, sourceSize.height - initial.height);
+        const nextWidth = initial.width;
+        const nextHeight = initial.height;
+        left = clamp(initial.x + dx, 0, sourceSize.width - nextWidth);
+        top = clamp(initial.y + dy, 0, sourceSize.height - nextHeight);
+        right = left + nextWidth;
+        bottom = top + nextHeight;
+      } else {
+        if (dragState.type.includes('w')) {
+          left = clamp(initial.x + dx, 0, initial.x + initial.width - MIN_CROP_SIZE);
+        }
+        if (dragState.type.includes('e')) {
+          right = clamp(initial.x + initial.width + dx, initial.x + MIN_CROP_SIZE, sourceSize.width);
+        }
+        if (dragState.type.includes('n')) {
+          top = clamp(initial.y + dy, 0, initial.y + initial.height - MIN_CROP_SIZE);
+        }
+        if (dragState.type.includes('s')) {
+          bottom = clamp(initial.y + initial.height + dy, initial.y + MIN_CROP_SIZE, sourceSize.height);
+        }
       }
 
-      if (dragState.type === 'se') {
-        nextCrop.width = clamp(initial.width + dx, MIN_CROP_SIZE, sourceSize.width - initial.x);
-        nextCrop.height = clamp(initial.height + dy, MIN_CROP_SIZE, sourceSize.height - initial.y);
-      }
-
-      if (dragState.type === 'nw') {
-        const maxX = initial.x + initial.width - MIN_CROP_SIZE;
-        const maxY = initial.y + initial.height - MIN_CROP_SIZE;
-        nextCrop.x = clamp(initial.x + dx, 0, maxX);
-        nextCrop.y = clamp(initial.y + dy, 0, maxY);
-        nextCrop.width = initial.width + (initial.x - nextCrop.x);
-        nextCrop.height = initial.height + (initial.y - nextCrop.y);
-      }
-
-      setCrop(nextCrop);
+      setCrop({
+        x: left,
+        y: top,
+        width: right - left,
+        height: bottom - top,
+      });
     };
 
     const stop = () => setDragState(null);
@@ -275,13 +292,24 @@ export default function ImageEditorModal({
         <div className="image-editor-modal__body">
           <div className="image-editor-modal__workspace">
             <div className="image-editor-modal__frame" ref={frameRef}>
-              <canvas ref={canvasRef} onClick={handleCanvasClick} />
-              {crop && (
-                <div className="image-editor-modal__crop" style={cropStyle} onPointerDown={(event) => startCropDrag(event, 'move')}>
-                  <span className="image-editor-modal__handle image-editor-modal__handle--nw" onPointerDown={(event) => startCropDrag(event, 'nw')} />
-                  <span className="image-editor-modal__handle image-editor-modal__handle--se" onPointerDown={(event) => startCropDrag(event, 'se')} />
-                </div>
-              )}
+              <div
+                className="image-editor-modal__stage"
+                ref={stageRef}
+                style={{ width: `${viewport.width}px`, height: `${viewport.height}px` }}
+              >
+                <canvas ref={canvasRef} onClick={handleCanvasClick} />
+                {crop && (
+                  <div className="image-editor-modal__crop" style={cropStyle} onPointerDown={(event) => startCropDrag(event, 'move')}>
+                    {RESIZE_DIRECTIONS.map((direction) => (
+                      <span
+                        key={direction}
+                        className={`image-editor-modal__handle image-editor-modal__handle--${direction}`}
+                        onPointerDown={(event) => startCropDrag(event, direction)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             <p className="image-editor-modal__hint">
               {mode === 'card'
