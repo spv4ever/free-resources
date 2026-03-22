@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import '../styles/ThreeDPrintsPage.css';
 
 const TIKTOK_ACCOUNT = {
-  username: 'keikodev',
-  url: 'https://www.tiktok.com/@keikodev',
+  username: '3dprints_by_keikodev',
+  url: 'https://www.tiktok.com/@3dprints_by_keikodev',
 };
 
 const PRINTS_SECTIONS = [
@@ -110,8 +110,7 @@ function ThreeDPrintsPage() {
             <span>Feed TikTok</span>
             <h2 id="three-d-tiktok-feed-title">Últimos vídeos del perfil de TikTok</h2>
             <p>
-              Sí, es posible añadirlo aquí debajo. He dejado integrado el embed oficial del perfil para mostrar
-              los vídeos más recientes directamente en esta página.
+              Descubre nuestros últimos vídeos directamente desde TikTok. Este espacio se actualiza automáticamente para que no te pierdas ninguna novedad, contenido creativo o lanzamiento reciente.
             </p>
             <a href={TIKTOK_ACCOUNT.url} target="_blank" rel="noopener noreferrer">
               Abrir @{TIKTOK_ACCOUNT.username} en TikTok
