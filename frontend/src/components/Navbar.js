@@ -294,6 +294,7 @@ function Navbar({
           <li><Link to="/admin/categories" onClick={toggleSidebar}>📂 Gestionar Categorías</Link></li>
           <li><Link to="/admin/ai-tools" onClick={toggleSidebar}>🤖 Gestionar IA Links</Link></li>
           <li><Link to="/admin/training" onClick={toggleSidebar}>📘 Recursos de Formación</Link></li>
+          <li><Link to="/admin/models-3d" onClick={toggleSidebar}>🧩 Modelos 3D</Link></li>
           <li><Link to="/admin/filaments" onClick={toggleSidebar}>🧵 Filamentos 3D</Link></li>
           <li><Link to="/admin/short-categories" onClick={toggleSidebar}>🎬 Categorías de Shorts</Link></li>
           <li><Link to="/admin/sync-shorts" onClick={toggleSidebar}>🔁 Sincronizar Shorts Virales</Link></li>
