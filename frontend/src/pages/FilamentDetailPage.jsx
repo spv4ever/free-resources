@@ -7,6 +7,7 @@ function FilamentDetailPage() {
   const { slug } = useParams();
   const [filament, setFilament] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [imageRotations, setImageRotations] = useState({});
 
   useEffect(() => {
     const fetchFilament = async () => {
@@ -40,6 +41,13 @@ function FilamentDetailPage() {
     ].filter(Boolean);
   }, [filament]);
 
+  const rotateImage = (src, delta) => {
+    setImageRotations((current) => ({
+      ...current,
+      [src]: (((current[src] || 0) + delta) % 360 + 360) % 360,
+    }));
+  };
+
   if (loading) return <div className="filament-detail-page"><p>Cargando ficha...</p></div>;
   if (!filament) return <div className="filament-detail-page"><p>No se ha encontrado este filamento.</p></div>;
 
@@ -48,12 +56,32 @@ function FilamentDetailPage() {
       <Link className="filament-detail-page__back" to="/3dprints-keiko/filamentos">← Volver al catálogo</Link>
       <section className="filament-detail-card">
         <div className="filament-detail-card__gallery">
-          {galleryImages.length ? galleryImages.map((image) => (
-            <figure key={image.src} className="filament-detail-card__image">
-              <img src={image.src} alt={image.alt} />
-              <figcaption>{image.label}</figcaption>
-            </figure>
-          )) : <div className="filament-detail-card__image"><div>Sin imagen</div></div>}
+          {galleryImages.length ? galleryImages.map((image) => {
+            const rotation = imageRotations[image.src] || 0;
+
+            return (
+              <figure key={image.src} className="filament-detail-card__image">
+                <div className="filament-detail-card__image-frame">
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    style={{ transform: `rotate(${rotation}deg)` }}
+                  />
+                </div>
+                <div className="filament-detail-card__image-toolbar">
+                  <figcaption>{image.label}</figcaption>
+                  <div className="filament-detail-card__image-actions">
+                    <button type="button" onClick={() => rotateImage(image.src, -90)}>
+                      ↺ Girar
+                    </button>
+                    <button type="button" onClick={() => rotateImage(image.src, 90)}>
+                      ↻ Girar
+                    </button>
+                  </div>
+                </div>
+              </figure>
+            );
+          }) : <div className="filament-detail-card__image"><div>Sin imagen</div></div>}
         </div>
         <div className="filament-detail-card__content">
           <p className="filament-detail-card__eyebrow">{filament.material} · {filament.finish || 'Acabado estándar'}</p>
