@@ -1,0 +1,20 @@
+.filaments-admin-page { padding: 2rem; color: #f5f7fb; }
+.filaments-admin-page__header { margin-bottom: 1.5rem; }
+.filaments-admin-page__eyebrow { text-transform: uppercase; letter-spacing: .08em; color: #7dd3fc; }
+.filaments-admin-form, .filaments-admin-card { background: #111827; border: 1px solid #23314d; border-radius: 18px; padding: 1.25rem; }
+.filaments-admin-form__grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 1rem; }
+.filaments-admin-form label { display:flex; flex-direction:column; gap:.45rem; font-size:.95rem; }
+.filaments-admin-form input, .filaments-admin-form textarea { border-radius: 12px; border: 1px solid #334155; background: #020617; color: #fff; padding: .75rem; }
+.filaments-admin-form__color-row { display:flex; gap:.5rem; }
+.filaments-admin-form__notes { display:block; margin-top:1rem; }
+.filaments-admin-form__checkbox { display:flex !important; flex-direction:row !important; align-items:center; margin:1rem 0; gap:.75rem; }
+.filaments-admin-form__actions { display:flex; gap:1rem; margin-top:1rem; }
+.filaments-admin-form__actions button, .filaments-admin-card__actions button { border:none; border-radius:999px; padding:.8rem 1.1rem; cursor:pointer; font-weight:700; }
+.filaments-admin-form__actions .secondary { background:#334155; color:#fff; }
+.filaments-admin-form__preview img, .filaments-admin-card__media img { width: 120px; border-radius: 14px; object-fit: cover; }
+.filaments-admin-list { display:grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap:1rem; margin-top:1.5rem; }
+.filaments-admin-card { display:flex; gap:1rem; align-items:center; }
+.filaments-admin-card__media div { width:120px; height:120px; background:#1e293b; display:grid; place-items:center; border-radius:14px; }
+.filaments-admin-card__actions { display:flex; gap:.75rem; margin-top:1rem; }
+.filaments-admin-card__actions .danger { background:#991b1b; color:#fff; }
+.filaments-admin-form__status { margin-top:1rem; }
