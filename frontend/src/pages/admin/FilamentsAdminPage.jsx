@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
+import ImageEditorModal from '../../components/ImageEditorModal';
 import '../../styles/FilamentsAdminPage.css';
 
 const EMPTY_FORM = {
@@ -35,6 +36,7 @@ function FilamentsAdminPage() {
   const [uploadingField, setUploadingField] = useState('');
   const [status, setStatus] = useState('');
   const [previewRotations, setPreviewRotations] = useState(EMPTY_ROTATIONS);
+  const [pendingImageEdit, setPendingImageEdit] = useState(null);
 
   const token = useMemo(() => localStorage.getItem('token'), []);
 
@@ -76,32 +78,44 @@ function FilamentsAdminPage() {
     }));
   };
 
-  const handleUpload = (fieldName) => async (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
+  const uploadEditedImage = async (fieldName, editedFile, detectedColor) => {
     const payload = new FormData();
-    payload.append('image', file);
+    payload.append('image', editedFile);
 
     try {
       setUploadingField(fieldName);
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/upload/image`, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      setFormData((current) => ({ ...current, [fieldName]: response.data.url }));
+      setFormData((current) => ({
+        ...current,
+        [fieldName]: response.data.url,
+        ...(fieldName === 'imageUrl' && detectedColor ? { colorHex: detectedColor } : {}),
+      }));
       setPreviewRotations((current) => ({ ...current, [fieldName]: 0 }));
       setStatus(
         fieldName === 'spoolImageUrl'
-          ? '✅ Imagen de la bobina subida correctamente'
-          : '✅ Imagen principal subida correctamente'
+          ? '✅ Imagen definitiva de la bobina subida correctamente'
+          : `✅ Tarjeta procesada y subida${detectedColor ? ` · color detectado ${detectedColor}` : ''}`
       );
     } catch (error) {
       console.error('Error al subir imagen:', error);
       setStatus('❌ No se pudo subir la imagen');
+      throw error;
     } finally {
       setUploadingField('');
-      event.target.value = '';
     }
+  };
+
+  const handleUpload = (fieldName) => async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    setPendingImageEdit({
+      fieldName,
+      file,
+      mode: fieldName === 'imageUrl' ? 'card' : 'spool',
+    });
   };
 
   const handleSubmit = async (event) => {
@@ -206,6 +220,7 @@ function FilamentsAdminPage() {
           <label>
             <span>Subir imagen principal</span>
             <input type="file" accept="image/*" onChange={handleUpload('imageUrl')} disabled={Boolean(uploadingField)} />
+            <small>Se abrirá un editor para girar, recortar, ajustar y detectar el color antes de subir.</small>
           </label>
 
           <label>
@@ -216,6 +231,7 @@ function FilamentsAdminPage() {
           <label>
             <span>Subir foto de la bobina</span>
             <input type="file" accept="image/*" onChange={handleUpload('spoolImageUrl')} disabled={Boolean(uploadingField)} />
+            <small>También pasa por el editor antes de enviarse a Cloudinary.</small>
           </label>
         </div>
 
@@ -267,6 +283,18 @@ function FilamentsAdminPage() {
         )}
 
         {status && <p className="filaments-admin-form__status">{status}</p>}
+
+      {pendingImageEdit && (
+        <ImageEditorModal
+          file={pendingImageEdit.file}
+          mode={pendingImageEdit.mode}
+          onCancel={() => setPendingImageEdit(null)}
+          onConfirm={async ({ file: editedFile, detectedColor }) => {
+            await uploadEditedImage(pendingImageEdit.fieldName, editedFile, detectedColor);
+            setPendingImageEdit(null);
+          }}
+        />
+      )}
 
         <div className="filaments-admin-form__actions">
           <button type="submit">{editingId ? '💾 Actualizar' : '➕ Crear filamento'}</button>

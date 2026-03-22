@@ -28,3 +28,6 @@
 .filaments-admin-card__actions { display:flex; gap:.75rem; margin-top:1rem; }
 .filaments-admin-card__actions .danger { background:#991b1b; color:#fff; }
 .filaments-admin-form__status { margin-top:1rem; }
+
+.filaments-admin-form small { color: #94a3b8; font-size: .82rem; line-height: 1.35; }
+.filaments-admin-form__status { margin-top: 1rem; color: #bfdbfe; }
