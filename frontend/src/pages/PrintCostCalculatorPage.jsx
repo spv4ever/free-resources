@@ -32,18 +32,17 @@ const calculatePreview = (form) => {
 
   const laborHours = (Number(form.setupHours) || 0) + (Number(form.postProcessHours) || 0);
   const laborCost = laborHours * (Number(form.laborCostPerHour) || 0);
+  const otherCostsTotal = form.otherCosts.reduce((acc, line) => acc + (Number(line.cost) || 0), 0);
 
-  const baseCost = filamentCost + electricityCost + machineWearCost + laborCost;
-  const fixedOverhead = (Number(form.packagingCost) || 0)
-    + (Number(form.shippingCost) || 0)
-    + form.otherCosts.reduce((acc, line) => acc + (Number(line.cost) || 0), 0);
+  const baseCost = filamentCost + electricityCost + machineWearCost + otherCostsTotal;
+  const nonMultipliedCosts = laborCost + (Number(form.packagingCost) || 0) + (Number(form.shippingCost) || 0);
 
   const variableOverhead = baseCost * (((Number(form.platformFeePercent) || 0) + (Number(form.failureRatePercent) || 0)) / 100);
-  const subtotal = baseCost + fixedOverhead + variableOverhead;
+  const subtotalForMultiplier = baseCost + variableOverhead;
 
   const presetMultiplier = { mayorista: 3, minorista: 4, llaveros: 5 }[form.pricingMode] || null;
   const multiplier = presetMultiplier || (1 + (Number(form.customProfitPercent) || 0) / 100);
-  const finalPrice = subtotal * multiplier;
+  const finalPrice = (subtotalForMultiplier * multiplier) + nonMultipliedCosts;
   const finalPriceRounded = form.roundUpFinalPrice ? Math.ceil(finalPrice) : finalPrice;
 
   return {
@@ -51,10 +50,11 @@ const calculatePreview = (form) => {
     electricityCost,
     machineWearCost,
     laborCost,
+    otherCostsTotal,
     baseCost,
-    fixedOverhead,
+    nonMultipliedCosts,
     variableOverhead,
-    subtotal,
+    subtotalForMultiplier,
     multiplier,
     finalPrice,
     finalPriceRounded,
@@ -252,6 +252,7 @@ function PrintCostCalculatorPage() {
 
       <section className="print-cost-card">
         <h2>Otros costes</h2>
+        <p className="print-cost-help">Incluye aquí accesorios (cadenas, imanes, anillas, etc.). Estos costes sí entran en el multiplicador.</p>
         {form.otherCosts.map((line, index) => (
           <div key={`other-${index}`} className="print-cost-row">
             <input placeholder="Concepto" value={line.label} onChange={(e) => updateRow('otherCosts', index, 'label', e.target.value)} />
@@ -264,6 +265,10 @@ function PrintCostCalculatorPage() {
 
       <section className="print-cost-card">
         <h2>Beneficio y redondeo</h2>
+        <p className="print-cost-help">
+          El multiplicador se aplica sobre material + energía + desgaste + otros costes.
+          Preparación, post-proceso, packaging y envío se suman al final sin multiplicar.
+        </p>
         <div className="print-cost-presets">
           {PROFIT_PRESETS.map((preset) => (
             <label key={preset.value}>
@@ -298,10 +303,11 @@ function PrintCostCalculatorPage() {
           <li><span>Electricidad</span><strong>{round(preview.electricityCost)} €</strong></li>
           <li><span>Desgaste máquina</span><strong>{round(preview.machineWearCost)} €</strong></li>
           <li><span>Mano de obra</span><strong>{round(preview.laborCost)} €</strong></li>
-          <li><span>Subtotal base</span><strong>{round(preview.baseCost)} €</strong></li>
-          <li><span>Extra fijo</span><strong>{round(preview.fixedOverhead)} €</strong></li>
+          <li><span>Otros costes (accesorios)</span><strong>{round(preview.otherCostsTotal)} €</strong></li>
+          <li><span>Subtotal base (multiplicable)</span><strong>{round(preview.baseCost)} €</strong></li>
           <li><span>Extra variable</span><strong>{round(preview.variableOverhead)} €</strong></li>
-          <li><span>Subtotal total</span><strong>{round(preview.subtotal)} €</strong></li>
+          <li><span>Subtotal para multiplicador</span><strong>{round(preview.subtotalForMultiplier)} €</strong></li>
+          <li><span>Costes no multiplicados</span><strong>{round(preview.nonMultipliedCosts)} €</strong></li>
           <li><span>Multiplicador beneficio</span><strong>x{round(preview.multiplier)}</strong></li>
           <li><span>Precio final</span><strong>{round(preview.finalPrice)} €</strong></li>
           <li><span>Precio final redondeado</span><strong>{round(preview.finalPriceRounded)} €</strong></li>

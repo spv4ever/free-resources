@@ -63,14 +63,15 @@ const calculateProject = (payload = {}) => {
 
   const laborHours = labor.setupHours + labor.postProcessHours;
   const laborCost = laborHours * labor.costPerHour;
+  const otherCostsTotal = otherCosts.reduce((acc, line) => acc + line.cost, 0);
 
-  const baseCost = filamentCost + electricityCost + machineWearCost + laborCost;
+  const baseCost = filamentCost + electricityCost + machineWearCost + otherCostsTotal;
 
-  const fixedOverhead = packagingCost + shippingCost + otherCosts.reduce((acc, line) => acc + line.cost, 0);
+  const nonMultipliedCosts = laborCost + packagingCost + shippingCost;
   const variableOverhead = baseCost * ((platformFeePercent + failureRatePercent) / 100);
-  const overheadCost = fixedOverhead + variableOverhead;
+  const overheadCost = nonMultipliedCosts + variableOverhead;
 
-  const subtotal = baseCost + overheadCost;
+  const subtotalForMultiplier = baseCost + variableOverhead;
 
   const pricingMode = payload.pricingMode || 'minorista';
   const multiplierMap = {
@@ -83,11 +84,11 @@ const calculateProject = (payload = {}) => {
   const customProfitPercent = clampMin(payload.customProfitPercent);
   const profitMultiplier = multiplierFromMode || (1 + customProfitPercent / 100);
 
-  const finalPrice = subtotal * profitMultiplier;
+  const finalPrice = (subtotalForMultiplier * profitMultiplier) + nonMultipliedCosts;
   const roundUpFinalPrice = payload.roundUpFinalPrice !== false;
   const finalPriceRounded = roundUpFinalPrice ? Math.ceil(finalPrice) : finalPrice;
-  const profitAmount = finalPrice - subtotal;
-  const profitPercentApplied = subtotal > 0 ? (profitAmount / subtotal) * 100 : 0;
+  const profitAmount = finalPrice - (subtotalForMultiplier + nonMultipliedCosts);
+  const profitPercentApplied = subtotalForMultiplier > 0 ? (profitAmount / subtotalForMultiplier) * 100 : 0;
 
   return {
     pricingMode,
@@ -110,9 +111,12 @@ const calculateProject = (payload = {}) => {
       electricityCost,
       machineWearCost,
       laborCost,
+      otherCostsTotal,
       baseCost,
       overheadCost,
-      subtotal,
+      subtotal: subtotalForMultiplier + nonMultipliedCosts,
+      subtotalForMultiplier,
+      nonMultipliedCosts,
       profitMultiplier,
       profitPercentApplied,
       profitAmount,
