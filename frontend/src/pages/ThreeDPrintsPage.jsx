@@ -40,6 +40,21 @@ const PRINTS_SECTIONS = [
     cta: { to: '/3dprints-keiko/filamentos', label: 'Ver catálogo de filamentos' },
   },
   {
+    id: 'calculadora-costes',
+    title: 'Calculadora de costes 3D',
+    emoji: '🧮',
+    description: 'Calcula costes de impresión y precio final',
+    bullets: [
+      'Configura todos los costes: filamentos por peso, electricidad, desgaste de máquina, mano de obra y extras.',
+      'Modo de beneficio predefinido: x3 mayorista, x4 minorista, x5 llaveros.',
+      'Modo "otros" para definir porcentaje de beneficio personalizado.',
+      'Precio final con opción de redondeo siempre hacia arriba.',
+      'Guardado de proyectos para usuarios PRO y ADMIN.',
+    ],
+    status: 'Nueva calculadora disponible',
+    cta: { to: '/3dprints-keiko/calculadora-costes', label: 'Abrir calculadora de costes' },
+  },
+  {
     id: 'material',
     title: 'Material y herramientas',
     emoji: '🛠️',
@@ -79,8 +94,8 @@ function ThreeDPrintsPage() {
     <div className="three-d-prints-page">
       <section id="three-d-sections" className="three-d-sections">
         <div className="three-d-sections__header">
-          <span>Bloques iniciales</span>
-          <h2>Una base modular para seguir ampliando 3DPrints by Keiko</h2>
+          <span>Bloques modulares</span>
+          <h2>Cuatro secciones base para seguir ampliando 3DPrints by Keiko</h2>
           <p>
             Cada bloque nace como un módulo independiente para que en el futuro puedas sumar tantas categorías como necesites.
           </p>
