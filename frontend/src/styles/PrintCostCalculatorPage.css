@@ -1,0 +1,112 @@
+.print-cost-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.print-cost-page__header,
+.print-cost-card {
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  background: var(--panel-gradient, var(--color-bg-soft));
+  box-shadow: 0 12px 30px var(--color-shadow);
+  padding: 1rem;
+}
+
+.print-cost-page__header span {
+  display: inline-flex;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.print-cost-page__header p,
+.print-cost-page__header a,
+.print-cost-card p,
+.print-cost-card label {
+  color: var(--color-text-muted);
+}
+
+.print-cost-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.print-cost-grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.print-cost-card input,
+.print-cost-card textarea,
+.print-cost-card button {
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--color-border) 86%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-bg-soft) 86%, transparent);
+  color: var(--color-text);
+  padding: 0.62rem 0.7rem;
+}
+
+.print-cost-card button {
+  width: auto;
+  cursor: pointer;
+}
+
+.print-cost-row {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr) auto;
+  gap: 0.6rem;
+  margin-bottom: 0.55rem;
+}
+
+.print-cost-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.print-cost-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.42rem;
+}
+
+.print-cost-card li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-bottom: 1px dashed color-mix(in srgb, var(--color-border) 72%, transparent);
+  padding-bottom: 0.4rem;
+}
+
+.print-cost-actions {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.print-project-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.print-project-list article {
+  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
+  border-radius: 12px;
+  padding: 0.7rem;
+}
+
+.mt-12 {
+  margin-top: 0.75rem;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .print-cost-grid--3,
+  .print-cost-row {
+    grid-template-columns: 1fr;
+  }
+}
