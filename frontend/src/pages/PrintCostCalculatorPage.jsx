@@ -9,6 +9,56 @@ const defaultOtherCost = { label: '', cost: 0 };
 
 const round = (n) => Number((Number(n) || 0).toFixed(2));
 
+
+const PRINT_COST_PREFERENCES_COOKIE = 'print_cost_preferences';
+const ONE_YEAR_SECONDS = 60 * 60 * 24 * 365;
+
+const DEFAULT_FORM = {
+  name: '',
+  notes: '',
+  filaments: [defaultFilament],
+  filamentWastePercent: 0,
+  powerWatts: 95,
+  printHours: 2,
+  pricePerKwh: 0.2,
+  machineCost: 400,
+  usefulLifeHours: 2000,
+  maintenanceCostPerHour: 0.05,
+  setupHours: 0,
+  postProcessHours: 0,
+  laborCostPerHour: 15,
+  packagingCost: 0,
+  shippingCost: 0,
+  platformFeePercent: 0,
+  failureRatePercent: 0,
+  otherCosts: [defaultOtherCost],
+  pricingMode: 'minorista',
+  customProfitPercent: 50,
+  roundUpFinalPrice: true,
+};
+
+const parsePrintCostCookie = () => {
+  if (typeof document === 'undefined') return {};
+
+  const cookieValue = document.cookie
+    .split('; ')
+    .find((row) => row.startsWith(`${PRINT_COST_PREFERENCES_COOKIE}=`))
+    ?.split('=')[1];
+
+  if (!cookieValue) return {};
+
+  try {
+    return JSON.parse(decodeURIComponent(cookieValue));
+  } catch {
+    return {};
+  }
+};
+
+const writePrintCostCookie = (preferences) => {
+  if (typeof document === 'undefined') return;
+
+  document.cookie = `${PRINT_COST_PREFERENCES_COOKIE}=${encodeURIComponent(JSON.stringify(preferences))}; max-age=${ONE_YEAR_SECONDS}; path=/; SameSite=Lax`;
+};
 const PROFIT_PRESETS = [
   { value: 'mayorista', label: 'Mayorista x3' },
   { value: 'minorista', label: 'Minorista x4' },
@@ -65,28 +115,16 @@ function PrintCostCalculatorPage() {
   const { user } = useUser();
   const canSave = user && (user.role === 'pro' || user.role === 'admin');
 
-  const [form, setForm] = useState({
-    name: '',
-    notes: '',
-    filaments: [defaultFilament],
-    filamentWastePercent: 0,
-    powerWatts: 120,
-    printHours: 2,
-    pricePerKwh: 0.2,
-    machineCost: 300,
-    usefulLifeHours: 2000,
-    maintenanceCostPerHour: 0.05,
-    setupHours: 0.2,
-    postProcessHours: 0.3,
-    laborCostPerHour: 15,
-    packagingCost: 0,
-    shippingCost: 0,
-    platformFeePercent: 0,
-    failureRatePercent: 0,
-    otherCosts: [defaultOtherCost],
-    pricingMode: 'minorista',
-    customProfitPercent: 50,
-    roundUpFinalPrice: true,
+  const [form, setForm] = useState(() => {
+    const storedPreferences = parsePrintCostCookie();
+
+    return {
+      ...DEFAULT_FORM,
+      powerWatts: storedPreferences.powerWatts ?? DEFAULT_FORM.powerWatts,
+      machineCost: storedPreferences.machineCost ?? DEFAULT_FORM.machineCost,
+      setupHours: storedPreferences.setupHours ?? DEFAULT_FORM.setupHours,
+      postProcessHours: storedPreferences.postProcessHours ?? DEFAULT_FORM.postProcessHours,
+    };
   });
 
   const [status, setStatus] = useState('');
@@ -115,6 +153,16 @@ function PrintCostCalculatorPage() {
       [key]: prev[key].length > 1 ? prev[key].filter((_, i) => i !== index) : prev[key],
     }));
   };
+
+
+  useEffect(() => {
+    writePrintCostCookie({
+      powerWatts: Number(form.powerWatts) || 0,
+      machineCost: Number(form.machineCost) || 0,
+      setupHours: Number(form.setupHours) || 0,
+      postProcessHours: Number(form.postProcessHours) || 0,
+    });
+  }, [form.powerWatts, form.machineCost, form.setupHours, form.postProcessHours]);
 
   const loadProjects = async () => {
     if (!canSave) return;
