@@ -52,6 +52,7 @@
 .print-cost-card textarea,
 .print-cost-card button {
   width: 100%;
+  box-sizing: border-box;
   border: 1px solid color-mix(in srgb, var(--color-border) 86%, transparent);
   border-radius: 10px;
   background: color-mix(in srgb, var(--color-bg-soft) 86%, transparent);
@@ -70,6 +71,11 @@
   align-items: end;
   gap: 0.6rem;
   margin-bottom: 0.55rem;
+}
+
+
+.print-cost-row > * {
+  min-width: 0;
 }
 
 .print-cost-presets {
