@@ -370,6 +370,7 @@ function PrintCostCalculatorPage() {
           <li><span>Precio final</span><strong>{round(preview.finalPrice)} €</strong></li>
           <li><span>Precio final redondeado</span><strong>{round(preview.finalPriceRounded)} €</strong></li>
           <li><span>Beneficio neto por producto</span><strong>{round(preview.netProfitPerProduct)} €</strong></li>
+          <li><span>Beneficio neto sobre PVP (sin redondear)</span><strong>{preview.netProfitWithoutRounding} €</strong></li>
           <li><span>Beneficio sobre el precio (sin redondear)</span><strong>{preview.profitOverPricePercentWithoutRounding}%</strong></li>
         </ul>
         <div className="print-cost-actions">
