@@ -96,6 +96,10 @@ const calculatePreview = (form) => {
   const finalPrice = (subtotalForMultiplier * multiplier) + nonMultipliedCosts;
   const finalPriceRounded = form.roundUpFinalPrice ? Math.ceil(finalPrice) : finalPrice;
   const netProfitPerProduct = finalPriceRounded - totalCostPerProduct;
+  const netProfitWithoutRounding = finalPrice - totalCostPerProduct;
+  const profitOverPricePercentWithoutRounding = finalPrice > 0
+    ? (netProfitWithoutRounding / finalPrice) * 100
+    : 0;
 
   return {
     filamentCost,
@@ -112,6 +116,8 @@ const calculatePreview = (form) => {
     finalPrice,
     finalPriceRounded,
     netProfitPerProduct,
+    netProfitWithoutRounding,
+    profitOverPricePercentWithoutRounding,
   };
 };
 
@@ -364,6 +370,7 @@ function PrintCostCalculatorPage() {
           <li><span>Precio final</span><strong>{round(preview.finalPrice)} €</strong></li>
           <li><span>Precio final redondeado</span><strong>{round(preview.finalPriceRounded)} €</strong></li>
           <li><span>Beneficio neto por producto</span><strong>{round(preview.netProfitPerProduct)} €</strong></li>
+          <li><span>Beneficio sobre el precio (sin redondear)</span><strong>{preview.profitOverPricePercentWithoutRounding}%</strong></li>
         </ul>
         <div className="print-cost-actions">
           <button type="button" onClick={saveProject} disabled={!canSave}>Guardar proyecto</button>
