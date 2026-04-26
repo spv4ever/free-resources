@@ -296,6 +296,7 @@ function Navbar({
           <li><Link to="/admin/training" onClick={toggleSidebar}>📘 Recursos de Formación</Link></li>
           <li><Link to="/admin/models-3d" onClick={toggleSidebar}>🧩 Modelos 3D</Link></li>
           <li><Link to="/admin/filaments" onClick={toggleSidebar}>🧵 Filamentos 3D</Link></li>
+          <li><Link to="/admin/articulos" onClick={toggleSidebar}>📦 Artículos / Tarifas</Link></li>
           <li><Link to="/admin/short-categories" onClick={toggleSidebar}>🎬 Categorías de Shorts</Link></li>
           <li><Link to="/admin/sync-shorts" onClick={toggleSidebar}>🔁 Sincronizar Shorts Virales</Link></li>
           <li><Link to="/admin/social-posts" onClick={toggleSidebar}>📢 Social Posts</Link></li>

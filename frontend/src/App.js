@@ -107,6 +107,7 @@ const FilamentDetailPage = lazy(() => import('./pages/FilamentDetailPage'));
 const Models3DPage = lazy(() => import('./pages/Models3DPage'));
 const Model3DDetailPage = lazy(() => import('./pages/Model3DDetailPage'));
 const PrintCostCalculatorPage = lazy(() => import('./pages/PrintCostCalculatorPage'));
+const ArticulosAdminPage = lazy(() => import('./pages/admin/ArticulosAdminPage'));
 
 // Utilidades
 const RedimensionadorImagenes = lazy(() => import('./pages/RedimensionadorImagenes'));
@@ -222,6 +223,7 @@ function App() {
                 <Route path="/3dprints-keiko/calculadora-costes" element={<PrintCostCalculatorPage />} />
                 <Route path="/admin/filaments" element={<AdminRoute><FilamentsAdminPage /></AdminRoute>} />
                 <Route path="/admin/models-3d" element={<AdminRoute><Models3DAdminPage /></AdminRoute>} />
+                <Route path="/admin/articulos" element={<AdminRoute><ArticulosAdminPage /></AdminRoute>} />
                 <Route path="/admin/imports" element={<AdminRoute><AdminImport /></AdminRoute>} />
                 <Route path="/admin/DuplicateCleanup" element={<AdminRoute><DuplicateCleanup /></AdminRoute>} />
                 <Route path="/mis-imagenes" element={<UserImageGallery />} />
