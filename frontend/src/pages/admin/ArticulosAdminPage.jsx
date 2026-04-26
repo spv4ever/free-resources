@@ -15,6 +15,15 @@ const EMPTY_FORM = {
   imageUrl: '',
 };
 
+const PRICE_COLUMNS = [
+  ['precioCoste', 'Precio coste'],
+  ['precioCosteMayorista', 'Precio coste mayorista'],
+  ['pvp', 'PVP'],
+  ['pvpMayorista', 'PVP mayorista'],
+  ['costeProtectora', 'Coste protectora'],
+  ['pvpProtectora', 'PVP protectora'],
+];
+
 function ArticulosAdminPage() {
   const token = useMemo(() => localStorage.getItem('token'), []);
   const [articulos, setArticulos] = useState([]);
@@ -151,14 +160,7 @@ function ArticulosAdminPage() {
             <span>Descripción larga</span>
             <textarea name="descripcionLarga" value={formData.descripcionLarga} onChange={handleChange} rows={4} />
           </label>
-          {[
-            ['precioCoste', 'Precio coste'],
-            ['precioCosteMayorista', 'Precio coste mayorista'],
-            ['pvp', 'PVP'],
-            ['pvpMayorista', 'PVP mayorista'],
-            ['costeProtectora', 'Coste protectora'],
-            ['pvpProtectora', 'PVP protectora'],
-          ].map(([name, label]) => (
+          {PRICE_COLUMNS.map(([name, label]) => (
             <label key={name}>
               <span>{label}</span>
               <input type="number" min="0" step="0.01" name={name} value={formData[name]} onChange={handleChange} required />
@@ -205,8 +207,9 @@ function ArticulosAdminPage() {
               <th>Código</th>
               <th>Categoría</th>
               <th>Descripción corta</th>
-              <th>Coste</th>
-              <th>PVP</th>
+              {PRICE_COLUMNS.map(([, label]) => (
+                <th key={label}>{label}</th>
+              ))}
               <th>Acciones</th>
             </tr>
           </thead>
@@ -216,8 +219,9 @@ function ArticulosAdminPage() {
                 <td>#{articulo.codigo}</td>
                 <td>{articulo.categoria}</td>
                 <td>{articulo.descripcionCorta || '—'}</td>
-                <td>{Number(articulo.precioCoste).toFixed(2)} €</td>
-                <td>{Number(articulo.pvp).toFixed(2)} €</td>
+                {PRICE_COLUMNS.map(([name]) => (
+                  <td key={`${articulo._id}-${name}`}>{Number(articulo[name]).toFixed(2)} €</td>
+                ))}
                 <td>
                   <button type="button" onClick={() => handleEdit(articulo)}>Editar</button>
                   <button type="button" onClick={() => handleDelete(articulo._id)}>Eliminar</button>
