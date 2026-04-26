@@ -22,13 +22,23 @@
     background-color: #218838;
   }
   
-  .admin-form,
-  .admin-row {
+.admin-form,
+.admin-row {
     background-color: #2c2c2c;
     padding: 1rem;
     margin-bottom: 1rem;
-    border-radius: 8px;
-  }
+  border-radius: 8px;
+}
+
+.admin-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.admin-form .form-buttons {
+  grid-column: 1 / -1;
+}
   
   .admin-form label,
   .admin-row label {
@@ -37,17 +47,26 @@
     color: #ccc;
   }
   
-  .admin-form input[type="text"],
-  .admin-row input[type="text"] {
-    width: 100%;
-    padding: 0.4rem;
-    margin-top: 0.2rem;
+.admin-form input[type="text"],
+.admin-row input[type="text"],
+.admin-form textarea,
+.admin-row textarea {
+  width: 100%;
+  padding: 0.4rem;
+  margin-top: 0.2rem;
     margin-bottom: 0.5rem;
     border: 1px solid #555;
     border-radius: 4px;
-    background-color: #1a1a1a;
-    color: #fff;
-  }
+  background-color: #1a1a1a;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+.admin-form textarea,
+.admin-row textarea {
+  resize: vertical;
+  min-height: 72px;
+}
   
   .admin-form input[type="checkbox"],
   .admin-row input[type="checkbox"] {
@@ -90,9 +109,15 @@
     margin-bottom: 0.2rem;
   }
   
-  .descripcion {
-    color: #ccc;
-    font-size: 0.95rem;
-    margin-bottom: 0.5rem;
-  }
+.descripcion {
+  color: #ccc;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.descripcion-larga {
+  margin-top: 0.25rem;
+}
   

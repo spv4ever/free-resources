@@ -37,10 +37,17 @@
     font-size: 1.2rem;
   }
   
-  .training-card .descripcion {
+.training-card .descripcion {
     font-size: 0.95rem;
     color: #ccc;
     margin-bottom: 1rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+.training-card .descripcion-larga {
+    font-size: 0.9rem;
+    color: #bdbdbd;
   }
   
   .training-card p {
