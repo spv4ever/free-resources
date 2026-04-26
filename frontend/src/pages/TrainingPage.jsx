@@ -39,7 +39,8 @@ function TrainingPage() {
           {resources.map(resource => (
             <div className="training-card" key={resource._id}>
               <h3>{resource.titulo}</h3>
-              <p className="descripcion">{resource.descripcion}</p>
+              <p className="descripcion">{resource.descripcionCorta || resource.descripcion}</p>
+              {resource.descripcionLarga && <p className="descripcion descripcion-larga">{resource.descripcionLarga}</p>}
               <p><strong>Plataforma:</strong> {resource.plataforma}</p>
               <p><strong>Tipo:</strong> {resource.tipo}</p>
               <p><strong>Dificultad:</strong> {resource.dificultad}</p>

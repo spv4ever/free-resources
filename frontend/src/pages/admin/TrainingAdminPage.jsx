@@ -77,6 +77,8 @@ function TrainingAdminPage() {
       <button className="add-button" onClick={() => setNewData({
         titulo: '',
         descripcion: '',
+        descripcionCorta: '',
+        descripcionLarga: '',
         categoria: '',
         tipo: '',
         plataforma: '',
@@ -106,12 +108,21 @@ function TrainingAdminPage() {
                     onChange={(e) => handleChange(e, setNewData)}
                     />
                 ) : (
-                    <input
-                    type="text"
-                    name={key}
-                    value={value}
-                    onChange={(e) => handleChange(e, setNewData)}
-                    />
+                    key === 'descripcionCorta' || key === 'descripcionLarga' ? (
+                      <textarea
+                        name={key}
+                        value={value}
+                        onChange={(e) => handleChange(e, setNewData)}
+                        rows={key === 'descripcionLarga' ? 5 : 2}
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        name={key}
+                        value={value}
+                        onChange={(e) => handleChange(e, setNewData)}
+                      />
+                    )
                 )}
                 </label>
             )
@@ -140,12 +151,21 @@ function TrainingAdminPage() {
                             onChange={(e) => handleChange(e, setEditData)}
                         />
                         ) : (
-                        <input
-                            type="text"
+                        key === 'descripcionCorta' || key === 'descripcionLarga' ? (
+                          <textarea
                             name={key}
                             value={value}
                             onChange={(e) => handleChange(e, setEditData)}
-                        />
+                            rows={key === 'descripcionLarga' ? 5 : 2}
+                          />
+                        ) : (
+                          <input
+                              type="text"
+                              name={key}
+                              value={value}
+                              onChange={(e) => handleChange(e, setEditData)}
+                          />
+                        )
                         )}
                     </label>
                     )
@@ -159,7 +179,8 @@ function TrainingAdminPage() {
                 <>
                 <strong>{resource.titulo}</strong>
                 <p className="meta">{resource.tipo} · {resource.plataforma}</p>
-                <p className="descripcion">{resource.descripcion}</p>
+                <p className="descripcion">{resource.descripcionCorta || resource.descripcion}</p>
+                {resource.descripcionLarga && <p className="descripcion descripcion-larga">{resource.descripcionLarga}</p>}
                 <div className="row-actions">
                     <button onClick={() => setEditData(resource)}>✏</button>
                     <button onClick={() => handleDelete(resource._id)}>🗑</button>

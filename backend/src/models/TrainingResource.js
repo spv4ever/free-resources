@@ -8,6 +8,12 @@ const trainingResourceSchema = new mongoose.Schema({
   descripcion: {
     type: String
   },
+  descripcionCorta: {
+    type: String
+  },
+  descripcionLarga: {
+    type: String
+  },
   categoria: {
     type: String, // Ej: "Programación", "IA", "Diseño"
     required: true
