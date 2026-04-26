@@ -39,6 +39,10 @@
 .admin-form .form-buttons {
   grid-column: 1 / -1;
 }
+
+.admin-form label.full-width {
+  grid-column: 1 / -1;
+}
   
   .admin-form label,
   .admin-row label {
