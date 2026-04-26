@@ -63,10 +63,57 @@ const escapeHtml = (text = '') => String(text)
   .replaceAll('"', '&quot;')
   .replaceAll("'", '&#039;');
 
-const escapePdfText = (text = '') => String(text)
-  .replaceAll('\\', '\\\\')
-  .replaceAll('(', '\\(')
-  .replaceAll(')', '\\)');
+const WIN1252_EXTRA_MAP = new Map([
+  [8364, 128], // €
+  [8218, 130],
+  [402, 131],
+  [8222, 132],
+  [8230, 133],
+  [8224, 134],
+  [8225, 135],
+  [710, 136],
+  [8240, 137],
+  [352, 138],
+  [8249, 139],
+  [338, 140],
+  [381, 142],
+  [8216, 145],
+  [8217, 146],
+  [8220, 147],
+  [8221, 148],
+  [8226, 149],
+  [8211, 150],
+  [8212, 151],
+  [732, 152],
+  [8482, 153],
+  [353, 154],
+  [8250, 155],
+  [339, 156],
+  [382, 158],
+  [376, 159],
+]);
+
+const toWin1252Bytes = (text = '') => {
+  const result = [];
+  for (const char of String(text)) {
+    const codePoint = char.codePointAt(0);
+    if (codePoint <= 255) {
+      result.push(codePoint);
+      continue;
+    }
+    const mapped = WIN1252_EXTRA_MAP.get(codePoint);
+    result.push(mapped ?? 63); // '?'
+  }
+  return result;
+};
+
+const escapePdfText = (text = '') => toWin1252Bytes(text)
+  .map((byte) => {
+    if (byte === 92 || byte === 40 || byte === 41) return `\\${String.fromCharCode(byte)}`;
+    if (byte < 32 || byte > 126) return `\\${byte.toString(8).padStart(3, '0')}`;
+    return String.fromCharCode(byte);
+  })
+  .join('');
 
 const buildSimplePdfBuffer = (lines = []) => {
   const pageWidth = 595;
@@ -102,7 +149,7 @@ const buildSimplePdfBuffer = (lines = []) => {
     textOps.push('ET');
 
     const stream = textOps.join('\n');
-    const streamObjectId = addObject(`<< /Length ${Buffer.byteLength(stream, 'utf8')} >>\nstream\n${stream}\nendstream`);
+    const streamObjectId = addObject(`<< /Length ${Buffer.byteLength(stream, 'latin1')} >>\nstream\n${stream}\nendstream`);
     contentObjectIds.push(streamObjectId);
   });
 
@@ -119,10 +166,10 @@ const buildSimplePdfBuffer = (lines = []) => {
   let pdf = '%PDF-1.4\n';
   const offsets = [0];
   objects.forEach((object, idx) => {
-    offsets.push(Buffer.byteLength(pdf, 'utf8'));
+    offsets.push(Buffer.byteLength(pdf, 'latin1'));
     pdf += `${idx + 1} 0 obj\n${object}\nendobj\n`;
   });
-  const xrefOffset = Buffer.byteLength(pdf, 'utf8');
+  const xrefOffset = Buffer.byteLength(pdf, 'latin1');
   pdf += `xref\n0 ${objects.length + 1}\n`;
   pdf += '0000000000 65535 f \n';
   for (let i = 1; i <= objects.length; i += 1) {
@@ -130,10 +177,16 @@ const buildSimplePdfBuffer = (lines = []) => {
   }
   pdf += `trailer\n<< /Size ${objects.length + 1} /Root ${catalogId} 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
 
-  return Buffer.from(pdf, 'utf8');
+  return Buffer.from(pdf, 'latin1');
 };
 
 const buildMayoristaPdfLines = (groupedByCategory = {}, sortedCategories = [], generatedAt = '') => {
+  const codeWidth = 8;
+  const descriptionWidth = 58;
+  const priceWidth = 14;
+  const buildRow = (code = '', description = '', price = '') => `${code.padEnd(codeWidth)} | ${description.padEnd(descriptionWidth)} | ${price.padStart(priceWidth)}`;
+  const separator = `${'-'.repeat(codeWidth)}-+-${'-'.repeat(descriptionWidth)}-+-${'-'.repeat(priceWidth)}`;
+
   const lines = [
     'Tarifa mayorista',
     `Generado el ${generatedAt}`,
@@ -148,12 +201,13 @@ const buildMayoristaPdfLines = (groupedByCategory = {}, sortedCategories = [], g
 
   sortedCategories.forEach((category) => {
     lines.push(`=== ${category} ===`);
-    lines.push('Código | Descripción | Precio coste mayorista');
+    lines.push(buildRow('Código', 'Descripción', 'Precio mayor.'));
+    lines.push(separator);
     groupedByCategory[category].forEach((articulo) => {
       const code = `#${articulo.codigo ?? '—'}`;
       const description = (articulo.descripcionCorta || articulo.descripcionLarga || '—').replaceAll(/\s+/g, ' ').trim();
-      const compactDescription = description.length > 70 ? `${description.slice(0, 67)}...` : description;
-      lines.push(`${code} | ${compactDescription} | ${formatPrice(articulo.precioCosteMayorista)}`);
+      const compactDescription = description.length > descriptionWidth ? `${description.slice(0, descriptionWidth - 3)}...` : description;
+      lines.push(buildRow(code, compactDescription, formatPrice(articulo.precioCosteMayorista)));
     });
     lines.push('');
   });
