@@ -182,10 +182,12 @@ const buildSimplePdfBuffer = (lines = []) => {
 
 const buildMayoristaPdfLines = (groupedByCategory = {}, sortedCategories = [], generatedAt = '') => {
   const codeWidth = 8;
-  const descriptionWidth = 58;
-  const priceWidth = 14;
-  const buildRow = (code = '', description = '', price = '') => `${code.padEnd(codeWidth)} | ${description.padEnd(descriptionWidth)} | ${price.padStart(priceWidth)}`;
-  const separator = `${'-'.repeat(codeWidth)}-+-${'-'.repeat(descriptionWidth)}-+-${'-'.repeat(priceWidth)}`;
+  const descriptionWidth = 40;
+  const priceWidth = 11;
+  const buildRow = (code = '', description = '', priceCost = '', pvpMayorista = '', pvp = '') => (
+    `${code.padEnd(codeWidth)} | ${description.padEnd(descriptionWidth)} | ${priceCost.padStart(priceWidth)} | ${pvpMayorista.padStart(priceWidth)} | ${pvp.padStart(priceWidth)}`
+  );
+  const separator = `${'-'.repeat(codeWidth)}-+-${'-'.repeat(descriptionWidth)}-+-${'-'.repeat(priceWidth)}-+-${'-'.repeat(priceWidth)}-+-${'-'.repeat(priceWidth)}`;
 
   const lines = [
     'Tarifa mayorista',
@@ -201,13 +203,19 @@ const buildMayoristaPdfLines = (groupedByCategory = {}, sortedCategories = [], g
 
   sortedCategories.forEach((category) => {
     lines.push(`=== ${category} ===`);
-    lines.push(buildRow('Código', 'Descripción', 'Precio mayor.'));
+    lines.push(buildRow('Código', 'Descripción', 'Coste may.', 'PVP may.', 'PVP'));
     lines.push(separator);
     groupedByCategory[category].forEach((articulo) => {
       const code = `#${articulo.codigo ?? '—'}`;
       const description = (articulo.descripcionCorta || articulo.descripcionLarga || '—').replaceAll(/\s+/g, ' ').trim();
       const compactDescription = description.length > descriptionWidth ? `${description.slice(0, descriptionWidth - 3)}...` : description;
-      lines.push(buildRow(code, compactDescription, formatPrice(articulo.precioCosteMayorista)));
+      lines.push(buildRow(
+        code,
+        compactDescription,
+        formatPrice(articulo.precioCosteMayorista),
+        formatPrice(articulo.pvpMayorista),
+        formatPrice(articulo.pvp),
+      ));
     });
     lines.push('');
   });
@@ -243,6 +251,8 @@ export const downloadMayoristaPriceListPdf = async (req, res) => {
                   <th>Código</th>
                   <th>Descripción</th>
                   <th>Precio coste mayorista</th>
+                  <th>PVP mayorista</th>
+                  <th>PVP</th>
                 </tr>
               </thead>
               <tbody>
@@ -251,6 +261,8 @@ export const downloadMayoristaPriceListPdf = async (req, res) => {
                     <td>#${escapeHtml(articulo.codigo)}</td>
                     <td>${escapeHtml(articulo.descripcionCorta || articulo.descripcionLarga || '—')}</td>
                     <td>${formatPrice(articulo.precioCosteMayorista)}</td>
+                    <td>${formatPrice(articulo.pvpMayorista)}</td>
+                    <td>${formatPrice(articulo.pvp)}</td>
                   </tr>
                 `).join('')}
               </tbody>
