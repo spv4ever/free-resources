@@ -2,6 +2,64 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../../styles/TrainingAdminPage.css';
 
+const FORM_FIELDS = [
+  { name: 'titulo', label: 'Título', type: 'text' },
+  { name: 'descripcion', label: 'Descripción', type: 'textarea', rows: 3, full: true },
+  { name: 'descripcionCorta', label: 'Descripción corta', type: 'textarea', rows: 2, full: true },
+  { name: 'descripcionLarga', label: 'Descripción larga', type: 'textarea', rows: 5, full: true },
+  { name: 'categoria', label: 'Categoría', type: 'text' },
+  { name: 'tipo', label: 'Tipo', type: 'text' },
+  { name: 'plataforma', label: 'Plataforma', type: 'text' },
+  { name: 'url', label: 'URL', type: 'text' },
+  { name: 'duracion', label: 'Duración', type: 'text' },
+  { name: 'dificultad', label: 'Dificultad', type: 'text' },
+  { name: 'idioma', label: 'Idioma', type: 'text' },
+  { name: 'precio', label: 'Precio', type: 'text' },
+  { name: 'gratuito', label: 'Gratuito', type: 'checkbox' },
+  { name: 'certificado', label: 'Certificado', type: 'checkbox' },
+  { name: 'destacado', label: 'Destacado', type: 'checkbox' }
+];
+
+const renderField = (data, setData) => FORM_FIELDS.map((field) => (
+  <label
+    key={field.name}
+    className={field.full ? 'full-width' : ''}
+  >
+    {field.label}:
+    {field.type === 'checkbox' ? (
+      <input
+        type="checkbox"
+        name={field.name}
+        checked={Boolean(data[field.name])}
+        onChange={(e) => {
+          const { name, checked } = e.target;
+          setData((prev) => ({ ...prev, [name]: checked }));
+        }}
+      />
+    ) : field.type === 'textarea' ? (
+      <textarea
+        name={field.name}
+        value={data[field.name] || ''}
+        onChange={(e) => {
+          const { name, value } = e.target;
+          setData((prev) => ({ ...prev, [name]: value }));
+        }}
+        rows={field.rows || 3}
+      />
+    ) : (
+      <input
+        type="text"
+        name={field.name}
+        value={data[field.name] || ''}
+        onChange={(e) => {
+          const { name, value } = e.target;
+          setData((prev) => ({ ...prev, [name]: value }));
+        }}
+      />
+    )}
+  </label>
+));
+
 function TrainingAdminPage() {
   const [resources, setResources] = useState([]);
   const [editData, setEditData] = useState(null);
@@ -18,14 +76,6 @@ function TrainingAdminPage() {
     } catch (err) {
       console.error('Error al cargar recursos:', err);
     }
-  };
-
-  const handleChange = (e, dataSetter) => {
-    const { name, value, type, checked } = e.target;
-    dataSetter(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
   };
 
   const handleCreate = async () => {
@@ -96,37 +146,7 @@ function TrainingAdminPage() {
 
         {newData && (
         <div className="admin-form">
-            {Object.entries(newData).map(([key, value]) => (
-            key !== '_id' && (
-                <label key={key}>
-                {key.charAt(0).toUpperCase() + key.slice(1)}:
-                {typeof value === 'boolean' ? (
-                    <input
-                    type="checkbox"
-                    name={key}
-                    checked={value}
-                    onChange={(e) => handleChange(e, setNewData)}
-                    />
-                ) : (
-                    key === 'descripcionCorta' || key === 'descripcionLarga' ? (
-                      <textarea
-                        name={key}
-                        value={value}
-                        onChange={(e) => handleChange(e, setNewData)}
-                        rows={key === 'descripcionLarga' ? 5 : 2}
-                      />
-                    ) : (
-                      <input
-                        type="text"
-                        name={key}
-                        value={value}
-                        onChange={(e) => handleChange(e, setNewData)}
-                      />
-                    )
-                )}
-                </label>
-            )
-            ))}
+            {renderField(newData, setNewData)}
             <div className="form-buttons">
             <button onClick={handleCreate}>💾 Guardar</button>
             <button onClick={() => setNewData(null)}>✖ Cancelar</button>
@@ -139,37 +159,9 @@ function TrainingAdminPage() {
             <div key={resource._id} className="admin-row">
             {editData?._id === resource._id ? (
                 <>
-                {Object.entries(editData).map(([key, value]) => (
-                    key !== '_id' && (
-                    <label key={key}>
-                        {key.charAt(0).toUpperCase() + key.slice(1)}:
-                        {typeof value === 'boolean' ? (
-                        <input
-                            type="checkbox"
-                            name={key}
-                            checked={value}
-                            onChange={(e) => handleChange(e, setEditData)}
-                        />
-                        ) : (
-                        key === 'descripcionCorta' || key === 'descripcionLarga' ? (
-                          <textarea
-                            name={key}
-                            value={value}
-                            onChange={(e) => handleChange(e, setEditData)}
-                            rows={key === 'descripcionLarga' ? 5 : 2}
-                          />
-                        ) : (
-                          <input
-                              type="text"
-                              name={key}
-                              value={value}
-                              onChange={(e) => handleChange(e, setEditData)}
-                          />
-                        )
-                        )}
-                    </label>
-                    )
-                ))}
+                <div className="admin-form">
+                  {renderField(editData, setEditData)}
+                </div>
                 <div className="form-buttons">
                     <button onClick={handleUpdate}>💾</button>
                     <button onClick={() => setEditData(null)}>✖</button>
