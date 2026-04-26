@@ -4,6 +4,8 @@ const articuloSchema = new mongoose.Schema(
   {
     codigo: { type: Number, unique: true, index: true },
     categoria: { type: String, required: true, trim: true },
+    descripcionCorta: { type: String, trim: true, default: '' },
+    descripcionLarga: { type: String, trim: true, default: '' },
     precioCoste: { type: Number, required: true, min: 0 },
     precioCosteMayorista: { type: Number, required: true, min: 0 },
     pvp: { type: Number, required: true, min: 0 },

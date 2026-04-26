@@ -8,6 +8,8 @@ const normalizePayload = (payload = {}) => ({
   pvpMayorista: Number(payload.pvpMayorista),
   costeProtectora: Number(payload.costeProtectora),
   pvpProtectora: Number(payload.pvpProtectora),
+  descripcionCorta: (payload.descripcionCorta || '').trim(),
+  descripcionLarga: (payload.descripcionLarga || '').trim(),
 });
 
 export const getArticulosAdmin = async (req, res) => {
