@@ -27,6 +27,7 @@ const PRICE_COLUMNS = [
 function ArticulosAdminPage() {
   const token = useMemo(() => localStorage.getItem('token'), []);
   const [articulos, setArticulos] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [status, setStatus] = useState('');
@@ -48,6 +49,18 @@ function ArticulosAdminPage() {
   useEffect(() => {
     fetchArticulos();
   }, [fetchArticulos]);
+
+  const categoryOptions = useMemo(() => {
+    const categories = articulos
+      .map((articulo) => articulo.categoria?.trim())
+      .filter(Boolean);
+    return [...new Set(categories)].sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
+  }, [articulos]);
+
+  const filteredArticulos = useMemo(() => {
+    if (selectedCategory === 'all') return articulos;
+    return articulos.filter((articulo) => articulo.categoria === selectedCategory);
+  }, [articulos, selectedCategory]);
 
   const handleChange = ({ target }) => {
     const { name, value } = target;
@@ -201,6 +214,24 @@ function ArticulosAdminPage() {
 
       <section className="articulos-admin-list">
         <h2>Artículos registrados</h2>
+        <div className="articulos-admin-list__filters">
+          <label htmlFor="articulos-filter-category">
+            <span>Filtrar por categoría</span>
+            <select
+              id="articulos-filter-category"
+              value={selectedCategory}
+              onChange={(event) => setSelectedCategory(event.target.value)}
+            >
+              <option value="all">Todas las categorías</option>
+              {categoryOptions.map((categoria) => (
+                <option key={categoria} value={categoria}>{categoria}</option>
+              ))}
+            </select>
+          </label>
+          <p>
+            Mostrando <strong>{filteredArticulos.length}</strong> de <strong>{articulos.length}</strong> artículo(s)
+          </p>
+        </div>
         <table>
           <thead>
             <tr>
@@ -214,7 +245,7 @@ function ArticulosAdminPage() {
             </tr>
           </thead>
           <tbody>
-            {articulos.map((articulo) => (
+            {filteredArticulos.map((articulo) => (
               <tr key={articulo._id}>
                 <td>#{articulo.codigo}</td>
                 <td>{articulo.categoria}</td>
@@ -228,6 +259,11 @@ function ArticulosAdminPage() {
                 </td>
               </tr>
             ))}
+            {filteredArticulos.length === 0 && (
+              <tr>
+                <td colSpan={PRICE_COLUMNS.length + 5}>No hay artículos para la categoría seleccionada.</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </section>
