@@ -131,7 +131,16 @@ export const downloadMayoristaPriceListPdf = async (req, res) => {
       </html>
     `;
 
-    browser = await puppeteer.launch({ headless: 'new' });
+    const launchOptions = {
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    };
+
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+      launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+    }
+
+    browser = await puppeteer.launch(launchOptions);
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'networkidle0' });
     const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true, margin: { top: '20px', right: '16px', bottom: '20px', left: '16px' } });
