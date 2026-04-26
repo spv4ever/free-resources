@@ -63,6 +63,104 @@ const escapeHtml = (text = '') => String(text)
   .replaceAll('"', '&quot;')
   .replaceAll("'", '&#039;');
 
+const escapePdfText = (text = '') => String(text)
+  .replaceAll('\\', '\\\\')
+  .replaceAll('(', '\\(')
+  .replaceAll(')', '\\)');
+
+const buildSimplePdfBuffer = (lines = []) => {
+  const pageWidth = 595;
+  const pageHeight = 842;
+  const marginX = 42;
+  const marginTop = 52;
+  const lineHeight = 14;
+  const maxLinesPerPage = Math.floor((pageHeight - 100) / lineHeight);
+  const normalizedLines = lines.length ? lines : ['Sin datos para exportar.'];
+  const pages = [];
+
+  for (let index = 0; index < normalizedLines.length; index += maxLinesPerPage) {
+    pages.push(normalizedLines.slice(index, index + maxLinesPerPage));
+  }
+
+  const objects = [];
+  const addObject = (content) => {
+    objects.push(content);
+    return objects.length;
+  };
+
+  const fontId = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+  const contentObjectIds = [];
+  const pageObjectIds = [];
+
+  pages.forEach((pageLines) => {
+    const textOps = ['BT', '/F1 10 Tf'];
+    let y = pageHeight - marginTop;
+    pageLines.forEach((line) => {
+      textOps.push(`1 0 0 1 ${marginX} ${Math.max(30, y)} Tm (${escapePdfText(line)}) Tj`);
+      y -= lineHeight;
+    });
+    textOps.push('ET');
+
+    const stream = textOps.join('\n');
+    const streamObjectId = addObject(`<< /Length ${Buffer.byteLength(stream, 'utf8')} >>\nstream\n${stream}\nendstream`);
+    contentObjectIds.push(streamObjectId);
+  });
+
+  const pagesId = addObject('<< /Type /Pages /Kids [] /Count 0 >>');
+
+  contentObjectIds.forEach((contentObjectId) => {
+    const pageObjectId = addObject(`<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 ${fontId} 0 R >> >> /Contents ${contentObjectId} 0 R >>`);
+    pageObjectIds.push(pageObjectId);
+  });
+
+  objects[pagesId - 1] = `<< /Type /Pages /Kids [${pageObjectIds.map((id) => `${id} 0 R`).join(' ')}] /Count ${pageObjectIds.length} >>`;
+  const catalogId = addObject(`<< /Type /Catalog /Pages ${pagesId} 0 R >>`);
+
+  let pdf = '%PDF-1.4\n';
+  const offsets = [0];
+  objects.forEach((object, idx) => {
+    offsets.push(Buffer.byteLength(pdf, 'utf8'));
+    pdf += `${idx + 1} 0 obj\n${object}\nendobj\n`;
+  });
+  const xrefOffset = Buffer.byteLength(pdf, 'utf8');
+  pdf += `xref\n0 ${objects.length + 1}\n`;
+  pdf += '0000000000 65535 f \n';
+  for (let i = 1; i <= objects.length; i += 1) {
+    pdf += `${String(offsets[i]).padStart(10, '0')} 00000 n \n`;
+  }
+  pdf += `trailer\n<< /Size ${objects.length + 1} /Root ${catalogId} 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+
+  return Buffer.from(pdf, 'utf8');
+};
+
+const buildMayoristaPdfLines = (groupedByCategory = {}, sortedCategories = [], generatedAt = '') => {
+  const lines = [
+    'Tarifa mayorista',
+    `Generado el ${generatedAt}`,
+    'Incluye solo artículos con precio coste mayorista',
+    '',
+  ];
+
+  if (!sortedCategories.length) {
+    lines.push('No hay artículos con precio coste mayorista.');
+    return lines;
+  }
+
+  sortedCategories.forEach((category) => {
+    lines.push(`=== ${category} ===`);
+    lines.push('Código | Descripción | Precio coste mayorista');
+    groupedByCategory[category].forEach((articulo) => {
+      const code = `#${articulo.codigo ?? '—'}`;
+      const description = (articulo.descripcionCorta || articulo.descripcionLarga || '—').replaceAll(/\s+/g, ' ').trim();
+      const compactDescription = description.length > 70 ? `${description.slice(0, 67)}...` : description;
+      lines.push(`${code} | ${compactDescription} | ${formatPrice(articulo.precioCosteMayorista)}`);
+    });
+    lines.push('');
+  });
+
+  return lines;
+};
+
 export const downloadMayoristaPriceListPdf = async (req, res) => {
   let browser;
   try {
@@ -140,10 +238,17 @@ export const downloadMayoristaPriceListPdf = async (req, res) => {
       launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
     }
 
-    browser = await puppeteer.launch(launchOptions);
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true, margin: { top: '20px', right: '16px', bottom: '20px', left: '16px' } });
+    let pdfBuffer;
+    try {
+      browser = await puppeteer.launch(launchOptions);
+      const page = await browser.newPage();
+      await page.setContent(html, { waitUntil: 'networkidle0' });
+      pdfBuffer = await page.pdf({ format: 'A4', printBackground: true, margin: { top: '20px', right: '16px', bottom: '20px', left: '16px' } });
+    } catch (renderError) {
+      console.warn('No se pudo generar el PDF con Chromium, usando fallback simple:', renderError.message);
+      const lines = buildMayoristaPdfLines(groupedByCategory, sortedCategories, generatedAt);
+      pdfBuffer = buildSimplePdfBuffer(lines);
+    }
 
     const today = new Date().toISOString().slice(0, 10);
     res.setHeader('Content-Type', 'application/pdf');
