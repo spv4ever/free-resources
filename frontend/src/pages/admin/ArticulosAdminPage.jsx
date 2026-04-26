@@ -32,6 +32,7 @@ function ArticulosAdminPage() {
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [status, setStatus] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [isDropActive, setIsDropActive] = useState(false);
 
   const fetchArticulos = useCallback(async () => {
@@ -152,6 +153,31 @@ function ArticulosAdminPage() {
     }
   };
 
+  const handleDownloadMayoristaPdf = async () => {
+    try {
+      setDownloadingPdf(true);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/articulos/admin/mayorista-pdf`, {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'blob',
+      });
+      const fileUrl = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+      const link = document.createElement('a');
+      const datePart = new Date().toISOString().slice(0, 10);
+      link.href = fileUrl;
+      link.setAttribute('download', `tarifa-mayorista-${datePart}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(fileUrl);
+      setStatus('✅ PDF de tarifa mayorista descargado');
+    } catch (error) {
+      console.error('Error al descargar PDF de mayorista:', error);
+      setStatus('❌ No se pudo descargar el PDF de tarifa mayorista');
+    } finally {
+      setDownloadingPdf(false);
+    }
+  };
+
   return (
     <div className="articulos-admin-page">
       <div className="articulos-admin-page__header">
@@ -231,6 +257,14 @@ function ArticulosAdminPage() {
           <p>
             Mostrando <strong>{filteredArticulos.length}</strong> de <strong>{articulos.length}</strong> artículo(s)
           </p>
+          <button
+            type="button"
+            className="articulos-admin-list__download-pdf"
+            onClick={handleDownloadMayoristaPdf}
+            disabled={downloadingPdf}
+          >
+            {downloadingPdf ? 'Generando PDF...' : '⬇️ Descargar tarifa mayorista (PDF)'}
+          </button>
         </div>
         <table>
           <thead>

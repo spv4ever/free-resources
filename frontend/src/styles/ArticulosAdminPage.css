@@ -163,6 +163,11 @@
   font-size: 0.9rem;
 }
 
+.articulos-admin-list__download-pdf {
+  width: auto !important;
+  min-width: 240px;
+}
+
 .articulos-admin-list {
   overflow-x: auto;
 }
