@@ -4,6 +4,8 @@ import '../../styles/ArticulosAdminPage.css';
 
 const EMPTY_FORM = {
   categoria: '',
+  descripcionCorta: '',
+  descripcionLarga: '',
   precioCoste: '',
   precioCosteMayorista: '',
   pvp: '',
@@ -141,6 +143,14 @@ function ArticulosAdminPage() {
             <span>Categoría</span>
             <input name="categoria" value={formData.categoria} onChange={handleChange} required />
           </label>
+          <label>
+            <span>Descripción corta</span>
+            <input name="descripcionCorta" value={formData.descripcionCorta} onChange={handleChange} />
+          </label>
+          <label className="articulos-admin-form__full-width">
+            <span>Descripción larga</span>
+            <textarea name="descripcionLarga" value={formData.descripcionLarga} onChange={handleChange} rows={4} />
+          </label>
           {[
             ['precioCoste', 'Precio coste'],
             ['precioCosteMayorista', 'Precio coste mayorista'],
@@ -194,6 +204,7 @@ function ArticulosAdminPage() {
             <tr>
               <th>Código</th>
               <th>Categoría</th>
+              <th>Descripción corta</th>
               <th>Coste</th>
               <th>PVP</th>
               <th>Acciones</th>
@@ -204,6 +215,7 @@ function ArticulosAdminPage() {
               <tr key={articulo._id}>
                 <td>#{articulo.codigo}</td>
                 <td>{articulo.categoria}</td>
+                <td>{articulo.descripcionCorta || '—'}</td>
                 <td>{Number(articulo.precioCoste).toFixed(2)} €</td>
                 <td>{Number(articulo.pvp).toFixed(2)} €</td>
                 <td>

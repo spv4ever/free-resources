@@ -33,11 +33,23 @@
   font-weight: 600;
 }
 
-.articulos-admin-form input {
+.articulos-admin-form input,
+.articulos-admin-form textarea {
   width: 100%;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   padding: 0.6rem 0.7rem;
+}
+
+
+.articulos-admin-form textarea {
+  resize: vertical;
+  min-height: 96px;
+  font-family: inherit;
+}
+
+.articulos-admin-form__full-width {
+  grid-column: 1 / -1;
 }
 
 .articulos-admin-form__dropzone {
