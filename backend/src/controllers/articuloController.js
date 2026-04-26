@@ -182,8 +182,8 @@ const buildSimplePdfBuffer = (lines = []) => {
 
 const buildMayoristaPdfLines = (groupedByCategory = {}, sortedCategories = [], generatedAt = '') => {
   const codeWidth = 8;
-  const descriptionWidth = 40;
-  const priceWidth = 11;
+  const descriptionWidth = 32;
+  const priceWidth = 10;
   const buildRow = (code = '', description = '', priceCost = '', pvpMayorista = '', pvp = '') => (
     `${code.padEnd(codeWidth)} | ${description.padEnd(descriptionWidth)} | ${priceCost.padStart(priceWidth)} | ${pvpMayorista.padStart(priceWidth)} | ${pvp.padStart(priceWidth)}`
   );
