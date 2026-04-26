@@ -135,7 +135,7 @@ const buildSimplePdfBuffer = (lines = []) => {
     return objects.length;
   };
 
-  const fontId = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+  const fontId = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>');
   const contentObjectIds = [];
   const pageObjectIds = [];
 
