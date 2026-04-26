@@ -172,7 +172,20 @@ function ArticulosAdminPage() {
       setStatus('✅ PDF de tarifa mayorista descargado');
     } catch (error) {
       console.error('Error al descargar PDF de mayorista:', error);
-      setStatus('❌ No se pudo descargar el PDF de tarifa mayorista');
+      let errorMessage = 'No se pudo descargar el PDF de tarifa mayorista';
+
+      if (error.response?.data instanceof Blob) {
+        try {
+          const payload = JSON.parse(await error.response.data.text());
+          if (payload?.message) errorMessage = payload.message;
+        } catch {
+          // Sin payload JSON, mantenemos mensaje genérico
+        }
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+
+      setStatus(`❌ ${errorMessage}`);
     } finally {
       setDownloadingPdf(false);
     }
