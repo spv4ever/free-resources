@@ -203,6 +203,7 @@ function Navbar({
                   <Link to="#" onClick={(e) => { e.preventDefault(); toggleSidebar(); }} className="admin-btn">Admin</Link>
                 )}
                 <Link to="/perfil" className="admin-btn">Mi Perfil</Link>
+                <button type="button" className="logout-btn" onClick={handleLogout}>Desconectar</button>
               </div>
             ) : (
               <Link to="/login" className="nav-pill">Iniciar sesión</Link>
@@ -257,6 +258,13 @@ function Navbar({
                 </div>
               </section>
             ))}
+            {user && (
+              <div className="menu-bar-session-actions">
+                <button type="button" className="logout-btn" onClick={handleLogout}>
+                  Desconectar
+                </button>
+              </div>
+            )}
           </div>
 
         {mobileMenuOpen && (

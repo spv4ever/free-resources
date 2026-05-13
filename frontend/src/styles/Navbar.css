@@ -399,6 +399,11 @@
   padding: 0.9rem;
 }
 
+.menu-bar-session-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 /* === Sidebar === */
 .sidebar {
   width: 700px;
